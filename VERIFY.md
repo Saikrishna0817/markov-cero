@@ -57,12 +57,23 @@ core, so it is independent of the search/cut logic, not a second implementation
 of input parsing or exact arithmetic. It does not certify OA/MINLP or prove that
 a refinery formulation represents a physical plant.
 
-Default API proof generation/replay has a five-second budget inside the solve
-budget, 10,000 nodes and four million witness values. Failure to finish leaves
-`canonical_verified=false`; a feasible incumbent is still separately identified.
+API/CLI callers can configure independent proof time/node/witness budgets. The
+defaults are five seconds, 10,000 nodes and four million witness values, within
+the API/CLI caps of 100,000 nodes and 16,000,000 witness values. CLI flags are `--proof-time-limit SEC`,
+`--proof-max-nodes N` and `--proof-max-values N`. Python accepts
+`proof_time_limit`, `proof_max_nodes` and `proof_max_witness_values`, or these
+values on `SolveOptions`. The standalone checker accepts `--time-limit SEC`,
+`--max-nodes N`, `--max-values N` and `--relative-gap T`; its proof time covers
+bounded proof parsing and replay. The generator proof deadline is clipped to the
+overall solve deadline. Failure to finish leaves `canonical_verified=false`; a feasible
+incumbent is still separately identified.
 `verified` requires the relevant global numerical proof, not CLI exit code alone.
 Gap-satisfied proofs need an explicit relative-gap allowance in the C++ checker;
-the standalone CLI intentionally uses the strict default gap.
+the standalone CLI intentionally uses the strict default gap. Result objects, CLI
+JSON and Python dictionaries report `mip_proof_build_ms` and
+`mip_proof_verify_ms` separately. These measure proof construction and replay,
+excluding the primary optimization solve; failed stages report elapsed time in
+the stage that failed.
 
 Current qualification results and source/executable hashes are in
 [evidence/readiness-checkpoint.json](evidence/readiness-checkpoint.json).

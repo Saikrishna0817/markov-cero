@@ -14,14 +14,17 @@ bool Search::node_relaxation() {
             node_lp_res.lower_bound = best_lower_bound;
             node_lp_res.basis = current_basis;
         } else {
-            node_model.variable_lower = node->variable_lower;
-            node_model.variable_upper = node->variable_upper;
+            node->bounds.materialize(root_model.variable_lower, root_model.variable_upper,
+                                     node_model.variable_lower, node_model.variable_upper,
+                                     node_bounds_scratch);
             if (!node->local_cuts.empty()) {
-                add_cuts_to_model(node_model, node->local_cuts);
+                add_cuts_to_model(node_model, node->local_cuts.values());
             }
 
-            node_lp_res =
-                solve_node_relaxation(node_model, options, node->warm_basis);
+            const auto warm_basis = node->warm_basis
+                ? std::optional<lp::dual::BasisState>(*node->warm_basis)
+                : std::nullopt;
+            node_lp_res = solve_node_relaxation(node_model, options, warm_basis);
             result.lp_iterations += node_lp_res.iterations;
             ++result.nodes_explored;
 
@@ -49,6 +52,8 @@ bool Search::node_relaxation() {
                     node->lp_failures = 1;
                     node->warm_basis.reset();
                     queue.push(node);
+                    if (queue.capacity_exhausted())
+                        stop_reason = "queued-node capacity reached during LP retry";
                 } else {
                     ++unsolved_node_lps;
                     min_unsolved_bound = std::min(min_unsolved_bound, node->lower_bound);

@@ -8,14 +8,13 @@ std::string to_lower(std::string_view s) {
     }
     return out;
 }
-std::vector<Token> tokenize_lp(const std::string& content) {
+std::vector<Token> tokenize_lp(const std::string& content, const LpLimits& limits) {
     std::vector<Token> tokens;
     const std::size_t n = content.size();
     std::size_t i = 0;
     std::size_t line = 1;
 
     while (i < n) {
-        if (tokens.size() >= 1000000) throw std::length_error("LP token limit exceeded");
         char c = content[i];
 
         if (c == '\n') {
@@ -36,6 +35,9 @@ std::vector<Token> tokenize_lp(const std::string& content) {
             }
             continue;
         }
+
+        if (tokens.size() >= limits.maximum_tokens)
+            throw LpResourceLimitError("LP token limit exceeded");
 
         // Single punctuation tokens
         if (c == ':') {

@@ -91,7 +91,7 @@ class Parser {
     model::Model build();
     void check_nonlinear_limit() {
         if (nonlinear_entries >= limits.maximum_nonzeros)
-            throw MpsError(line_number, "nonlinear term limit exceeded");
+            throw MpsResourceLimitError(line_number, "nonlinear term limit exceeded");
         ++nonlinear_entries;
     }
 };

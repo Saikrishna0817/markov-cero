@@ -47,7 +47,7 @@ bool header(const std::string& token) {
 }
     void Parser::require_name(const std::string& name) {
         if (name.empty() || name.size() > limits.maximum_name_bytes)
-            throw MpsError(line_number, "invalid or oversized name");
+            throw MpsResourceLimitError(line_number, "name byte limit exceeded");
         const bool printable_ascii = std::all_of(name.begin(), name.end(), [](unsigned char value) {
             return value >= 33U && value <= 126U;
         });
@@ -66,7 +66,7 @@ bool header(const std::string& token) {
         if (found != column_by_name.end())
             return found->second;
         if (columns.size() >= limits.maximum_columns)
-            throw MpsError(line_number, "column limit exceeded");
+            throw MpsResourceLimitError(line_number, "column limit exceeded");
         const auto index = columns.size();
         Column column;
         column.name = name;
@@ -88,11 +88,11 @@ bool Parser::read_line(std::istream& input, std::string& raw) {
     while (input.get(ch)) {
         any = true;
         if (bytes >= limits.maximum_bytes)
-            throw MpsError(line_number + 1, "byte limit exceeded");
+            throw MpsResourceLimitError(line_number + 1, "byte limit exceeded");
         ++bytes;
         if (ch == '\n') break;
         if (raw.size() >= limits.maximum_line_bytes)
-            throw MpsError(line_number + 1, "line byte limit exceeded");
+            throw MpsResourceLimitError(line_number + 1, "line byte limit exceeded");
         raw.push_back(ch);
     }
     return any;
@@ -100,7 +100,7 @@ bool Parser::read_line(std::istream& input, std::string& raw) {
 model::Model Parser::read(std::istream& input) {
     for (std::string raw; read_line(input, raw);) {
         if (++line_number > limits.maximum_lines)
-            throw MpsError(line_number, "line limit exceeded");
+            throw MpsResourceLimitError(line_number, "line limit exceeded");
         if (!raw.empty() && raw.back() == '\r') {
             raw.pop_back();
         }
@@ -167,6 +167,8 @@ MpsError::MpsError(std::size_t line, std::string message)
     : std::runtime_error("MPS line " + std::to_string(line) + ": " + std::move(message)),
       line_(line) {}
 std::size_t MpsError::line() const noexcept { return line_; }
+MpsResourceLimitError::MpsResourceLimitError(std::size_t line, std::string message)
+    : std::length_error("MPS line " + std::to_string(line) + ": " + std::move(message)) {}
 
 model::Model parse_mps(std::istream& input, const MpsLimits& limits) {
     if (!limits.maximum_bytes || !limits.maximum_lines || !limits.maximum_name_bytes ||
@@ -176,7 +178,7 @@ model::Model parse_mps(std::istream& input, const MpsLimits& limits) {
 }
 model::Model parse_mps_string(std::string_view input, const MpsLimits& limits) {
     if (input.size() > limits.maximum_bytes)
-        throw MpsError(0U, "byte limit exceeded");
+        throw MpsResourceLimitError(0U, "byte limit exceeded");
     std::istringstream stream{std::string(input)};
     return parse_mps(stream, limits);
 }

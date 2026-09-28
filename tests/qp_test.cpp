@@ -40,6 +40,9 @@ int main() {
     std::cout << "[Test] 8. Adaptive Rho Update and Refactorization Counter\n";
     qp_scenario_8();
 
+    std::cout << "[Test] 9. MIQP node QP bound overlay\n";
+    qp_scenario_9();
+
     std::cout << "[Pass] All QP tests passed successfully!\n";
     return 0;
 }

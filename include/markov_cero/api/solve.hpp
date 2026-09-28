@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <limits>
 #include <memory>
+#include <optional>
 #include "markov_cero/verify/mip_proof.hpp"
 #include <string>
 #include <vector>
@@ -32,7 +33,13 @@ struct SolveOptions {
     double pdlp_tolerance = 1e-4;
     bool enable_pdlp_crossover{true};
     bool enable_mip_proof{true};
+    double mip_proof_time_limit_seconds{5.0};
+    std::size_t mip_proof_max_nodes{10000};
+    std::size_t mip_proof_max_witness_values{4000000};
     std::string backend = "cpu";
+    // Optional hard cap applied before an MPS/LP file is tokenized. Unset
+    // preserves the format-specific parser defaults.
+    std::optional<std::size_t> maximum_input_bytes;
     lp::reference::Options lp_options;
     milp::Options milp_options;
 };
@@ -87,6 +94,10 @@ struct SolveResult {
 
     // Global verification is distinct from a checked incumbent or local KKT point.
     std::string certificate_type{"none"};
+    // Independent MIP certificate construction and replay cost, excluding the
+    // primary solve. Zero when the proof path was not requested or not entered.
+    double mip_proof_build_ms{0.0};
+    double mip_proof_verify_ms{0.0};
     std::shared_ptr<const verify::MipProof> mip_proof;
     std::string proof_message;
     std::vector<std::string> variable_names;

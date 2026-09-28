@@ -13,10 +13,15 @@ inline void cli_usage(std::ostream& out) {
                "MARKOV_CERO_ENABLE_ML + model file, else falls back to pseudo_cost)\n"
             << "  --iteration-limit N      Maximum simplex iterations\n"
             << "  --max-nodes N            Maximum branch-and-cut search nodes (default: 50000)\n"
+            << "  --max-queued-nodes N     Maximum queued B&B nodes (default: 50000)\n"
+            << "  --max-input-bytes N      Override the MPS/LP input byte cap (max: 1 GiB)\n"
             << "  --node-selection best-bound|depth-first|dive  Node selection policy "
                "(default: best-bound)\n"
             << "  --time-limit SEC         Maximum solve wall-clock time in seconds (default: 60.0)\n"
             << "  --mip-gap TOL            Relative MIP gap tolerance (default: 1e-4)\n"
+            << "  --proof-time-limit SEC   Independent MIP proof generation and replay budget in seconds (default: 5)\n"
+            << "  --proof-max-nodes N      Maximum nodes in generated/replayed proof (default: 10000)\n"
+            << "  --proof-max-values N     Maximum witness values in proof (default: 4000000)\n"
             << "  --cuts, --no-cuts        Enable or disable Gomory & MIR mixed-integer cuts "
                "(default: enabled)\n"
             << "  --heuristics, --no-heuristics Enable or disable primal heuristics (default: "
@@ -32,6 +37,13 @@ inline void cli_usage(std::ostream& out) {
             << "  --tolerance TOL          Relative KKT tolerance for PDLP (default: 1e-4)\n"
             << "  --backend cpu|gpu        PDLP execution backend (default: cpu)\n"
             << "  --help, -h               Show this help\n";
-    }
+}
 
+inline void mip_verify_usage(std::ostream& out) {
+    out << "usage: markov-cero-verify-mip MODEL.mps PROOF.txt [options]\n"
+        << "  --time-limit SEC  Maximum proof parsing/replay time (default: 5)\n"
+        << "  --max-nodes N     Maximum proof tree nodes (default: 10000)\n"
+        << "  --max-values N    Maximum witness values (default: 4000000)\n"
+        << "  --relative-gap T  Accepted relative gap (default: 0)\n";
+}
 }

@@ -20,6 +20,8 @@ namespace detail_parallel_tree_search_test { void test_refinery_dispatch_multi_t
 namespace detail_parallel_tree_search_test { void test_thread_safety_repeated_runs(); }
 namespace detail_parallel_tree_search_test { void test_infeasible_parallel(); }
 namespace detail_parallel_tree_search_test { void test_thread_safe_queue_unit(); }
+namespace detail_parallel_tree_search_test { void test_queue_capacity_and_solver_status(); }
+namespace detail_parallel_tree_search_test { void test_persistent_node_bounds(); }
 namespace detail_parallel_tree_search_test { void test_queue_lazy_prune_batch(); }
 namespace detail_parallel_tree_search_test { void test_queue_batch_interleave_order(); }
 namespace detail_parallel_tree_search_test { void test_incumbent_manager_unit(); }

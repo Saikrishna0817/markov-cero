@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-28",
+  "purpose": "W01 structural frontier-memory microbenchmark",
+  "scope": "Synthetic in-process data-structure comparison; not a full solver RSS qualification",
+  "host": {
+    "os": "Linux",
+    "page_size_bytes": 4096,
+    "compiler": "GCC 16.2.1",
+    "build_type": "Debug",
+    "binary_sha256": "dff92729224193f715dd31ab40afa5f5172d5b941835414527b4c13f995837e9"
+  },
+  "build_commands": [
+    "cmake -S . -B build_readiness -DCMAKE_BUILD_TYPE=Debug",
+    "cmake --build build_readiness --target node_frontier_memory_benchmark -j2"
+  ],
+  "command_template": "./build_readiness/node_frontier_memory_benchmark MODE NODES 1024 1024 4 32 4",
+  "parameters": {
+    "variables": 1024,
+    "basis_entries": 1024,
+    "cuts_per_node_baseline": 4,
+    "coefficients_per_cut": 32,
+    "worker_count": 4,
+    "root_matrix_nonzeros": 1024
+  },
+  "baseline_definition": "One node owns lower and upper Bound vectors, an optional copied BasisState vector, and a copied local-cut vector. This reproduces the former queued-node payload shape; it is not a comparison to another solver.",
+  "current_definition": "Each node owns BranchNode plus a one-delta NodeBounds, and shares one immutable BasisState and one copy-on-write NodeCuts payload. Root model and per-worker bound buffers are held in both modes.",
+  "measure": "getrusage(RUSAGE_SELF).ru_maxrss, Linux KiB, one process per run; runs executed sequentially",
+  "safety_budget": "The benchmark rejects estimated baseline payloads above 1 GiB and dimensions above per-argument caps; an oversized-input rejection was exercised.",
+  "runs": [
+    {"nodes": 500, "baseline_peak_rss_kib": 24748, "current_peak_rss_kib": 6796},
+    {"nodes": 1000, "baseline_peak_rss_kib": 45640, "current_peak_rss_kib": 6792},
+    {"nodes": 2000, "baseline_peak_rss_kib": 87204, "current_peak_rss_kib": 6792},
+    {"nodes": 4000, "baseline_peak_rss_kib": 169952, "current_peak_rss_kib": 6792}
+  ],
+  "limitations": [
+    "The benchmark constructs data structures, not actual branch-and-bound solves.",
+    "Every current node has a single delta; deep-path materialization and shared-chain retention are not measured.",
+    "The root matrix is a fixed 1024-nonzero diagonal matrix and the four worker buffers are bound vectors only.",
+    "Allocator metadata, full solver workspaces, cut generation, concurrent workers, and OS/device memory pressure are not isolated.",
+    "RSS depends on this Linux allocator/runtime and Debug binary; repeat on release builds and supported deployment hosts."
+  ],
+  "conclusion": "In this controlled structure-only case, baseline peak RSS grows with queued copied payloads while current RSS remains near the fixed process/root/worker footprint through 4000 nodes. This supports the direction of the W01 representation but does not close IR-19; full-solver allocation and frontier/RSS scaling remain required."
+}

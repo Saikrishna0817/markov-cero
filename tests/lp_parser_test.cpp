@@ -163,6 +163,57 @@ int main() {
         require(threw, "invalid header should throw");
     }
 
+    // 6. Configurable parser resource limits fail before model construction.
+    {
+        using markov_cero::io::LpLimits;
+        using markov_cero::io::parse_lp_string;
+        const std::string linear =
+            "Minimize\n x + y\nSubject To\n r1: x + y <= 4\n r2: x <= 2\nEnd\n";
+        const auto rejects = [](const std::string& text, LpLimits limits) {
+            try {
+                (void)parse_lp_string(text, limits);
+            } catch (const std::length_error&) {
+                return true;
+            }
+            return false;
+        };
+        auto limits = LpLimits{};
+        limits.maximum_bytes = linear.size() - 1;
+        require(rejects(linear, limits), "byte budget must be enforced");
+        limits = LpLimits{};
+        limits.maximum_tokens = 4;
+        require(rejects(linear, limits), "token budget must be enforced");
+        limits = LpLimits{};
+        limits.maximum_rows = 1;
+        require(rejects(linear, limits), "row budget must be enforced");
+        limits = LpLimits{};
+        limits.maximum_columns = 1;
+        require(rejects(linear, limits), "column budget must be enforced");
+        limits = LpLimits{};
+        limits.maximum_nonzeros = 1;
+        require(rejects(linear, limits), "coefficient budget must be enforced");
+        const std::string limited_path = "/tmp/markov_cero_lp_input_limit.lp";
+        {
+            std::ofstream limited_file(limited_path);
+            limited_file << linear;
+        }
+        limits = LpLimits{};
+        limits.maximum_bytes = 1;
+        bool file_limited = false;
+        try {
+            (void)markov_cero::io::parse_lp_file(limited_path, limits);
+        } catch (const std::length_error&) {
+            file_limited = true;
+        }
+        require(file_limited, "file reader must enforce byte budget while reading");
+
+        const std::string quadratic =
+            "Minimize\n x + [ x^2 + y^2 ] / 2\nSubject To\n x + y <= 1\nEnd\n";
+        limits = LpLimits{};
+        limits.maximum_quadratic_terms = 1;
+        require(rejects(quadratic, limits), "quadratic term budget must be enforced");
+    }
+
     std::cout << "All lp_parser tests passed successfully!\n";
     return 0;
 }

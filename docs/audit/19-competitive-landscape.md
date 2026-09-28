@@ -9,6 +9,9 @@ date: 2026-09-25
 
 # 19. Competitive Landscape — markov-cero vs the SIH26119 field
 
+> Historical snapshot (2026-09-25). Provenance comparison claims below predate the
+> source-exposure reconciliation in `PROVENANCE.md`; source independence is now unverified.
+
 > **Report-only note** (scope decision: no edits to [[15-roadmap]] or [[17-sih-demo-strategy]]).
 > Answering two questions: *who else is building this, and what did they miss that we can own?*
 > Evidence labels: **[Observed]** = file:line in a cloned repo · **[Claimed]** = README/marketing only ·
@@ -176,7 +179,7 @@ What "comparison-grade" means when the evaluator (or we) measures against incumb
 
 | # | Project | Threat | Single reason |
 |---|---|---|---|
-| 1 | **SANKHYA** (thegoodengineers + Deekshith2205 snapshot) | **Very high** | Only rival closing R4+R5+R7+R8+R16+R10 *simultaneously*, with CI that fails on a linked solver lib (`ci.yml:814`) — our provenance differentiator, duplicated. |
+| 1 | **SANKHYA** (thegoodengineers + Deekshith2205 snapshot) | **Very high** | Only rival closing R4+R5+R7+R8+R16+R10 *simultaneously*, with CI that fails on a linked solver lib (`ci.yml:814`) — dependency isolation is comparable; our source-independence claim is under review. |
 | 2 | **team-vertexx/sankhya** | High | R16 runs **inside CI** (every Netlib push vs published optima) and publishes retractions — the trust story an evaluator can verify themselves. |
 | 3 | **VioniX37/VX03** | High | Polished HSD-IPM + PyTorch GPU + CI benchmark job + self-critical numbers; soft spots are licence (PolyForm) and deps hygiene. |
 | 4 | **trijalpgunaseelan/Igaos-public** | High | Broadest engine set of any student repo (IPM, MIQP, NLP, IIS) with CPLEX 13/13 + Gurobi 21/22 CSVs; no CI, ambiguous provenance (squashed commit, unfilled licence). |

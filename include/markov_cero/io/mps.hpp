@@ -29,6 +29,11 @@ class MpsError final : public std::runtime_error {
     std::size_t line_;
 };
 
+class MpsResourceLimitError final : public std::length_error {
+  public:
+    MpsResourceLimitError(std::size_t line, std::string message);
+};
+
 [[nodiscard]] model::Model parse_mps(std::istream& input, const MpsLimits& limits = {});
 [[nodiscard]] model::Model parse_mps_string(std::string_view input, const MpsLimits& limits = {});
 

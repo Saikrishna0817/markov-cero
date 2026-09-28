@@ -7,16 +7,20 @@ date: 2026-09-25
 
 # Current architecture (as built)
 
+> Historical snapshot dated 2026-09-25. Its former clean-room provenance claim is superseded:
+> peer solver source exposure is recorded in `docs/audit/19-competitive-landscape.md`, and
+> independent source-trace review remains open. See `PROVENANCE.md`.
+
 > Short form of [[07-current-architecture]] — Phase 5 reconstruction, every fact verified against
 > source. Component detail: [[Codebase MOC]]. Target form: [[target]].
 
 ## Summary
 
 Static library `markov_cero_core` + three apps (`markov-cero-solve`, `-info`, `-mps-inspect`);
-immutable CSC model, reversible LIFO presolve/postsolve, five engine families behind `--engine`,
-independent dual-gated verifiers, JSON output with a status certificate. The skeleton is right:
-clean-room provenance + sovereignty guard (R10), zero-trust verifiers, and multi-engine dispatch
-(R3) are all architecturally sound. What is thin is *coverage* (IPM, cut depth, presolve depth)
+CSC model, reversible LIFO presolve/postsolve, five engine families behind `--engine`,
+independent dual-gated verifiers, JSON output with a status certificate. Dependency isolation,
+verifiers and multi-engine dispatch are implemented; provenance status remains under independent
+review. What is thin is *coverage* (IPM, cut depth, presolve depth)
 and the *evaluation layer* — and evaluation is what SIH grades first.
 
 **Pipeline (one line):**
@@ -42,7 +46,7 @@ and the *evaluation layer* — and evaluation is what SIH grades first.
 ## Right (do not disturb)
 
 Immutable CSC model + reversible presolve stack · sparse-basis LU/eta under simplex ·
-`--engine auto` extensibility · independent verifiers · clean-room provenance guarded in CI.
+`--engine auto` extensibility · independent verifiers · dependency isolation guarded in CI.
 
 ## Related
 

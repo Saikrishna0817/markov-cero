@@ -105,6 +105,8 @@ struct JsonOutputData {
     std::string certificate_type;
     std::shared_ptr<const markov_cero::verify::MipProof> mip_proof;
     std::string proof_message;
+    double mip_proof_build_ms = 0.0;
+    double mip_proof_verify_ms = 0.0;
     std::vector<std::string> variable_names;
     std::vector<std::string> row_names;
     std::vector<double> row_activities;
@@ -262,7 +264,9 @@ inline void emit_json_output(const JsonOutputData& data) {
     if (!data.convergence_note.empty()) {
         json << ",\"convergence_note\":\"" << json_escape(data.convergence_note) << "\"";
     }
-    json << ",\"proof_message\":\"" << json_escape(data.proof_message) << "\"";
+    json << ",\"proof_message\":\"" << json_escape(data.proof_message) << "\""
+         << ",\"mip_proof_build_ms\":" << json_number(data.mip_proof_build_ms)
+         << ",\"mip_proof_verify_ms\":" << json_number(data.mip_proof_verify_ms);
     if (data.mip_proof) {
         std::ostringstream proof;
         markov_cero::verify::write_mip_proof(proof, *data.mip_proof);

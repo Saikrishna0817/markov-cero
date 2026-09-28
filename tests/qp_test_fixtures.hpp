@@ -32,3 +32,4 @@ void qp_scenario_5();
 void qp_scenario_6();
 void qp_scenario_7();
 void qp_scenario_8();
+void qp_scenario_9();

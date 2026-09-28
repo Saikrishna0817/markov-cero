@@ -18,6 +18,8 @@ struct Options {
     std::string ml_model_path{"data/ml_models/branching_scorer.onnx"};
     std::string strong_branching_log_path; // Optional caller-owned training destination.
     std::size_t max_nodes{50000};
+    /// Maximum queued branch nodes; overflow stops with a resource-limit result.
+    std::size_t max_queued_nodes{50000};
     std::size_t max_iterations{500000};
     double time_limit_seconds{60.0};
     std::optional<std::chrono::steady_clock::time_point> deadline;

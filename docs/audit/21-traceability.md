@@ -108,7 +108,7 @@ Each durable decision this audit forces has its own note in `docs/research/engin
 | 9 | Sparsity is a prerequisite for R12 scale ([[Sparsity]], [[CSC Sparse Model]]) | R6, R12 | [[Canonicalizer]] | [[ED-004-sparse-first-canonicalization]] / RW-5 → one sparse-first path | ≥1e5-row instance solved within caps |
 | 10 | Verification must be independent of solver status strings ([[KKT Residual]], [[Unknown-2026-Verified-Linear-Programming]]) | R17, R18 | [[IndependentVerifiers]] | [[ED-008-retain-zero-trust-verifiers]] → certificates in compare/demo output | `verified=true` + KKT residual columns in every table |
 | 11 | ML branching needs corpora + an eval harness ([[Giallombardo-2025-Machine-Learning-Techniques]], [[Zhang-2025-Learning-Select-Nodes]]) | R5, R18 | branching | [[ED-009-defer-ml-branching]] → roadmap P3 only, delist README Phase 7 | README makes no ML claim; classical branching measured instead |
-| 12 | Clean-room provenance is the only *provable* R10 story (09 §6.5) | R10, R18 | CI | KEEP `sovereignty_guard` ([[12-keep-remove-rebuild]] §8.1) | `ctest -R sovereignty_guard` green in all 8 CI jobs |
+| 12 | Dependency isolation is mechanically guarded; clean-room provenance is unverified pending source-trace review | R10, R18 | CI + independent review | KEEP `sovereignty_guard` and complete D04 source-trace review | CI dependency guard plus independent exposure/history/algorithm review |
 
 ## 21.5 Navigation — walking the graph in both directions
 

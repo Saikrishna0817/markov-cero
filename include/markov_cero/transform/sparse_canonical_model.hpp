@@ -26,6 +26,12 @@ struct SparseCanonicalModel {
 
 [[nodiscard]] SparseCanonicalModel sparse_canonicalize(const model::Model& input,
                                                        bool relax_integrality = false);
+/// Canonicalize against per-solve bound overlays without copying the complete
+/// immutable input Model. Overlay vectors must match the variable dimension.
+[[nodiscard]] SparseCanonicalModel sparse_canonicalize(
+    const model::Model& input, bool relax_integrality,
+    const std::vector<model::Bound>& variable_lower,
+    const std::vector<model::Bound>& variable_upper);
 [[nodiscard]] std::vector<double> reconstruct_primal(const SparseCanonicalModel& model,
                                                      const std::vector<double>& canonical_primal);
 [[nodiscard]] double reconstruct_objective(const SparseCanonicalModel& model,

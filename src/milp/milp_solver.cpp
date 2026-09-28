@@ -32,6 +32,7 @@ if (!initialize() || !root_relaxation() || !root_branching()) return result;
         if (!queue.empty()) {
             best_lower_bound = std::min(best_upper_bound, queue.min_lower_bound());
         }
+        if (!stop_reason.empty()) break;
 
         // Check relative optimality gap
         if (!best_primal.empty() && best_lower_bound > -std::numeric_limits<double>::infinity()) {

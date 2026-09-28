@@ -6,9 +6,26 @@
 
 namespace markov_cero::milp {
 NodeLpResult solve_node_qp(const model::Model& model, const Options& options) {
+    return solve_node_qp(model, options, model.variable_lower, model.variable_upper);
+}
+
+NodeLpResult solve_node_qp(const model::Model& model, const Options& options,
+                           const std::vector<model::Bound>& variable_lower,
+                           const std::vector<model::Bound>& variable_upper) {
     NodeLpResult result;
     try {
         auto q = qp::make_quadratic_model(model);
+        if (variable_lower.size() != model.matrix.column_count ||
+            variable_upper.size() != model.matrix.column_count) {
+            throw std::invalid_argument("QP node bound overlay dimension mismatch");
+        }
+        const std::size_t first_bound_row = model.matrix.row_count;
+        for (std::size_t j = 0; j < variable_lower.size(); ++j) {
+            q.l[first_bound_row + j] = variable_lower[j].is_finite()
+                ? variable_lower[j].value : -std::numeric_limits<double>::infinity();
+            q.u[first_bound_row + j] = variable_upper[j].is_finite()
+                ? variable_upper[j].value : std::numeric_limits<double>::infinity();
+        }
         q.variable_types.assign(q.num_variables(), model::VariableType::continuous);
         qp::QpOptions qo;
         qo.max_iterations = options.max_iterations;
@@ -34,7 +51,8 @@ NodeLpResult solve_node_qp(const model::Model& model, const Options& options) {
             result.message = "QP node lacks a verified KKT witness: " + report.failure_reason;
             return result;
         }
-        result.lower_bound = qp::supporting_lower_bound(model, q, sol);
+        result.lower_bound = qp::supporting_lower_bound(
+            model, q, sol, variable_lower, variable_upper);
         if (!std::isfinite(result.lower_bound)) {
             result.status = lp::reference::SolveStatus::unsupported;
             result.message = "QP node supporting bound has an infinite box infimum";

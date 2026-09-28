@@ -6,8 +6,17 @@ namespace markov_cero::qp {
 // closed instead of using the primal objective as a lower bound.
 double supporting_lower_bound(const model::Model& model, const qp::QuadraticModel& q,
                         const qp::QpSolution& sol) {
+    return supporting_lower_bound(model, q, sol, model.variable_lower, model.variable_upper);
+}
+
+double supporting_lower_bound(const model::Model& model, const qp::QuadraticModel& q,
+                        const qp::QpSolution& sol,
+                        const std::vector<model::Bound>& variable_lower,
+                        const std::vector<model::Bound>& variable_upper) {
     const auto px = q.P.multiply(sol.x);
     const auto m = model.matrix.row_count, n = model.matrix.column_count;
+    if (variable_lower.size() != n || variable_upper.size() != n || sol.x.size() != n ||
+        sol.y.size() < m) return -std::numeric_limits<double>::infinity();
     std::vector<long double> reduced(n);
     long double bound = model.objective_offset, magnitude = std::abs(bound);
     for (std::size_t j = 0; j < n; ++j) {
@@ -26,7 +35,7 @@ double supporting_lower_bound(const model::Model& model, const qp::QuadraticMode
     for (std::size_t j = 0; j < n; ++j) {
         for (std::size_t k = model.matrix.column_start[j]; k < model.matrix.column_start[j + 1]; ++k)
             reduced[j] += static_cast<long double>(model.matrix.value[k]) * sol.y[model.matrix.row_index[k]];
-        const auto& endpoint = reduced[j] >= 0.0L ? model.variable_lower[j] : model.variable_upper[j];
+        const auto& endpoint = reduced[j] >= 0.0L ? variable_lower[j] : variable_upper[j];
         if (reduced[j] == 0.0L) continue;
         if (!endpoint.is_finite()) return -std::numeric_limits<double>::infinity();
         const long double term = reduced[j] * endpoint.value;

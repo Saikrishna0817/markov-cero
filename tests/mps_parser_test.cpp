@@ -39,7 +39,7 @@ int main() {
     rejected = false;
     try {
         (void)markov_cero::io::parse_mps_string(ranged, limits);
-    } catch (const markov_cero::io::MpsError&) {
+    } catch (const markov_cero::io::MpsResourceLimitError&) {
         rejected = true;
     }
     require(rejected, "byte limit");

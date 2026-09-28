@@ -70,7 +70,7 @@ bool Search::separate_cuts() {
                             }
                         }
                         if (!pooled) {
-                            for (const auto& existing : node->local_cuts) {
+                            for (const auto& existing : node->local_cuts.values()) {
                                 if (compute_cosine_similarity(cut, existing) > 0.95) {
                                     pooled = true;
                                     break;
@@ -86,7 +86,8 @@ bool Search::separate_cuts() {
                     }
 
                     add_cuts_to_model(node_model, fresh);
-                    node->local_cuts.insert(node->local_cuts.end(), fresh.begin(), fresh.end());
+                    const auto prior_cut_count = node->local_cuts.size();
+                    node->local_cuts.append(fresh);
                     result.cuts_generated += fresh.size();
 
                     const auto cut_lp =
@@ -94,7 +95,7 @@ bool Search::separate_cuts() {
                     result.lp_iterations += cut_lp.iterations;
                     if (cut_lp.status != lp::reference::SolveStatus::optimal) {
                         // Unverified cuts must not propagate to children: revert this round.
-                        node->local_cuts.resize(node->local_cuts.size() - fresh.size());
+                        node->local_cuts.truncate(prior_cut_count);
                         result.cuts_generated -= fresh.size();
                         break;
                     }
@@ -118,11 +119,8 @@ bool Search::separate_cuts() {
             }
 
             if (node->local_cuts.size() > options.max_pool_cuts) {
-                std::stable_sort(node->local_cuts.begin(), node->local_cuts.end(),
-                                 [](const Cut& a, const Cut& b) {
-                                     return a.violation > b.violation;
-                                 });
-                node->local_cuts.resize(options.max_pool_cuts);
+                node->local_cuts.sort_by_violation();
+                node->local_cuts.truncate(options.max_pool_cuts);
             }
         }
 

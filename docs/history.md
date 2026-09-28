@@ -19,6 +19,7 @@ Chronological record of markov-cero development, architectural evolution, and au
 
 ### Milestone M0: Clean-Room Foundation & Governance (2026-09-13)
 - Established clean-room C++20 architecture with strict zero-dependency policy.
+- Historical status note (2026-09-28): the milestone label describes the original policy and implementation-period record, not a current verified provenance conclusion. Peer-source inspection was later recorded on 2026-09-25; see `PROVENANCE.md`. Independent trace review is pending.
 - Implemented build metadata emission, foundation contracts, and deterministic packaging.
 - Outlawed all external solver libraries (HiGHS, GLPK, Clp, CPLEX, Gurobi, etc.).
 

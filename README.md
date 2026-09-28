@@ -1,14 +1,15 @@
 # markov-cero
 
-markov-cero is a clean-room C++20 research solver for linear and mixed-integer
+markov-cero is a from-scratch C++20 research solver for linear and mixed-integer
 optimization, with convex quadratic and experimental nonlinear paths. It is a
 solver prototype, not a production refinery planning system or a demonstrated
 commercial-solver replacement.
 
 ## Current release status
 
-The current CPU acceptance run passes **80/80 CTests**; a fresh ML-enabled
-Release build also passes 80/80, and the installed Python wheel passes 16/16.
+The current native CPU acceptance run passes **81/81 CTests**. A prior
+ML-enabled Release build passed 80/80, and the installed Python wheel passed
+16/16; the current in-tree Python extension suite passes 18/18.
 The five previously failing numerical/domain cases pass; production planning
 meets its requested 5% MIP gap, while the other four report verified optima.
 Maintained code and
@@ -23,6 +24,27 @@ solve-wide memory budgets. The 100% critical/high release gate is therefore unme
 See [current evidence](evidence/readiness-checkpoint.json).
 See [the implementation plan](docs/audit/INDUSTRY-READINESS-IMPLEMENTATION-PLAN.md)
 for the remaining acceptance requirements.
+
+The 2026-09-28 W01 work now stores branch bounds as persistent deltas, shares
+local cut lists and warm-start bases between siblings, and sends bound overlays
+to parallel LP/QP nodes. The current full native CTest run passes 81/81. W01
+remains open pending remaining model-copy cleanup, memory limits, and full-solver
+frontier/RSS evidence. A separate structure-only RSS comparison is recorded in
+the [evidence file](evidence/node-frontier-memory-20260928.json); see the
+[competitive roadmap](docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md).
+
+MILP callers can bound queued nodes with `max_queued_nodes` in C++/Python or
+`--max-queued-nodes` in the CLI (default 50,000). Hitting that cap returns
+`ResourceLimit`; the solver retains the omitted frontier's inherited lower
+bound and does not report infeasibility or optimality.
+Parallel branching also propagates certified LP lower bounds when creating and
+processing nodes. A node-count queue cap is not a solve-wide byte budget;
+LP text parsing also exposes byte, token, row, column, coefficient, quadratic
+term and name caps; `solve_file` accepts an optional `maximum_input_bytes`
+override through C++, `--max-input-bytes` through the CLI, or `max_input_bytes`
+through Python. Solve-wide allocator accounting/failure injection and
+device-memory limits remain open; see [parser details](docs/codebase/components/MPSParser.md)
+and the [competitive roadmap](docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md).
 
 ## Build and solve
 
@@ -42,7 +64,7 @@ must not be inferred from a CPU-only build.
 
 ## What the repository demonstrates
 
-- Clean-room C++20 solver implementation and provenance records.
+- C++20 solver implementation and a recorded provenance history; independent source-trace review is pending, so clean-room status is not claimed.
 - Sparse model representation, presolve, scaling and multiple LP engines.
 - MILP branch-and-cut and a convex QP/MIQP path.
 - Independent LP/QP/NLP checks and bounded MILP/MIQP tree replay; see STATUS.
@@ -55,6 +77,8 @@ end-to-end advantage over CPU PDLP on the measured RTX 2050 cases. ML branching
 has not passed its deployment acceptance gate.
 
 ## Evidence and project documents
+
+- [Industry-grade implementation and competitive roadmap](docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md)
 
 - [Current capability and evidence register](STATUS.md)
 - [Current codebase audit](docs/audit/CODEBASE-AUDIT-2026-09-28.md)
@@ -86,8 +110,10 @@ leaf witness without running a solver:
     ./build/markov-cero-verify-mip model.mps proof.txt
     ./build/markov-cero-iis infeasible.mps
 
-Proofs are numerical, with explicit tolerances and node/witness/deadline budgets.
-An incomplete proof remains unverified. OA/MINLP has no global proof export.
+Proof generation accepts `--proof-time-limit`, `--proof-max-nodes` and
+`--proof-max-values`; the standalone checker accepts matching `--time-limit`,
+`--max-nodes` and `--max-values` controls. Proofs are numerical, and an
+incomplete proof remains unverified. OA/MINLP has no global proof export.
 Conflict analysis reports row irreducibility relative to unchanged variable
 bounds; unknown or timed-out trials cannot establish irreducibility.
 

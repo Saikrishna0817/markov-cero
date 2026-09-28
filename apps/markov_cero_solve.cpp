@@ -22,6 +22,10 @@ markov_cero::api::SolveOptions to_solve_options(const markov_cero::apps::CliOpti
     options.ruiz_iterations = cli.ruiz_iterations;
     options.pdlp_tolerance = cli.pdlp_tolerance;
     options.backend = cli.backend_name;
+    options.maximum_input_bytes = cli.maximum_input_bytes;
+    options.mip_proof_time_limit_seconds = cli.mip_proof_time_limit_seconds;
+    options.mip_proof_max_nodes = cli.mip_proof_max_nodes;
+    options.mip_proof_max_witness_values = cli.mip_proof_max_witness_values;
     options.lp_options = cli.options;
     options.lp_options.time_limit_seconds = cli.time_limit_seconds;
     options.milp_options = cli.milp_options;
@@ -36,6 +40,8 @@ markov_cero::apps::JsonOutputData to_json_data(const markov_cero::api::SolveResu
     data.certificate_type = res.certificate_type;
     data.mip_proof = res.mip_proof;
     data.proof_message = res.proof_message;
+    data.mip_proof_build_ms = res.mip_proof_build_ms;
+    data.mip_proof_verify_ms = res.mip_proof_verify_ms;
     data.variable_names = res.variable_names;
     data.row_names = res.row_names;
     data.row_activities = res.row_activities;

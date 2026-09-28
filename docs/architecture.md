@@ -6,7 +6,7 @@ Comprehensive technical specification of the markov-cero optimization solver arc
 
 ## 1. Architectural Principles & Invariants
 
-1. **Clean-Room Sovereign Engineering**:
+1. **Sovereign Engineering Goal (provenance review pending)**:
    Zero code, data, symbols, or bindings from third-party optimization libraries (HiGHS, GLPK,
    Clp, SCIP, Gurobi, CPLEX, etc.). Only standard C++20 and POSIX threads.
 2. **Deterministic Execution**:

@@ -4,12 +4,20 @@ using namespace detail_parallel_tree_search;
 namespace detail_parallel_tree_search {
 NodeLpResult solve_node_lp(const model::Model& model, const ParallelOptions& options,
                            const std::optional<lp::dual::BasisState>& warm_start) {
+    return solve_node_lp(model, options, warm_start, model.variable_lower,
+                         model.variable_upper);
+}
+
+NodeLpResult solve_node_lp(const model::Model& model, const ParallelOptions& options,
+                           const std::optional<lp::dual::BasisState>& warm_start,
+                           const std::vector<model::Bound>& variable_lower,
+                           const std::vector<model::Bound>& variable_upper) {
     Options serial;
     serial.max_iterations = options.max_iterations;
     serial.feasibility_tolerance = options.feasibility_tolerance;
     serial.enable_warm_start = options.enable_warm_start;
     serial.deadline = options.deadline;
-    return solve_node_relaxation(model, serial, warm_start);
+    return solve_node_relaxation(model, serial, warm_start, variable_lower, variable_upper);
 }
 }
 
@@ -23,7 +31,10 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
                   std::atomic<std::size_t>& total_heuristics_found,
                   std::atomic<std::size_t>& unresolved_node_lps,
                   std::atomic<double>* worker_bounds,
-                  SharedPseudoCosts& shared_pseudo_costs, model::Model& node_model,
+                  SharedPseudoCosts& shared_pseudo_costs,
+                  std::vector<model::Bound>& node_lower,
+                  std::vector<model::Bound>& node_upper,
+                  NodeBounds::MaterializationScratch& bounds_scratch,
                   const std::function<void()>& clear_bound) {
     worker_bounds[thread_id].store(node->lower_bound, std::memory_order_relaxed);
 
@@ -34,10 +45,14 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
         return;
     }
 
-    node_model.variable_lower = node->variable_lower;
-    node_model.variable_upper = node->variable_upper;
+    node->bounds.materialize(root_model.variable_lower, root_model.variable_upper,
+                             node_lower, node_upper, bounds_scratch);
 
-    const auto node_lp_res = solve_node_lp(node_model, options, node->warm_basis);
+    const auto warm_basis = node->warm_basis
+        ? std::optional<lp::dual::BasisState>(*node->warm_basis)
+        : std::nullopt;
+    const auto node_lp_res = solve_node_lp(root_model, options, warm_basis,
+                                           node_lower, node_upper);
     total_lp_iterations.fetch_add(node_lp_res.iterations, std::memory_order_relaxed);
     total_nodes_explored.fetch_add(1, std::memory_order_relaxed);
 
@@ -52,7 +67,7 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
     }
 
     const double parent_bound = node->lower_bound;
-    node->lower_bound = node_lp_res.lower_bound;
+    node->lower_bound = std::max(node->lower_bound, node_lp_res.lower_bound);
     worker_bounds[thread_id].store(node->lower_bound, std::memory_order_relaxed);
 
     if (node_lp_res.lower_bound >=
@@ -64,7 +79,7 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
 
     if (node->depth > 0) {
         const std::size_t b_var = node->branch_variable;
-        const double delta_z = node_lp_res.objective - parent_bound;
+        const double delta_z = node->lower_bound - parent_bound;
         const double frac = node->branch_value - std::floor(node->branch_value);
         std::lock_guard<std::mutex> pc_lock(shared_pseudo_costs.mutex);
         if (node->is_down_branch) {
@@ -89,7 +104,8 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
 
     if (options.enable_heuristics &&
         total_nodes_explored.load(std::memory_order_relaxed) % 10 == 0) {
-        const auto hr = simple_rounding(node_model, node_lp_res.primal, options.feasibility_tolerance,
+        const auto hr = simple_rounding(root_model, node_lower, node_upper,
+                                        node_lp_res.primal, options.feasibility_tolerance,
                                         options.integrality_tolerance);
         if (hr.found && incumbent.update_if_better(hr.objective, hr.primal,
                                                    options.absolute_gap_tolerance)) {
@@ -113,8 +129,9 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
         return;
     }
 
-    queue.push_branch_children(*node, branch_var, node_lp_res.primal[branch_var],
-                               node_lp_res.objective, node_lp_res.basis, next_node_id);
+    (void)queue.push_branch_children(*node, branch_var, node_lp_res.primal[branch_var],
+                               node->lower_bound, node_lower, node_upper,
+                               node_lp_res.basis, next_node_id);
     clear_bound();
 }
 }
@@ -132,7 +149,9 @@ void worker_loop(
 
 
     bool was_active = false;
-    model::Model node_model = root_model;
+    auto node_lower = root_model.variable_lower;
+    auto node_upper = root_model.variable_upper;
+    NodeBounds::MaterializationScratch bounds_scratch;
     auto clear_bound = [&]() {
         worker_bounds[thread_id].store(std::numeric_limits<double>::infinity(),
                                        std::memory_order_relaxed);
@@ -205,7 +224,7 @@ void worker_loop(
                          next_node_id, total_nodes_explored, total_lp_iterations,
                          total_heuristics_found, unresolved_node_lps,
                          worker_bounds, shared_pseudo_costs,
-                         node_model, clear_bound);
+                         node_lower, node_upper, bounds_scratch, clear_bound);
         }
     }
 

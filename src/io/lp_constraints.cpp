@@ -25,6 +25,10 @@ void LpParser::parse_constraints() {
             } else {
                 r_name = "c" + std::to_string(row_names_.size() + 1);
             }
+            if (r_name.empty() || r_name.size() > limits_.maximum_name_bytes)
+                throw LpResourceLimitError("LP row name limit exceeded");
+            if (row_names_.size() >= limits_.maximum_rows)
+                throw LpResourceLimitError("LP row limit exceeded");
 
             std::vector<std::pair<std::size_t, double>> terms;
             double lhs_constant = 0.0;
@@ -50,13 +54,19 @@ void LpParser::parse_constraints() {
                         peek().text != "==" && peek().text != "+" && peek().text != "-" &&
                         !is_section_keyword(pos_)) {
                         std::string var = next().text;
+                        if (coefficient_count_ >= limits_.maximum_nonzeros)
+                            throw LpResourceLimitError("LP coefficient limit exceeded");
                         terms.push_back({get_or_create_var(var), val});
+                        ++coefficient_count_;
                     } else {
                         lhs_constant += val;
                     }
                 } else {
                     std::string var = next().text;
+                    if (coefficient_count_ >= limits_.maximum_nonzeros)
+                        throw LpResourceLimitError("LP coefficient limit exceeded");
                     terms.push_back({get_or_create_var(var), 1.0 * sign});
+                    ++coefficient_count_;
                 }
             }
 

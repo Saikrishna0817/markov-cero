@@ -2,7 +2,23 @@
 namespace markov_cero::transform {
 using namespace detail_sparse_canonicalize;
 SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_integrality) {
+    return sparse_canonicalize(in, relax_integrality, in.variable_lower, in.variable_upper);
+}
+
+SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_integrality,
+    const std::vector<model::Bound>& variable_lower,
+    const std::vector<model::Bound>& variable_upper) {
     in.validate();
+    if (variable_lower.size() != in.matrix.column_count ||
+        variable_upper.size() != in.matrix.column_count) {
+        throw std::invalid_argument("canonicalization bound overlay dimension mismatch");
+    }
+    for (std::size_t j = 0; j < variable_lower.size(); ++j) {
+        const auto lo = variable_lower[j], up = variable_upper[j];
+        if (lo.is_finite() && up.is_finite() && lo.value > up.value) {
+            throw std::invalid_argument("canonicalization bound overlay is infeasible");
+        }
+    }
     if (!relax_integrality) {
         for (const auto type : in.variable_type) {
             if (type != model::VariableType::continuous) {
@@ -21,8 +37,8 @@ SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_inte
     std::size_t structural = 0;
     for (std::size_t j = 0; j < in.matrix.column_count; ++j) {
         auto& m = out.record.variables[j];
-        const auto lo = in.variable_lower[j];
-        const auto up = in.variable_upper[j];
+        const auto lo = variable_lower[j];
+        const auto up = variable_upper[j];
         if (lo.is_finite() && up.is_finite() && lo.value == up.value) {
             m.offset = lo.value;
             offset[j] = lo.value;
@@ -109,8 +125,8 @@ SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_inte
 
     // 2. Box bound constraints on structural variables
     for (std::size_t j = 0; j < in.matrix.column_count; ++j) {
-        const auto lo = in.variable_lower[j];
-        const auto up = in.variable_upper[j];
+        const auto lo = variable_lower[j];
+        const auto up = variable_upper[j];
         if (lo.is_finite() && up.is_finite() && lo.value != up.value) {
             const std::size_t r = out.rhs.size();
             const auto& vmap = out.record.variables[j];

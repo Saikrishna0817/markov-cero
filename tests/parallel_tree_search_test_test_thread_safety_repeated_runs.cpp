@@ -1,6 +1,95 @@
 #include "parallel_tree_search_test_internal.hpp"
+#include <random>
+#include <stdexcept>
 namespace test_parallel_tree_search_test {
 using namespace detail_parallel_tree_search_test;
+namespace detail_parallel_tree_search_test {
+void test_persistent_node_bounds() {
+    using markov_cero::milp::NodeBounds;
+    using markov_cero::model::Bound;
+    const std::vector<Bound> root_lower{Bound::finite(0), Bound::finite(0)};
+    const std::vector<Bound> root_upper{Bound::finite(10), Bound::finite(10)};
+    const NodeBounds root;
+    const auto down = root.with_upper(0, Bound::finite(4));
+    const auto up = root.with_lower(0, Bound::finite(5));
+    const auto nested = down.with_lower(1, Bound::finite(3));
+
+    std::vector<Bound> lower, upper;
+    down.materialize(root_lower, root_upper, lower, upper);
+    assert(lower[0].value == 0 && upper[0].value == 4);
+    up.materialize(root_lower, root_upper, lower, upper);
+    assert(lower[0].value == 5 && upper[0].value == 10);
+    nested.materialize(root_lower, root_upper, lower, upper);
+    assert(lower[0].value == 0 && upper[0].value == 4 && lower[1].value == 3);
+    NodeBounds::MaterializationScratch scratch;
+    nested.materialize(root_lower, root_upper, lower, upper, scratch);
+    const auto retained_path_capacity = scratch.retained_capacity();
+    down.materialize(root_lower, root_upper, lower, upper, scratch);
+    assert(retained_path_capacity >= 2 &&
+           scratch.retained_capacity() == retained_path_capacity);
+    assert(root.delta_count() == 0 && down.delta_count() == 1 && nested.delta_count() == 2);
+    bool rejected_alias = false;
+    auto alias_root_upper = root_upper;
+    try { down.materialize(root_lower, alias_root_upper, lower, alias_root_upper); }
+    catch (const std::invalid_argument&) { rejected_alias = true; }
+    assert(rejected_alias && alias_root_upper[0].value == 10);
+
+    markov_cero::milp::NodeCuts parent_cuts;
+    markov_cero::milp::Cut inherited{{1.0}, 0.5, 1.0};
+    parent_cuts.append({inherited});
+    auto left_cuts = parent_cuts;
+    auto right_cuts = parent_cuts;
+    left_cuts.append({markov_cero::milp::Cut{{2.0}, 1.0, 2.0}});
+    assert(parent_cuts.size() == 1 && right_cuts.size() == 1 && left_cuts.size() == 2);
+    left_cuts.truncate(1);
+    assert(parent_cuts.size() == 1 && left_cuts.values()[0].coefficients[0] == 1.0);
+
+    markov_cero::milp::ThreadSafeNodeQueue queue;
+    markov_cero::milp::BranchNode parent_node;
+    parent_node.id = 41;
+    std::optional<markov_cero::lp::dual::BasisState> basis;
+    basis.emplace();
+    basis->rows = 2;
+    basis->columns = 3;
+    basis->basic_variables = {0, 2};
+    std::atomic<std::size_t> next_id{42};
+    queue.push_branch_children(parent_node, 0, 0.5, 0.0,
+        {Bound::finite(0)}, {Bound::finite(1)}, basis, next_id);
+    bool became_active = false;
+    const auto children = queue.pop_batch(false, 1.0, became_active);
+    assert(children.size() == 2 && became_active);
+    assert(children[0]->warm_basis && children[1]->warm_basis);
+    assert(children[0]->warm_basis == children[1]->warm_basis);
+    assert(children[0]->warm_basis->basic_variables == basis->basic_variables);
+    queue.deactivate_worker();
+
+    struct State { NodeBounds bounds; std::vector<Bound> lower, upper; };
+    std::vector<Bound> large_lower(64, Bound::finite(0));
+    std::vector<Bound> large_upper(64, Bound::finite(100));
+    std::vector<State> states{{root, large_lower, large_upper}};
+    std::mt19937 random(26119);
+    for (int step = 0; step < 256; ++step) {
+        const auto& parent = states[random() % states.size()];
+        const std::size_t variable = random() % large_lower.size();
+        const auto value = Bound::finite(static_cast<double>(random() % 101));
+        State child{parent.bounds, parent.lower, parent.upper};
+        if (step % 2 == 0) {
+            child.bounds = child.bounds.with_lower(variable, value);
+            child.lower[variable] = value;
+        } else {
+            child.bounds = child.bounds.with_upper(variable, value);
+            child.upper[variable] = value;
+        }
+        child.bounds.materialize(large_lower, large_upper, lower, upper);
+        for (std::size_t j = 0; j < large_lower.size(); ++j) {
+            assert(lower[j].kind == child.lower[j].kind && lower[j].value == child.lower[j].value);
+            assert(upper[j].kind == child.upper[j].kind && upper[j].value == child.upper[j].value);
+        }
+        states.push_back(std::move(child));
+    }
+}
+}
+
 namespace detail_parallel_tree_search_test {
 void test_thread_safety_repeated_runs() {
     const auto knapsack = build_knapsack_model();
@@ -50,107 +139,6 @@ void test_infeasible_parallel() {
     }
 
     std::cout << "[+] test_infeasible_parallel passed\n";
-}
-}
-
-namespace detail_parallel_tree_search_test {
-void test_thread_safe_queue_unit() {
-    markov_cero::milp::ThreadSafeNodeQueue queue;
-
-    auto n1 = std::make_shared<markov_cero::milp::BranchNode>();
-    n1->id = 1;
-    n1->lower_bound = 10.0;
-
-    auto n2 = std::make_shared<markov_cero::milp::BranchNode>();
-    n2->id = 2;
-    n2->lower_bound = 5.0;
-
-    auto n3 = std::make_shared<markov_cero::milp::BranchNode>();
-    n3->id = 3;
-    n3->lower_bound = 20.0;
-
-    queue.push(n1);
-    queue.push(n2);
-    queue.push(n3);
-
-    assert(queue.size() == 3);
-    assert(std::abs(queue.min_lower_bound() - 5.0) < 1e-9);
-
-    // Prune nodes with lower_bound >= 15.0 (should prune n3)
-    queue.prune(15.0);
-    assert(queue.size() == 2);
-
-    // RW-2: batch pop — one acquisition returns the best-bounded nodes.
-    bool became_active = false;
-    auto batch = queue.pop_batch(false, 100.0, became_active);
-    assert(batch.size() == 2);
-    assert(batch[0]->id == 2); // lowest lower bound first
-    assert(batch[1]->id == 1);
-    assert(became_active);
-
-    queue.deactivate_worker();
-    assert(queue.empty());
-
-    std::cout << "[+] test_thread_safe_queue_unit passed (batch API)\n";
-}
-}
-
-namespace detail_parallel_tree_search_test {
-void test_queue_lazy_prune_batch() {
-    // RW-2: stale nodes (below the cutoff) are filtered at pop time without a
-    // global heap compaction on each prune request.
-    markov_cero::milp::ThreadSafeNodeQueue queue;
-    for (std::size_t i = 0; i < 20; ++i) {
-        auto n = std::make_shared<markov_cero::milp::BranchNode>();
-        n->id = i;
-        n->lower_bound = static_cast<double>(i); // bounds 0..19
-        queue.push(n);
-    }
-
-    bool became_active = false;
-    // Cutoff 10.0 discards bounds 10..19 lazily and returns the 10 best.
-    auto batch = queue.pop_batch(false, 10.0, became_active, 16);
-    assert(batch.size() == 10);
-    assert(batch.front()->lower_bound <= batch.back()->lower_bound + 1e-12);
-    for (const auto& n : batch) {
-        assert(n->lower_bound < 10.0);
-    }
-
-    // Next batch drains the remainder (empty -> only when quiescent or stopped;
-    // here one worker was activated then deactivated by the next call chain).
-    queue.deactivate_worker();
-    auto empty_batch = queue.pop_batch(false, 10.0, became_active);
-    assert(empty_batch.empty()); // heap only holds pruned nodes; quiescent => stopped
-
-    std::cout << "[+] test_queue_lazy_prune_batch passed\n";
-}
-}
-
-namespace detail_parallel_tree_search_test {
-void test_queue_batch_interleave_order() {
-    // RW-2: a batch is interleaved (best, worst, 2nd-best, ...) at the worker
-    // level; the queue itself must hand out nodes in strict best-bound order so
-    // interleaving preserves global best-first semantics.
-    markov_cero::milp::ThreadSafeNodeQueue queue;
-    const double bounds[] = {5.0, 1.0, 9.0, 3.0, 7.0};
-    for (std::size_t i = 0; i < 5; ++i) {
-        auto n = std::make_shared<markov_cero::milp::BranchNode>();
-        n->id = 100 + i;
-        n->lower_bound = bounds[i];
-        queue.push(n);
-    }
-
-    bool became_active = false;
-    auto batch = queue.pop_batch(false, 100.0, became_active, 4);
-    assert(batch.size() == 4);
-    // Expected best-bound order: 1, 3, 5, 7
-    const double expect[] = {1.0, 3.0, 5.0, 7.0};
-    for (std::size_t i = 0; i < 4; ++i) {
-        assert(std::abs(batch[i]->lower_bound - expect[i]) < 1e-12);
-    }
-    queue.deactivate_worker();
-
-    std::cout << "[+] test_queue_batch_interleave_order passed\n";
 }
 }
 

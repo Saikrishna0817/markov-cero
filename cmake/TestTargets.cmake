@@ -71,7 +71,9 @@ add_executable(pdlp_test tests/pdlp_test.cpp)
 target_link_libraries(pdlp_test PRIVATE markov_cero_core)
 add_executable(ipm_test tests/ipm_test.cpp)
 target_link_libraries(ipm_test PRIVATE markov_cero_core)
-add_executable(parallel_tree_search_test tests/parallel_tree_search_test.cpp tests/parallel_tree_search_test_test_thread_safety_repeated_runs.cpp)
+add_executable(parallel_tree_search_test tests/parallel_tree_search_test.cpp
+  tests/parallel_tree_search_test_test_thread_safety_repeated_runs.cpp
+  tests/parallel_tree_search_test_queue_capacity.cpp)
 target_link_libraries(parallel_tree_search_test PRIVATE markov_cero_core)
 add_executable(gpu_buffer_test gpu/tests/gpu_buffer_test.cpp gpu/tests/gpu_buffer_test_test_model_sparse_matrix_roundtrip.cpp)
 target_link_libraries(gpu_buffer_test PRIVATE markov_cero_core)
@@ -127,6 +129,8 @@ target_include_directories(e2e_tier3_m1_combinations PRIVATE tests/e2e)
 add_executable(e2e_tier4_m1_scenarios tests/e2e/test_tier4_m1_scenarios.cpp)
 target_link_libraries(e2e_tier4_m1_scenarios PRIVATE markov_cero_core)
 target_include_directories(e2e_tier4_m1_scenarios PRIVATE tests/e2e)
+add_executable(node_frontier_memory_benchmark scripts/bench_node_frontier_memory.cpp)
+target_link_libraries(node_frontier_memory_benchmark PRIVATE markov_cero_core)
 # Test executables must keep assert() checks alive in EVERY build type:
 # Release/RelWithDebInfo define NDEBUG, which compiles assert() to a no-op and
 # silently disables the assert-based test files (CI's ASan/UBSan and TSan jobs

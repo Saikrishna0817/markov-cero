@@ -35,7 +35,15 @@ struct NodeLpResult {
     const model::Model& node_model,
     const Options& options,
     const std::optional<lp::dual::BasisState>& warm_start);
+[[nodiscard]] NodeLpResult solve_node_relaxation(
+    const model::Model& immutable_model, const Options& options,
+    const std::optional<lp::dual::BasisState>& warm_start,
+    const std::vector<model::Bound>& variable_lower,
+    const std::vector<model::Bound>& variable_upper);
 
 [[nodiscard]] NodeLpResult solve_node_qp(const model::Model& model, const Options& options);
+[[nodiscard]] NodeLpResult solve_node_qp(const model::Model& immutable_model,
+    const Options& options, const std::vector<model::Bound>& variable_lower,
+    const std::vector<model::Bound>& variable_upper);
 
 } // namespace markov_cero::milp

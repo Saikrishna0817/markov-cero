@@ -32,7 +32,7 @@ void Parser::record(const std::vector<std::string>& fields) {
             if (row_by_name.contains(fields[1]))
                 throw MpsError(line_number, "duplicate row name: " + fields[1]);
             if (rows.size() >= limits.maximum_rows)
-                throw MpsError(line_number, "row limit exceeded");
+                throw MpsResourceLimitError(line_number, "row limit exceeded");
             row_by_name.emplace(fields[1], rows.size());
             rows.push_back({type, fields[1]});
             if (type == 'N' && objective_name.empty())
@@ -74,7 +74,7 @@ void Parser::record(const std::vector<std::string>& fields) {
                         throw MpsError(line_number, "objective coefficient overflow");
                 } else {
                     if (coefficients.size() >= limits.maximum_nonzeros)
-                        throw MpsError(line_number, "nonzero limit exceeded");
+                        throw MpsResourceLimitError(line_number, "nonzero limit exceeded");
                     coefficients.push_back({row, column, value});
                 }
             }

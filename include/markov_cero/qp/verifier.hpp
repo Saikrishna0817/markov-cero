@@ -30,5 +30,9 @@ struct QpVerificationReport {
 
 // Requires a PSD objective and dimension-checked finite witness.
 [[nodiscard]] double supporting_lower_bound(const model::Model&, const QuadraticModel&, const QpSolution&);
+[[nodiscard]] double supporting_lower_bound(
+    const model::Model&, const QuadraticModel&, const QpSolution&,
+    const std::vector<model::Bound>& variable_lower,
+    const std::vector<model::Bound>& variable_upper);
 
 } // namespace markov_cero::qp

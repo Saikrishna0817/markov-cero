@@ -34,9 +34,18 @@ class NodeFrontier {
         if (!node) {
             return;
         }
+        if (heap_.size() >= maximum_size_) {
+            capacity_exhausted_ = true;
+            minimum_dropped_bound_ = std::min(minimum_dropped_bound_, node->lower_bound);
+            return;
+        }
         heap_.push_back(std::move(node));
         std::push_heap(heap_.begin(), heap_.end(), comparator_);
     }
+
+    void set_maximum_size(std::size_t maximum_size) { maximum_size_ = maximum_size; }
+    [[nodiscard]] bool capacity_exhausted() const { return capacity_exhausted_; }
+    [[nodiscard]] double minimum_dropped_bound() const { return minimum_dropped_bound_; }
 
     [[nodiscard]] bool empty() const { return heap_.empty(); }
     [[nodiscard]] std::size_t size() const { return heap_.size(); }
@@ -51,13 +60,13 @@ class NodeFrontier {
     // ordering the heap front already is the minimum (O(1)); other policies
     // scan (frontiers under depth_first/dive stay near the search path).
     [[nodiscard]] double min_lower_bound() const {
+        double bound = minimum_dropped_bound_;
         if (heap_.empty()) {
-            return std::numeric_limits<double>::infinity();
+            return bound;
         }
         if (comparator_.policy == NodeSelection::best_bound) {
-            return heap_.front()->lower_bound;
+            return std::min(bound, heap_.front()->lower_bound);
         }
-        double bound = std::numeric_limits<double>::infinity();
         for (const auto& node : heap_) {
             if (node && node->lower_bound < bound) {
                 bound = node->lower_bound;
@@ -69,6 +78,9 @@ class NodeFrontier {
   private:
     NodeComparator comparator_;
     std::vector<std::shared_ptr<BranchNode>> heap_;
+    std::size_t maximum_size_{std::numeric_limits<std::size_t>::max()};
+    double minimum_dropped_bound_{std::numeric_limits<double>::infinity()};
+    bool capacity_exhausted_{false};
 };
 
 
@@ -102,6 +114,7 @@ std::basic_string<char> stop_reason{};
 std::shared_ptr<BranchNode> node;
 NodeLpResult node_lp_res;
 model::Model node_model;
+NodeBounds::MaterializationScratch node_bounds_scratch;
 Result run();
 Result finish();
 bool initialize();

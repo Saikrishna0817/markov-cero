@@ -18,7 +18,9 @@ PYBIND11_MODULE(_core, m) {
               return to_python(api::solve_file(path, options));
           },
           py::arg("path"),
-          "Solve an MPS/LP file. Kwargs: engine, threads, backend, presolve, scale.");
+          "Solve an MPS/LP file. MILP queue budget: max_queued_nodes. Proof budgets: "
+          "max_input_bytes; proof budgets: proof_time_limit, proof_max_nodes, "
+          "proof_max_witness_values.");
 
     // ---- mc.SolveOptions (explicit constructor form) -------------------------
     py::class_<api::SolveOptions>(m, "SolveOptions")
@@ -29,7 +31,19 @@ PYBIND11_MODULE(_core, m) {
                 if (!count) throw std::invalid_argument("threads must be positive");
                 o.num_threads = count; o.threads_explicit = true;
             })
-        .def_readwrite("backend", &api::SolveOptions::backend);
+        .def_readwrite("backend", &api::SolveOptions::backend)
+        .def_readwrite("maximum_input_bytes", &api::SolveOptions::maximum_input_bytes)
+        .def_property("max_queued_nodes",
+            [](const api::SolveOptions& o) { return o.milp_options.max_queued_nodes; },
+            [](api::SolveOptions& o, std::size_t count) {
+                if (!count || count > 10000000)
+                    throw std::invalid_argument("max_queued_nodes must be in 1..10000000");
+                o.milp_options.max_queued_nodes = count;
+            })
+        .def_readwrite("enable_mip_proof", &api::SolveOptions::enable_mip_proof)
+        .def_readwrite("mip_proof_time_limit_seconds", &api::SolveOptions::mip_proof_time_limit_seconds)
+        .def_readwrite("mip_proof_max_nodes", &api::SolveOptions::mip_proof_max_nodes)
+        .def_readwrite("mip_proof_max_witness_values", &api::SolveOptions::mip_proof_max_witness_values);
 
     register_model(m);
     register_nlp(m);

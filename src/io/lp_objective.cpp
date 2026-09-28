@@ -16,6 +16,8 @@ void LpParser::parse_objective_header() {
         // Optional objective name like "obj:" or "cost:"
         if (has_more() && pos_ + 1 < tokens_.size() && tokens_[pos_ + 1].text == ":") {
             model_name_ = tokens_[pos_].text;
+            if (model_name_.empty() || model_name_.size() > limits_.maximum_name_bytes)
+                throw LpResourceLimitError("LP model name limit exceeded");
             pos_ += 2;
         }
     }
@@ -90,6 +92,8 @@ void LpParser::parse_quadratic_objective() {
 
             std::size_t c1 = get_or_create_var(var1);
             std::size_t c2 = get_or_create_var(var2);
+            if (quad_terms_.size() >= limits_.maximum_quadratic_terms)
+                throw LpResourceLimitError("LP quadratic objective term limit exceeded");
             quad_terms_.push_back({c1, c2, coeff});
         }
         if (has_more() && peek().text == "]") {

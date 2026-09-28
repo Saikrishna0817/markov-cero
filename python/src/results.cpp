@@ -29,6 +29,8 @@ py::dict to_python(api::SolveResult res) {
     out["canonical_verified"] = res.canonical_verified;
     out["certificate_type"] = res.certificate_type;
     out["proof_message"] = res.proof_message;
+    out["mip_proof_build_ms"] = res.mip_proof_build_ms;
+    out["mip_proof_verify_ms"] = res.mip_proof_verify_ms;
     if (res.mip_proof) {
         std::ostringstream proof; verify::write_mip_proof(proof, *res.mip_proof);
         out["mip_proof"] = proof.str();
@@ -59,7 +61,9 @@ api::SolveOptions options_from_kwargs(const py::kwargs& kwargs) {
     for (auto item : kwargs) {
         const auto key = py::cast<std::string>(item.first);
         if (key != "options" && key != "engine" && key != "threads" && key != "backend" &&
-            key != "presolve" && key != "scale")
+            key != "presolve" && key != "scale" && key != "proof_time_limit" &&
+            key != "proof_max_nodes" && key != "proof_max_witness_values" &&
+            key != "max_queued_nodes" && key != "max_input_bytes")
             throw std::invalid_argument("unknown solve option: " + key);
     }
     if (kwargs.contains("engine")) {
@@ -77,6 +81,24 @@ api::SolveOptions options_from_kwargs(const py::kwargs& kwargs) {
     }
     if (kwargs.contains("scale")) {
         options.enable_scale = py::bool_(kwargs["scale"]);
+    }
+    if (kwargs.contains("proof_time_limit"))
+        options.mip_proof_time_limit_seconds = py::cast<double>(kwargs["proof_time_limit"]);
+    if (kwargs.contains("proof_max_nodes"))
+        options.mip_proof_max_nodes = py::cast<std::size_t>(kwargs["proof_max_nodes"]);
+    if (kwargs.contains("proof_max_witness_values"))
+        options.mip_proof_max_witness_values = py::cast<std::size_t>(kwargs["proof_max_witness_values"]);
+    if (kwargs.contains("max_queued_nodes")) {
+        const auto count = py::cast<std::size_t>(kwargs["max_queued_nodes"]);
+        if (!count || count > 10000000)
+            throw std::invalid_argument("max_queued_nodes must be in 1..10000000");
+        options.milp_options.max_queued_nodes = count;
+    }
+    if (kwargs.contains("max_input_bytes")) {
+        const auto count = py::cast<std::size_t>(kwargs["max_input_bytes"]);
+        if (!count || count > 1073741824ULL)
+            throw std::invalid_argument("max_input_bytes must be in 1..1073741824");
+        options.maximum_input_bytes = count;
     }
     return options;
 }

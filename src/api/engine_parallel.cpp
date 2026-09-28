@@ -7,6 +7,7 @@ void run_parallel(const model::Model& model, const SolveOptions& options, SolveR
         par_opts.time_limit_seconds = options.milp_options.time_limit_seconds;
         par_opts.deadline = options.lp_options.deadline;
         par_opts.max_nodes = options.milp_options.max_nodes;
+        par_opts.max_queued_nodes = options.milp_options.max_queued_nodes;
         par_opts.max_iterations = options.milp_options.max_iterations;
         par_opts.relative_gap_tolerance = options.milp_options.relative_gap_tolerance;
         par_opts.absolute_gap_tolerance = options.milp_options.absolute_gap_tolerance;

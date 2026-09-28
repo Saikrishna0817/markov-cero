@@ -6,6 +6,8 @@
 
 This is an implementation plan, not a release certification. The current project is a research solver prototype. A feature being present in source, or a local test suite being green, does not establish broad robustness, commercial-solver parity, or refinery readiness.
 
+For the forward delivery programme, mathematical obligations, design decisions and competitive acceptance gates, see the [industry-grade competitive roadmap](INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md). This document retains the baseline closure requirements.
+
 ## Implementation checkpoint — 2026-09-28
 
 Implemented: all five former numerical/domain failures pass; sparse revised-simplex columns/pricing/basis assembly and dual refinement; QP equilibration with original-unit output; every maintained code/build file at most 300 physical lines; 227 optional data files migrated to hash-checked explicit restoration; cut-free numerical MILP/convex-MIQP proof replay and standalone checker; supported row-conflict CLI; bounded LP/ONNX/proof inputs; caller-owned ML options; corrected packaging relink and matched process timing. Invalid bundled ML weights were withdrawn, not promoted.

@@ -31,6 +31,17 @@ struct SharedPseudoCosts {
 }
 namespace detail_parallel_tree_search { NodeLpResult solve_node_lp(const model::Model& model, const ParallelOptions& options,
                            const std::optional<lp::dual::BasisState>& warm_start); }
+namespace detail_parallel_tree_search { NodeLpResult solve_node_lp(const model::Model& model,
+    const ParallelOptions& options, const std::optional<lp::dual::BasisState>& warm_start,
+    const std::vector<model::Bound>& variable_lower,
+    const std::vector<model::Bound>& variable_upper); }
+namespace detail_parallel_tree_search { void apply_parallel_root_cuts(
+    model::Model& root_model, const ParallelOptions& options,
+    const NodeLpResult& root_lp, IncumbentManager& incumbent,
+    std::atomic<std::size_t>& total_lp_iterations,
+    std::vector<double>& current_primal, double& current_obj,
+    std::optional<lp::dual::BasisState>& current_basis,
+    double& best_lower_bound, std::size_t& root_cuts_generated); }
 namespace detail_parallel_tree_search { void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
                   const model::Model& root_model, const ParallelOptions& options,
                   ThreadSafeNodeQueue& queue, IncumbentManager& incumbent,
@@ -40,7 +51,10 @@ namespace detail_parallel_tree_search { void process_node(std::shared_ptr<Branch
                   std::atomic<std::size_t>& total_heuristics_found,
                   std::atomic<std::size_t>& unresolved_node_lps,
                   std::atomic<double>* worker_bounds,
-                  SharedPseudoCosts& shared_pseudo_costs, model::Model& node_model,
+                  SharedPseudoCosts& shared_pseudo_costs,
+                  std::vector<model::Bound>& node_lower,
+                  std::vector<model::Bound>& node_upper,
+                  NodeBounds::MaterializationScratch& bounds_scratch,
                   const std::function<void()>& clear_bound); }
 namespace detail_parallel_tree_search { void worker_loop(
     std::size_t thread_id, const model::Model& root_model, const ParallelOptions& options,

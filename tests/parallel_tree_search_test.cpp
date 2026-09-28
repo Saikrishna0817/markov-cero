@@ -224,7 +224,9 @@ using namespace test_parallel_tree_search_test;
 using namespace test_parallel_tree_search_test::detail_parallel_tree_search_test;
 int main() {
     try {
+        test_persistent_node_bounds();
         test_thread_safe_queue_unit();
+        test_queue_capacity_and_solver_status();
         test_queue_lazy_prune_batch();
         test_queue_batch_interleave_order();
         test_incumbent_manager_unit();

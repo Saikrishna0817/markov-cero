@@ -55,8 +55,12 @@ Token LpParser::next() {
         return false;
     }
 std::size_t LpParser::get_or_create_var(const std::string& name) {
+        if (name.empty() || name.size() > limits_.maximum_name_bytes)
+            throw LpResourceLimitError("LP variable name limit exceeded");
         auto it = var_map_.find(name);
         if (it != var_map_.end()) return it->second;
+        if (variables_.size() >= limits_.maximum_columns)
+            throw LpResourceLimitError("LP column limit exceeded");
         std::size_t idx = variables_.size();
         VarInfo info;
         info.index = idx;
@@ -69,20 +73,31 @@ std::size_t LpParser::get_or_create_var(const std::string& name) {
 }
 namespace markov_cero::io {
 using namespace detail_lp;
-model::Model parse_lp_string(const std::string& content) {
-    if (content.size() > 16U * 1024U * 1024U) throw std::length_error("LP input exceeds 16 MiB");
+namespace {
+void validate_limits(const LpLimits& limits) {
+    if (!limits.maximum_bytes || !limits.maximum_tokens || !limits.maximum_rows ||
+        !limits.maximum_columns || !limits.maximum_nonzeros ||
+        !limits.maximum_quadratic_terms || !limits.maximum_name_bytes)
+        throw std::invalid_argument("LP parser limits must be positive");
+}
+}
+model::Model parse_lp_string(const std::string& content, const LpLimits& limits) {
+    validate_limits(limits);
+    if (content.size() > limits.maximum_bytes)
+        throw LpResourceLimitError("LP input byte limit exceeded");
     std::size_t line_size = 0;
     for (unsigned char c : content) {
         if ((c < 32 && c != '\n' && c != '\r' && c != '\t') || c >= 127)
             throw std::invalid_argument("LP input must use printable ASCII names");
         if (c == '\n') line_size = 0;
-        else if (++line_size > 65536) throw std::length_error("LP line exceeds 64 KiB");
+        else if (++line_size > 65536) throw LpResourceLimitError("LP line exceeds 64 KiB");
     }
-    auto tokens = tokenize_lp(content);
-    LpParser parser(std::move(tokens));
+    auto tokens = tokenize_lp(content, limits);
+    LpParser parser(std::move(tokens), limits);
     return parser.parse();
 }
-model::Model parse_lp_file(const std::string& path) {
+model::Model parse_lp_file(const std::string& path, const LpLimits& limits) {
+    validate_limits(limits);
     std::ifstream file(path);
     if (!file) {
         throw std::runtime_error("Cannot open LP file: " + path);
@@ -90,9 +105,10 @@ model::Model parse_lp_file(const std::string& path) {
     std::string content;
     char chunk[8192];
     while (file.read(chunk, sizeof(chunk)) || file.gcount()) {
-        if (content.size() + static_cast<std::size_t>(file.gcount()) > 16U * 1024U * 1024U)
-            throw std::length_error("LP input exceeds 16 MiB");
-        content.append(chunk, static_cast<std::size_t>(file.gcount()));
+        const auto count = static_cast<std::size_t>(file.gcount());
+        if (count > limits.maximum_bytes - std::min(limits.maximum_bytes, content.size()))
+            throw LpResourceLimitError("LP input byte limit exceeded");
+        content.append(chunk, count);
     }
     if (file.bad()) throw std::runtime_error("LP input read failed");
     return parse_lp_string(content);

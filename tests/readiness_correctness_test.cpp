@@ -31,13 +31,13 @@ void parser_cases() {
     limits.maximum_line_bytes = 8;
     bool rejected = false;
     try { (void)io::parse_mps_string("NAME toolongname\nENDATA\n", limits); }
-    catch (const io::MpsError&) { rejected = true; }
+    catch (const std::length_error&) { rejected = true; }
     require(rejected, "unbounded input line allocation");
     limits = {};
     limits.maximum_nonzeros = 0;
     rejected = false;
     try { (void)io::parse_mps_string("NAME Q\nROWS\n N O\nCOLUMNS\n X O 0\nQUADOBJ\n X X 1\nENDATA\n", limits); }
-    catch (const io::MpsError&) { rejected = true; }
+    catch (const std::length_error&) { rejected = true; }
     require(rejected, "quadratic terms bypass nonzero limit");
     rejected = false;
     try { (void)io::parse_mps_string("NAME Q\nOBJNAME\n R\nROWS\n N O\n L R\nCOLUMNS\n X R 1\nENDATA\n"); }

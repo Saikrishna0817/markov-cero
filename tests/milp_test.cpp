@@ -55,6 +55,12 @@ void test_knapsack_01() {
     assert(report.passed);
     assert(report.maximum_integrality_violation < 1e-6);
 
+    auto invalid_frontier_options = options;
+    invalid_frontier_options.max_queued_nodes = 0;
+    const auto invalid_frontier = markov_cero::milp::solve(model, invalid_frontier_options);
+    assert(invalid_frontier.status ==
+           markov_cero::lp::reference::SolveStatus::invalid_options);
+
     auto expired_options = options;
     expired_options.deadline = std::chrono::steady_clock::now() - std::chrono::seconds(1);
     const auto expired = markov_cero::milp::solve(model, expired_options);
@@ -69,6 +75,17 @@ void test_knapsack_01() {
     capped_options.enable_strong_branching = false;
     const auto capped = markov_cero::milp::solve(model, capped_options);
     assert(capped.status == markov_cero::lp::reference::SolveStatus::resource_limit);
+
+    auto frontier_limited_options = options;
+    frontier_limited_options.max_queued_nodes = 1;
+    frontier_limited_options.max_nodes = 100;
+    frontier_limited_options.enable_heuristics = false;
+    frontier_limited_options.enable_cuts = false;
+    frontier_limited_options.enable_strong_branching = false;
+    const auto frontier_limited = markov_cero::milp::solve(model, frontier_limited_options);
+    assert(frontier_limited.status == markov_cero::lp::reference::SolveStatus::resource_limit);
+    assert(frontier_limited.message.find("queued-node capacity") != std::string::npos);
+    assert(frontier_limited.best_bound <= -24.333333 + 1e-5);
     std::cout << "[+] test_knapsack_01 passed\n";
 }
 }

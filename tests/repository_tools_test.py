@@ -49,14 +49,24 @@ with tempfile.TemporaryDirectory() as directory:
         run = subprocess.run([sys.argv[1], str(model)], capture_output=True, text=True, check=True)
         for option, value in [('--threads', '-1'), ('--max-nodes', '12junk'),
                               ('--mip-gap', 'nan'), ('--tolerance', 'inf'),
-                              ('--iteration-limit', '-1')]:
+                              ('--iteration-limit', '-1'), ('--proof-time-limit', 'nan'),
+                              ('--proof-max-nodes', '0'), ('--proof-max-values', '16000001')]:
             bad_option = subprocess.run([sys.argv[1], str(model), option, value], capture_output=True)
             assert bad_option.returncode == 8, (option, value, bad_option.returncode)
         result = json.loads(run.stdout)
         assert result['verified'] and result['certificate_type'] == 'independent_mip_tree', result
+        assert result['mip_proof_build_ms'] >= 0 and result['mip_proof_verify_ms'] >= 0, result
         proof = Path(directory) / 'proof.txt'
         proof.write_text(result['mip_proof'])
-        subprocess.run([sys.argv[2], str(model), str(proof)], check=True, capture_output=True)
+        subprocess.run([sys.argv[2], str(model), str(proof), '--time-limit', '10',
+                        '--max-nodes', '100', '--max-values', '1000'],
+                       check=True, capture_output=True)
+        too_small = subprocess.run([sys.argv[2], str(model), str(proof), '--max-nodes', '1'],
+                                   capture_output=True)
+        assert too_small.returncode != 0
+        bad_gap = subprocess.run([sys.argv[2], str(model), str(proof), '--relative-gap', '1'],
+                                 capture_output=True)
+        assert bad_gap.returncode == 2
         proof.write_text(result['mip_proof'] + '\nEXTRA\n')
         bad = subprocess.run([sys.argv[2], str(model), str(proof)], capture_output=True)
         assert bad.returncode != 0

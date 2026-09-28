@@ -1,4 +1,5 @@
 #include "qp_test_fixtures.hpp"
+#include "markov_cero/milp/node_lp.hpp"
 void qp_scenario_7() {
         model::Model miqp;
         miqp.name = "MIQP_TOY";
@@ -66,4 +67,33 @@ void qp_scenario_8() {
         const auto sol = solve_qp(qp, opts);
         require(sol.status == QpStatus::optimal, "adaptive rho QP optimal");
         require(sol.refactorization_count > 0, "refactorization occurred during adaptive rho");
-    }
+}
+
+void qp_scenario_9() {
+    model::Model source;
+    source.name = "MIQP_NODE_BOUND_OVERLAY";
+    source.objective = {-4.0};
+    source.variable_name = {"x"};
+    source.variable_lower = {model::Bound::finite(0.0)};
+    source.variable_upper = {model::Bound::finite(10.0)};
+    source.variable_type = {model::VariableType::integer};
+    source.matrix = model::SparseMatrixBuilder(0, 1).build();
+    model::SparseMatrixBuilder quadratic(1, 1);
+    quadratic.add(0, 0, 2.0);
+    source.has_quadratic_objective = true;
+    source.quadratic_matrix = quadratic.build();
+    source.validate();
+
+    const auto result = milp::solve_node_qp(
+        source, milp::Options{}, {model::Bound::finite(3.0)},
+        {model::Bound::finite(10.0)});
+    require(result.status == lp::reference::SolveStatus::optimal,
+            "MIQP node relaxation with tightened bound is optimal");
+    require(result.primal.size() == 1 && std::abs(result.primal[0] - 3.0) < 1e-3,
+            "MIQP node solution respects tightened lower bound");
+    require(std::abs(result.objective + 3.0) < 1e-3,
+            "MIQP node objective uses tightened bound");
+    require(result.lower_bound <= result.objective + 1e-7 &&
+                result.lower_bound > result.objective - 1e-3,
+            "MIQP node supporting bound uses the tightened box");
+}

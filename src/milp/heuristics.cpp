@@ -3,7 +3,19 @@ namespace markov_cero::milp {
 using namespace detail_heuristics;
 bool check_integer_feasibility(const model::Model& model, const std::vector<double>& primal,
                                double feasibility_tol, double integrality_tol) {
+    return check_integer_feasibility(model, model.variable_lower, model.variable_upper, primal,
+                                     feasibility_tol, integrality_tol);
+}
+
+bool check_integer_feasibility(const model::Model& model,
+                               const std::vector<model::Bound>& variable_lower,
+                               const std::vector<model::Bound>& variable_upper,
+                               const std::vector<double>& primal, double feasibility_tol,
+                               double integrality_tol) {
     if (primal.size() != model.matrix.column_count) {
+        return false;
+    }
+    if (variable_lower.size() != primal.size() || variable_upper.size() != primal.size()) {
         return false;
     }
 
@@ -13,13 +25,13 @@ bool check_integer_feasibility(const model::Model& model, const std::vector<doub
         if (!std::isfinite(x)) {
             return false;
         }
-        if (model.variable_lower[j].is_finite()) {
-            if (x < model.variable_lower[j].value - feasibility_tol) {
+        if (variable_lower[j].is_finite()) {
+            if (x < variable_lower[j].value - feasibility_tol) {
                 return false;
             }
         }
-        if (model.variable_upper[j].is_finite()) {
-            if (x > model.variable_upper[j].value + feasibility_tol) {
+        if (variable_upper[j].is_finite()) {
+            if (x > variable_upper[j].value + feasibility_tol) {
                 return false;
             }
         }
@@ -71,17 +83,28 @@ double compute_objective(const model::Model& model, const std::vector<double>& p
 HeuristicResult simple_rounding(const model::Model& model,
                                 const std::vector<double>& continuous_primal,
                                 double feasibility_tol, double integrality_tol) {
+    return simple_rounding(model, model.variable_lower, model.variable_upper,
+                           continuous_primal, feasibility_tol, integrality_tol);
+}
+
+HeuristicResult simple_rounding(const model::Model& model,
+                                const std::vector<model::Bound>& variable_lower,
+                                const std::vector<model::Bound>& variable_upper,
+                                const std::vector<double>& continuous_primal,
+                                double feasibility_tol, double integrality_tol) {
     HeuristicResult result;
-    if (continuous_primal.size() != model.matrix.column_count) {
+    if (continuous_primal.size() != model.matrix.column_count ||
+        variable_lower.size() != continuous_primal.size() ||
+        variable_upper.size() != continuous_primal.size()) {
         return result;
     }
 
     const auto clamp_var = [&](std::size_t j, double val) {
-        if (model.variable_lower[j].is_finite()) {
-            val = std::max(val, model.variable_lower[j].value);
+        if (variable_lower[j].is_finite()) {
+            val = std::max(val, variable_lower[j].value);
         }
-        if (model.variable_upper[j].is_finite()) {
-            val = std::min(val, model.variable_upper[j].value);
+        if (variable_upper[j].is_finite()) {
+            val = std::min(val, variable_upper[j].value);
         }
         return val;
     };
@@ -93,7 +116,8 @@ HeuristicResult simple_rounding(const model::Model& model,
             candidate1[j] = clamp_var(j, std::round(candidate1[j]));
         }
     }
-    if (check_integer_feasibility(model, candidate1, feasibility_tol, integrality_tol)) {
+    if (check_integer_feasibility(model, variable_lower, variable_upper, candidate1,
+                                  feasibility_tol, integrality_tol)) {
         result.found = true;
         result.primal = candidate1;
         result.objective = compute_objective(model, candidate1);
@@ -115,7 +139,8 @@ HeuristicResult simple_rounding(const model::Model& model,
             candidate2[j] = clamp_var(j, rounded);
         }
     }
-    if (check_integer_feasibility(model, candidate2, feasibility_tol, integrality_tol)) {
+    if (check_integer_feasibility(model, variable_lower, variable_upper, candidate2,
+                                  feasibility_tol, integrality_tol)) {
         result.found = true;
         result.primal = candidate2;
         result.objective = compute_objective(model, candidate2);
@@ -129,7 +154,8 @@ HeuristicResult simple_rounding(const model::Model& model,
             candidate3[j] = clamp_var(j, std::ceil(candidate3[j]));
         }
     }
-    if (check_integer_feasibility(model, candidate3, feasibility_tol, integrality_tol)) {
+    if (check_integer_feasibility(model, variable_lower, variable_upper, candidate3,
+                                  feasibility_tol, integrality_tol)) {
         result.found = true;
         result.primal = candidate3;
         result.objective = compute_objective(model, candidate3);

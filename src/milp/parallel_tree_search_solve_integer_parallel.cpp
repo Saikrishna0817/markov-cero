@@ -81,41 +81,9 @@ Result solve_integer_parallel(const model::Model& model, const ParallelOptions& 
     std::vector<double> current_primal = root_lp.primal;
     double current_obj = root_lp.objective;
 
-    if (options.enable_cuts && root_lp.basis.has_value()) {
-        try {
-            const auto canon =
-                transform::sparse_canonicalize(root_model, /*relax_integrality=*/true);
-            std::vector<Cut> cuts = generate_gomory_cuts(root_model, current_primal, canon,
-                                                         *root_lp.basis, options.max_cut_rounds);
-            if (options.enable_mir_cuts) {
-                const auto mir_cuts = generate_mir_cuts(root_model, current_primal, canon,
-                                                        *root_lp.basis, options.max_cut_rounds);
-                cuts.insert(cuts.end(), mir_cuts.begin(), mir_cuts.end());
-            }
-            cuts = filter_cuts(std::move(cuts), options.max_cut_rounds);
-            if (!cuts.empty()) {
-                add_cuts_to_model(root_model, cuts);
-                root_cuts_generated = cuts.size();
-
-                const auto cut_lp = solve_node_lp(root_model, options, root_lp.basis);
-                total_lp_iterations.fetch_add(cut_lp.iterations, std::memory_order_relaxed);
-                if (cut_lp.status == lp::reference::SolveStatus::optimal) {
-                    current_primal = cut_lp.primal;
-                    current_obj = cut_lp.objective;
-                    current_basis = cut_lp.basis;
-                    best_lower_bound = std::max(best_lower_bound, cut_lp.lower_bound);
-
-                    if (check_integer_feasibility(root_model, current_primal,
-                                                  options.feasibility_tolerance,
-                                                  options.integrality_tolerance)) {
-                        incumbent.update_if_better(current_obj, current_primal,
-                                                   options.absolute_gap_tolerance);
-                    }
-                }
-            }
-        } catch (...) {
-        }
-    }
+    apply_parallel_root_cuts(root_model, options, root_lp, incumbent,
+        total_lp_iterations, current_primal, current_obj, current_basis,
+        best_lower_bound, root_cuts_generated);
 
     if (incumbent.has_incumbent() && std::isfinite(best_lower_bound)) {
         const double gap = relative_gap(incumbent.get_objective(), best_lower_bound);
@@ -204,14 +172,15 @@ Result solve_integer_parallel(const model::Model& model, const ParallelOptions& 
 
     ThreadSafeNodeQueue queue;
     queue.set_node_selection(options.node_selection);
+    queue.set_maximum_size(options.max_queued_nodes);
     BranchNode root_node;
     root_node.id = 0;
     root_node.depth = 0;
-    root_node.variable_lower = root_model.variable_lower;
-    root_node.variable_upper = root_model.variable_upper;
-
-    queue.push_branch_children(root_node, root_branch_var, current_primal[root_branch_var],
-                               current_obj, current_basis, next_node_id);
+    (void)queue.push_branch_children(
+                               root_node, root_branch_var, current_primal[root_branch_var],
+                               best_lower_bound, root_model.variable_lower,
+                               root_model.variable_upper,
+                               current_basis, next_node_id);
 
     const std::size_t num_threads = std::max<std::size_t>(1, options.num_threads);
     std::atomic<std::size_t> unresolved_node_lps{0};
@@ -248,7 +217,7 @@ Result solve_integer_parallel(const model::Model& model, const ParallelOptions& 
     const bool deadline_reached = options.deadline &&
                                   std::chrono::steady_clock::now() >= *options.deadline;
     const bool frontier_exhausted = queue.empty() && queue.active_workers() == 0;
-    const bool search_complete = frontier_exhausted &&
+    const bool search_complete = frontier_exhausted && !queue.capacity_exhausted() &&
                                  unresolved_node_lps.load(std::memory_order_relaxed) == 0 &&
                                  !interrupted_search.load(std::memory_order_relaxed) &&
                                  !deadline_reached;
@@ -269,6 +238,9 @@ Result solve_integer_parallel(const model::Model& model, const ParallelOptions& 
         if (deadline_reached) {
             result.status = lp::reference::SolveStatus::resource_limit;
             result.message = "parallel MILP wall-clock deadline reached with incumbent";
+        } else if (queue.capacity_exhausted()) {
+            result.status = lp::reference::SolveStatus::resource_limit;
+            result.message = "parallel queued-node capacity reached; optimality not proven";
         } else if (search_complete &&
                    result.relative_gap <= options.relative_gap_tolerance) {
             result.status = lp::reference::SolveStatus::optimal;
@@ -280,9 +252,17 @@ Result solve_integer_parallel(const model::Model& model, const ParallelOptions& 
                                  : "parallel MILP stopped before proof of optimality";
         }
     } else {
+        const double incomplete_tree_bound = compute_tree_lower_bound(
+            queue, worker_bounds.get(), num_threads,
+            std::numeric_limits<double>::infinity());
+        if (std::isfinite(incomplete_tree_bound))
+            result.best_bound = std::min(best_lower_bound, incomplete_tree_bound);
         if (deadline_reached) {
             result.status = lp::reference::SolveStatus::resource_limit;
             result.message = "parallel MILP wall-clock deadline reached without incumbent";
+        } else if (queue.capacity_exhausted()) {
+            result.status = lp::reference::SolveStatus::resource_limit;
+            result.message = "parallel queued-node capacity reached; infeasibility not proven";
         } else if (search_complete) {
             result.status = lp::reference::SolveStatus::infeasible;
             result.message = "no integer feasible solution found";

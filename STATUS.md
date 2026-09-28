@@ -15,6 +15,23 @@ a finite dual bound use `Feasible`. Linear MILP/convex MIQP can export independe
 A failed or exhausted proof budget keeps the tree conclusion unverified; OA
 bounds remain solver-trusted.
 
+The 2026-09-28 W01 implementation adds persistent branch-bound deltas,
+copy-on-write local cuts, shared immutable warm-start bases, and parallel LP/QP
+bound overlays. The current full native run passes 81/81. This is partial
+node-view work: serial mutable-model copies, large-PDLP materialization,
+solve-wide memory limits, and full-solver frontier/RSS evidence remain open. A
+structure-only memory comparison is recorded in
+[evidence](evidence/node-frontier-memory-20260928.json). See the
+[competitive roadmap](docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md).
+
+W02 has a first queued-node cap in serial and parallel MILP, exposed through the
+C++ API, CLI and Python options. Exhaustion returns `ResourceLimit` and retains
+the minimum certified bound of omitted nodes; it cannot prove infeasibility or
+optimality. Parallel branch bounds were corrected to propagate LP lower bounds,
+not primal relaxation objectives. This does not yet bound total bytes or cover
+parser/factor/proof allocations, allocation failures, device memory or worker
+isolation; W02 remains open.
+
 The public Fawley example is historical qualification data, not approved plant data.
 The legacy refinery demonstration uses synthetic labels, connects FCC feed, and
 rejects quality constraints its formulation cannot enforce. The five former numerical/domain failures now pass. Debug CPU and a fresh
@@ -123,7 +140,7 @@ clickable artifacts; "PARTIAL" rows name the exact missing piece.
 | R7 | Multi-core parallelization | **MET** | RW-2: 3.68× @ 4 threads (flugpl), TSan-clean; `evidence/benchmarks/rw2_parallel_scaling.md` |
 | R8 | GPU where measurable benefits | **PARTIAL** | Three physical RTX 2050 runs verified the four scales; GPU lost end-to-end on every run. Two added order-reversed runs are pinned to binary SHA-256 `93c96173cbb918c20658d238012bb0abb8c4f6b492e1c02a540e0a44a3037a5a`; this older binary was not rebuilt from current source. No benefit is demonstrated. (`evidence/benchmarks/gpu_host_access_check_20260928.csv`, `..._reverse_20260928.csv`) |
 | R9 | Numerical stability, scalability, convergence | **PARTIAL** | Harris, Ruiz and refinement are implemented; certificate tolerance consistency and the disabled `scale_200` numerical regression remain open. |
-| R10 | No existing solver library | **MET** | clean-room provenance, `sovereignty_guard`, empty `third_party/` |
+| R10 | No existing solver library | **PARTIAL — source trace review open** | `sovereignty_guard` and empty `third_party/` establish dependency isolation; provenance records disclose 2026-09-25 peer-source inspection, and clean-room status is unverified pending independent trace review |
 | R11 | Industrial scope (refinery, blending, …) | **PARTIAL** | Industrial-themed cases and a synthetic refinery qualification example exist; the configured refinery model still requires feed/quality balance validation and an engineer-owned pilot before operational use. |
 | R12 | Scale: thousands→millions, sparse | **PARTIAL** | A 50,000-variable, 149,600-nonzero PDLP case is documented, while simplex and MILP node relaxations still have dense limits; million-scale general solve capability is not established. |
 | R13 | Robustness: degeneracy, ill-conditioning, hard MI | **PARTIAL** | Pricing, Harris, Bland fallback and a robustness dossier exist; the disabled `scale_200` regression, hard-instance failures and current MPS domain mismatch leave broad robustness unproven. |
@@ -131,7 +148,7 @@ clickable artifacts; "PARTIAL" rows name the exact missing piece.
 | R15 | MIPLIB / Netlib / Mittelmann benchmarks | **PARTIAL** | Final solver SHA-256 `beaed56a7534f8c8482819c1ad78aae69951c7b7ea98ef54d188bc43258e7cd1` completed all 255 checked-in local Netlib/MIPLIB/Mittelmann/QPLIB rows at a solver-side 15-second cap: verified optimal counts 51/98, 4/119, 4/20, 4/18; MIPLIB had four additional verified infeasibility certificates. Three rows exceeded the parent watchdog. Full upstream datasets and plan-level 300-second runs remain open. Results: `evidence/benchmarks/current_full_15s_20260928/` and `evidence/benchmarks/current_qplib_filllimit_20260928/`. |
 | R16 | Compare vs ≥1 established solver | **PARTIAL** | The current 23-case, 15-second, five-solver W9 run (`evidence/comparison/current_glpk_pinned_20260928/full_comparison_report.md`) has 115 rows: markov-cero 17/23 optimal, HiGHS 17/23, GLPK 14/23, CBC 13/23, SCIP 18/23; no pair of optimal objectives disagreed. A pinned-binary, two-repeat HiGHS comparison on 20 preregistered Netlib/MIPLIB cases passed verification/objective agreement 20/20 at both one and four markov-cero threads (`evidence/compare/current_final_threads1_20260928/`, `evidence/compare/current_final_threads4_20260928/`). Median geometric runtime ratios were 15.61x and 12.76x markov-cero/HiGHS. Timing boundaries still differ between subprocess and API calls. |
 | R17 | Demonstrate numerical robustness | **MET** | `evidence/robustness_dossier.md` dossier detailing condition estimation, Moler/ill-conditioned test matrices, extended-precision iterative refinement, and KKT residual guarantees |
-| R18 | Transparent, extensible, sovereign | **MET** | docs vault, mathematical theory compendium, clean-room sovereign architecture, modular engine dispatch |
+| R18 | Transparent, extensible, sovereign | **PARTIAL — provenance review open** | docs vault, mathematical theory compendium, modular engine dispatch and dependency isolation; source independence remains unverified |
 | R19 | Datasets: MIPLIB, Netlib, Mittelmann, QPLIB + cases | **MET** | MIPLIB, Netlib, Mittelmann (`data/mittelmann/`), QPLIB (`data/qp/` via `scripts/import_qplib.py` with SHA-256 provenance), and industrial cases (`examples/cases/`) |
 | R20 | Optimal/near-optimal at industrial scale, faster than weaker impls | **UNPROVEN** | Large-scale capability and a 3.68× result on one flugpl parallel case are evidenced, but the broader 23-case W9 report has six markov-cero failures/timeouts. The newer repeated 20-case comparison agrees on every verified optimum yet its measured runtime ratios favor HiGHS. Broad industrial optimality and solver competitiveness require representative larger suites, stronger solve coverage, and aligned timing boundaries. |
 

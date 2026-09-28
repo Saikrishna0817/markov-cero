@@ -2,7 +2,8 @@
 
 #include "markov_cero/lp/dual/dual_simplex.hpp"
 #include "markov_cero/milp/cut_pool.hpp"
-#include "markov_cero/model/model.hpp"
+#include "markov_cero/milp/node_cuts.hpp"
+#include "markov_cero/milp/node_bounds.hpp"
 
 #include <cmath>
 #include <cstddef>
@@ -23,10 +24,9 @@ struct BranchNode {
     std::size_t branch_variable{0};
     double branch_value{0.0};
     bool is_down_branch{true};
-    std::vector<model::Bound> variable_lower;
-    std::vector<model::Bound> variable_upper;
-    std::optional<lp::dual::BasisState> warm_basis;
-    std::vector<Cut> local_cuts;
+    NodeBounds bounds;
+    std::shared_ptr<const lp::dual::BasisState> warm_basis;
+    NodeCuts local_cuts;
 };
 
 /// Node-selection policy for the search queue (PS R5: "node selection").

@@ -16,6 +16,8 @@ struct ParallelOptions {
     double time_limit_seconds{60.0};
     std::optional<std::chrono::steady_clock::time_point> deadline;
     std::size_t max_nodes{50000};
+    /// Maximum shared-queue nodes; in-flight worker batches are separately bounded.
+    std::size_t max_queued_nodes{50000};
     double relative_gap_tolerance{1e-4};
     double absolute_gap_tolerance{1e-6};
     double integrality_tolerance{1e-6};

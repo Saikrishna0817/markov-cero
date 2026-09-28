@@ -56,14 +56,23 @@ NodeLpResult solve_node_relaxation(
     const model::Model& node_model,
     const Options& options,
     const std::optional<lp::dual::BasisState>& warm_start) {
+    return solve_node_relaxation(node_model, options, warm_start,
+                                 node_model.variable_lower, node_model.variable_upper);
+}
+
+NodeLpResult solve_node_relaxation(
+    const model::Model& node_model, const Options& options,
+    const std::optional<lp::dual::BasisState>& warm_start,
+    const std::vector<model::Bound>& variable_lower,
+    const std::vector<model::Bound>& variable_upper) {
     NodeLpResult res;
 
     if (node_model.has_quadratic_objective)
-        return solve_node_qp(node_model, options);
+        return solve_node_qp(node_model, options, variable_lower, variable_upper);
 
     try {
-        const auto canon =
-            transform::sparse_canonicalize(node_model, /*relax_integrality=*/true);
+        const auto canon = transform::sparse_canonicalize(
+            node_model, /*relax_integrality=*/true, variable_lower, variable_upper);
         if (canon.matrix.rows > kRevisedNodeLpMaxRows ||
             canon.matrix.columns > kRevisedNodeLpMaxColumns) {
             if (node_model.has_quadratic_objective ||
@@ -81,11 +90,14 @@ NodeLpResult solve_node_relaxation(
                                             kSparseNodeLpIterationCap);
             popts.set_tolerance(std::min(options.feasibility_tolerance, 1e-7));
             popts.deadline = options.deadline;
-            const auto pres = lp::first_order::solve_pdlp(node_model, popts);
+            auto effective_model = node_model;
+            effective_model.variable_lower = variable_lower;
+            effective_model.variable_upper = variable_upper;
+            const auto pres = lp::first_order::solve_pdlp(effective_model, popts);
             if (pres.dual.size() == node_model.matrix.row_count) res.row_dual = pres.dual;
             res.iterations = pres.iterations;
             res.condition_estimate = pres.condition_estimate;
-            const auto certificate = verify::verify_linear_solution(node_model, pres.primal,
+            const auto certificate = verify::verify_linear_solution(effective_model, pres.primal,
                 pres.dual, pres.objective, popts.gap_tolerance, true);
             const bool finite_dual_bound = std::isfinite(certificate.bound);
             if (finite_dual_bound)

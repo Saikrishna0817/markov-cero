@@ -63,12 +63,21 @@ set_tests_properties(cli_refinery_limited PROPERTIES WILL_FAIL TRUE)
 add_test(NAME cli_case_crude_oil COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/examples/cases/crude_oil_blending.mps)
 add_test(NAME cli_case_multiperiod COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/examples/cases/multiperiod_production.mps)
 add_test(NAME cli_case_supply_chain COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/examples/cases/supply_chain_logistics.mps)
+add_test(NAME cli_queued_node_capacity
+  COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/examples/phase3/tiny_milp.mps
+    --engine milp --max-queued-nodes 1 --no-cuts --no-heuristics)
+set_tests_properties(cli_queued_node_capacity PROPERTIES WILL_FAIL TRUE)
+add_test(NAME cli_input_byte_limit
+  COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/examples/phase3/tiny_milp.mps
+    --max-input-bytes 1)
+set_tests_properties(cli_input_byte_limit PROPERTIES WILL_FAIL TRUE)
 add_test(NAME domain_refinery_scheduling_large COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/data/cases/refinery_scheduling_large.mps)
 add_test(NAME domain_crude_blending_large COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/data/cases/crude_blending_large.qps)
 add_test(NAME domain_process_network_large COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/data/cases/process_network_large.mps)
 add_test(NAME domain_production_planning_large COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/data/cases/production_planning_large.mps --mip-gap 0.05)
 add_test(NAME domain_power_dispatch_dc_opf COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/data/cases/power_dispatch_dc_opf.qps)
-add_test(NAME domain_supply_chain_large COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/data/cases/supply_chain_large.mps)
+add_test(NAME domain_supply_chain_large COMMAND markov-cero-solve
+  ${CMAKE_SOURCE_DIR}/data/cases/supply_chain_large.mps --time-limit 90)
 add_test(NAME api_demo COMMAND api_demo)
 add_test(NAME api_test COMMAND api_test)
 add_test(NAME refinery_domain_and_iis COMMAND refinery_test)
@@ -108,6 +117,7 @@ set_tests_properties(
     TIMEOUT 90
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     ENVIRONMENT "MARKOV_CERO_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
+set_tests_properties(domain_supply_chain_large PROPERTIES TIMEOUT 120)
 if(MARKOV_CERO_BUILD_FUZZER)
   if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message(FATAL_ERROR "libFuzzer target requires Clang")

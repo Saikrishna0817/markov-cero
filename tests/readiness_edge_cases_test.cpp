@@ -45,6 +45,10 @@ int main() {
     require(api::solve_model(box, invalid).status == lp::reference::SolveStatus::invalid_options, "unknown engine rejected");
     invalid.engine = "parallel"; invalid.num_threads = static_cast<std::size_t>(-1);
     require(api::solve_model(box, invalid).status == lp::reference::SolveStatus::invalid_options, "unsafe worker count rejected");
+    invalid.num_threads = 1;
+    invalid.mip_proof_max_nodes = 0;
+    require(api::solve_model(box, invalid).status == lp::reference::SolveStatus::invalid_options,
+            "empty proof budget rejected");
     const auto quadratic = io::parse_mps_string("NAME Q\nROWS\n N OBJ\nCOLUMNS\n X OBJ -1\nQUADOBJ\n X X 2\nENDATA\n");
     api::SolveOptions linear; linear.engine = "primal";
     require(api::solve_model(quadratic, linear).status == lp::reference::SolveStatus::unsupported,

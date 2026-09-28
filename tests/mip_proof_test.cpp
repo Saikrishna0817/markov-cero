@@ -52,6 +52,11 @@ int main() {
     verify::MipProofOptions expired;
     expired.deadline = std::chrono::steady_clock::now();
     require(!verify::verify_mip_proof(model, proof, expired).accepted);
+    std::stringstream expired_stream; verify::write_mip_proof(expired_stream, proof);
+    bool parsing_expired = false;
+    try { (void)verify::read_mip_proof(expired_stream, expired); }
+    catch (const std::runtime_error&) { parsing_expired = true; }
+    require(parsing_expired);
     for (const auto text : {"MARKOV_MIP_PROOF 1 0 0 999999999", "MARKOV_MIP_PROOF 1 0 nan 1"}) {
         bool rejected = false;
         try { std::stringstream bad(text); (void)verify::read_mip_proof(bad); }

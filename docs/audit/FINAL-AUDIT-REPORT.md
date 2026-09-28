@@ -9,6 +9,9 @@ date: 2026-09-25
 
 # Final Audit Report — markov-cero (SIH26119)
 
+> Historical report. Its unqualified clean-room wording is superseded by the source-exposure
+> disclosure in `PROVENANCE.md`; clean-room status remains unverified pending independent review.
+
 > Four sources of truth: **[A]** PS (`docs/sih26119_problem_statement.md`) ·
 > **[B]** research (`docs/research/`) · **[C]** code (`docs/codebase/`, `docs/audit/07-09`) ·
 > **[D]** target (`docs/audit/14-15`). Labels: *Observed fact* / *Research finding* /

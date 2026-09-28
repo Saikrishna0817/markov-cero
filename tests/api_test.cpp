@@ -82,6 +82,17 @@ void test_api_expired_deadline() {
     std::cout << "[+] test_api_expired_deadline passed\n";
 }
 
+void test_api_input_byte_budget() {
+    markov_cero::api::SolveOptions options;
+    options.maximum_input_bytes = 1;
+    const auto limited = markov_cero::api::solve_file("examples/blend.mps", options);
+    assert(limited.status == markov_cero::lp::reference::SolveStatus::resource_limit);
+    assert(limited.diagnostic.failure_site == "input_resource_limit");
+    options.maximum_input_bytes = 0;
+    const auto invalid = markov_cero::api::solve_file("examples/blend.mps", options);
+    assert(invalid.status == markov_cero::lp::reference::SolveStatus::invalid_options);
+}
+
 void test_api_nlp_callbacks_path_a() {
     using markov_cero::model::Bound;
     using markov_cero::model::ObjectiveSense;
@@ -161,6 +172,7 @@ int main() {
         test_api_solve_file();
         test_api_numerical_diagnostic();
         test_api_expired_deadline();
+        test_api_input_byte_budget();
         test_api_nlp_callbacks_path_a();
         std::cout << "All API unit tests PASSED successfully!\n";
         return 0;

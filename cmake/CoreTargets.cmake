@@ -77,7 +77,8 @@ add_library(markov_cero_core STATIC
   src/milp/node_qp.cpp
   src/milp/mir.cpp
   src/milp/cover.cpp
-  src/milp/parallel_tree_search.cpp src/milp/parallel_tree_search_solve_integer_parallel.cpp src/milp/parallel_tree_search_solve_parallel.cpp
+  src/milp/parallel_tree_search.cpp src/milp/parallel_tree_search_solve_integer_parallel.cpp
+  src/milp/parallel_tree_search_root_cuts.cpp src/milp/parallel_tree_search_solve_parallel.cpp
   src/milp/shared_incumbent.cpp
   src/milp/strong_branching.cpp
   src/milp/work_queue.cpp
@@ -156,7 +157,7 @@ add_executable(markov-cero-info apps/markov_cero_info.cpp)
 target_link_libraries(markov-cero-info PRIVATE markov_cero_core)
 add_executable(markov-cero-mps-inspect apps/markov_cero_mps_inspect.cpp)
 target_link_libraries(markov-cero-mps-inspect PRIVATE markov_cero_core)
-add_executable(markov-cero-solve apps/markov_cero_solve.cpp)
+add_executable(markov-cero-solve apps/markov_cero_solve.cpp apps/cli_options.cpp)
 target_link_libraries(markov-cero-solve PRIVATE markov_cero_core)
 
 

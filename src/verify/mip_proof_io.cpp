@@ -4,6 +4,7 @@
 #include <ostream>
 #include <stdexcept>
 #include <cmath>
+#include <chrono>
 namespace markov_cero::verify {
 void write_mip_proof(std::ostream& out, const MipProof& proof) {
     out << std::setprecision(17) << "MARKOV_MIP_PROOF 1\n" << proof.claims_infeasible
@@ -21,21 +22,30 @@ void write_mip_proof(std::ostream& out, const MipProof& proof) {
     if (!out) throw std::runtime_error("cannot write MIP proof");
 }
 MipProof read_mip_proof(std::istream& input, const MipProofOptions& limits) {
+    const auto expired = [&] {
+        return limits.deadline && std::chrono::steady_clock::now() >= *limits.deadline;
+    };
     MipProof proof;
     std::string magic; int version; std::size_t count, total = 0;
     if (!(input >> std::setw(32) >> magic >> version) || magic != "MARKOV_MIP_PROOF" || version != 1 ||
         !(input >> proof.claims_infeasible >> proof.objective >> count) || count > limits.maximum_nodes ||
         !std::isfinite(proof.objective)) throw std::invalid_argument("invalid proof header or node budget");
+    if (expired()) throw std::runtime_error("proof parsing deadline");
     const auto vector = [&](std::vector<double>& values) {
         std::size_t size;
         if (!(input >> size) || size > limits.maximum_witness_values - total)
             throw std::invalid_argument("proof vector budget");
         total += size; values.resize(size);
-        for (auto& value : values)
+        std::size_t scanned = 0;
+        for (auto& value : values) {
+            if ((scanned++ & 1023U) == 0 && expired())
+                throw std::runtime_error("proof parsing deadline");
             if (!(input >> value) || !std::isfinite(value)) throw std::invalid_argument("invalid proof scalar");
+        }
     };
     vector(proof.incumbent); proof.nodes.resize(count);
     for (auto& node : proof.nodes) {
+        if (expired()) throw std::runtime_error("proof parsing deadline");
         int kind, status;
         if (!(input >> kind >> node.variable >> node.split_value >> node.down >> node.up >> status
                     >> node.relaxation.objective) || kind < 0 || kind > 4 || status < 0 || status > 12 ||

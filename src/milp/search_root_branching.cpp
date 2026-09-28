@@ -109,6 +109,7 @@ bool Search::root_branching() {
     // 5. Initialize Active Node Priority Queue (policy-ordered heap with a
     // policy-independent min-bound query — see NodeFrontier).
     queue = NodeFrontier{options.node_selection};
+    queue.set_maximum_size(options.max_queued_nodes);
 
     // R13/R17 soundness bookkeeping. `unsolved_node_lps` counts nodes whose
     // relaxation could not be certified; `min_unsolved_bound` is the weakest
@@ -122,10 +123,11 @@ bool Search::root_branching() {
     root_node->parent_id = 0;
     root_node->depth = 0;
     root_node->lower_bound = best_lower_bound;
-    root_node->variable_lower = root_model.variable_lower;
-    root_node->variable_upper = root_model.variable_upper;
-    root_node->warm_basis = current_basis;
+    if (current_basis) {
+        root_node->warm_basis = std::make_shared<const lp::dual::BasisState>(*current_basis);
+    }
     queue.push(root_node);
+    if (queue.capacity_exhausted()) stop_reason = "queued-node capacity reached";
 
 
 return true;

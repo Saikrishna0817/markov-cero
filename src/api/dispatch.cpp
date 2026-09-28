@@ -8,9 +8,16 @@ void run_engine(const model::Model& model, const SolveOptions& input_options, So
     const std::string engines[] = {"auto", "primal", "dual", "ipm", "pdlp", "qp", "milp", "miqp", "parallel", "sqp", "outer_approx"};
     if (std::find(std::begin(engines), std::end(engines), options.engine) == std::end(engines) ||
         (options.backend != "cpu" && options.backend != "gpu") || options.num_threads == 0 || options.num_threads > 256 ||
-        !std::isfinite(options.pdlp_tolerance) || options.pdlp_tolerance <= 0) {
+        !std::isfinite(options.pdlp_tolerance) || options.pdlp_tolerance <= 0 ||
+        !std::isfinite(options.mip_proof_time_limit_seconds) ||
+        options.mip_proof_time_limit_seconds <= 0 || options.mip_proof_time_limit_seconds > 1e8 ||
+        options.mip_proof_max_nodes == 0 || options.mip_proof_max_nodes > 100000 ||
+        options.mip_proof_max_witness_values == 0 ||
+        options.mip_proof_max_witness_values > 16000000 ||
+        (options.maximum_input_bytes &&
+         (*options.maximum_input_bytes == 0 || *options.maximum_input_bytes > 1073741824ULL))) {
         result.status = lp::reference::SolveStatus::invalid_options;
-        result.message = "invalid engine, backend, worker count or tolerance"; return;
+        result.message = "invalid engine, backend, worker count, tolerance or resource budget"; return;
     }
     const bool integer = std::any_of(model.variable_type.begin(), model.variable_type.end(),
         [](auto type) { return type != model::VariableType::continuous; });

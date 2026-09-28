@@ -80,6 +80,18 @@ void guarded(SolveResult& out, lp::reference::Result& result, Body&& body) {
         out.error = e.what();
         out.diagnostic.failure_site = "mps_parser";
         out.diagnostic.suggested_recovery = "correct_mps_syntax_at_indicated_record";
+    } catch (const io::MpsResourceLimitError& e) {
+        result.status = lp::reference::SolveStatus::resource_limit;
+        result.message = e.what();
+        out.error = e.what();
+        out.diagnostic.failure_site = "input_resource_limit";
+        out.diagnostic.suggested_recovery = "reduce_file_or_configured_parser_limits";
+    } catch (const io::LpResourceLimitError& e) {
+        result.status = lp::reference::SolveStatus::resource_limit;
+        result.message = e.what();
+        out.error = e.what();
+        out.diagnostic.failure_site = "input_resource_limit";
+        out.diagnostic.suggested_recovery = "reduce_file_or_configured_parser_limits";
     } catch (const std::invalid_argument& e) {
         result.status = lp::reference::SolveStatus::invalid_model;
         result.message = e.what();
@@ -142,6 +154,15 @@ SolveResult solve_file(const std::string& path, const SolveOptions& options) {
     const auto timed_options = with_api_deadline(options, started);
     SolveResult out;
     out.resolved_engine = options.engine;
+    if (options.maximum_input_bytes &&
+        (*options.maximum_input_bytes == 0 || *options.maximum_input_bytes > 1073741824ULL)) {
+        out.status = lp::reference::SolveStatus::invalid_options;
+        out.message = "maximum_input_bytes must be in 1..1073741824";
+        out.error = out.message;
+        out.diagnostic.failure_site = "input_resource_budget";
+        out.runtime_ms = elapsed_ms(started);
+        return out;
+    }
     std::ifstream input(path);
     if (!input) {
         out.status = lp::reference::SolveStatus::invalid_model;
@@ -163,7 +184,12 @@ SolveResult solve_file(const std::string& path, const SolveOptions& options) {
         // unchanged.
         io::MpsLimits limits;
         limits.maximum_bytes = 256U * 1024U * 1024U;
-        const auto model = is_lp ? io::parse_lp_file(path) : io::parse_mps(input, limits);
+        if (options.maximum_input_bytes) limits.maximum_bytes = *options.maximum_input_bytes;
+        io::LpLimits lp_limits;
+        if (options.maximum_input_bytes)
+            lp_limits.maximum_bytes = *options.maximum_input_bytes;
+        const auto model = is_lp ? io::parse_lp_file(path, lp_limits)
+                                 : io::parse_mps(input, limits);
         run_engine(model, timed_options, out, result);
     });
     finalize(out);

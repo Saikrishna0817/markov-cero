@@ -18,6 +18,10 @@ struct HeuristicResult {
                                              const std::vector<double>& primal,
                                              double feasibility_tol = 1e-6,
                                              double integrality_tol = 1e-6);
+[[nodiscard]] bool check_integer_feasibility(const model::Model& model,
+    const std::vector<model::Bound>& variable_lower,
+    const std::vector<model::Bound>& variable_upper, const std::vector<double>& primal,
+    double feasibility_tol, double integrality_tol);
 
 [[nodiscard]] double compute_objective(const model::Model& model,
                                        const std::vector<double>& primal);
@@ -26,6 +30,11 @@ struct HeuristicResult {
                                               const std::vector<double>& continuous_primal,
                                               double feasibility_tol = 1e-6,
                                               double integrality_tol = 1e-6);
+[[nodiscard]] HeuristicResult simple_rounding(const model::Model& model,
+    const std::vector<model::Bound>& variable_lower,
+    const std::vector<model::Bound>& variable_upper,
+    const std::vector<double>& continuous_primal, double feasibility_tol,
+    double integrality_tol);
 
 [[nodiscard]] HeuristicResult feasibility_pump(const model::Model& model,
                                                const std::vector<double>& continuous_primal,

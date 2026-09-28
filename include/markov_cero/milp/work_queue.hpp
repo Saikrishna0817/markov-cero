@@ -8,6 +8,7 @@
 #include <condition_variable>
 #include <cstddef>
 #include <memory>
+#include <limits>
 #include <mutex>
 #include <optional>
 #include <vector>
@@ -44,11 +45,17 @@ class ThreadSafeNodeQueue {
         return comparator_.policy;
     }
 
-    void push(std::shared_ptr<BranchNode> node);
-    void push_children(std::shared_ptr<BranchNode> left, std::shared_ptr<BranchNode> right);
+    void set_maximum_size(std::size_t maximum_size);
 
-    void push_branch_children(const BranchNode& parent, std::size_t branch_var, double branch_val,
+    bool push(std::shared_ptr<BranchNode> node);
+    bool push_children(std::shared_ptr<BranchNode> left,
+                       std::shared_ptr<BranchNode> right);
+
+    bool push_branch_children(const BranchNode& parent,
+                              std::size_t branch_var, double branch_val,
                               double lower_bound,
+                              const std::vector<model::Bound>& parent_lower,
+                              const std::vector<model::Bound>& parent_upper,
                               const std::optional<lp::dual::BasisState>& warm_basis,
                               std::atomic<std::size_t>& next_node_id);
 
@@ -65,6 +72,7 @@ class ThreadSafeNodeQueue {
     [[nodiscard]] bool is_stopped() const;
     [[nodiscard]] bool empty() const;
     [[nodiscard]] std::size_t size() const;
+    [[nodiscard]] bool capacity_exhausted() const;
     [[nodiscard]] std::size_t active_workers() const;
     [[nodiscard]] double min_lower_bound() const;
     void notify_all();
@@ -76,8 +84,11 @@ class ThreadSafeNodeQueue {
     std::condition_variable cv_;
     std::vector<std::shared_ptr<BranchNode>> heap_;
     NodeComparator comparator_{};
+    std::size_t maximum_size_{std::numeric_limits<std::size_t>::max()};
+    double minimum_dropped_bound_{std::numeric_limits<double>::infinity()};
     std::size_t active_workers_{0};
     bool stopped_{false};
+    bool capacity_exhausted_{false};
     std::size_t prune_lazily_discarded_{0};
     std::atomic<bool> need_notify_{false};
 };

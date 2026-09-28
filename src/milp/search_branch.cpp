@@ -1,6 +1,9 @@
 #include "search_context.hpp"
 namespace markov_cero::milp::detail {
 bool Search::branch() {
+        node->bounds.materialize(root_model.variable_lower, root_model.variable_upper,
+                                 node_model.variable_lower, node_model.variable_upper,
+                                 node_bounds_scratch);
         // Check integer feasibility of node solution
         const auto fractional_vars = find_fractional_variables(
             node_lp_res.primal, root_model.variable_type, options.integrality_tolerance);
@@ -17,8 +20,6 @@ bool Search::branch() {
 
         // Try quick simple rounding on fractional point
         if (options.enable_heuristics && result.nodes_explored % 5 == 0) {
-            node_model.variable_lower = node->variable_lower;
-            node_model.variable_upper = node->variable_upper;
             const auto hr =
                 simple_rounding(node_model, node_lp_res.primal, options.feasibility_tolerance,
                                 options.integrality_tolerance);
@@ -32,8 +33,6 @@ bool Search::branch() {
         // 7. Branching Variable Selection
         std::size_t branch_var = root_model.matrix.column_count;
         auto& current_node_model = node_model;
-        current_node_model.variable_lower = node->variable_lower;
-        current_node_model.variable_upper = node->variable_upper;
         if (options.branching_strategy == BranchingStrategy::strong_branching &&
             node_lp_res.basis.has_value()) {
             try {
@@ -125,11 +124,14 @@ bool Search::branch() {
         const double branch_val = node_lp_res.primal[branch_var];
         const double floor_val = std::floor(branch_val);
         const double ceil_val = std::ceil(branch_val);
+        const auto shared_warm_basis = node_lp_res.basis
+            ? std::make_shared<const lp::dual::BasisState>(*node_lp_res.basis)
+            : std::shared_ptr<const lp::dual::BasisState>{};
 
         // Child 1 (Down Branch): x_k <= floor_val
         bool down_valid = true;
-        if (node->variable_lower[branch_var].is_finite() &&
-            floor_val < node->variable_lower[branch_var].value - 1e-9) {
+        if (current_node_model.variable_lower[branch_var].is_finite() &&
+            floor_val < current_node_model.variable_lower[branch_var].value - 1e-9) {
             down_valid = false;
         }
         if (down_valid) {
@@ -142,18 +144,17 @@ bool Search::branch() {
             down_child->branch_variable = branch_var;
             down_child->branch_value = branch_val;
             down_child->is_down_branch = true;
-            down_child->variable_lower = node->variable_lower;
-            down_child->variable_upper = node->variable_upper;
-            down_child->variable_upper[branch_var] = model::Bound::finite(floor_val);
-            down_child->warm_basis = node_lp_res.basis;
+            down_child->bounds = node->bounds.with_upper(branch_var, model::Bound::finite(floor_val));
+            down_child->warm_basis = shared_warm_basis;
             down_child->local_cuts = node->local_cuts;
             queue.push(down_child);
+            if (queue.capacity_exhausted()) stop_reason = "queued-node capacity reached";
         }
 
         // Child 2 (Up Branch): x_k >= ceil_val
         bool up_valid = true;
-        if (node->variable_upper[branch_var].is_finite() &&
-            ceil_val > node->variable_upper[branch_var].value + 1e-9) {
+        if (current_node_model.variable_upper[branch_var].is_finite() &&
+            ceil_val > current_node_model.variable_upper[branch_var].value + 1e-9) {
             up_valid = false;
         }
         if (up_valid) {
@@ -165,12 +166,11 @@ bool Search::branch() {
             up_child->branch_variable = branch_var;
             up_child->branch_value = branch_val;
             up_child->is_down_branch = false;
-            up_child->variable_lower = node->variable_lower;
-            up_child->variable_upper = node->variable_upper;
-            up_child->variable_lower[branch_var] = model::Bound::finite(ceil_val);
-            up_child->warm_basis = node_lp_res.basis;
+            up_child->bounds = node->bounds.with_lower(branch_var, model::Bound::finite(ceil_val));
+            up_child->warm_basis = shared_warm_basis;
             up_child->local_cuts = node->local_cuts;
             queue.push(up_child);
+            if (queue.capacity_exhausted()) stop_reason = "queued-node capacity reached";
         }
 
 
