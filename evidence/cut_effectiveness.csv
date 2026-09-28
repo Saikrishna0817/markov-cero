@@ -1,0 +1,4 @@
+instance,reference_objective,objective_no_cuts,objective_cuts,nodes_no_cuts,nodes_cuts,node_reduction_pct,cuts_generated,lp_iterations_no_cuts,lp_iterations_cuts,runtime_ms_no_cuts,runtime_ms_cuts,verified,gate_pass
+STEIN9,5.0,5,5,41,15,63.4,30,1202,1217,10.72,22.75,True,True
+STEIN15,9.0,9,9,263,157,40.3,264,18510,32333,291.49,1157.55,True,True
+FLUGPL,1201500.0,1201500,1201500.0000000002,4056,2982,26.5,1331,82067,225824,1198.89,6531.34,True,True

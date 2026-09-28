@@ -1,0 +1,7 @@
+instance,rows,cols,nonzeros,problem_type,status,verified,runtime_ms,nodes_explored,lp_iterations,cuts_generated,heuristics_found
+markshare_5_0,5,45,203,MILP,ResourceLimit,False,15318.9,1091,275157,2986,1
+neos5,63,63,2016,MILP,ResourceLimit,False,5001.7,135,111000,1,2
+ran14x18_1,284,504,1008,MILP,ResourceLimit,False,8628.8,1,6084,0,1
+bienst1,576,505,2184,LP,NumericalFailure,False,12617.4,0,0,0,0
+bienst2,576,505,2184,LP,NumericalFailure,False,12500.0,0,0,0,0
+mkc1,283,543,1844,LP,NumericalFailure,False,8200.0,0,0,0,0

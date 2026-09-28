@@ -1,0 +1,11 @@
+solver,instance,status,verified,objective,time_ms,nodes,lp_iterations,cuts
+markov-cero,capitanescu_dc_opf,Optimal,True,2.0769207854586448e-07,4.9,1,191,0
+markov-cero,crude_blending_large,Exit6,False,,10200.1,,,
+markov-cero,li_crude_blending,Optimal,True,5760,16.9,1,112,0
+markov-cero,neiro_refinery_scheduling,Optimal,True,-275030,281.6,3,872,7
+markov-cero,pochet_lot_sizing,Optimal,True,1050,57.2,1,118,0
+markov-cero,process_network_large,Timeout,False,,15016.1,,,
+markov-cero,production_planning_large,Timeout,False,,15015.3,,,
+markov-cero,refinery_scheduling_large,Timeout,False,,15015.4,,,
+markov-cero,shapiro_network_flow,Optimal,True,1176,9.1,1,68,0
+markov-cero,supply_chain_large,Timeout,False,,15015.4,,,

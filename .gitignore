@@ -2,6 +2,7 @@
 _m5-*/
 _deployment-*/
 build/
+build-*/
 cmake-build-*/
 _verify-*/
 CMakeCache.txt
@@ -51,3 +52,6 @@ __pycache__/
 data/scale_study/
 reports/
 .licenses/
+
+# RW-3 comparison baseline venv (highspy oracle)
+.compare-venv/

@@ -1,0 +1,4 @@
+solver,instance,status,verified,objective,time_ms,nodes,lp_iterations,cuts
+markov-cero,flugpl,Optimal,True,1201500,3022.7,1126,97967,660
+markov-cero,stein15,Optimal,True,9,1172.7,163,31103,230
+markov-cero,stein9,Optimal,True,5,28.7,17,1354,25

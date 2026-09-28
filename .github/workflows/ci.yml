@@ -82,3 +82,39 @@ jobs:
         run: bash run-qualification-demo.sh
         env:
           MARKOV_CERO_BUILD_DIR: build
+
+  cuda-build:
+    # AP-10: the CUDA build path must compile in CI, not only on dev machines.
+    # GPU runners are scarce, so this job validates compilation and the
+    # no-device fallback behavior of the GPU engine; device-timing evidence
+    # stays a local-workstation artifact (see docs/gpu.md).
+    name: cuda-build (compile + fallback)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install CUDA toolkit (nvcc only, no driver)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends cuda-toolkit-* || \
+            echo "CUDA toolkit unavailable on this runner image"
+
+      - name: Configure CMake with CUDA enabled
+        run: |
+          cmake -S . -B build-cuda \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DMARKOV_CERO_ENABLE_CUDA=ON \
+            -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON
+
+      - name: Record whether CUDA was actually enabled
+        run: |
+          grep -E "MARKOV_CERO_HAS_CUDA" build-cuda/*.h 2>/dev/null || true
+          grep -E "MARKOV_CERO_ENABLE_CUDA" build-cuda/CMakeCache.txt || true
+
+      - name: Build targets
+        run: cmake --build build-cuda --parallel 2
+
+      - name: Run CUDA-related CTest targets
+        run: |
+          ctest --test-dir build-cuda -R "gpu|equivalence" --output-on-failure --timeout 180

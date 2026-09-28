@@ -7,6 +7,8 @@
 #include "markov_cero/model/model.hpp"
 
 #include <cstddef>
+#include <chrono>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -22,16 +24,24 @@ struct PdlpOptions {
     double dual_tolerance{1e-4};
     double gap_tolerance{1e-4};
     double step_size_reduction{0.9};
-    std::size_t power_iterations{20};
     Backend backend{Backend::cpu};
     RestartStrategy restart_strategy{RestartStrategy::adaptive};
     double restart_reduction_factor{0.368};
     bool adaptive_step_size{true};
     bool adaptive_primal_weight{true};
+    std::optional<std::chrono::steady_clock::time_point> deadline;
     double initial_primal_weight{0.0};
     double primal_weight_smoothing{0.5};
     bool ruiz_scaling{true};
     std::size_t ruiz_iterations{10};
+
+    // Stagnation detection and dual simplex crossover
+    bool enable_crossover{false};
+    std::size_t stagnation_window{1000};
+    double stagnation_threshold{0.999};
+    double crossover_primal_tolerance{1e-4};
+    double crossover_dual_tolerance{1e-4};
+    std::size_t crossover_simplex_limit{100000};
 
     void set_tolerance(double tol) noexcept {
         primal_tolerance = tol;
@@ -40,7 +50,7 @@ struct PdlpOptions {
     }
 };
 
-enum class PdlpStatus { optimal, iteration_limit, infeasible_or_unbounded, numerical_failure };
+enum class PdlpStatus { optimal, iteration_limit, resource_limit, numerical_failure };
 
 struct PdlpResult {
     PdlpStatus status{PdlpStatus::iteration_limit};
@@ -57,8 +67,21 @@ struct PdlpResult {
     double kernel_ms{0.0};
     double d2h_ms{0.0};
     double total_ms{0.0};
-    // Requested backend may differ from the path that actually ran (e.g. no CUDA).
-    // Values: "cpu", "cuda", "cpu_fallback".
+
+    // C-3: absolute dual objective of the reported iterate (engine dual
+    // convention); complementarity gap = |objective - dual_objective|.
+    double dual_objective{0.0};
+
+    bool crossover_applied{false};
+    // D-15: non-empty when the iterate stagnated and the dual-simplex
+    // crossover could not certify a basis (singular extraction). Carried into
+    // the JSON output as "convergence_note".
+    std::string convergence_note{};
+    // PDLP is matrix-free and factorizes nothing, so this is 0.0 unless the
+    // dual-simplex crossover produced a certified basis (then it carries that
+    // basis' pivot-ratio condition proxy).
+    double condition_estimate{0.0};
+    // Actual execution path, including CPU emulation of a GPU request.
     std::string backend_actually_used{"cpu"};
 };
 

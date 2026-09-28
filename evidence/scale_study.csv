@@ -1,0 +1,10 @@
+instance,rows,cols,nonzeros,iterations,runtime_ms,kernel_ms,rel_primal,rel_dual,rel_gap,status,verified
+scale_10.mps,9,12,28,160,0.25,0.06,1.12e-06,2.67e-07,1.04e-06,Optimal,True
+scale_50.mps,42,70,190,160,0.54,0.18,7.12e-07,5.18e-07,1.88e-06,Optimal,True
+scale_100.mps,60,100,280,160,0.50,0.13,7.12e-07,5.18e-07,1.88e-06,Optimal,True
+scale_500.mps,275,500,1460,120,1.99,0.41,5.15e-05,2.30e-05,9.99e-05,Optimal,True
+scale_1000.mps,525,980,2884,120,3.85,0.79,6.10e-05,2.19e-05,9.15e-05,Optimal,True
+scale_2000.mps,1050,2000,5920,120,7.06,1.67,8.75e-05,2.04e-05,9.32e-05,Optimal,True
+scale_5000.mps,2550,4950,14718,160,20.33,5.70,1.10e-06,2.20e-06,4.41e-06,Optimal,True
+scale_10000.mps,5100,10000,29800,160,39.59,11.02,1.39e-06,2.83e-06,4.76e-06,Optimal,True
+scale_50000.mps,25250,50000,149600,160,299.72,105.98,2.49e-06,5.72e-06,7.09e-06,Optimal,True

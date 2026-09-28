@@ -1,0 +1,9 @@
+instance,backend,nnz,status,verified,total_ms
+scale_100k,cpu_pdlp,14400,Optimal,True,23.128493
+scale_100k,gpu_pdlp,14400,Optimal,True,199.891594
+scale_500k,cpu_pdlp,67600,Optimal,True,238.360946
+scale_500k,gpu_pdlp,67600,Optimal,True,741.757295
+scale_1m,cpu_pdlp,129600,Optimal,True,596.24865
+scale_1m,gpu_pdlp,129600,Optimal,True,1976.666765
+scale_5m,cpu_pdlp,640000,Optimal,True,11980.716216
+scale_5m,gpu_pdlp,640000,Optimal,True,31148.285034

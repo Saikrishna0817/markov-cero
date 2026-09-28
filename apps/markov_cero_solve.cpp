@@ -1,36 +1,90 @@
 #include "cli_options.hpp"
 #include "json_output.hpp"
+#include "markov_cero/api/solve.hpp"
 #include "markov_cero/foundation/build_info.hpp"
-#include "markov_cero/io/mps.hpp"
-#include "markov_cero/lp/dual/dual_simplex.hpp"
-#include "markov_cero/lp/first_order/pdlp.hpp"
 #include "markov_cero/lp/reference/revised_simplex.hpp"
-#include "markov_cero/milp/milp_solver.hpp"
-#include "markov_cero/milp/parallel_tree_search.hpp"
-#include "markov_cero/milp/strong_branching.hpp"
-#include "markov_cero/presolve/presolve.hpp"
-#include "markov_cero/qp/admm_solver.hpp"
-#include "markov_cero/qp/model.hpp"
-#include "markov_cero/qp/verifier.hpp"
-#include "markov_cero/scale/ruiz_scaling.hpp"
-#include "markov_cero/transform/canonicalize.hpp"
-#include "markov_cero/transform/sparse_canonical_model.hpp"
-#include "markov_cero/verify/primal_verifier.hpp"
-#include "markov_cero/verify/reference_lp_verifier.hpp"
 
-#include <cerrno>
-#include <chrono>
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
-#include <fstream>
 #include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include <string>
-#include <string_view>
-#include <vector>
 
+namespace {
+
+markov_cero::api::SolveOptions to_solve_options(const markov_cero::apps::CliOptions& cli) {
+    markov_cero::api::SolveOptions options;
+    options.engine = cli.engine_name;
+    options.num_threads = cli.num_threads;
+    options.threads_explicit = cli.threads_explicit;
+    options.warm_start_path = cli.warm_start_path;
+    options.save_basis_path = cli.save_basis_path;
+    options.enable_presolve = cli.enable_presolve;
+    options.enable_scale = cli.enable_scale;
+    options.max_presolve_passes = cli.max_presolve_passes;
+    options.ruiz_iterations = cli.ruiz_iterations;
+    options.pdlp_tolerance = cli.pdlp_tolerance;
+    options.backend = cli.backend_name;
+    options.lp_options = cli.options;
+    options.lp_options.time_limit_seconds = cli.time_limit_seconds;
+    options.milp_options = cli.milp_options;
+    return options;
+}
+
+markov_cero::apps::JsonOutputData to_json_data(const markov_cero::api::SolveResult& res,
+                                              const markov_cero::api::SolveOptions& options) {
+    markov_cero::apps::JsonOutputData data;
+    data.resolved_engine = res.resolved_engine;
+    data.result.status = res.status;
+    data.result.message = res.message;
+    data.result.primal = res.primal;
+    data.result.objective = res.objective;
+    data.result.phase_one_iterations = res.phase_one_iterations;
+    data.result.phase_two_iterations = res.phase_two_iterations;
+    data.model_rows = res.model_rows;
+    data.model_cols = res.model_cols;
+    data.model_nnz = res.model_nnz;
+    data.verified = res.verified;
+    data.original_objective = res.original_objective;
+    data.original_primal = res.original_primal;
+    data.canonical_verified = res.canonical_verified;
+    data.original_verified = res.original_verified;
+    data.original_message = res.original_message;
+    data.used_warm_start = res.used_warm_start;
+    data.used_cold_fallback = res.used_cold_fallback;
+    data.primal_report = res.primal_report;
+    data.canonical_report = res.canonical_report;
+    data.elapsed_ms = res.runtime_ms;
+    data.nodes_explored = res.nodes_explored;
+    data.total_lp_iterations = res.lp_iterations;
+    data.best_bound = res.best_bound;
+    data.relative_gap = res.relative_gap;
+    data.cuts_generated = res.cuts_generated;
+    data.heuristics_found = res.heuristics_found;
+    data.pdlp_tolerance = options.pdlp_tolerance;
+    data.pdlp_res_primal_infeas = res.pdlp_primal_infeasibility;
+    data.pdlp_res_dual_infeas = res.pdlp_dual_infeasibility;
+    data.pdlp_res_gap = res.pdlp_duality_gap;
+    data.backend_name = options.backend;
+    data.pdlp_h2d_ms = res.pdlp_h2d_ms;
+    data.pdlp_kernel_ms = res.pdlp_kernel_ms;
+    data.pdlp_d2h_ms = res.pdlp_d2h_ms;
+    data.pdlp_total_ms = res.pdlp_total_ms;
+    data.error = res.error;
+    data.problem_class = res.problem_class;
+    data.classification_reason = res.classification_reason;
+    data.recommended_backend = res.recommended_backend;
+    data.diagnostic = res.diagnostic;
+    data.convergence_note = res.convergence_note;
+    data.admm_rho_updates = res.admm_rho_updates;
+    data.ml_requested = res.ml_requested;
+    data.ml_model_loaded = res.ml_model_loaded;
+    data.ml_scoring_calls = res.ml_scoring_calls;
+    data.ml_candidates_scored = res.ml_candidates_scored;
+    data.ml_fallback_nodes = res.ml_fallback_nodes;
+    data.ml_maximum_candidate_count = res.ml_maximum_candidate_count;
+    data.ml_fallback_reason = res.ml_fallback_reason;
+    return data;
+}
+
+} // namespace
 
 int main(int argc, char** argv) {
     using markov_cero::apps::json_number;
@@ -38,462 +92,49 @@ int main(int argc, char** argv) {
     if (cli.help_requested) return 0;
     if (cli.error) return cli.exit_code;
 
-    double pdlp_res_primal_infeas = 0.0, pdlp_res_dual_infeas = 0.0, pdlp_res_gap = 0.0;
-    double pdlp_h2d_ms = 0.0, pdlp_kernel_ms = 0.0, pdlp_d2h_ms = 0.0, pdlp_total_ms = 0.0;
-
-    const auto started = std::chrono::steady_clock::now();
-    std::ifstream input(cli.path);
-    if (!input) {
+    const auto options = to_solve_options(cli);
+    const auto res = markov_cero::api::solve_file(cli.path, options);
+    if (res.input_open_failed) {
         std::cerr << "cannot open input\n";
         return 8;
     }
 
-    bool original_verified = false, canonical_verified = false;
-    std::string original_message, error;
-    std::vector<double> original_primal;
-    double original_objective = 0.0;
-    markov_cero::verify::PrimalVerificationReport primal_report;
-    markov_cero::verify::ReferenceVerification canonical_report;
-    markov_cero::lp::reference::Result result;
-    std::optional<markov_cero::lp::dual::BasisState> basis_to_save;
-    bool used_warm_start = false, used_cold_fallback = false;
-    markov_cero::presolve::PresolveResult presolve_res;
-    markov_cero::scale::RuizScalers scalers;
-    bool presolve_applied = false, scaling_applied = false;
-
-    std::string resolved_engine = cli.engine_name;
-    std::size_t nodes_explored = 0, total_lp_iterations = 0;
-    double best_bound = 0.0, relative_gap = 0.0;
-    std::size_t cuts_generated = 0, heuristics_found = 0;
-    std::size_t model_rows = 0, model_cols = 0, model_nnz = 0;
-
-    try {
-        const auto model = markov_cero::io::parse_mps(input);
-        model_rows = model.matrix.row_count;
-        model_cols = model.matrix.column_count;
-        model_nnz = model.matrix.value.size();
-
-        bool has_discrete = false;
-        for (const auto type : model.variable_type) {
-            if (type != markov_cero::model::VariableType::continuous) {
-                has_discrete = true;
-                break;
-            }
-        }
-
-        if (resolved_engine == "auto") {
-            if (model.has_quadratic_objective) {
-                resolved_engine = has_discrete ? "miqp" : "qp";
-            } else {
-                resolved_engine = has_discrete ? "milp" : "primal";
-            }
-        }
-
-        if (resolved_engine == "parallel") {
-            markov_cero::milp::ParallelOptions par_opts;
-            par_opts.num_threads = cli.num_threads;
-            par_opts.time_limit_seconds = cli.milp_options.time_limit_seconds;
-            par_opts.max_nodes = cli.milp_options.max_nodes;
-            par_opts.enable_cuts = cli.milp_options.enable_cuts;
-            par_opts.enable_mir_cuts = cli.milp_options.enable_mir_cuts;
-            par_opts.enable_heuristics = cli.milp_options.enable_heuristics;
-            par_opts.enable_strong_branching = cli.milp_options.enable_strong_branching;
-            par_opts.branching_strategy = cli.milp_options.branching_strategy;
-            const auto par_res = markov_cero::milp::solve_parallel(model, par_opts);
-            result.status = par_res.status;
-            result.message = par_res.message;
-            nodes_explored = par_res.nodes_explored;
-            total_lp_iterations = par_res.lp_iterations;
-            best_bound = par_res.best_bound;
-            relative_gap = par_res.relative_gap;
-            cuts_generated = par_res.cuts_generated;
-            heuristics_found = par_res.heuristics_found;
-
-            if (result.status == markov_cero::lp::reference::SolveStatus::optimal) {
-                original_primal = par_res.primal;
-                original_objective = par_res.objective;
-                result.primal = par_res.primal;
-                result.objective = par_res.objective;
-
-                markov_cero::verify::Candidate candidate{original_primal, original_objective};
-                primal_report = markov_cero::verify::verify_primal(model, candidate);
-                original_verified = primal_report.passed;
-                canonical_verified = true;
-                const auto viol_desc = markov_cero::apps::format_violation(primal_report);
-                original_message = original_verified ? "original primal verified"
-                                                     : ("original primal rejected: " + viol_desc);
-                if (!original_verified) {
-                    result.status = markov_cero::lp::reference::SolveStatus::numerical_failure;
-                    result.message = "original-model verification failed: " + viol_desc;
-                }
-            } else if (result.status == markov_cero::lp::reference::SolveStatus::infeasible ||
-                       result.status == markov_cero::lp::reference::SolveStatus::unbounded) {
-                canonical_verified = true;
-                original_message = "original primal not applicable";
-            } else {
-                original_message = "original primal not applicable";
-            }
-        } else if (resolved_engine == "pdlp") {
-            markov_cero::lp::first_order::PdlpOptions pdlp_opts;
-            pdlp_opts.backend = (cli.backend_name == "gpu")
-                                    ? markov_cero::lp::first_order::Backend::gpu
-                                    : markov_cero::lp::first_order::Backend::cpu;
-            pdlp_opts.max_iterations =
-                (cli.options.iteration_limit != 10000 && cli.options.iteration_limit > 0)
-                    ? cli.options.iteration_limit
-                    : 100000;
-            pdlp_opts.set_tolerance(cli.pdlp_tolerance);
-            const auto pdlp_res = markov_cero::lp::first_order::solve_pdlp(model, pdlp_opts);
-            total_lp_iterations = pdlp_res.iterations;
-            pdlp_res_primal_infeas = pdlp_res.primal_infeasibility;
-            pdlp_res_dual_infeas = pdlp_res.dual_infeasibility;
-            pdlp_res_gap = pdlp_res.duality_gap;
-            pdlp_h2d_ms = pdlp_res.h2d_ms;
-            pdlp_kernel_ms = pdlp_res.kernel_ms;
-            pdlp_d2h_ms = pdlp_res.d2h_ms;
-            pdlp_total_ms = pdlp_res.total_ms;
-            if (pdlp_res.status == markov_cero::lp::first_order::PdlpStatus::optimal) {
-                result.status = markov_cero::lp::reference::SolveStatus::optimal;
-                result.primal = pdlp_res.primal;
-                result.dual = pdlp_res.dual;
-                result.objective = pdlp_res.objective;
-                result.message = pdlp_res.message;
-                original_primal = pdlp_res.primal;
-                original_objective = pdlp_res.objective;
-
-                markov_cero::verify::Candidate candidate{original_primal, original_objective};
-                const markov_cero::verify::Tolerance pdlp_tol{
-                    cli.pdlp_tolerance, cli.pdlp_tolerance};
-                primal_report =
-                    markov_cero::verify::verify_primal(model, candidate, pdlp_tol, pdlp_tol,
-                                                       cli.pdlp_tolerance);
-                original_verified = primal_report.passed;
-                canonical_verified = true;
-                const auto viol_desc = markov_cero::apps::format_violation(primal_report);
-                original_message = original_verified ? "original primal verified"
-                                                     : ("original primal rejected: " + viol_desc);
-                if (!original_verified) {
-                    result.status = markov_cero::lp::reference::SolveStatus::numerical_failure;
-                    result.message = "original-model verification failed: " + viol_desc;
-                }
-            } else if (pdlp_res.status ==
-                       markov_cero::lp::first_order::PdlpStatus::iteration_limit) {
-                result.status = markov_cero::lp::reference::SolveStatus::iteration_limit;
-                result.message = pdlp_res.message;
-            } else {
-                result.status = markov_cero::lp::reference::SolveStatus::numerical_failure;
-                result.message = pdlp_res.message;
-            }
-            nodes_explored = 1;
-            best_bound = original_objective;
-            relative_gap = 0.0;
-        } else if (resolved_engine == "qp") {
-            const auto qp_model = markov_cero::qp::make_quadratic_model(model);
-            markov_cero::qp::QpOptions qopts;
-            qopts.absolute_tolerance = 1e-5;
-            qopts.relative_tolerance = 1e-5;
-            qopts.max_iterations =
-                (cli.options.iteration_limit != 10000 && cli.options.iteration_limit > 0)
-                    ? cli.options.iteration_limit
-                    : 4000;
-            const auto qpres = markov_cero::qp::solve_qp(qp_model, qopts);
-            total_lp_iterations = qpres.iterations;
-            nodes_explored = 1;
-            best_bound = qpres.objective_value;
-            relative_gap = 0.0;
-            if (qpres.status == markov_cero::qp::QpStatus::optimal) {
-                result.status = markov_cero::lp::reference::SolveStatus::optimal;
-                result.primal = qpres.x;
-                result.objective = qpres.objective_value;
-                result.message = "QP solved to optimality";
-                original_primal = qpres.x;
-                original_objective = qpres.objective_value;
-                const auto rep = markov_cero::qp::verify_qp_solution(qp_model, qpres);
-                original_verified = rep.passed;
-                canonical_verified = true;
-                original_message = rep.passed ? "QP KKT certificate verified"
-                                              : ("QP verification failed: " + rep.failure_reason);
-                if (!rep.passed) {
-                    result.status = markov_cero::lp::reference::SolveStatus::numerical_failure;
-                    result.message = original_message;
-                }
-            } else if (qpres.status == markov_cero::qp::QpStatus::primal_infeasible) {
-                result.status = markov_cero::lp::reference::SolveStatus::infeasible;
-                result.message = "QP primal infeasible";
-                canonical_verified = true;
-                original_message = "original primal not applicable";
-            } else if (qpres.status == markov_cero::qp::QpStatus::dual_infeasible) {
-                result.status = markov_cero::lp::reference::SolveStatus::unbounded;
-                result.message = "QP dual infeasible (unbounded)";
-                canonical_verified = true;
-                original_message = "original primal not applicable";
-            } else if (qpres.status == markov_cero::qp::QpStatus::non_convex) {
-                result.status = markov_cero::lp::reference::SolveStatus::invalid_model;
-                result.message = "Non-convex QP objective is not supported";
-                original_message = "non-convex QP rejected";
-            } else {
-                result.status = markov_cero::lp::reference::SolveStatus::numerical_failure;
-                result.message = "QP solve failed";
-                original_message = "QP solve failed";
-            }
-        } else if (resolved_engine == "milp" || resolved_engine == "miqp") {
-            const auto milp_res = markov_cero::milp::solve(model, cli.milp_options);
-            result.status = milp_res.status;
-            result.message = milp_res.message;
-            nodes_explored = milp_res.nodes_explored;
-            total_lp_iterations = milp_res.lp_iterations;
-            best_bound = milp_res.best_bound;
-            relative_gap = milp_res.relative_gap;
-            cuts_generated = milp_res.cuts_generated;
-            heuristics_found = milp_res.heuristics_found;
-
-            if (result.status == markov_cero::lp::reference::SolveStatus::optimal) {
-                original_primal = milp_res.primal;
-                original_objective = milp_res.objective;
-                result.primal = milp_res.primal;
-                result.objective = milp_res.objective;
-
-                markov_cero::verify::Candidate candidate{original_primal, original_objective};
-                primal_report = markov_cero::verify::verify_primal(model, candidate);
-                original_verified = primal_report.passed;
-                canonical_verified = true;
-                const auto viol_desc = markov_cero::apps::format_violation(primal_report);
-                original_message = original_verified ? "original primal verified"
-                                                     : ("original primal rejected: " + viol_desc);
-                if (!original_verified) {
-                    result.status = markov_cero::lp::reference::SolveStatus::numerical_failure;
-                    result.message = "original-model verification failed: " + viol_desc;
-                }
-            } else if (result.status == markov_cero::lp::reference::SolveStatus::infeasible ||
-                       result.status == markov_cero::lp::reference::SolveStatus::unbounded) {
-                canonical_verified = true;
-                original_message = "original primal not applicable";
-            } else {
-                original_message = "original primal not applicable";
-            }
-        } else {
-            const auto sparse_canonical =
-                markov_cero::transform::sparse_canonicalize(model, /*relax_integrality=*/true);
-            auto working_model = sparse_canonical;
-
-            if (cli.enable_presolve) {
-                markov_cero::presolve::PresolveOptions popts;
-                popts.max_passes = cli.max_presolve_passes;
-                presolve_res = markov_cero::presolve::presolve(sparse_canonical, popts);
-                if (presolve_res.status == markov_cero::lp::reference::SolveStatus::infeasible ||
-                    presolve_res.status == markov_cero::lp::reference::SolveStatus::unbounded) {
-                    result.status = presolve_res.status;
-                    result.message = presolve_res.message;
-                } else {
-                    working_model = presolve_res.model;
-                    presolve_applied = true;
-                }
-            }
-
-            if (result.status != markov_cero::lp::reference::SolveStatus::infeasible &&
-                result.status != markov_cero::lp::reference::SolveStatus::unbounded &&
-                cli.enable_scale && working_model.matrix.rows > 0 &&
-                working_model.matrix.columns > 0) {
-                markov_cero::scale::RuizOptions ropts;
-                ropts.max_iterations = cli.ruiz_iterations;
-                scalers = markov_cero::scale::equilibrate(working_model, ropts);
-                scaling_applied = true;
-            }
-
-            if (result.status != markov_cero::lp::reference::SolveStatus::infeasible &&
-                result.status != markov_cero::lp::reference::SolveStatus::unbounded) {
-                if (working_model.matrix.rows == 0 || working_model.matrix.columns == 0) {
-                    result.status = markov_cero::lp::reference::SolveStatus::optimal;
-                    result.primal.assign(working_model.matrix.columns, 0.0);
-                    result.dual.assign(working_model.matrix.rows, 0.0);
-                    result.objective = 0.0;
-                } else {
-                    const auto canonical = working_model.to_dense();
-                    if (resolved_engine == "dual") {
-                        markov_cero::lp::dual::Options dual_opts;
-                        dual_opts.iteration_limit = cli.options.iteration_limit;
-                        std::optional<markov_cero::lp::dual::BasisState> warm_basis;
-                        if (!cli.warm_start_path.empty()) {
-                            std::ifstream bfile(cli.warm_start_path);
-                            if (!bfile) {
-                                throw std::invalid_argument("cannot open warm-start basis file");
-                            }
-                            std::string btext((std::istreambuf_iterator<char>(bfile)),
-                                              std::istreambuf_iterator<char>());
-                            warm_basis = markov_cero::lp::dual::parse_basis(btext);
-                        }
-                        const auto dual_res =
-                            markov_cero::lp::dual::solve(canonical, dual_opts, warm_basis);
-                        result = dual_res.solution;
-                        basis_to_save = dual_res.basis_state;
-                        used_warm_start = dual_res.used_warm_start;
-                        used_cold_fallback = dual_res.used_cold_fallback;
-                    } else {
-                        result = markov_cero::lp::reference::solve(canonical, cli.options);
-                        if (result.status == markov_cero::lp::reference::SolveStatus::optimal &&
-                            result.basis.size() == canonical.matrix.rows) {
-                            basis_to_save =
-                                markov_cero::lp::dual::make_basis_state(canonical, result.basis);
-                        }
-                    }
-                }
-            }
-
-            if (scaling_applied &&
-                result.status == markov_cero::lp::reference::SolveStatus::optimal) {
-                markov_cero::scale::unscale_solution(scalers, result);
-            }
-
-            if (presolve_applied &&
-                result.status == markov_cero::lp::reference::SolveStatus::optimal) {
-                result =
-                    markov_cero::presolve::postsolve(presolve_res.stack, result, sparse_canonical);
-            }
-
-            if (result.status == markov_cero::lp::reference::SolveStatus::optimal) {
-                const auto Ax = sparse_canonical.multiply(result.primal);
-                double max_viol = 0.0;
-                for (std::size_t i = 0; i < sparse_canonical.rhs.size(); ++i) {
-                    max_viol = std::max(max_viol, std::abs(Ax[i] - sparse_canonical.rhs[i]));
-                }
-                canonical_verified =
-                    (max_viol <= std::max(cli.options.feasibility_tolerance,
-                                          cli.options.dual_tolerance));
-
-                if (result.dual.size() == sparse_canonical.matrix.rows) {
-                    const auto aty = sparse_canonical.multiply_transpose(result.dual);
-                    double max_dual_viol = 0.0;
-                    for (std::size_t j = 0; j < sparse_canonical.objective.size(); ++j) {
-                        const double rc = sparse_canonical.objective[j] - aty[j];
-                        if (-rc > max_dual_viol) {
-                            max_dual_viol = -rc;
-                        }
-                    }
-                    canonical_report.maximum_dual_violation = max_dual_viol;
-                    canonical_verified =
-                        canonical_verified &&
-                        (max_dual_viol <= std::max(cli.options.feasibility_tolerance,
-                                                   cli.options.dual_tolerance));
-                }
-            } else if (result.status == markov_cero::lp::reference::SolveStatus::infeasible ||
-                       result.status == markov_cero::lp::reference::SolveStatus::unbounded) {
-                canonical_verified = true;
-            }
-
-            if ((result.status == markov_cero::lp::reference::SolveStatus::optimal ||
-                 result.status == markov_cero::lp::reference::SolveStatus::infeasible ||
-                 result.status == markov_cero::lp::reference::SolveStatus::unbounded) &&
-                !canonical_verified) {
-                result.status = markov_cero::lp::reference::SolveStatus::numerical_failure;
-                result.message = "canonical witness rejected: " + canonical_report.message;
-            }
-
-            if (result.status == markov_cero::lp::reference::SolveStatus::optimal) {
-                original_primal =
-                    markov_cero::transform::reconstruct_primal(sparse_canonical, result.primal);
-                original_objective = markov_cero::transform::reconstruct_objective(
-                    sparse_canonical, result.objective);
-                markov_cero::verify::Candidate candidate{original_primal, original_objective};
-                primal_report = markov_cero::verify::verify_primal(model, candidate);
-                original_verified = primal_report.passed;
-                original_message =
-                    original_verified ? "original primal verified" : "original primal rejected";
-                if (!original_verified) {
-                    result.status = markov_cero::lp::reference::SolveStatus::numerical_failure;
-                    result.message = "original-model verification failed";
-                } else if (!cli.save_basis_path.empty() && basis_to_save.has_value()) {
-                    std::ofstream bfile(cli.save_basis_path);
-                    if (bfile) {
-                        bfile << markov_cero::lp::dual::serialize_basis(*basis_to_save);
-                    }
-                }
-                nodes_explored = 1;
-                best_bound = original_objective;
-                relative_gap = 0.0;
-            } else {
-                original_message = "original primal not applicable";
-            }
-            total_lp_iterations = result.phase_one_iterations + result.phase_two_iterations;
-        }
-    } catch (const markov_cero::io::MpsError& e) {
-        result.status = markov_cero::lp::reference::SolveStatus::invalid_model;
-        result.message = e.what();
-        error = e.what();
-    } catch (const std::invalid_argument& e) {
-        result.status = markov_cero::lp::reference::SolveStatus::invalid_model;
-        result.message = e.what();
-        error = e.what();
-    } catch (const std::length_error& e) {
-        result.status = markov_cero::lp::reference::SolveStatus::resource_limit;
-        result.message = e.what();
-        error = e.what();
-    } catch (const std::exception& e) {
-        result.status = markov_cero::lp::reference::SolveStatus::numerical_failure;
-        result.message = e.what();
-        error = e.what();
-    }
-
-    const auto elapsed_ms =
-        std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - started)
-            .count();
-    const bool verified = (result.status == markov_cero::lp::reference::SolveStatus::optimal &&
-                           original_verified && canonical_verified) ||
-                          ((result.status == markov_cero::lp::reference::SolveStatus::infeasible ||
-                            result.status == markov_cero::lp::reference::SolveStatus::unbounded) &&
-                           canonical_verified);
-
-        markov_cero::apps::JsonOutputData out_data;
-    out_data.resolved_engine = resolved_engine;
-    out_data.result = result;
-    out_data.model_rows = model_rows;
-    out_data.model_cols = model_cols;
-    out_data.model_nnz = model_nnz;
-    out_data.verified = verified;
-    out_data.original_objective = original_objective;
-    out_data.original_primal = original_primal;
-    out_data.canonical_verified = canonical_verified;
-    out_data.original_verified = original_verified;
-    out_data.original_message = original_message;
-    out_data.used_warm_start = used_warm_start;
-    out_data.used_cold_fallback = used_cold_fallback;
-    out_data.primal_report = primal_report;
-    out_data.canonical_report = canonical_report;
-    out_data.elapsed_ms = elapsed_ms;
-    out_data.nodes_explored = nodes_explored;
-    out_data.total_lp_iterations = total_lp_iterations;
-    out_data.best_bound = best_bound;
-    out_data.relative_gap = relative_gap;
-    out_data.cuts_generated = cuts_generated;
-    out_data.heuristics_found = heuristics_found;
-    out_data.pdlp_tolerance = cli.pdlp_tolerance;
-    out_data.pdlp_res_primal_infeas = pdlp_res_primal_infeas;
-    out_data.pdlp_res_dual_infeas = pdlp_res_dual_infeas;
-    out_data.pdlp_res_gap = pdlp_res_gap;
-    out_data.backend_name = cli.backend_name;
-    out_data.pdlp_h2d_ms = pdlp_h2d_ms;
-    out_data.pdlp_kernel_ms = pdlp_kernel_ms;
-    out_data.pdlp_d2h_ms = pdlp_d2h_ms;
-    out_data.pdlp_total_ms = pdlp_total_ms;
-    out_data.error = error;
+    auto out_data = to_json_data(res, options);
     out_data.output_path = cli.output_path;
     markov_cero::apps::emit_json_output(out_data);
 
-std::string timing_diag;
-    if (resolved_engine == "pdlp") {
-        if (cli.backend_name == "gpu") {
-            timing_diag = " [gpu H2D=" + json_number(pdlp_h2d_ms) + "ms kernel=" +
-                          json_number(pdlp_kernel_ms) + "ms D2H=" + json_number(pdlp_d2h_ms) +
-                          "ms total=" + json_number(pdlp_total_ms) + "ms]";
+    std::string timing_diag;
+    if (res.resolved_engine == "pdlp") {
+        if (options.backend == "gpu") {
+            timing_diag = " [gpu H2D=" + json_number(res.pdlp_h2d_ms) + "ms kernel=" +
+                          json_number(res.pdlp_kernel_ms) + "ms D2H=" +
+                          json_number(res.pdlp_d2h_ms) + "ms total=" +
+                          json_number(res.pdlp_total_ms) + "ms]";
         } else {
-            timing_diag = " [cpu total=" + json_number(pdlp_total_ms) + "ms]";
+            timing_diag = " [cpu total=" + json_number(res.pdlp_total_ms) + "ms]";
         }
     }
 
     std::cerr << "markov-cero " << markov_cero::foundation::version() << " "
-              << markov_cero::lp::reference::to_string(result.status)
-              << (resolved_engine == "pdlp"
-                      ? (" [tol=" + json_number(cli.pdlp_tolerance) + "]" + timing_diag)
+              << markov_cero::lp::reference::to_string(res.status)
+              << " [" << res.problem_class << " -> " << res.resolved_engine << "]"
+              << (res.resolved_engine == "pdlp"
+                      ? (" [tol=" + json_number(options.pdlp_tolerance) + "]" + timing_diag)
                       : "")
-              << (verified ? " VERIFIED\n" : " NOT VERIFIED\n");
-    return markov_cero::apps::exit_code(result.status);
+              << (res.verified ? " VERIFIED\n" : " NOT VERIFIED\n");
+    // C-3: a numerical failure must always reach the console with residuals
+    // and a suggested action, not just as a bare status word.
+    if (res.status == markov_cero::lp::reference::SolveStatus::numerical_failure) {
+        const auto& d = res.diagnostic;
+        std::cerr << "numerical_diagnostic: primal_residual=" << json_number(d.primal_residual)
+                  << " dual_residual=" << json_number(d.dual_residual)
+                  << " complementarity_gap=" << json_number(d.complementarity_gap)
+                  << " condition_estimate=" << json_number(d.condition_estimate)
+                  << " failure_site=" << d.failure_site
+                  << " suggested_recovery=" << d.suggested_recovery << "\n";
+    }
+    if (!res.convergence_note.empty()) {
+        std::cerr << "convergence_note: " << res.convergence_note << "\n";
+    }
+    return markov_cero::apps::exit_code(res.status);
 }

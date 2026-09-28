@@ -1,6 +1,7 @@
 // Regression: GPU request must not claim CUDA when GPU code is not linked.
 #include "markov_cero/io/mps.hpp"
 #include "markov_cero/lp/first_order/pdlp.hpp"
+#include "markov_cero/gpu/device.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -36,13 +37,15 @@ ENDATA
     markov_cero::lp::first_order::PdlpOptions gpu_opts = cpu_opts;
     gpu_opts.backend = markov_cero::lp::first_order::Backend::gpu;
     auto gpu = markov_cero::lp::first_order::solve_pdlp(model, gpu_opts);
-    if (gpu.backend_actually_used != "cpu_fallback") {
+    const std::string expected_backend = markov_cero::gpu::is_gpu_available()
+                                             ? "cuda" : "cpu_fallback";
+    if (gpu.backend_actually_used != expected_backend) {
         std::cerr << "FAIL: GPU request reported backend_actually_used="
-                  << gpu.backend_actually_used << " expected cpu_fallback\n";
+                  << gpu.backend_actually_used << " expected " << expected_backend << "\n";
         return 1;
     }
     std::cout << "PASS: cpu=" << cpu.backend_actually_used
               << " gpu_request=" << gpu.backend_actually_used
-              << " (GPU deferred; no CUDA in build)\n";
+              << "\n";
     return 0;
 }

@@ -17,11 +17,11 @@
 namespace markov_cero::lp::dual {
 namespace {
 
-constexpr std::size_t maximum_rows = 1024;
-constexpr std::size_t maximum_columns = 8192;
+constexpr std::size_t maximum_rows = 4096;
+constexpr std::size_t maximum_columns = 16384;
 constexpr std::size_t maximum_iterations = 1000000;
 constexpr std::size_t maximum_telemetry = 10000;
-constexpr std::size_t maximum_dense_elements = 4U * 1024U * 1024U;
+constexpr std::size_t maximum_dense_elements = 64U * 1024U * 1024U;
 constexpr double maximum_tolerance = 1e-4;
 
 std::uint64_t mix(std::uint64_t h, std::uint64_t v) {
@@ -83,8 +83,8 @@ linalg::SparseBasisOptions sparse_options(const Options& o) {
     so.maximum_dimension = maximum_rows;
     so.maximum_nonzeros = maximum_dense_elements;
     so.maximum_factor_nonzeros = maximum_dense_elements;
-    so.maximum_updates = 64;
-    so.eta_density_trigger = 0.5;
+    so.maximum_updates = 16;
+    so.eta_density_trigger = 0.9;
     return so;
 }
 
@@ -153,20 +153,38 @@ Result cold(const transform::CanonicalModel& m, const Options& o, const std::str
     ro.feasibility_tolerance = o.feasibility_tolerance;
     ro.dual_tolerance = o.dual_tolerance;
     ro.pivot_tolerance = o.pivot_tolerance;
+    ro.deadline = o.deadline;
     auto r = reference::solve(m, ro);
     out.solution = std::move(r);
     out.used_cold_fallback = true;
     out.message = why;
     if (out.solution.status == reference::SolveStatus::optimal &&
         out.solution.basis.size() == m.matrix.rows) {
-        out.basis_state = make_basis_state(m, out.solution.basis);
+        try {
+            out.basis_state = make_basis_state(m, out.solution.basis);
+        } catch (...) {
+            // Degenerate optimal basis: keep the solve result, drop the warm start.
+        }
     }
     return out;
+}
+
+std::vector<double> compute_exact_dse_weights(const transform::CanonicalModel& m,
+                                              linalg::SparseBasisFactorization& factor) {
+    std::vector<double> gamma(m.matrix.rows, 1.0);
+    for (std::size_t i = 0; i < m.matrix.rows; ++i) {
+        std::vector<double> e(m.matrix.rows, 0.0);
+        e[i] = 1.0;
+        auto pi = factor.solve_transpose(e);
+        gamma[i] = std::max(dot(pi, pi), 1e-12);
+    }
+    return gamma;
 }
 
 std::size_t select_leaving_row(const transform::CanonicalModel& m,
                                linalg::SparseBasisFactorization& factor,
                                const std::vector<double>& xb, const std::vector<std::size_t>& basis,
+                               const std::vector<double>& dse_weights,
                                const Options& o, double& worst) {
     std::size_t leaving = m.matrix.rows;
     worst = 0;
@@ -180,9 +198,18 @@ std::size_t select_leaving_row(const transform::CanonicalModel& m,
             }
             continue;
         }
-        // Tableau-norm weight ||A^T B^{-T} e_i||^2; not conventional DSE ||B^{-T} e_i||^2.
-        // Full weight is recomputed for every candidate row (O(m) solves + SpMV per pivot).
-        // Incremental Forrest–Goldfarb updates are deferred until MILP node reoptimization (M9).
+        if (o.pricing == PricingPolicy::steepest_edge) {
+            const double w = (i < dse_weights.size()) ? dse_weights[i] : 1.0;
+            const double score =
+                (-xb[i]) / std::sqrt(std::max(w, std::numeric_limits<double>::min()));
+            if (leaving == m.matrix.rows || score > worst ||
+                (score == worst && basis[i] < basis[leaving])) {
+                leaving = i;
+                worst = score;
+            }
+            continue;
+        }
+        // Tableau-norm weight ||A^T B^{-T} e_i||^2
         std::vector<double> e(m.matrix.rows);
         e[i] = 1;
         auto pi = factor.solve_transpose(e);
@@ -253,7 +280,11 @@ Result certified_optimal(const transform::CanonicalModel& m, const std::vector<s
     out.solution.basis = basis;
     out.solution.objective = dot(m.objective, out.solution.primal) + m.objective_offset;
     out.solution.message = "dual revised simplex optimum";
-    out.basis_state = make_basis_state(m, basis);
+    try {
+        out.basis_state = make_basis_state(m, basis);
+    } catch (...) {
+        // Degenerate optimal basis: keep the solve result, drop the warm start.
+    }
     auto check = verify::verify_reference_result(
         m, out.solution, std::max(o.feasibility_tolerance, o.dual_tolerance));
     if (!check.accepted) {
@@ -294,7 +325,6 @@ std::string fingerprint(const transform::CanonicalModel& m) {
     for (double v : m.objective) {
         h = mix(h, std::bit_cast<std::uint64_t>(v));
     }
-    h = mix(h, std::bit_cast<std::uint64_t>(m.objective_offset));
     return hex(h);
 }
 
@@ -363,7 +393,6 @@ BasisState parse_basis(const std::string& text) {
 Result solve(const transform::CanonicalModel& m, const Options& o,
              const std::optional<BasisState>& warm) {
     Result out;
-    bool validating_warm = false;
     try {
         m.validate();
     } catch (const std::exception& e) {
@@ -388,7 +417,6 @@ Result solve(const transform::CanonicalModel& m, const Options& o,
         if (!warm) {
             return cold(m, o, "cold solve delegated to certified M3 oracle");
         }
-        validating_warm = true;
         validate_basis_metadata(m, *warm);
         auto basis = warm->basic_variables;
         linalg::SparseBasisFactorization factor;
@@ -398,11 +426,21 @@ Result solve(const transform::CanonicalModel& m, const Options& o,
         } catch (const std::exception&) {
             throw std::invalid_argument("warm basis is singular");
         }
-        validating_warm = false;
         out.used_warm_start = true;
         out.telemetry.reserve(std::min(o.iteration_limit, o.telemetry_limit));
         out.refactorizations = factor.statistics().refactorizations;
+        std::vector<double> dse_weights;
+        if (o.pricing == PricingPolicy::steepest_edge) {
+            dse_weights = compute_exact_dse_weights(m, factor);
+        }
         for (std::size_t step = 0; step < o.iteration_limit; ++step) {
+            if (o.deadline && std::chrono::steady_clock::now() >= *o.deadline) {
+                out.solution.status = reference::SolveStatus::resource_limit;
+                out.solution.message = "dual simplex wall-clock deadline reached";
+                out.message = out.solution.message;
+                out.solution.condition_estimate = factor.current_condition_estimate();
+                return out;
+            }
             const auto& diagnostics = factor.diagnostics();
             if (m.matrix.rows > 0 && diagnostics.maximum_absolute_pivot > 0 &&
                 diagnostics.minimum_absolute_pivot / diagnostics.maximum_absolute_pivot <
@@ -432,13 +470,14 @@ Result solve(const transform::CanonicalModel& m, const Options& o,
                 }
             }
             double worst = 0;
-            const std::size_t leaving = select_leaving_row(m, factor, xb, basis, o, worst);
+            const std::size_t leaving = select_leaving_row(m, factor, xb, basis, dse_weights, o, worst);
             if (leaving == m.matrix.rows) {
                 auto certified = certified_optimal(m, basis, xb, y, o);
                 certified.used_warm_start = true;
                 certified.telemetry = std::move(out.telemetry);
                 certified.telemetry_truncated = out.telemetry_truncated;
                 certified.refactorizations = out.refactorizations;
+                certified.solution.condition_estimate = factor.current_condition_estimate();
                 return certified;
             }
             std::vector<double> e(m.matrix.rows);
@@ -454,6 +493,7 @@ Result solve(const transform::CanonicalModel& m, const Options& o,
                 certified.telemetry = std::move(out.telemetry);
                 certified.telemetry_truncated = out.telemetry_truncated;
                 certified.refactorizations = out.refactorizations;
+                certified.solution.condition_estimate = factor.current_condition_estimate();
                 return certified;
             }
             if (out.telemetry.size() < o.telemetry_limit) {
@@ -467,15 +507,40 @@ Result solve(const transform::CanonicalModel& m, const Options& o,
             for (std::size_t i = 0; i < m.matrix.rows; ++i) {
                 entering_column[i] = m.matrix(i, entering);
             }
+            if (o.pricing == PricingPolicy::steepest_edge) {
+                // Forrest-Goldfarb update recurrence: O(m) update
+                auto aq_bar = factor.solve(entering_column);
+                const double piv = aq_bar[leaving];
+                if (std::abs(piv) > 1e-14 && leaving < dse_weights.size()) {
+                    auto w = factor.solve(pi);
+                    const double gamma_p = dse_weights[leaving];
+                    for (std::size_t i = 0; i < m.matrix.rows; ++i) {
+                        if (i == leaving) {
+                            dse_weights[i] = std::max(1e-12, gamma_p / (piv * piv));
+                        } else {
+                            const double ratio = aq_bar[i] / piv;
+                            const double upd =
+                                dse_weights[i] - 2.0 * ratio * w[i] + ratio * ratio * gamma_p;
+                            dse_weights[i] = std::max(1e-12, upd);
+                        }
+                    }
+                }
+            }
             factor.replace_column(leaving, entering_column);
             basis[leaving] = entering;
             if (factor.needs_refactorization()) {
                 factor.refactorize();
+                if (o.pricing == PricingPolicy::steepest_edge) {
+                    dse_weights = compute_exact_dse_weights(m, factor);
+                }
+            } else if (o.pricing == PricingPolicy::steepest_edge && (step + 1) % 500 == 0) {
+                dse_weights = compute_exact_dse_weights(m, factor);
             }
             out.refactorizations = factor.statistics().refactorizations;
         }
         out.solution.status = reference::SolveStatus::iteration_limit;
         out.solution.message = "dual simplex iteration limit";
+        out.solution.condition_estimate = factor.current_condition_estimate();
         out.message = out.solution.message;
         return out;
     } catch (const std::length_error& e) {
@@ -483,13 +548,17 @@ Result solve(const transform::CanonicalModel& m, const Options& o,
         out.solution.message = out.message = e.what();
         return out;
     } catch (const std::invalid_argument& e) {
-        if (validating_warm && warm && o.allow_cold_fallback) {
+        if (warm && o.allow_cold_fallback) {
             return cold(m, o, std::string("invalid warm start; cold fallback: ") + e.what());
         }
         out.solution.status = reference::SolveStatus::numerical_failure;
         out.solution.message = out.message = e.what();
         return out;
     } catch (const std::exception& e) {
+        if (warm && o.allow_cold_fallback) {
+            return cold(m, o, std::string("warm start numerical failure; cold fallback: ") +
+                                 e.what());
+        }
         out.solution.status = reference::SolveStatus::numerical_failure;
         out.solution.message = out.message = e.what();
         return out;

@@ -1,0 +1,5 @@
+solver,instance,status,objective,obj_error_vs_best,time_ms,ratio_vs_highs,ratio_vs_gurobi,pass
+markov-cero,afiro,Optimal,-464.75314285714285,3.669265269171984e-16,2.2,3.1428571428571432,,True
+HiGHS,afiro,Optimal,-464.75314285714285,3.669265269171984e-16,0.7,1.0,,True
+CBC,afiro,Optimal,-464.75314432000005,3.1476000674308286e-09,3.6,5.142857142857143,,True
+SCIP,afiro,Optimal,-464.75314285714273,6.11544211528664e-16,0.9,1.2857142857142858,,True

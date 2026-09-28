@@ -162,6 +162,25 @@ void Model::validate() const {
         if (quadratic_matrix.column_count != columns || quadratic_matrix.row_count != columns)
             throw std::invalid_argument("quadratic matrix dimension mismatch");
     }
+    if (has_nlobj_section) {
+        for (const NlobjTerm& term : nlobj_terms) {
+            if (!std::isfinite(term.coefficient))
+                throw std::invalid_argument("NLOBJ coefficient must be finite");
+            if (term.var0 >= columns || (term.quadratic && term.var1 >= columns))
+                throw std::invalid_argument("NLOBJ variable index out of range");
+        }
+    }
+    for (const NlconConstraint& constraint : nlcon_constraints) {
+        if (constraint.name.empty() || !std::isfinite(constraint.rhs) ||
+            constraint.terms.empty())
+            throw std::invalid_argument("NLCON constraint must have a name, finite RHS, and terms");
+        for (const NlobjTerm& term : constraint.terms) {
+            if (!std::isfinite(term.coefficient))
+                throw std::invalid_argument("NLCON coefficient must be finite");
+            if (term.var0 >= columns || (term.quadratic && term.var1 >= columns))
+                throw std::invalid_argument("NLCON variable index out of range");
+        }
+    }
 }
 
 const char* to_string(ObjectiveSense sense) noexcept {

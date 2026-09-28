@@ -59,10 +59,14 @@ QpVerificationReport verify_qp_solution(const QuadraticModel& model,
     // 1. Primal feasibility
     const std::vector<double> Ax = multiply_A(model.A, solution.x);
     double max_rel_primal = 0.0;
+    std::size_t max_viol_row = 0;
     for (std::size_t i = 0; i < m; ++i) {
         if (!std::isinf(model.l[i]) && Ax[i] < model.l[i]) {
             const double viol = model.l[i] - Ax[i];
             const double scale = 1.0 + std::max(std::abs(Ax[i]), std::abs(model.l[i]));
+            if (viol / scale > max_rel_primal) {
+                max_viol_row = i;
+            }
             report.maximum_primal_violation =
                 std::max(report.maximum_primal_violation, viol);
             max_rel_primal = std::max(max_rel_primal, viol / scale);
@@ -70,6 +74,9 @@ QpVerificationReport verify_qp_solution(const QuadraticModel& model,
         if (!std::isinf(model.u[i]) && Ax[i] > model.u[i]) {
             const double viol = Ax[i] - model.u[i];
             const double scale = 1.0 + std::max(std::abs(Ax[i]), std::abs(model.u[i]));
+            if (viol / scale > max_rel_primal) {
+                max_viol_row = i;
+            }
             report.maximum_primal_violation =
                 std::max(report.maximum_primal_violation, viol);
             max_rel_primal = std::max(max_rel_primal, viol / scale);
@@ -147,7 +154,10 @@ QpVerificationReport verify_qp_solution(const QuadraticModel& model,
     bool ok = true;
     if (max_rel_primal > tolerance) {
         ok = false;
-        reasons << "Primal violation (" << max_rel_primal
+        std::string rname = (max_viol_row < model.constraint_names.size())
+                                ? model.constraint_names[max_viol_row]
+                                : ("row" + std::to_string(max_viol_row));
+        reasons << "Primal violation in " << rname << " (" << max_rel_primal
                 << " > " << tolerance << "); ";
     }
     if (report.maximum_integrality_violation > tolerance) {

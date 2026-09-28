@@ -140,7 +140,7 @@ void add_cuts_to_model(model::Model& model, const std::vector<Cut>& cuts) {
         }
         model.row_lower.push_back(model::Bound::finite(cut.rhs));
         model.row_upper.push_back(model::Bound::positive_infinity());
-        model.row_name.push_back("GOMORY_CUT_" + std::to_string(c + 1));
+        model.row_name.push_back("GOMORY_CUT_" + std::to_string(initial_rows + c + 1));
     }
 
     model.matrix = builder.build();

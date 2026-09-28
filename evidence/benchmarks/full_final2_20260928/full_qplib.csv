@@ -1,0 +1,7 @@
+solver,solver_sha256,suite,instance,problem_class,n_vars,n_constraints,n_nonzeros,status,verified,objective,best_known_obj,obj_error,time_ms,nodes,gap,kkt_primal,kkt_dual
+markov-cero,a73dedfeb28db6bd5148e16c2d45c44bcce02e385361e8c0bf3db0ec9fef7981,qplib,QPLIB_0001,QP,5,0,0,Optimal,True,-3.499999999997684,,,29.8,1,0,0,0
+markov-cero,a73dedfeb28db6bd5148e16c2d45c44bcce02e385361e8c0bf3db0ec9fef7981,qplib,QPLIB_0002,QP,4,2,6,Optimal,True,-2.1071484636495885,,,32.8,1,0,0,0
+markov-cero,a73dedfeb28db6bd5148e16c2d45c44bcce02e385361e8c0bf3db0ec9fef7981,qplib,QPLIB_0010,QP,6,2,12,Optimal,True,-0.10334183914528287,,,18.7,1,0,0,0
+markov-cero,a73dedfeb28db6bd5148e16c2d45c44bcce02e385361e8c0bf3db0ec9fef7981,qplib,QPLIB_0025,QP,6,3,12,Optimal,True,2681.001805706975,,,18.5,1,0,0,0
+markov-cero,a73dedfeb28db6bd5148e16c2d45c44bcce02e385361e8c0bf3db0ec9fef7981,qplib,QPLIB_8495,,,,,Timeout,False,,,,305327.2,,,,
+markov-cero,a73dedfeb28db6bd5148e16c2d45c44bcce02e385361e8c0bf3db0ec9fef7981,qplib,QPLIB_8515,QP,16002,8002,40003,InvalidModel,False,,,,891.0,1,,,

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=64", "pybind11>=2.12"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "markov-cero"
+version = "0.5.2"
+description = "Sovereign LP/MILP/QP/MIQP/NLP/MINLP solver core (markov-cero) Python bindings"
+requires-python = ">=3.9"
+license = {text = "Proprietary"}
+
+[project.optional-dependencies]
+ml-training = ["torch>=2.9", "onnx>=1.16", "onnxruntime>=1.19"]
+
+[tool.setuptools]
+package-dir = {"" = "python"}
+packages = ["markov_cero"]
+
+[tool.setuptools.package-data]
+markov_cero = ["*.so", "*.pyd"]
+
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]

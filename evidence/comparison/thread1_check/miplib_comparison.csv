@@ -1,0 +1,13 @@
+solver,instance,status,objective,obj_error_vs_best,time_ms,ratio_vs_highs,ratio_vs_gurobi,pass
+markov-cero,stein9,Optimal,5,0.0,125.9,5.645739910313901,,True
+HiGHS,stein9,Optimal,5.0,0.0,22.3,1.0,,True
+CBC,stein9,Optimal,5.0,0.0,24.8,1.1121076233183858,,True
+SCIP,stein9,Optimal,4.999999999999998,3.552713678800501e-16,11.8,0.5291479820627802,,True
+markov-cero,stein15,Optimal,9,0.0,7655.5,134.54305799648506,,True
+HiGHS,stein15,Optimal,9.0,0.0,56.9,1.0,,True
+CBC,stein15,Optimal,9.0,0.0,159.2,2.797891036906854,,True
+SCIP,stein15,Optimal,8.999999999999993,7.894919286223335e-16,25.1,0.4411247803163445,,True
+markov-cero,flugpl,TimeLimit,,,30017.2,,,False
+HiGHS,flugpl,Optimal,1201500.0,0.0,103.5,1.0,,True
+CBC,flugpl,Optimal,1201500.0,0.0,44.6,0.43091787439613527,,True
+SCIP,flugpl,Optimal,1201500.0,0.0,11.1,0.1072463768115942,,True

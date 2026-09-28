@@ -1,7 +1,10 @@
 #pragma once
 
+#include "markov_cero/nlp/nlp_model.hpp"
+
 #include <cstddef>
 #include <cstdint>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -50,6 +53,22 @@ class SparseMatrixBuilder final {
     std::vector<Entry> entries_;
 };
 
+// W1/D-12: one polynomial term of the custom MPS NLOBJ section.
+// Degree-1 term:  coefficient * x[var0]
+// Degree-2 term:  coefficient * x[var0] * x[var1]
+struct NlobjTerm final {
+    double coefficient{0.0};
+    std::size_t var0{0};
+    std::size_t var1{0};
+    bool quadratic{false};
+};
+
+struct NlconConstraint final {
+    std::string name;
+    double rhs{0.0};
+    std::vector<NlobjTerm> terms;
+};
+
 struct Model final {
     std::string name;
     ObjectiveSense objective_sense{ObjectiveSense::minimize};
@@ -65,6 +84,26 @@ struct Model final {
     std::vector<std::string> variable_name;
     bool has_quadratic_objective{false};
     SparseMatrixCSC quadratic_matrix;
+
+    // W1/D-01 Path B: polynomial MPS extension content. The classification
+    // signal is set for non-empty NLOBJ or NLCON content.
+    bool has_nlobj_section{false};
+    std::vector<NlobjTerm> nlobj_terms;
+    std::vector<NlconConstraint> nlcon_constraints;
+
+    // W1/D-01 Path A: programmatic NLP callbacks accompanying this model.
+    // When set, the locked classifier sees callback presence
+    // (ClassificationInputs::has_nlp_callbacks) and the unified solve API
+    // composes the companion into the SQP/outer-approx view
+    // (io::make_nlp_model):
+    //   - objective: companion f(x) is ADDED to the Model's linear/NLOBJ
+    //     objective (same additivity rule as NLOBJ degree-1 terms); the
+    //     Model's objective sense (maximize) negates both parts,
+    //   - constraints: companion g(x) <= 0 rows are APPENDED after the
+    //     Model's linear rows, companion h(x) = 0 rows ride as equalities,
+    //   - bounds: intersection — the tightest finite bound wins,
+    //   - companion n_vars must equal the Model's column count.
+    std::optional<nlp::NlpModel> nlp_callbacks;
 
     void validate() const;
 };

@@ -1,0 +1,52 @@
+{
+  "timestamp_utc": "2026-09-28T05:01:16+00:00",
+  "gpus": [],
+  "gpu_note": "no GPU detected (nvidia-smi unavailable or reported no devices)",
+  "cpu": "12th Gen Intel(R) Core(TM) i5-12450HX",
+  "cpu_threads": 12,
+  "ram_gb": 11.4,
+  "os": "Omarchy",
+  "arch": "x86_64",
+  "nvcc": null,
+  "cuda_toolkit": null,
+  "solver_links_cuda": false,
+  "solver_has_cuda_fatbin": false,
+  "backend_note": "no GPU detected; `--backend gpu` runs the CPU fallback of the GPU engine",
+  "hardware_id": "hw-4d2891af0b",
+  "run": {
+    "solver": "/home/saikrishna/markov-initial-build/build_plan/markov-cero-solve",
+    "cwd": "/home/saikrishna/markov-initial-build",
+    "instances": [
+      "afiro",
+      "blend",
+      "sc50a",
+      "sc50b"
+    ],
+    "tolerance": 0.0001,
+    "timeout_s": 120,
+    "max_simplex_rows": 0,
+    "output_csv": "/home/saikrishna/markov-initial-build/build_plan/reports/gpu_benchmark.csv"
+  },
+  "results": [
+    {
+      "instance": "AFIRO",
+      "pass": true,
+      "failures": ""
+    },
+    {
+      "instance": "BLEND",
+      "pass": true,
+      "failures": ""
+    },
+    {
+      "instance": "SC50A",
+      "pass": true,
+      "failures": ""
+    },
+    {
+      "instance": "SC50B",
+      "pass": true,
+      "failures": ""
+    }
+  ]
+}

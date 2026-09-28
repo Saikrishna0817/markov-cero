@@ -106,8 +106,13 @@ ReferenceVerification verify_reference_result(const transform::CanonicalModel& m
             bool ook = std::abs(po - r.objective) <= allowed(scale, tol) &&
                        std::abs(po - du) <= allowed(scale, tol);
             v.accepted = pok && dok && cok && ook;
-            v.message = v.accepted ? "scaled optimality conditions verified"
-                                   : "scaled optimality verification failed";
+            if (v.accepted) {
+                v.message = "scaled optimality conditions verified";
+            } else {
+                v.message = std::string("scaled optimality verification failed:") +
+                    (pok ? "" : " pok_fail") + (dok ? "" : " dok_fail") +
+                    (cok ? "" : " cok_fail") + (ook ? "" : " ook_fail");
+            }
             return v;
         }
         if (r.status == lp::reference::SolveStatus::infeasible) {

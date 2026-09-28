@@ -32,8 +32,18 @@ struct RowSingletonRecord {
     double rhs_value{0.0};
 };
 
-using ReductionRecord =
-    std::variant<EmptyRowRecord, EmptyColumnRecord, FixedVariableRecord, RowSingletonRecord>;
+// AP-9: forcing row — every active entry strictly positive and rhs ~ 0, so the
+// equality forces each incident variable to 0. The row is removed; postsolve
+// chooses its dual as the most negative per-column bound that keeps every
+// incident reduced cost dual-feasible (d_j >= 0 for x_j = 0).
+struct ForcingRowRecord {
+    std::size_t original_row_index{0};
+    std::vector<std::size_t> column_indices{};
+    std::vector<double> coefficients{};
+};
+
+using ReductionRecord = std::variant<EmptyRowRecord, EmptyColumnRecord, FixedVariableRecord,
+                                     RowSingletonRecord, ForcingRowRecord>;
 
 class PresolveStack {
   public:

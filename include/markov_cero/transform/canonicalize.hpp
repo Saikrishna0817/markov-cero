@@ -8,8 +8,13 @@ struct OriginalVariableMap {
     std::vector<std::size_t> canonical_index;
     std::vector<double> multiplier;
 };
+struct OriginalRowMap {
+    std::vector<std::size_t> canonical_index;
+    std::vector<double> multiplier;
+};
 struct CanonicalizationRecord {
     std::vector<OriginalVariableMap> variables;
+    std::vector<OriginalRowMap> rows;
     double objective_sign{1.0};
     std::size_t structural_variables{};
 };

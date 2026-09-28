@@ -33,6 +33,10 @@ RuizScalers equilibrate(transform::SparseCanonicalModel& model, const RuizOption
 
     std::size_t iter = 0;
     for (; iter < options.max_iterations; ++iter) {
+        if (options.deadline && std::chrono::steady_clock::now() >= *options.deadline) {
+            scalers.deadline_reached = true;
+            break;
+        }
         // 1. Compute row inf-norms
         std::vector<double> r_norm(m, 0.0);
         for (std::size_t j = 0; j < n; ++j) {
@@ -165,6 +169,10 @@ RuizScalers equilibrate_model(model::Model& model, const RuizOptions& options) {
 
     std::size_t iter = 0;
     for (; iter < options.max_iterations; ++iter) {
+        if (options.deadline && std::chrono::steady_clock::now() >= *options.deadline) {
+            scalers.deadline_reached = true;
+            break;
+        }
         std::vector<double> r_norm(m, 0.0);
         std::vector<double> c_norm(n, 0.0);
         for (std::size_t col = 0; col < n; ++col) {

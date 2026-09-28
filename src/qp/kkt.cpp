@@ -10,7 +10,10 @@ namespace markov_cero::qp {
 
 namespace {
 
-void ldl_symbolic(std::size_t n,
+// Bound memory before allocating the symbolic LDL factor's row/value arrays.
+constexpr std::size_t kMaxKktFactorNonzeros = 10U * 1024U * 1024U;
+
+bool ldl_symbolic(std::size_t n,
                   const std::vector<std::size_t>& Ap,
                   const std::vector<std::size_t>& Ai,
                   std::vector<std::size_t>& Lp,
@@ -18,22 +21,29 @@ void ldl_symbolic(std::size_t n,
                   std::vector<std::size_t>& Lnz,
                   std::vector<std::size_t>& Flag,
                   const std::vector<std::size_t>* P,
-                  std::vector<std::size_t>* Pinv) {
+                  std::vector<std::size_t>* Pinv,
+                  std::optional<std::chrono::steady_clock::time_point> deadline) {
+    std::size_t work = 0;
     if (P && Pinv) {
         for (std::size_t k = 0; k < n; ++k) {
             (*Pinv)[(*P)[k]] = k;
         }
     }
     for (std::size_t k = 0; k < n; ++k) {
+        if (deadline && std::chrono::steady_clock::now() >= *deadline) return false;
         Parent[k] = std::numeric_limits<std::size_t>::max();
         Flag[k] = k;
         Lnz[k] = 0;
         const std::size_t kk = P ? (*P)[k] : k;
         const std::size_t p2 = Ap[kk + 1];
         for (std::size_t p = Ap[kk]; p < p2; ++p) {
+            if ((++work & 1023U) == 0U && deadline &&
+                std::chrono::steady_clock::now() >= *deadline) return false;
             std::size_t i = Pinv ? (*Pinv)[Ai[p]] : Ai[p];
             if (i < k) {
                 for (; Flag[i] != k; i = Parent[i]) {
+                    if ((++work & 1023U) == 0U && deadline &&
+                        std::chrono::steady_clock::now() >= *deadline) return false;
                     if (Parent[i] == std::numeric_limits<std::size_t>::max()) {
                         Parent[i] = k;
                     }
@@ -47,6 +57,7 @@ void ldl_symbolic(std::size_t n,
     for (std::size_t k = 0; k < n; ++k) {
         Lp[k + 1] = Lp[k] + Lnz[k];
     }
+    return true;
 }
 
 bool ldl_numeric(std::size_t n,
@@ -63,8 +74,15 @@ bool ldl_numeric(std::size_t n,
                  std::vector<std::size_t>& Pattern,
                  std::vector<std::size_t>& Flag,
                  const std::vector<std::size_t>* P,
-                 const std::vector<std::size_t>* Pinv) {
+                 const std::vector<std::size_t>* Pinv,
+                 std::optional<std::chrono::steady_clock::time_point> deadline,
+                 bool& deadline_reached) {
+    std::size_t work = 0;
     for (std::size_t k = 0; k < n; ++k) {
+        if (deadline && std::chrono::steady_clock::now() >= *deadline) {
+            deadline_reached = true;
+            return false;
+        }
         Y[k] = 0.0;
         std::size_t top = n;
         Flag[k] = k;
@@ -72,6 +90,11 @@ bool ldl_numeric(std::size_t n,
         const std::size_t kk = P ? (*P)[k] : k;
         const std::size_t p2 = Ap[kk + 1];
         for (std::size_t p = Ap[kk]; p < p2; ++p) {
+            if ((++work & 1023U) == 0U && deadline &&
+                std::chrono::steady_clock::now() >= *deadline) {
+                deadline_reached = true;
+                return false;
+            }
             std::size_t i = Pinv ? (*Pinv)[Ai[p]] : Ai[p];
             if (i <= k) {
                 Y[i] += Ax[p];
@@ -93,6 +116,11 @@ bool ldl_numeric(std::size_t n,
             Y[i] = 0.0;
             const std::size_t l_end = Lp[i] + Lnz[i];
             for (std::size_t p = Lp[i]; p < l_end; ++p) {
+                if ((++work & 1023U) == 0U && deadline &&
+                    std::chrono::steady_clock::now() >= *deadline) {
+                    deadline_reached = true;
+                    return false;
+                }
                 Y[Li[p]] -= Lx[p] * yi;
             }
             const double l_ki = yi / D[i];
@@ -149,10 +177,15 @@ void ldl_ltsolve(std::size_t n,
 
 } // namespace
 
-void KktSolver::build_kkt_matrix(const SparseSymmetricMatrix& P,
+bool KktSolver::build_kkt_matrix(const SparseSymmetricMatrix& P,
                                  const linalg::SparseCsc& A,
                                  double sigma,
-                                 const std::vector<double>& rho) {
+                                 const std::vector<double>& rho,
+                                 std::optional<std::chrono::steady_clock::time_point> deadline) {
+    const auto expired = [&] {
+        return deadline && std::chrono::steady_clock::now() >= *deadline;
+    };
+    std::size_t work = 0;
     n_ = P.dimension;
     m_ = A.rows;
     total_dim_ = n_ + m_;
@@ -162,11 +195,13 @@ void KktSolver::build_kkt_matrix(const SparseSymmetricMatrix& P,
 
     // 1. P + sigma*I block in top-left (dimension n x n)
     for (std::size_t j = 0; j < n_; ++j) {
+        if (expired()) return false;
         col_entries[j][j] += sigma;
         if (j < P.column_offsets.size() - 1) {
             const std::size_t start = P.column_offsets[j];
             const std::size_t end = P.column_offsets[j + 1];
             for (std::size_t k = start; k < end; ++k) {
+                if ((++work & 1023U) == 0U && expired()) return false;
                 const std::size_t i = P.row_indices[k];
                 if (i <= j) {
                     col_entries[j][i] += P.values[k];
@@ -177,10 +212,12 @@ void KktSolver::build_kkt_matrix(const SparseSymmetricMatrix& P,
 
     // 2. A^T block in top-right (col n + i, row j) for i in [0, m), j in [0, n)
     for (std::size_t j = 0; j < n_; ++j) {
+        if (expired()) return false;
         if (j < A.column_offsets.size() - 1) {
             const std::size_t start = A.column_offsets[j];
             const std::size_t end = A.column_offsets[j + 1];
             for (std::size_t k = start; k < end; ++k) {
+                if ((++work & 1023U) == 0U && expired()) return false;
                 const std::size_t i = A.row_indices[k];
                 if (i < m_) {
                     col_entries[n_ + i][j] += A.values[k];
@@ -191,6 +228,7 @@ void KktSolver::build_kkt_matrix(const SparseSymmetricMatrix& P,
 
     // 3. -diag(rho)^-1 block in bottom-right (col n + i, row n + i)
     for (std::size_t i = 0; i < m_; ++i) {
+        if ((++work & 1023U) == 0U && expired()) return false;
         const double r = (i < rho.size() && rho[i] > 0.0) ? rho[i] : 1e-3;
         col_entries[n_ + i][n_ + i] -= 1.0 / r;
     }
@@ -201,6 +239,7 @@ void KktSolver::build_kkt_matrix(const SparseSymmetricMatrix& P,
     kkt_val_.clear();
 
     for (std::size_t j = 0; j < total_dim_; ++j) {
+        if (expired()) return false;
         for (const auto& [r, v] : col_entries[j]) {
             if (std::abs(v) > 1e-20) {
                 kkt_row_ind_.push_back(r);
@@ -209,13 +248,21 @@ void KktSolver::build_kkt_matrix(const SparseSymmetricMatrix& P,
         }
         kkt_col_ptr_[j + 1] = kkt_val_.size();
     }
+    return true;
 }
 
 bool KktSolver::factorize(const SparseSymmetricMatrix& P,
                           const linalg::SparseCsc& A,
                           double sigma,
-                          const std::vector<double>& rho) {
-    build_kkt_matrix(P, A, sigma, rho);
+                          const std::vector<double>& rho,
+                          std::optional<std::chrono::steady_clock::time_point> deadline) {
+    factorized_ = false;
+    deadline_reached_ = false;
+    fill_limit_reached_ = false;
+    if (!build_kkt_matrix(P, A, sigma, rho, deadline)) {
+        deadline_reached_ = true;
+        return false;
+    }
 
     // Symbolic factorization
     L_col_ptr_.assign(total_dim_ + 1, 0);
@@ -223,10 +270,21 @@ bool KktSolver::factorize(const SparseSymmetricMatrix& P,
     std::vector<std::size_t> lnz(total_dim_, 0);
     std::vector<std::size_t> flag(total_dim_, 0);
 
-    ldl_symbolic(total_dim_, kkt_col_ptr_, kkt_row_ind_, L_col_ptr_, parent_, lnz, flag,
-                 nullptr, nullptr);
+    if (!ldl_symbolic(total_dim_, kkt_col_ptr_, kkt_row_ind_, L_col_ptr_, parent_, lnz,
+                      flag, nullptr, nullptr, deadline)) {
+        deadline_reached_ = true;
+        return false;
+    }
+    if (deadline && std::chrono::steady_clock::now() >= *deadline) {
+        deadline_reached_ = true;
+        return false;
+    }
 
     const std::size_t total_lnz = L_col_ptr_[total_dim_];
+    if (total_lnz > kMaxKktFactorNonzeros) {
+        fill_limit_reached_ = true;
+        return false;
+    }
     L_row_ind_.assign(total_lnz, 0);
     L_val_.assign(total_lnz, 0.0);
     D_.assign(total_dim_, 0.0);
@@ -239,7 +297,7 @@ bool KktSolver::factorize(const SparseSymmetricMatrix& P,
 
     factorized_ = ldl_numeric(total_dim_, kkt_col_ptr_, kkt_row_ind_, kkt_val_, L_col_ptr_,
                               parent_, lnz, L_row_ind_, L_val_, D_, Y, Pattern, flag,
-                              nullptr, nullptr);
+                              nullptr, nullptr, deadline, deadline_reached_);
 
     return factorized_;
 }
@@ -247,8 +305,15 @@ bool KktSolver::factorize(const SparseSymmetricMatrix& P,
 bool KktSolver::update_numeric(const SparseSymmetricMatrix& P,
                               const linalg::SparseCsc& A,
                               double sigma,
-                              const std::vector<double>& rho) {
-    build_kkt_matrix(P, A, sigma, rho);
+                              const std::vector<double>& rho,
+                              std::optional<std::chrono::steady_clock::time_point> deadline) {
+    factorized_ = false;
+    deadline_reached_ = false;
+    fill_limit_reached_ = false;
+    if (!build_kkt_matrix(P, A, sigma, rho, deadline)) {
+        deadline_reached_ = true;
+        return false;
+    }
 
     const std::size_t total_lnz = L_col_ptr_[total_dim_];
     L_row_ind_.assign(total_lnz, 0);
@@ -262,7 +327,7 @@ bool KktSolver::update_numeric(const SparseSymmetricMatrix& P,
 
     factorized_ = ldl_numeric(total_dim_, kkt_col_ptr_, kkt_row_ind_, kkt_val_, L_col_ptr_,
                               parent_, lnz, L_row_ind_, L_val_, D_, Y, Pattern, flag,
-                              nullptr, nullptr);
+                              nullptr, nullptr, deadline, deadline_reached_);
 
     return factorized_;
 }
@@ -306,6 +371,26 @@ void KktSolver::solve(const std::vector<double>& rhs_x,
 
 std::size_t KktSolver::nonzeros_L() const noexcept {
     return L_col_ptr_.empty() ? 0 : L_col_ptr_.back();
+}
+
+double KktSolver::condition_estimate() const noexcept {
+    if (!factorized_ || D_.empty()) {
+        return 0.0;
+    }
+    double maximum = 0.0;
+    double minimum = std::numeric_limits<double>::infinity();
+    for (double value : D_) {
+        const double magnitude = std::abs(value);
+        if (!(magnitude > 0.0)) {
+            // A zero (or subnormal) LDL^T pivot means the system was singular
+            // in practice: report an unbounded condition, matching
+            // linalg::sparse_condition_estimate's degenerate convention.
+            return std::numeric_limits<double>::infinity();
+        }
+        maximum = std::max(maximum, magnitude);
+        minimum = std::min(minimum, magnitude);
+    }
+    return maximum / minimum;
 }
 
 } // namespace markov_cero::qp

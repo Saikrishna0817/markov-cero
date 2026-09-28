@@ -1,0 +1,61 @@
+{
+  "timestamp_utc": "2026-09-28T05:28:58+00:00",
+  "gpus": [
+    {
+      "name": "NVIDIA GeForce RTX 2050",
+      "memory_total": "4096 MiB",
+      "driver_version": "610.57.04"
+    }
+  ],
+  "gpu_note": "",
+  "cpu": "12th Gen Intel(R) Core(TM) i5-12450HX",
+  "cpu_threads": 12,
+  "ram_gb": 11.4,
+  "os": "Omarchy",
+  "arch": "x86_64",
+  "nvcc": null,
+  "cuda_toolkit": null,
+  "solver_links_cuda": false,
+  "solver_has_cuda_fatbin": true,
+  "backend_note": "GPU present and solver contains CUDA support; `--backend gpu` can execute on the device",
+  "hardware_id": "hw-fbed7181af",
+  "run": {
+    "solver": "build_gpu_rt/markov-cero-solve",
+    "cwd": "/home/saikrishna/markov-initial-build",
+    "instances": [
+      "scale_100k",
+      "scale_500k",
+      "scale_1m",
+      "scale_5m"
+    ],
+    "tolerance": 0.0001,
+    "timeout_s": 180,
+    "max_simplex_rows": 1000,
+    "output_csv": "evidence/benchmarks/gpu_host_access_check_20260928.csv"
+  },
+  "results": [
+    {
+      "instance": "SCALE_100K",
+      "pass": true,
+      "failures": ""
+    },
+    {
+      "instance": "SCALE_500K",
+      "pass": true,
+      "failures": ""
+    },
+    {
+      "instance": "SCALE_1M",
+      "pass": true,
+      "failures": ""
+    },
+    {
+      "instance": "SCALE_5M",
+      "pass": true,
+      "failures": ""
+    }
+  ],
+  "solver_binary_sha256": "93c96173cbb918c20658d238012bb0abb8c4f6b492e1c02a540e0a44a3037a5a",
+  "source_revision": "d4c2743f6891f94d98aabd1c974551bc66d84a26",
+  "build_provenance_note": "Reused existing CUDA-enabled build_gpu_rt binary; not rebuilt from the current worktree because the recorded CUDA toolkit path (/tmp/markov-cuda-toolchain) is absent and nvcc is unavailable. This run verifies host device access and this exact binary only."
+}

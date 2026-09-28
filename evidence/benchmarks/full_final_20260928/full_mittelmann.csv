@@ -1,0 +1,5 @@
+solver,solver_sha256,suite,instance,problem_class,n_vars,n_constraints,n_nonzeros,status,verified,objective,best_known_obj,obj_error,time_ms,nodes,gap,kkt_primal,kkt_dual
+markov-cero,b1b833c6d9be64630efdf773385ee0582455394949c0b167fea4308595c4291d,mittelmann,30n20b8,MILP,18380,576,109706,NumericalFailure,False,,,,105.4,1,,,
+markov-cero,b1b833c6d9be64630efdf773385ee0582455394949c0b167fea4308595c4291d,mittelmann,50v-10,,,,,Timeout,False,,,,305129.1,,,,
+markov-cero,b1b833c6d9be64630efdf773385ee0582455394949c0b167fea4308595c4291d,mittelmann,air05,MILP,7195,426,52121,NumericalFailure,False,,,,51.4,1,,,
+markov-cero,b1b833c6d9be64630efdf773385ee0582455394949c0b167fea4308595c4291d,mittelmann,app1-1,MILP,2480,4926,18275,NumericalFailure,False,,,,33.3,1,,,

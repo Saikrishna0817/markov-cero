@@ -1,0 +1,5 @@
+instance,solver,status,objective,runtime_ms,verified
+afiro,markov-cero,Optimal,-464.75314285714285,3.1,True
+afiro,HiGHS,Optimal,-464.75314285714285,1.1,True
+afiro,CBC,Optimal,-464.75314432000005,5.9,True
+afiro,SCIP,Optimal,-464.75314285714273,0.9,True

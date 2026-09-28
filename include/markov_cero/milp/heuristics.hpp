@@ -33,4 +33,16 @@ struct HeuristicResult {
                                                double feasibility_tol = 1e-6,
                                                double integrality_tol = 1e-6);
 
+[[nodiscard]] HeuristicResult coefficient_diving(const model::Model& model,
+                                                 const std::vector<double>& continuous_primal,
+                                                 std::size_t max_depth = 50,
+                                                 double feasibility_tol = 1e-6,
+                                                 double integrality_tol = 1e-6);
+
+[[nodiscard]] HeuristicResult local_swap_repair(const model::Model& model,
+                                               const std::vector<double>& candidate_primal,
+                                               std::size_t max_swaps = 20,
+                                               double feasibility_tol = 1e-6,
+                                               double integrality_tol = 1e-6);
+
 } // namespace markov_cero::milp

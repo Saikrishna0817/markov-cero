@@ -1,9 +1,12 @@
 // markov-cero Phase 4: PDLP first-order LP engine tests
+#include "markov_cero/io/mps.hpp"
 #include "markov_cero/lp/first_order/pdlp.hpp"
 #include "markov_cero/verify/primal_verifier.hpp"
 
 #include <cassert>
 #include <cmath>
+#include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <string>
 
@@ -128,12 +131,69 @@ void test_equality_lp() {
               << " (ref=5.0), iters=" << res.iterations << "\n";
 }
 
+void test_pdlp_crossover_netlib() {
+    const char* src_dir = std::getenv("MARKOV_CERO_SOURCE_DIR");
+    const std::string dir = (src_dir ? std::string(src_dir) : ".") + "/data/netlib/";
+
+    // 1. kb2.mps (ref: -1749.9001299)
+    {
+        std::ifstream f(dir + "kb2.mps");
+        if (f) {
+            const auto model = markov_cero::io::parse_mps(f);
+            markov_cero::lp::first_order::PdlpOptions opts;
+            opts.enable_crossover = true;
+            opts.stagnation_window = 1000;
+            opts.stagnation_threshold = 0.999;
+            const auto res = markov_cero::lp::first_order::solve_pdlp(model, opts);
+            assert(res.status == markov_cero::lp::first_order::PdlpStatus::optimal);
+            assert(res.crossover_applied);
+            assert(std::abs(res.objective - (-1749.9001299)) < 1e-4);
+            std::cout << "[+] test_pdlp_crossover kb2 PASSED: obj=" << res.objective << "\n";
+        }
+    }
+
+    // 2. lotfi.mps (ref: -25.2647061)
+    {
+        std::ifstream f(dir + "lotfi.mps");
+        if (f) {
+            const auto model = markov_cero::io::parse_mps(f);
+            markov_cero::lp::first_order::PdlpOptions opts;
+            opts.enable_crossover = true;
+            opts.stagnation_window = 1000;
+            opts.stagnation_threshold = 0.999;
+            const auto res = markov_cero::lp::first_order::solve_pdlp(model, opts);
+            assert(res.status == markov_cero::lp::first_order::PdlpStatus::optimal);
+            assert(res.crossover_applied);
+            assert(std::abs(res.objective - (-25.2647061)) < 1e-4);
+            std::cout << "[+] test_pdlp_crossover lotfi PASSED: obj=" << res.objective << "\n";
+        }
+    }
+
+    // 3. beaconfd.mps (ref: 33592.4858072)
+    {
+        std::ifstream f(dir + "beaconfd.mps");
+        if (f) {
+            const auto model = markov_cero::io::parse_mps(f);
+            markov_cero::lp::first_order::PdlpOptions opts;
+            opts.enable_crossover = true;
+            opts.stagnation_window = 1000;
+            opts.stagnation_threshold = 0.999;
+            const auto res = markov_cero::lp::first_order::solve_pdlp(model, opts);
+            assert(res.status == markov_cero::lp::first_order::PdlpStatus::optimal);
+            assert(res.crossover_applied);
+            assert(std::abs(res.objective - 33592.4858072) < 1e-3);
+            std::cout << "[+] test_pdlp_crossover beaconfd PASSED: obj=" << res.objective << "\n";
+        }
+    }
+}
+
 } // namespace
 
 int main() {
     try {
         test_blend_lp();
         test_equality_lp();
+        test_pdlp_crossover_netlib();
         std::cout << "All PDLP unit tests PASSED successfully!\n";
         return 0;
     } catch (const std::exception& e) {

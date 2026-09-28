@@ -1,0 +1,71 @@
+{
+  "finding": "F-01 / W2 ML-assisted branching",
+  "instance": "MIPLIB 2017 cvs16r128-89.mps",
+  "instance_sha256": "9c31a000fb71ac2db6101310194d44f97557cf597f2e68f542725f64f87346ff",
+  "candidate_model": {
+    "path": "missing: originally /tmp/branching_gcn_candidate.onnx; temporary artifact no longer exists",
+    "format": "standard ONNX, float32; candidate only, not a release artifact",
+    "bytes": 20776,
+    "sha256": "fe46869c8848403a6ff2d41b1d36e24c690c3c4f57ecee88473171102eb215e9",
+    "training_records": 31,
+    "informative_instances": 3,
+    "held_out_test_instances": 0,
+    "status": "insufficient data for model promotion",
+    "artifact_available": false,
+    "reproducibility": "The ONNX candidate weights are unavailable. The recorded measurements are historical evidence and cannot currently be rerun from this artifact."
+  },
+  "configuration": {
+    "binary_sha256": "a339066a161bc3cb8e81124f8e40f7c8a3ae9c0f6ceff4c8d4f22474bfce0da4",
+    "threads": 1,
+    "time_limit_seconds": 15,
+    "max_nodes": 5000,
+    "cuts": false,
+    "heuristics": false,
+    "backend": "CPU"
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "pseudo_cost": {
+        "status": "ResourceLimit",
+        "verified": false,
+        "nodes": 6,
+        "runtime_ms": 15002.392806,
+        "best_bound": -128.0000001092105
+      },
+      "ml_gnn": {
+        "status": "ResourceLimit",
+        "verified": false,
+        "nodes": 4,
+        "runtime_ms": 15002.477279,
+        "best_bound": -128.00000017889127,
+        "model_loaded": true,
+        "scoring_calls": 2,
+        "candidates_scored": 6865,
+        "maximum_candidates": 3472
+      }
+    },
+    {
+      "trial": 2,
+      "pseudo_cost": {
+        "status": "ResourceLimit",
+        "verified": false,
+        "nodes": 6,
+        "runtime_ms": 15003.428116,
+        "best_bound": -128.0000001092105
+      },
+      "ml_gnn": {
+        "status": "ResourceLimit",
+        "verified": false,
+        "nodes": 4,
+        "runtime_ms": 15002.205655,
+        "best_bound": -128.00000017889127,
+        "model_loaded": true,
+        "scoring_calls": 2,
+        "candidates_scored": 6865,
+        "maximum_candidates": 3472
+      }
+    }
+  ],
+  "interpretation": "This satisfies the narrow genuine-ML-on node-count gate on one MIPLIB case (4 vs 6 nodes, repeated twice). Both runs hit the same time limit without an incumbent. It does not establish optimal-solve superiority, a speedup, generalization, or release readiness."
+}

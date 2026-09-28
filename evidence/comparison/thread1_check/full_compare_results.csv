@@ -1,0 +1,13 @@
+instance,solver,status,objective,runtime_ms,verified
+stein9,markov-cero,Optimal,5,125.9,True
+stein9,HiGHS,Optimal,5.0,22.3,True
+stein9,CBC,Optimal,5.0,24.8,True
+stein9,SCIP,Optimal,4.999999999999998,11.8,True
+stein15,markov-cero,Optimal,9,7655.5,True
+stein15,HiGHS,Optimal,9.0,56.9,True
+stein15,CBC,Optimal,9.0,159.2,True
+stein15,SCIP,Optimal,8.999999999999993,25.1,True
+flugpl,markov-cero,TimeLimit,,30017.2,False
+flugpl,HiGHS,Optimal,1201500.0,103.5,True
+flugpl,CBC,Optimal,1201500.0,44.6,True
+flugpl,SCIP,Optimal,1201500.0,11.1,True

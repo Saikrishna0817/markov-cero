@@ -54,6 +54,10 @@ StrongBranchingResult evaluate_strong_branching(
     constexpr double infeasible_delta = 1e8;
 
     for (std::size_t var_idx : eval_indices) {
+        if (options.deadline && std::chrono::steady_clock::now() >= *options.deadline) {
+            result.deadline_reached = true;
+            break;
+        }
         if (var_idx >= model.matrix.column_count) {
             continue;
         }
@@ -70,6 +74,7 @@ StrongBranchingResult evaluate_strong_branching(
         if (model.variable_lower[var_idx].is_finite() &&
             x_floor < model.variable_lower[var_idx].value - 1e-9) {
             cand.is_down_infeasible = true;
+            cand.down_resolved = true;
             cand.down_degradation = std::numeric_limits<double>::infinity();
         } else {
             model::Model down_model = model;
@@ -84,6 +89,7 @@ StrongBranchingResult evaluate_strong_branching(
                 dopts.iteration_limit = options.max_lookahead_iterations;
                 dopts.feasibility_tolerance = options.feasibility_tolerance;
                 dopts.allow_cold_fallback = true;
+                dopts.deadline = options.deadline;
 
                 std::optional<lp::dual::BasisState> child_warm;
                 if (current_basis.has_value() && current_basis->rows == dense_down.matrix.rows &&
@@ -99,21 +105,20 @@ StrongBranchingResult evaluate_strong_branching(
                 const auto dres = lp::dual::solve(dense_down, dopts, child_warm);
                 if (dres.solution.status == lp::reference::SolveStatus::infeasible) {
                     cand.is_down_infeasible = true;
+                    cand.down_resolved = true;
                     cand.down_degradation = std::numeric_limits<double>::infinity();
                 } else if (dres.solution.status == lp::reference::SolveStatus::optimal) {
+                    cand.down_resolved = true;
                     const double child_obj =
                         transform::reconstruct_objective(canon_down, dres.solution.objective);
                     cand.down_degradation = std::max(0.0, child_obj - current_obj);
                     cand.is_down_infeasible = false;
                 } else if (dres.solution.status == lp::reference::SolveStatus::iteration_limit) {
                     cand.is_down_infeasible = false;
-                    if (!dres.telemetry.empty()) {
-                        const double child_obj = transform::reconstruct_objective(
-                            canon_down, dres.telemetry.back().objective);
-                        cand.down_degradation = std::max(0.0, child_obj - current_obj);
-                    } else {
-                        cand.down_degradation = 0.0;
-                    }
+                    // A primal objective from an interrupted minimization LP
+                    // is not a certified relaxation bound. Keep this side
+                    // unresolved instead of turning it into a false label.
+                    cand.down_degradation = 0.0;
                 } else {
                     cand.down_degradation = 0.0;
                     cand.is_down_infeasible = false;
@@ -128,6 +133,7 @@ StrongBranchingResult evaluate_strong_branching(
         if (model.variable_upper[var_idx].is_finite() &&
             x_ceil > model.variable_upper[var_idx].value + 1e-9) {
             cand.is_up_infeasible = true;
+            cand.up_resolved = true;
             cand.up_degradation = std::numeric_limits<double>::infinity();
         } else {
             model::Model up_model = model;
@@ -142,6 +148,7 @@ StrongBranchingResult evaluate_strong_branching(
                 dopts.iteration_limit = options.max_lookahead_iterations;
                 dopts.feasibility_tolerance = options.feasibility_tolerance;
                 dopts.allow_cold_fallback = true;
+                dopts.deadline = options.deadline;
 
                 std::optional<lp::dual::BasisState> child_warm;
                 if (current_basis.has_value() && current_basis->rows == dense_up.matrix.rows &&
@@ -157,21 +164,19 @@ StrongBranchingResult evaluate_strong_branching(
                 const auto dres = lp::dual::solve(dense_up, dopts, child_warm);
                 if (dres.solution.status == lp::reference::SolveStatus::infeasible) {
                     cand.is_up_infeasible = true;
+                    cand.up_resolved = true;
                     cand.up_degradation = std::numeric_limits<double>::infinity();
                 } else if (dres.solution.status == lp::reference::SolveStatus::optimal) {
+                    cand.up_resolved = true;
                     const double child_obj =
                         transform::reconstruct_objective(canon_up, dres.solution.objective);
                     cand.up_degradation = std::max(0.0, child_obj - current_obj);
                     cand.is_up_infeasible = false;
                 } else if (dres.solution.status == lp::reference::SolveStatus::iteration_limit) {
                     cand.is_up_infeasible = false;
-                    if (!dres.telemetry.empty()) {
-                        const double child_obj = transform::reconstruct_objective(
-                            canon_up, dres.telemetry.back().objective);
-                        cand.up_degradation = std::max(0.0, child_obj - current_obj);
-                    } else {
-                        cand.up_degradation = 0.0;
-                    }
+                    // As above, a primal objective cannot certify the branch
+                    // LP's minimum degradation before optimal termination.
+                    cand.up_degradation = 0.0;
                 } else {
                     cand.up_degradation = 0.0;
                     cand.is_up_infeasible = false;
@@ -213,11 +218,13 @@ StrongBranchingResult evaluate_strong_branching(
         // 5. Update VariablePseudoCost tracker to warm-start pseudo-costs
         if (pseudo_costs != nullptr && options.update_pseudo_costs &&
             var_idx < pseudo_costs->size()) {
-            if (!cand.is_down_infeasible && std::isfinite(cand.down_degradation) &&
+            if (cand.down_resolved && !cand.is_down_infeasible &&
+                std::isfinite(cand.down_degradation) &&
                 cand.down_degradation >= 0.0) {
                 (*pseudo_costs)[var_idx].record_down(cand.down_degradation, frac);
             }
-            if (!cand.is_up_infeasible && std::isfinite(cand.up_degradation) &&
+            if (cand.up_resolved && !cand.is_up_infeasible &&
+                std::isfinite(cand.up_degradation) &&
                 cand.up_degradation >= 0.0) {
                 (*pseudo_costs)[var_idx].record_up(cand.up_degradation, 1.0 - frac);
             }
