@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/scrs8.mps.gz",
+  "member": "scrs8.mps",
+  "sha256": "33b12d5e3d07b47a8b837ab0bf445fbfb5980af5c825bf049c23e71fb3faf026",
+  "name": "scrs8",
+  "reference_objective": null
+}

@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/forplan.mps.gz",
+  "member": "forplan.mps",
+  "sha256": "65ec816c0b3c58ec4d61574df130a3ce464abb42f3d49de21710a787bf3cfdc7",
+  "name": "forplan",
+  "reference_objective": null
+}

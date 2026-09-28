@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/CMS750_4.mps.gz",
+  "member": "CMS750_4.mps",
+  "sha256": "959fbfbc27e4aef8f5206e336aab7d3dd5f238ae2c4f698a2043fbb34fac5cfa",
+  "name": "CMS750_4",
+  "rows": 16381,
+  "columns": 11697,
+  "binaries": 7196,
+  "integers": 0,
+  "nonzeros": 44903,
+  "reference_objective": 252.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/exp-1-500-5-5.mps.gz",
+  "member": "exp-1-500-5-5.mps",
+  "sha256": "32bcb5e23d511b3ee530e7016765cc724e06bc77225648669c443aa7be0a68f2",
+  "name": "exp-1-500-5-5",
+  "rows": 550,
+  "columns": 990,
+  "binaries": 250,
+  "integers": 0,
+  "nonzeros": 1980,
+  "reference_objective": 65887.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

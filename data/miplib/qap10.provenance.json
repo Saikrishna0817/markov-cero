@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/qap10.mps.gz",
+  "member": "qap10.mps",
+  "sha256": "a317ab99d08ad4d4b5cb8286a8a1c4c4f77ad801ff3f8b50d565390219485789",
+  "name": "qap10",
+  "rows": 1820,
+  "columns": 4150,
+  "binaries": 4150,
+  "integers": 0,
+  "nonzeros": 18200,
+  "reference_objective": 339.9999999983871,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

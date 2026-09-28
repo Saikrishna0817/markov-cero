@@ -1,0 +1,12 @@
+{
+  "paper": "J.F. Shapiro, 'Modeling the Supply Chain', Duxbury (2001), Chapter 4 network flow model.",
+  "modeled_structure": "Two-echelon min-cost network flow: plant supply caps, DC throughput caps, customer demands, two products.",
+  "parameterization": {
+    "plants": 2,
+    "dcs": 3,
+    "customers": 8,
+    "products": 2
+  },
+  "problem_class": "LP",
+  "source": "open literature (see paper citation); parameterized subset, not a copy of any dataset"
+}

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/b1c1s1.mps.gz",
+  "member": "b1c1s1.mps",
+  "sha256": "68cbaa66b6ff08114d9c3fb9b5e786cfd7e34dbe718865d35aa9181147872393",
+  "name": "b1c1s1",
+  "rows": 3904,
+  "columns": 3872,
+  "binaries": 288,
+  "integers": 0,
+  "nonzeros": 11408,
+  "reference_objective": 24544.25,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-2978193-inde.mps.gz",
+  "member": "neos-2978193-inde.mps",
+  "sha256": "d14ddacae3696eb88edaf11321afb018e6f74ca730c67434a8db79f8f376514c",
+  "name": "neos-2978193-inde",
+  "rows": 396,
+  "columns": 20800,
+  "binaries": 64,
+  "integers": 0,
+  "nonzeros": 41600,
+  "reference_objective": -2.38806169,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

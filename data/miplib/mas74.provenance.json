@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/mas74.mps.gz",
+  "member": "mas74.mps",
+  "sha256": "181f02fd634306ad6431f21d5e8115f3e8112f2e7d2bebed1690475b49acc4af",
+  "name": "mas74",
+  "rows": 13,
+  "columns": 151,
+  "binaries": 150,
+  "integers": 0,
+  "nonzeros": 1706,
+  "reference_objective": 11801.18572,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

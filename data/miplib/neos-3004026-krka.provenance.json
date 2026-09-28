@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-3004026-krka.mps.gz",
+  "member": "neos-3004026-krka.mps",
+  "sha256": "7f8e828628826311201247f9d3038321cb59cd2da1806ec1cb4e6176e377197b",
+  "name": "neos-3004026-krka",
+  "rows": 12545,
+  "columns": 17030,
+  "binaries": 16900,
+  "integers": 130,
+  "nonzeros": 41860,
+  "reference_objective": 0.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

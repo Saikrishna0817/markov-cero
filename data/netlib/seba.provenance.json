@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/seba.mps.gz",
+  "member": "seba.mps",
+  "sha256": "539733cdb036e2d2e8e80e7ea1666848b6b67a36a34b1c6cf9a883e1c868ef1e",
+  "name": "seba",
+  "reference_objective": null
+}

@@ -1,0 +1,176 @@
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+<META NAME="generator" CONTENT="HTML::TextToHTML v2.25">
+</HEAD>
+<BODY>
+<PRE>
+<P> 9 Sep 2026   ===============================================
+               LPopt Benchmark (find optimal basic solution)
+              ===============================================
+                     H. Mittelmann (<A HREF="mailto:mittelmann@asu.edu">mittelmann@asu.edu</A>)
+
+Logfiles of these runs at: <A HREF="http://plato.asu.edu/ftp/lpopt_logs/">plato.asu.edu/ftp/lpopt_logs/</A>
+
+This benchmark was run on a Linux-PC (i7-11700K, 3.6GHz, 64GB).
+The MPS-datafiles for most testcases are in one of (see column "s")
+
+ <A HREF="http://miplib2010.zib.de/">miplib2010.zib.de/</A> [1]
+ <A HREF="http://plato.asu.edu/ftp/lptestset/">plato.asu.edu/ftp/lptestset/</A> [2]
+ <a href="http://www.netlib.org/lp/data/">www.netlib.org/lp/data/</a> [3,7]
+ <A HREF="http://www.sztaki.hu/~meszaros/public_ftp/lptestset/">www.sztaki.hu/~meszaros/public_ftp/lptestset/</A>
+(MISC[4], PROBLEMATIC[5], STOCHLP[6], INFEAS[8], NEW[9])
+
+NOTE: some files in [2-9] need to be expanded with emps in same directory!
+Last 16 instances are undisclosed.
+
+The following codes were tested:   
+
+ CLP-1.17.7      <A HREF="https://github.com/coin-or/Clp">github.com/coin-or/Clp</A> 
+ COPT-8.0.0      <a href="https://www.shanshu.ai/copt/">COPT</a>
+ MOSEK-11.2.3    <A HREF="http://www.mosek.com">www.mosek.com</A>
+ HiGHS-1.15.0    <a href="https://github.com/ERGO-Code/HiGHS">HiGHS</a> 
+ ORTOOLS-9.5     <a href="https://developers.google.com/optimization/lp/lp_advanced">GLOP</a>
+ SOPLEX-8.0.0    <A HREF="http://soplex.zib.de/">soplex.zib.de/</A>
+ XOPT-0.0.8      <a href="https://www.xopt.sribd.cn">XOPT</a>
+ MATLAB has HiGHS as default dual-simplex solver starting with 2024a.
+
+Scaled shifted (by 10 sec) geometric mean of runtimes
+
+unscaled    1053  38.5   203   494  2296  3996   255
+scaled      27.4     1  5.27  12.8  59.7   104  6.63      
+solved        40    65    53    54    33    31    52      
+=======================================================
+probs        CLP  COPT MOSEK HiGHS  GLOP  SPLX  XOPT       
+=======================================================
+L1_sixm      269     2     4    99     f     t    10     
+Linf_520c     36     4    65   872   239     t    21     
+a2864       1645    55   449  3466     f     t  2001     
+bdry2          t    59    41     t     t     t   215     
+cont1        184     2   818   413   259   276     5   
+cont11       963     5   634   510  1452  4250    35   
+datt256      106     3   177     t   471     t    99     
+dlr1           t    41   144     t     f     t   273  
+ex10          32     1    14    58   479   296     2     
+fhnw-bin1      t    26   993  2076     t     t    97   
+fome13        40     1     4    22   141   206     2     
+graph40-40   556    13    47   893     f 10923    28     
+irish-e      297     5     5    26     t   572    14     
+neos          23     5    10   118    45    47    19    
+neos3         18     1     8   326   248  3898     1     
+neos3025225  663    11     8   165    96   500    68     
+neos5052403  188     4     4    23   370   385    16     
+neos5251015  249     3     f   118    99  3860    36     
+ns1687037    233     3     f   302   553  2824    53     
+ns1688926     12     2     1    24    19    82    28     
+nug08-3rd     97     3    66   151     f   845    17     
+pds-100       16    15    21    72   334  1533    42     
+psched3-3    590     6    17    73  1558   399    17     
+qap15         10     1     4    18   117  4022     1     
+rail02      1024    18    34    81     t  3880    31    
+rail4284      37    12    10   115  3107   913    69    
+rmine15      211    13    30   156   321  1011    49     
+s82         2823    33    34   431   777     t   287  
+s100         353     4     4    43     9   740    15   
+s250r10      127     2     3    20     5   274    13     
+savsched1    474    45    61    80   523  4304    68     
+scpm1         14     5    16    80     t   653    18     
+shs1023       43     6    13    59   186   435    52   
+square41     257     3     5    35   871   125    12    
+stat96v2       t    13     f   616     f  4036   124    
+storm_1000    91    11    23   188   236  3122   173     
+stp3d        104     6     5    50     t  1196    39     
+support10     42     2     3    21    28   113     5     
+tpl-tub-ws  4970    38    39   273  2254     t    95     
+woodlands09  115    22   131   359  3735     t    71     
+Dual2_5000     f   341     t     t     t     t  4174  
+Primal2_1000   t   132   639     t     t     t  2013  
+thk_48         f  4957     t   205     t     t     t    
+thk_63         f   213   536  4588     t     t 12363    
+L1_six1000     f     9   218   328     t     t    45    
+L2CTA3D        t   779  2706   587     t     t  2537     
+degme          t    22   389   151     t     t   172     
+dlr2           t   375  3792     t     t     t  6682     
+set-cover      t    74   144 11338     t     t   165    
+energy1        t    75    70   399     f     t   476     
+gamora       168    70   500   501   237     t  1132    
+groot          f   101     f  2002     f     t     f     
+heimdall       f    49    88   328   767     t     t    
+hulk        2337   229     f     t     f     t     t  
+loki        1082  1058  1743     t     t     t     t    
+mars           f   188     t  5563     t     t     t     
+nebula         f    96   172  2129  2582     t     t    
+test03         t   119   116  1179     t     t   462    
+test13         t   151     t     t     t     t     t     
+test43         f   846  1488     m     t     t     t    
+test53      5001    91    19   166     t 11836   558    
+test63         t   305     t     t     t     t     t     
+test83         f  1516     t   169     t     t     t    
+test93         f   616     t  3847     t     t     t    
+thor           f   157   536   639  2843     t     t   
+=======================================================
+"t": 15,000 secds exceeded; "t,f,m" counted as max-time
+
+
+Problem sizes
+
+s problem           rows    columns     nonzeros
+================================================
+2 L1_sixm250obs   986069     428032      4280320
+2 Linf_520c        93326      69004       566193
+2 a2864            22117     200787     20078717
+2 bdry2           376500     250998      1500003
+2 cont1           160793     250998       399991
+2 cont11          160793      80396       439989
+2 datt256          11077     262144      1503732
+2 dlr1           1735470    9121907     18365107
+2 ex10             69609      17680      1179680
+2 fhnw-bin1       772872    1141653      8611326
+2 fome13           48569      97840       334984
+2 graph40-40      360900     102600      1260900
+2 irish-e         104260      61728       538809
+2 neos            479120      36786      1084461
+2 neos3           512209       6624      1542816
+2 neos-3025225     91572      69846      9357951
+2 neos5052403      38269      32868      4898304
+2 neos-5251015    486531     136971      1955388
+2 ns1687037        50622      43749      1406739           
+2 ns1688926        32768      16587      1712128
+2 nug08-3rd        19728      20448       139008
+2 pds-100         156244     505360      1390539
+2 psched3-3       266228      79555      1062480
+2 qap15             6331      22275       110700
+1 rail02           95791     270869       756228
+2 rail4284          4284    1092610     12372358
+2 rmine15         358395      42438       879732
+2 s82              87878    1690631      7022608
+2 s100             14734     364417      2127672
+2 s250r10          10963     273142      1572104
+2 savsched1       295990     328575      1846351
+2 scpm1             5000     500000      6250000
+1 shs1023         133944     444625      1044725
+2 square41         40161      62234     13628623
+4 stat96v2         29089     957432      2852184
+2 stormG2_1000    528186    1259121      4228817
+1 stp3d           159488     204880       662128
+2 support10       165685      14770       551152
+2 tpl-tub-ws16   1154615     747691      4720567
+2 woodlands09     194599     382147      2646003
+2 Dual2_5000    30000600   33050602     93001800
+2 Primal2_1000   1299380    2559380      5498140
+2 thk_48         6366377    8609262     27802878
+2 thk_63         5694387    7701112     21592414
+2 L1_sixm1000obs 3082940    1426256     14262560
+2 L2CTA3D         210000   10000000     30000000
+9 degme           185501     659415      8127528
+2 dlr2           7132926   38868107     78091589
+2 set-cover        10000    1102008     20442268
+
+for sizes of undisclosed problems see logfiles
+================================================
+</PRE>
+
+</BODY>
+</HTML>
+

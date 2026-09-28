@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/mc11.mps.gz",
+  "member": "mc11.mps",
+  "sha256": "f134128b38fdc1167a132123c65d6a6ffe95465258f07469daee35e3a59217f7",
+  "name": "mc11",
+  "rows": 1920,
+  "columns": 3040,
+  "binaries": 1520,
+  "integers": 0,
+  "nonzeros": 6080,
+  "reference_objective": 11688.99999999966,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

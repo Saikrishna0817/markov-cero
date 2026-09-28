@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/ganges.mps.gz",
+  "member": "ganges.mps",
+  "sha256": "f655f33ba979a59d659a8605acaf480c2fe5c610f3a50921bbcac7be40546067",
+  "name": "ganges",
+  "reference_objective": null
+}

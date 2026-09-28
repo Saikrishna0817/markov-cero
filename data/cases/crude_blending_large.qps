@@ -1,0 +1,996 @@
+NAME CRUDE_BLENDING_LARGE
+ROWS
+ N COST
+ G MS91      
+ G MS95      
+ G HSD_BS6   
+ G JET_A1    
+ G MGO       
+ G FO180     
+ G FO380     
+ G BITUMEN   
+ G MS_OCTANE 
+ L MS_SULFUR 
+ L MS_BENZENE
+ L MS_RVP    
+ G HSD_CETANE
+ L HSD_SULFUR
+ L HSD_DENSITY
+ L HSD_POUR  
+ L JET_FREEZE
+ G JET_SMOKE 
+ L FO_VISC   
+ L FO_SULFUR 
+ L SAVL_000  
+ L SAVL_001  
+ L SAVL_002  
+ L SAVL_003  
+ L SAVL_004  
+ L SAVL_005  
+ L SAVL_006  
+ L SAVL_007  
+ L SAVL_008  
+ L SAVL_009  
+ L SAVL_010  
+ L SAVL_011  
+ L SAVL_012  
+ L SAVL_013  
+ L SAVL_014  
+ L SAVL_015  
+ L SAVL_016  
+ L SAVL_017  
+ L SAVL_018  
+ L SAVL_019  
+ L SAVL_020  
+ L SAVL_021  
+ L SAVL_022  
+ L SAVL_023  
+ L SAVL_024  
+ L SAVL_025  
+ L SAVL_026  
+ L SAVL_027  
+ L SAVL_028  
+ L SAVL_029  
+ L SAVL_030  
+ L SAVL_031  
+ L SAVL_032  
+ L SAVL_033  
+ L SAVL_034  
+ L SAVL_035  
+ L SAVL_036  
+ L SAVL_037  
+ L SAVL_038  
+ L SAVL_039  
+ L SAVL_040  
+ L SAVL_041  
+ L SAVL_042  
+ L SAVL_043  
+ L SAVL_044  
+ L SAVL_045  
+ L SAVL_046  
+ L SAVL_047  
+ L SAVL_048  
+ L SAVL_049  
+ L SAVL_050  
+ L SAVL_051  
+ L SAVL_052  
+ L SAVL_053  
+ L SAVL_054  
+ L SAVL_055  
+ L SAVL_056  
+ L SAVL_057  
+ L SAVL_058  
+ L SAVL_059  
+ L SAVL_060  
+ L SAVL_061  
+ L SAVL_062  
+ L SAVL_063  
+ L SAVL_064  
+ L SAVL_065  
+ L SAVL_066  
+ L SAVL_067  
+ L SAVL_068  
+ L SAVL_069  
+ L SAVL_070  
+ L SAVL_071  
+ L SAVL_072  
+ L SAVL_073  
+ L SAVL_074  
+ L SAVL_075  
+ L SAVL_076  
+ L SAVL_077  
+ L SAVL_078  
+ L SAVL_079  
+ L SAVL_080  
+ L SAVL_081  
+ L SAVL_082  
+ L SAVL_083  
+ L SAVL_084  
+ L SAVL_085  
+ L SAVL_086  
+ L SAVL_087  
+ L SAVL_088  
+ L SAVL_089  
+ L SAVL_090  
+ L SAVL_091  
+ L SAVL_092  
+ L SAVL_093  
+ L SAVL_094  
+ L SAVL_095  
+ L SAVL_096  
+ L SAVL_097  
+ L SAVL_098  
+ L SAVL_099  
+ L SAVL_100  
+ L SAVL_101  
+ L SAVL_102  
+ L SAVL_103  
+ L SAVL_104  
+ L SAVL_105  
+ L SAVL_106  
+ L SAVL_107  
+ L SAVL_108  
+ L SAVL_109  
+ L SAVL_110  
+ L SAVL_111  
+ L SAVL_112  
+ L SAVL_113  
+ L SAVL_114  
+ L SAVL_115  
+ L SAVL_116  
+ L SAVL_117  
+ L SAVL_118  
+ L SAVL_119  
+COLUMNS
+    X000      COST       45.8366    SAVL_000   1.0000    
+    X000      MS91       0.4825     MS95       0.2446    
+    X000      MS_OCTANE  2.3412     MS_SULFUR  -0.9850   
+    X000      MS_BENZENE 0.7844     MS_RVP     -1.2392   
+    X001      COST       47.1788    SAVL_001   1.0000    
+    X001      JET_A1     0.5016     HSD_BS6    0.2053    
+    X001      JET_FREEZE -2.1023    JET_SMOKE  1.7998    
+    X001      HSD_CETANE 0.9084    
+    X002      COST       55.5356    SAVL_002   1.0000    
+    X002      HSD_BS6    0.5019     MGO        0.2709    
+    X002      HSD_CETANE 1.8963     HSD_SULFUR -1.8195   
+    X002      HSD_DENSITY -1.1113    HSD_POUR   0.3930    
+    X003      COST       57.5565    SAVL_003   1.0000    
+    X003      FO180      0.3695     FO380      0.4207    
+    X003      BITUMEN    0.2211     FO_VISC    0.6892    
+    X003      FO_SULFUR  -0.3913   
+    X004      COST       44.2712    SAVL_004   1.0000    
+    X004      MS91       0.6488     MS95       0.3237    
+    X004      MS_OCTANE  2.6543     MS_SULFUR  -1.1340   
+    X004      MS_BENZENE 0.4091     MS_RVP     -1.3625   
+    X005      COST       48.7363    SAVL_005   1.0000    
+    X005      JET_A1     0.4198     HSD_BS6    0.2202    
+    X005      JET_FREEZE -1.9441    JET_SMOKE  1.7714    
+    X005      HSD_CETANE 0.6743    
+    X006      COST       53.2570    SAVL_006   1.0000    
+    X006      HSD_BS6    0.7810     MGO        0.2472    
+    X006      HSD_CETANE 1.7183     HSD_SULFUR -2.1577   
+    X006      HSD_DENSITY 0.3228     HSD_POUR   -1.5915   
+    X007      COST       62.9371    SAVL_007   1.0000    
+    X007      FO180      0.3114     FO380      0.4369    
+    X007      BITUMEN    0.2264     FO_VISC    0.8280    
+    X007      FO_SULFUR  -1.3129   
+    X008      COST       43.8927    SAVL_008   1.0000    
+    X008      MS91       0.4633     MS95       0.3886    
+    X008      MS_OCTANE  2.6909     MS_SULFUR  -1.5280   
+    X008      MS_BENZENE 0.3109     MS_RVP     -0.3131   
+    X009      COST       49.7531    SAVL_009   1.0000    
+    X009      JET_A1     0.4240     HSD_BS6    0.3123    
+    X009      JET_FREEZE -1.9745    JET_SMOKE  1.6692    
+    X009      HSD_CETANE 1.3672    
+    X010      COST       53.3159    SAVL_010   1.0000    
+    X010      HSD_BS6    0.6529     MGO        0.1636    
+    X010      HSD_CETANE 0.5942     HSD_SULFUR -2.2807   
+    X010      HSD_DENSITY 0.0686     HSD_POUR   -0.0198   
+    X011      COST       57.3812    SAVL_011   1.0000    
+    X011      FO180      0.3992     FO380      0.4058    
+    X011      BITUMEN    0.2457     FO_VISC    1.0823    
+    X011      FO_SULFUR  -1.9656   
+    X012      COST       46.0903    SAVL_012   1.0000    
+    X012      MS91       0.4800     MS95       0.3282    
+    X012      MS_OCTANE  0.7789     MS_SULFUR  -1.3479   
+    X012      MS_BENZENE -0.0926    MS_RVP     1.3614    
+    X013      COST       48.5803    SAVL_013   1.0000    
+    X013      JET_A1     0.4036     HSD_BS6    0.3825    
+    X013      JET_FREEZE -0.7590    JET_SMOKE  1.0969    
+    X013      HSD_CETANE 1.0306    
+    X014      COST       52.9170    SAVL_014   1.0000    
+    X014      HSD_BS6    0.6618     MGO        0.2668    
+    X014      HSD_CETANE 1.5607     HSD_SULFUR -2.4989   
+    X014      HSD_DENSITY -0.6896    HSD_POUR   -1.9513   
+    X015      COST       62.2723    SAVL_015   1.0000    
+    X015      FO180      0.2615     FO380      0.3116    
+    X015      BITUMEN    0.2317     FO_VISC    1.3408    
+    X015      FO_SULFUR  -1.7430   
+    X016      COST       42.4153    SAVL_016   1.0000    
+    X016      MS91       0.6298     MS95       0.2257    
+    X016      MS_OCTANE  1.6882     MS_SULFUR  -1.1753   
+    X016      MS_BENZENE -0.4699    MS_RVP     1.1173    
+    X017      COST       48.2708    SAVL_017   1.0000    
+    X017      JET_A1     0.5690     HSD_BS6    0.2402    
+    X017      JET_FREEZE -1.8766    JET_SMOKE  2.4903    
+    X017      HSD_CETANE 1.0448    
+    X018      COST       55.1055    SAVL_018   1.0000    
+    X018      HSD_BS6    0.5674     MGO        0.2007    
+    X018      HSD_CETANE 1.6766     HSD_SULFUR -2.0398   
+    X018      HSD_DENSITY -0.9495    HSD_POUR   -1.8225   
+    X019      COST       58.3737    SAVL_019   1.0000    
+    X019      FO180      0.3719     FO380      0.3142    
+    X019      BITUMEN    0.1357     FO_VISC    0.5069    
+    X019      FO_SULFUR  -1.3573   
+    X020      COST       47.6131    SAVL_020   1.0000    
+    X020      MS91       0.5418     MS95       0.3569    
+    X020      MS_OCTANE  2.5187     MS_SULFUR  -1.7144   
+    X020      MS_BENZENE -0.8061    MS_RVP     -0.2068   
+    X021      COST       49.8021    SAVL_021   1.0000    
+    X021      JET_A1     0.5520     HSD_BS6    0.3968    
+    X021      JET_FREEZE -2.3032    JET_SMOKE  1.3052    
+    X021      HSD_CETANE 0.6411    
+    X022      COST       53.4919    SAVL_022   1.0000    
+    X022      HSD_BS6    0.6346     MGO        0.2133    
+    X022      HSD_CETANE 1.0571     HSD_SULFUR -2.0004   
+    X022      HSD_DENSITY 0.8082     HSD_POUR   -0.8922   
+    X023      COST       60.3020    SAVL_023   1.0000    
+    X023      FO180      0.3999     FO380      0.4672    
+    X023      BITUMEN    0.2453     FO_VISC    1.2791    
+    X023      FO_SULFUR  0.5461    
+    X024      COST       44.9138    SAVL_024   1.0000    
+    X024      MS91       0.5203     MS95       0.2117    
+    X024      MS_OCTANE  1.4474     MS_SULFUR  -0.5220   
+    X024      MS_BENZENE -0.4696    MS_RVP     0.8522    
+    X025      COST       49.5380    SAVL_025   1.0000    
+    X025      JET_A1     0.6486     HSD_BS6    0.3112    
+    X025      JET_FREEZE -1.0632    JET_SMOKE  0.8096    
+    X025      HSD_CETANE 0.5857    
+    X026      COST       55.4751    SAVL_026   1.0000    
+    X026      HSD_BS6    0.7244     MGO        0.1586    
+    X026      HSD_CETANE 1.6684     HSD_SULFUR -1.4943   
+    X026      HSD_DENSITY 0.6318     HSD_POUR   -1.6064   
+    X027      COST       57.4807    SAVL_027   1.0000    
+    X027      FO180      0.3190     FO380      0.4350    
+    X027      BITUMEN    0.1353     FO_VISC    -1.1403   
+    X027      FO_SULFUR  0.6709    
+    X028      COST       45.5671    SAVL_028   1.0000    
+    X028      MS91       0.5258     MS95       0.3167    
+    X028      MS_OCTANE  1.8070     MS_SULFUR  -0.5979   
+    X028      MS_BENZENE -0.5915    MS_RVP     0.6486    
+    X029      COST       49.3747    SAVL_029   1.0000    
+    X029      JET_A1     0.4400     HSD_BS6    0.2632    
+    X029      JET_FREEZE -0.9963    JET_SMOKE  0.6451    
+    X029      HSD_CETANE 0.7958    
+    X030      COST       57.9766    SAVL_030   1.0000    
+    X030      HSD_BS6    0.5639     MGO        0.1898    
+    X030      HSD_CETANE 2.3665     HSD_SULFUR -0.7383   
+    X030      HSD_DENSITY 0.6982     HSD_POUR   -1.0762   
+    X031      COST       62.0025    SAVL_031   1.0000    
+    X031      FO180      0.3223     FO380      0.4974    
+    X031      BITUMEN    0.1981     FO_VISC    -1.4765   
+    X031      FO_SULFUR  0.4513    
+    X032      COST       45.9803    SAVL_032   1.0000    
+    X032      MS91       0.4403     MS95       0.2231    
+    X032      MS_OCTANE  0.7676     MS_SULFUR  -1.1702   
+    X032      MS_BENZENE -0.4553    MS_RVP     0.3145    
+    X033      COST       48.2216    SAVL_033   1.0000    
+    X033      JET_A1     0.4292     HSD_BS6    0.2977    
+    X033      JET_FREEZE -0.6893    JET_SMOKE  2.1922    
+    X033      HSD_CETANE 0.3200    
+    X034      COST       53.6601    SAVL_034   1.0000    
+    X034      HSD_BS6    0.7313     MGO        0.2456    
+    X034      HSD_CETANE 1.0239     HSD_SULFUR -1.0175   
+    X034      HSD_DENSITY -0.1208    HSD_POUR   -0.9308   
+    X035      COST       57.4515    SAVL_035   1.0000    
+    X035      FO180      0.3808     FO380      0.4091    
+    X035      BITUMEN    0.2252     FO_VISC    0.2475    
+    X035      FO_SULFUR  -1.5557   
+    X036      COST       43.8496    SAVL_036   1.0000    
+    X036      MS91       0.6388     MS95       0.3721    
+    X036      MS_OCTANE  2.7473     MS_SULFUR  -1.6849   
+    X036      MS_BENZENE -0.5009    MS_RVP     -1.1916   
+    X037      COST       52.3048    SAVL_037   1.0000    
+    X037      JET_A1     0.5362     HSD_BS6    0.2309    
+    X037      JET_FREEZE -0.6402    JET_SMOKE  2.2292    
+    X037      HSD_CETANE 1.4691    
+    X038      COST       57.2885    SAVL_038   1.0000    
+    X038      HSD_BS6    0.7210     MGO        0.1998    
+    X038      HSD_CETANE 2.3616     HSD_SULFUR -0.8955   
+    X038      HSD_DENSITY 0.6602     HSD_POUR   0.0269    
+    X039      COST       61.7242    SAVL_039   1.0000    
+    X039      FO180      0.3744     FO380      0.4717    
+    X039      BITUMEN    0.1334     FO_VISC    0.9498    
+    X039      FO_SULFUR  -0.6191   
+    X040      COST       46.7721    SAVL_040   1.0000    
+    X040      MS91       0.4071     MS95       0.2386    
+    X040      MS_OCTANE  1.3207     MS_SULFUR  -0.7035   
+    X040      MS_BENZENE 0.9338     MS_RVP     -0.6626   
+    X041      COST       49.3981    SAVL_041   1.0000    
+    X041      JET_A1     0.5109     HSD_BS6    0.3878    
+    X041      JET_FREEZE -2.2693    JET_SMOKE  2.4408    
+    X041      HSD_CETANE 0.4321    
+    X042      COST       53.5928    SAVL_042   1.0000    
+    X042      HSD_BS6    0.6304     MGO        0.2593    
+    X042      HSD_CETANE 1.1274     HSD_SULFUR -1.2876   
+    X042      HSD_DENSITY -0.2214    HSD_POUR   -1.0370   
+    X043      COST       58.5283    SAVL_043   1.0000    
+    X043      FO180      0.2003     FO380      0.4851    
+    X043      BITUMEN    0.1808     FO_VISC    0.6583    
+    X043      FO_SULFUR  0.2259    
+    X044      COST       44.1853    SAVL_044   1.0000    
+    X044      MS91       0.5993     MS95       0.2660    
+    X044      MS_OCTANE  1.2848     MS_SULFUR  -0.7280   
+    X044      MS_BENZENE 0.4395     MS_RVP     -0.5990   
+    X045      COST       49.4504    SAVL_045   1.0000    
+    X045      JET_A1     0.4387     HSD_BS6    0.2255    
+    X045      JET_FREEZE -1.6591    JET_SMOKE  2.3807    
+    X045      HSD_CETANE 1.0805    
+    X046      COST       55.6931    SAVL_046   1.0000    
+    X046      HSD_BS6    0.6644     MGO        0.1501    
+    X046      HSD_CETANE 1.0738     HSD_SULFUR -1.6402   
+    X046      HSD_DENSITY -0.0500    HSD_POUR   -0.3632   
+    X047      COST       59.6530    SAVL_047   1.0000    
+    X047      FO180      0.2946     FO380      0.4802    
+    X047      BITUMEN    0.2194     FO_VISC    -0.9909   
+    X047      FO_SULFUR  -1.7456   
+    X048      COST       45.7976    SAVL_048   1.0000    
+    X048      MS91       0.6455     MS95       0.3502    
+    X048      MS_OCTANE  2.1820     MS_SULFUR  -1.6630   
+    X048      MS_BENZENE -0.6017    MS_RVP     -1.4267   
+    X049      COST       49.8508    SAVL_049   1.0000    
+    X049      JET_A1     0.3718     HSD_BS6    0.2829    
+    X049      JET_FREEZE -1.2405    JET_SMOKE  0.8889    
+    X049      HSD_CETANE 1.1053    
+    X050      COST       53.4639    SAVL_050   1.0000    
+    X050      HSD_BS6    0.5017     MGO        0.2626    
+    X050      HSD_CETANE 2.0401     HSD_SULFUR -2.2868   
+    X050      HSD_DENSITY -0.4371    HSD_POUR   -1.5603   
+    X051      COST       60.1077    SAVL_051   1.0000    
+    X051      FO180      0.2498     FO380      0.4697    
+    X051      BITUMEN    0.1685     FO_VISC    0.9042    
+    X051      FO_SULFUR  0.0027    
+    X052      COST       45.5727    SAVL_052   1.0000    
+    X052      MS91       0.6674     MS95       0.3225    
+    X052      MS_OCTANE  2.2982     MS_SULFUR  -1.2428   
+    X052      MS_BENZENE 0.6611     MS_RVP     0.1436    
+    X053      COST       51.4619    SAVL_053   1.0000    
+    X053      JET_A1     0.4278     HSD_BS6    0.2494    
+    X053      JET_FREEZE -1.2247    JET_SMOKE  2.0316    
+    X053      HSD_CETANE 0.8777    
+    X054      COST       53.6476    SAVL_054   1.0000    
+    X054      HSD_BS6    0.5857     MGO        0.1908    
+    X054      HSD_CETANE 1.1394     HSD_SULFUR -1.4197   
+    X054      HSD_DENSITY -1.1541    HSD_POUR   -1.4218   
+    X055      COST       61.2385    SAVL_055   1.0000    
+    X055      FO180      0.2815     FO380      0.4085    
+    X055      BITUMEN    0.1624     FO_VISC    -0.8795   
+    X055      FO_SULFUR  -0.7396   
+    X056      COST       45.5045    SAVL_056   1.0000    
+    X056      MS91       0.6570     MS95       0.3531    
+    X056      MS_OCTANE  1.4510     MS_SULFUR  -1.9912   
+    X056      MS_BENZENE -0.2965    MS_RVP     0.7604    
+    X057      COST       52.7206    SAVL_057   1.0000    
+    X057      JET_A1     0.5743     HSD_BS6    0.3092    
+    X057      JET_FREEZE -1.2935    JET_SMOKE  0.9411    
+    X057      HSD_CETANE 0.4852    
+    X058      COST       52.1741    SAVL_058   1.0000    
+    X058      HSD_BS6    0.7037     MGO        0.2106    
+    X058      HSD_CETANE 0.8301     HSD_SULFUR -1.5652   
+    X058      HSD_DENSITY -1.1809    HSD_POUR   -0.4444   
+    X059      COST       59.3641    SAVL_059   1.0000    
+    X059      FO180      0.2054     FO380      0.4285    
+    X059      BITUMEN    0.1204     FO_VISC    -0.1149   
+    X059      FO_SULFUR  -1.8491   
+    X060      COST       43.2700    SAVL_060   1.0000    
+    X060      MS91       0.6284     MS95       0.2758    
+    X060      MS_OCTANE  2.3800     MS_SULFUR  -0.7521   
+    X060      MS_BENZENE -0.4955    MS_RVP     -1.2543   
+    X061      COST       50.2365    SAVL_061   1.0000    
+    X061      JET_A1     0.4550     HSD_BS6    0.3300    
+    X061      JET_FREEZE -0.9375    JET_SMOKE  1.8035    
+    X061      HSD_CETANE 1.1805    
+    X062      COST       53.1962    SAVL_062   1.0000    
+    X062      HSD_BS6    0.5457     MGO        0.1689    
+    X062      HSD_CETANE 1.8389     HSD_SULFUR -1.3721   
+    X062      HSD_DENSITY -0.9551    HSD_POUR   -0.2513   
+    X063      COST       58.0067    SAVL_063   1.0000    
+    X063      FO180      0.3496     FO380      0.3229    
+    X063      BITUMEN    0.2229     FO_VISC    1.3942    
+    X063      FO_SULFUR  -1.6757   
+    X064      COST       43.8717    SAVL_064   1.0000    
+    X064      MS91       0.6875     MS95       0.2793    
+    X064      MS_OCTANE  2.2875     MS_SULFUR  -1.8860   
+    X064      MS_BENZENE 0.3812     MS_RVP     0.3817    
+    X065      COST       51.6349    SAVL_065   1.0000    
+    X065      JET_A1     0.5301     HSD_BS6    0.2242    
+    X065      JET_FREEZE -0.5323    JET_SMOKE  2.0653    
+    X065      HSD_CETANE 0.6514    
+    X066      COST       54.2234    SAVL_066   1.0000    
+    X066      HSD_BS6    0.6024     MGO        0.2774    
+    X066      HSD_CETANE 2.1447     HSD_SULFUR -2.2889   
+    X066      HSD_DENSITY 0.9020     HSD_POUR   -0.4110   
+    X067      COST       61.2439    SAVL_067   1.0000    
+    X067      FO180      0.3468     FO380      0.4931    
+    X067      BITUMEN    0.1405     FO_VISC    0.9246    
+    X067      FO_SULFUR  -0.3855   
+    X068      COST       44.6134    SAVL_068   1.0000    
+    X068      MS91       0.4805     MS95       0.3703    
+    X068      MS_OCTANE  2.5768     MS_SULFUR  -1.8700   
+    X068      MS_BENZENE 0.7633     MS_RVP     -0.7684   
+    X069      COST       50.6620    SAVL_069   1.0000    
+    X069      JET_A1     0.3586     HSD_BS6    0.3702    
+    X069      JET_FREEZE -2.1363    JET_SMOKE  0.9242    
+    X069      HSD_CETANE 1.2372    
+    X070      COST       57.2819    SAVL_070   1.0000    
+    X070      HSD_BS6    0.5829     MGO        0.1515    
+    X070      HSD_CETANE 2.3961     HSD_SULFUR -2.3288   
+    X070      HSD_DENSITY 0.3002     HSD_POUR   -0.7786   
+    X071      COST       61.1437    SAVL_071   1.0000    
+    X071      FO180      0.2982     FO380      0.4586    
+    X071      BITUMEN    0.1140     FO_VISC    -0.8352   
+    X071      FO_SULFUR  0.0754    
+    X072      COST       45.4893    SAVL_072   1.0000    
+    X072      MS91       0.5593     MS95       0.2851    
+    X072      MS_OCTANE  2.3648     MS_SULFUR  -1.5038   
+    X072      MS_BENZENE 0.4057     MS_RVP     -0.6873   
+    X073      COST       47.7239    SAVL_073   1.0000    
+    X073      JET_A1     0.3859     HSD_BS6    0.3072    
+    X073      JET_FREEZE -0.9756    JET_SMOKE  0.8703    
+    X073      HSD_CETANE 0.4813    
+    X074      COST       56.3475    SAVL_074   1.0000    
+    X074      HSD_BS6    0.6574     MGO        0.1924    
+    X074      HSD_CETANE 0.7011     HSD_SULFUR -2.1118   
+    X074      HSD_DENSITY -0.9313    HSD_POUR   -1.5514   
+    X075      COST       60.2048    SAVL_075   1.0000    
+    X075      FO180      0.3949     FO380      0.4107    
+    X075      BITUMEN    0.2046     FO_VISC    -1.1212   
+    X075      FO_SULFUR  0.6054    
+    X076      COST       47.2363    SAVL_076   1.0000    
+    X076      MS91       0.5408     MS95       0.2881    
+    X076      MS_OCTANE  0.9609     MS_SULFUR  -1.9229   
+    X076      MS_BENZENE 0.8821     MS_RVP     -0.0668   
+    X077      COST       49.4042    SAVL_077   1.0000    
+    X077      JET_A1     0.5388     HSD_BS6    0.2107    
+    X077      JET_FREEZE -2.2016    JET_SMOKE  1.6257    
+    X077      HSD_CETANE 0.5950    
+    X078      COST       52.7107    SAVL_078   1.0000    
+    X078      HSD_BS6    0.6819     MGO        0.2686    
+    X078      HSD_CETANE 0.9514     HSD_SULFUR -1.4549   
+    X078      HSD_DENSITY -0.3737    HSD_POUR   -0.8932   
+    X079      COST       62.9402    SAVL_079   1.0000    
+    X079      FO180      0.3242     FO380      0.4219    
+    X079      BITUMEN    0.2110     FO_VISC    1.3428    
+    X079      FO_SULFUR  -1.3766   
+    X080      COST       45.9626    SAVL_080   1.0000    
+    X080      MS91       0.4521     MS95       0.2150    
+    X080      MS_OCTANE  0.5067     MS_SULFUR  -1.3242   
+    X080      MS_BENZENE 0.1876     MS_RVP     -0.6262   
+    X081      COST       51.2417    SAVL_081   1.0000    
+    X081      JET_A1     0.4862     HSD_BS6    0.3375    
+    X081      JET_FREEZE -0.6522    JET_SMOKE  2.0757    
+    X081      HSD_CETANE 1.0126    
+    X082      COST       57.6020    SAVL_082   1.0000    
+    X082      HSD_BS6    0.6634     MGO        0.2471    
+    X082      HSD_CETANE 2.3168     HSD_SULFUR -0.8467   
+    X082      HSD_DENSITY -1.3215    HSD_POUR   -1.5852   
+    X083      COST       61.4937    SAVL_083   1.0000    
+    X083      FO180      0.2577     FO380      0.3249    
+    X083      BITUMEN    0.2033     FO_VISC    0.5992    
+    X083      FO_SULFUR  0.8280    
+    X084      COST       44.9628    SAVL_084   1.0000    
+    X084      MS91       0.4120     MS95       0.2864    
+    X084      MS_OCTANE  1.3058     MS_SULFUR  -1.6244   
+    X084      MS_BENZENE -0.8173    MS_RVP     1.3857    
+    X085      COST       50.4512    SAVL_085   1.0000    
+    X085      JET_A1     0.6499     HSD_BS6    0.3345    
+    X085      JET_FREEZE -1.9610    JET_SMOKE  0.5805    
+    X085      HSD_CETANE 1.1831    
+    X086      COST       55.9091    SAVL_086   1.0000    
+    X086      HSD_BS6    0.5544     MGO        0.2378    
+    X086      HSD_CETANE 1.7696     HSD_SULFUR -1.5165   
+    X086      HSD_DENSITY -1.2719    HSD_POUR   -1.1301   
+    X087      COST       61.0208    SAVL_087   1.0000    
+    X087      FO180      0.2660     FO380      0.4387    
+    X087      BITUMEN    0.1432     FO_VISC    1.3356    
+    X087      FO_SULFUR  0.4407    
+    X088      COST       44.7290    SAVL_088   1.0000    
+    X088      MS91       0.4970     MS95       0.3940    
+    X088      MS_OCTANE  1.5104     MS_SULFUR  -1.2281   
+    X088      MS_BENZENE 0.9762     MS_RVP     0.4730    
+    X089      COST       49.4795    SAVL_089   1.0000    
+    X089      JET_A1     0.4585     HSD_BS6    0.3513    
+    X089      JET_FREEZE -1.2492    JET_SMOKE  2.0200    
+    X089      HSD_CETANE 0.4646    
+    X090      COST       57.5660    SAVL_090   1.0000    
+    X090      HSD_BS6    0.7095     MGO        0.1682    
+    X090      HSD_CETANE 2.4463     HSD_SULFUR -1.2823   
+    X090      HSD_DENSITY -0.9018    HSD_POUR   -1.6041   
+    X091      COST       60.3135    SAVL_091   1.0000    
+    X091      FO180      0.3985     FO380      0.4826    
+    X091      BITUMEN    0.1692     FO_VISC    -1.1476   
+    X091      FO_SULFUR  0.4964    
+    X092      COST       46.2996    SAVL_092   1.0000    
+    X092      MS91       0.4820     MS95       0.3669    
+    X092      MS_OCTANE  2.9506     MS_SULFUR  -1.6344   
+    X092      MS_BENZENE 0.1025     MS_RVP     -0.3492   
+    X093      COST       50.0494    SAVL_093   1.0000    
+    X093      JET_A1     0.6092     HSD_BS6    0.2552    
+    X093      JET_FREEZE -0.9200    JET_SMOKE  1.3299    
+    X093      HSD_CETANE 1.4145    
+    X094      COST       56.9233    SAVL_094   1.0000    
+    X094      HSD_BS6    0.5896     MGO        0.2380    
+    X094      HSD_CETANE 2.4978     HSD_SULFUR -1.5207   
+    X094      HSD_DENSITY -1.1285    HSD_POUR   -0.6535   
+    X095      COST       60.3115    SAVL_095   1.0000    
+    X095      FO180      0.2911     FO380      0.3644    
+    X095      BITUMEN    0.1283     FO_VISC    0.5925    
+    X095      FO_SULFUR  -0.2846   
+    X096      COST       46.6533    SAVL_096   1.0000    
+    X096      MS91       0.6234     MS95       0.3410    
+    X096      MS_OCTANE  2.5285     MS_SULFUR  -1.4209   
+    X096      MS_BENZENE 0.3274     MS_RVP     0.9622    
+    X097      COST       49.9720    SAVL_097   1.0000    
+    X097      JET_A1     0.5007     HSD_BS6    0.3180    
+    X097      JET_FREEZE -0.7606    JET_SMOKE  2.2484    
+    X097      HSD_CETANE 0.7724    
+    X098      COST       54.7416    SAVL_098   1.0000    
+    X098      HSD_BS6    0.6230     MGO        0.2482    
+    X098      HSD_CETANE 0.8087     HSD_SULFUR -1.5610   
+    X098      HSD_DENSITY 0.9230     HSD_POUR   -1.1536   
+    X099      COST       60.8990    SAVL_099   1.0000    
+    X099      FO180      0.3705     FO380      0.4719    
+    X099      BITUMEN    0.1570     FO_VISC    -0.5500   
+    X099      FO_SULFUR  0.1562    
+    X100      COST       47.2343    SAVL_100   1.0000    
+    X100      MS91       0.4205     MS95       0.3262    
+    X100      MS_OCTANE  2.8023     MS_SULFUR  -0.5039   
+    X100      MS_BENZENE 0.4935     MS_RVP     -0.1981   
+    X101      COST       50.8025    SAVL_101   1.0000    
+    X101      JET_A1     0.4831     HSD_BS6    0.3388    
+    X101      JET_FREEZE -0.6932    JET_SMOKE  0.5920    
+    X101      HSD_CETANE 1.2350    
+    X102      COST       54.2490    SAVL_102   1.0000    
+    X102      HSD_BS6    0.6593     MGO        0.2349    
+    X102      HSD_CETANE 2.0850     HSD_SULFUR -2.1600   
+    X102      HSD_DENSITY -1.3026    HSD_POUR   0.1771    
+    X103      COST       58.4450    SAVL_103   1.0000    
+    X103      FO180      0.2286     FO380      0.3922    
+    X103      BITUMEN    0.1381     FO_VISC    -0.7340   
+    X103      FO_SULFUR  -1.9718   
+    X104      COST       47.4073    SAVL_104   1.0000    
+    X104      MS91       0.4474     MS95       0.2883    
+    X104      MS_OCTANE  1.3639     MS_SULFUR  -1.1186   
+    X104      MS_BENZENE 0.2779     MS_RVP     -0.2271   
+    X105      COST       52.0718    SAVL_105   1.0000    
+    X105      JET_A1     0.4654     HSD_BS6    0.2966    
+    X105      JET_FREEZE -2.0256    JET_SMOKE  1.6438    
+    X105      HSD_CETANE 0.9473    
+    X106      COST       53.7714    SAVL_106   1.0000    
+    X106      HSD_BS6    0.6975     MGO        0.1912    
+    X106      HSD_CETANE 1.6319     HSD_SULFUR -1.1284   
+    X106      HSD_DENSITY 0.3617     HSD_POUR   -1.8774   
+    X107      COST       59.9804    SAVL_107   1.0000    
+    X107      FO180      0.2572     FO380      0.4598    
+    X107      BITUMEN    0.1911     FO_VISC    -0.4430   
+    X107      FO_SULFUR  -0.0901   
+    X108      COST       46.0666    SAVL_108   1.0000    
+    X108      MS91       0.5978     MS95       0.3677    
+    X108      MS_OCTANE  2.0706     MS_SULFUR  -0.6449   
+    X108      MS_BENZENE 0.2927     MS_RVP     -0.5732   
+    X109      COST       50.4774    SAVL_109   1.0000    
+    X109      JET_A1     0.3770     HSD_BS6    0.2590    
+    X109      JET_FREEZE -1.0050    JET_SMOKE  0.8513    
+    X109      HSD_CETANE 0.3718    
+    X110      COST       57.8289    SAVL_110   1.0000    
+    X110      HSD_BS6    0.7740     MGO        0.2746    
+    X110      HSD_CETANE 1.0139     HSD_SULFUR -0.8506   
+    X110      HSD_DENSITY -0.2954    HSD_POUR   0.0162    
+    X111      COST       59.0323    SAVL_111   1.0000    
+    X111      FO180      0.3926     FO380      0.3282    
+    X111      BITUMEN    0.2450     FO_VISC    1.0804    
+    X111      FO_SULFUR  0.1727    
+    X112      COST       47.8036    SAVL_112   1.0000    
+    X112      MS91       0.5097     MS95       0.3581    
+    X112      MS_OCTANE  0.5348     MS_SULFUR  -1.1951   
+    X112      MS_BENZENE -0.0904    MS_RVP     0.5185    
+    X113      COST       50.5074    SAVL_113   1.0000    
+    X113      JET_A1     0.6321     HSD_BS6    0.2217    
+    X113      JET_FREEZE -2.0324    JET_SMOKE  0.5500    
+    X113      HSD_CETANE 1.3495    
+    X114      COST       57.4915    SAVL_114   1.0000    
+    X114      HSD_BS6    0.5190     MGO        0.2736    
+    X114      HSD_CETANE 2.3188     HSD_SULFUR -1.8956   
+    X114      HSD_DENSITY -0.4793    HSD_POUR   -1.6506   
+    X115      COST       58.8262    SAVL_115   1.0000    
+    X115      FO180      0.2194     FO380      0.4775    
+    X115      BITUMEN    0.1203     FO_VISC    -0.1391   
+    X115      FO_SULFUR  0.0115    
+    X116      COST       47.6758    SAVL_116   1.0000    
+    X116      MS91       0.6227     MS95       0.2309    
+    X116      MS_OCTANE  1.5372     MS_SULFUR  -1.8515   
+    X116      MS_BENZENE -0.0213    MS_RVP     -0.2757   
+    X117      COST       47.1963    SAVL_117   1.0000    
+    X117      JET_A1     0.4830     HSD_BS6    0.3901    
+    X117      JET_FREEZE -0.7891    JET_SMOKE  0.6987    
+    X117      HSD_CETANE 1.0914    
+    X118      COST       57.8671    SAVL_118   1.0000    
+    X118      HSD_BS6    0.6194     MGO        0.1785    
+    X118      HSD_CETANE 0.7443     HSD_SULFUR -0.8039   
+    X118      HSD_DENSITY -0.3632    HSD_POUR   -0.3431   
+    X119      COST       60.5829    SAVL_119   1.0000    
+    X119      FO180      0.3574     FO380      0.3487    
+    X119      BITUMEN    0.1189     FO_VISC    0.1937    
+    X119      FO_SULFUR  -1.7942   
+RHS
+    RHS1      MS91       85.0000
+    RHS1      MS95       45.0000
+    RHS1      HSD_BS6    210.0000
+    RHS1      JET_A1     75.0000
+    RHS1      MGO        35.0000
+    RHS1      FO180      50.0000
+    RHS1      FO380      65.0000
+    RHS1      BITUMEN    30.0000
+    RHS1      SAVL_000   56.5726
+    RHS1      SAVL_001   57.2761
+    RHS1      SAVL_002   109.5756
+    RHS1      SAVL_003   66.2848
+    RHS1      SAVL_004   51.8043
+    RHS1      SAVL_005   112.0425
+    RHS1      SAVL_006   40.2268
+    RHS1      SAVL_007   108.6725
+    RHS1      SAVL_008   51.5750
+    RHS1      SAVL_009   50.3994
+    RHS1      SAVL_010   60.0523
+    RHS1      SAVL_011   53.9598
+    RHS1      SAVL_012   92.8846
+    RHS1      SAVL_013   42.0624
+    RHS1      SAVL_014   41.1888
+    RHS1      SAVL_015   103.1988
+    RHS1      SAVL_016   59.0345
+    RHS1      SAVL_017   65.9017
+    RHS1      SAVL_018   53.9397
+    RHS1      SAVL_019   44.1919
+    RHS1      SAVL_020   99.3374
+    RHS1      SAVL_021   82.0868
+    RHS1      SAVL_022   99.6532
+    RHS1      SAVL_023   78.0997
+    RHS1      SAVL_024   102.2414
+    RHS1      SAVL_025   81.0590
+    RHS1      SAVL_026   48.7243
+    RHS1      SAVL_027   80.3071
+    RHS1      SAVL_028   115.6333
+    RHS1      SAVL_029   43.4692
+    RHS1      SAVL_030   102.6582
+    RHS1      SAVL_031   109.3585
+    RHS1      SAVL_032   81.7161
+    RHS1      SAVL_033   76.6434
+    RHS1      SAVL_034   117.1221
+    RHS1      SAVL_035   44.8660
+    RHS1      SAVL_036   78.3186
+    RHS1      SAVL_037   72.1294
+    RHS1      SAVL_038   94.8878
+    RHS1      SAVL_039   79.2215
+    RHS1      SAVL_040   112.7761
+    RHS1      SAVL_041   45.8793
+    RHS1      SAVL_042   46.4632
+    RHS1      SAVL_043   88.6638
+    RHS1      SAVL_044   45.2546
+    RHS1      SAVL_045   62.0013
+    RHS1      SAVL_046   90.6461
+    RHS1      SAVL_047   83.8685
+    RHS1      SAVL_048   66.0148
+    RHS1      SAVL_049   119.5702
+    RHS1      SAVL_050   82.4445
+    RHS1      SAVL_051   76.2972
+    RHS1      SAVL_052   88.4341
+    RHS1      SAVL_053   47.9343
+    RHS1      SAVL_054   96.1424
+    RHS1      SAVL_055   108.2234
+    RHS1      SAVL_056   92.0733
+    RHS1      SAVL_057   101.5170
+    RHS1      SAVL_058   97.6672
+    RHS1      SAVL_059   57.2018
+    RHS1      SAVL_060   76.1244
+    RHS1      SAVL_061   58.2795
+    RHS1      SAVL_062   67.1145
+    RHS1      SAVL_063   76.2799
+    RHS1      SAVL_064   73.2792
+    RHS1      SAVL_065   47.6069
+    RHS1      SAVL_066   74.1411
+    RHS1      SAVL_067   93.2086
+    RHS1      SAVL_068   69.9441
+    RHS1      SAVL_069   52.2111
+    RHS1      SAVL_070   113.8388
+    RHS1      SAVL_071   45.3707
+    RHS1      SAVL_072   106.5418
+    RHS1      SAVL_073   47.4584
+    RHS1      SAVL_074   47.7252
+    RHS1      SAVL_075   99.1037
+    RHS1      SAVL_076   104.9415
+    RHS1      SAVL_077   84.5097
+    RHS1      SAVL_078   86.9172
+    RHS1      SAVL_079   84.9269
+    RHS1      SAVL_080   66.3717
+    RHS1      SAVL_081   49.7785
+    RHS1      SAVL_082   68.2878
+    RHS1      SAVL_083   93.2272
+    RHS1      SAVL_084   100.0227
+    RHS1      SAVL_085   109.4474
+    RHS1      SAVL_086   97.6849
+    RHS1      SAVL_087   117.4719
+    RHS1      SAVL_088   88.0328
+    RHS1      SAVL_089   68.1317
+    RHS1      SAVL_090   86.2335
+    RHS1      SAVL_091   57.0191
+    RHS1      SAVL_092   92.5389
+    RHS1      SAVL_093   57.9396
+    RHS1      SAVL_094   48.6575
+    RHS1      SAVL_095   107.6299
+    RHS1      SAVL_096   69.4049
+    RHS1      SAVL_097   101.0085
+    RHS1      SAVL_098   85.9280
+    RHS1      SAVL_099   104.5777
+    RHS1      SAVL_100   107.6124
+    RHS1      SAVL_101   117.9637
+    RHS1      SAVL_102   105.4741
+    RHS1      SAVL_103   89.0859
+    RHS1      SAVL_104   91.4159
+    RHS1      SAVL_105   42.1003
+    RHS1      SAVL_106   114.3267
+    RHS1      SAVL_107   106.3569
+    RHS1      SAVL_108   61.3958
+    RHS1      SAVL_109   54.4333
+    RHS1      SAVL_110   96.2159
+    RHS1      SAVL_111   64.7188
+    RHS1      SAVL_112   67.1860
+    RHS1      SAVL_113   40.4885
+    RHS1      SAVL_114   109.5890
+    RHS1      SAVL_115   85.3057
+    RHS1      SAVL_116   72.0627
+    RHS1      SAVL_117   51.3500
+    RHS1      SAVL_118   90.6538
+    RHS1      SAVL_119   42.4526
+BOUNDS
+ UP BND       X000      42.00
+ UP BND       X001      57.49
+ UP BND       X002      104.75
+ UP BND       X003      47.74
+ UP BND       X004      84.16
+ UP BND       X005      46.38
+ UP BND       X006      61.36
+ UP BND       X007      91.20
+ UP BND       X008      61.42
+ UP BND       X009      61.19
+ UP BND       X010      119.80
+ UP BND       X011      70.53
+ UP BND       X012      82.96
+ UP BND       X013      80.05
+ UP BND       X014      101.00
+ UP BND       X015      106.53
+ UP BND       X016      100.85
+ UP BND       X017      83.14
+ UP BND       X018      49.68
+ UP BND       X019      112.43
+ UP BND       X020      85.68
+ UP BND       X021      98.33
+ UP BND       X022      55.22
+ UP BND       X023      44.05
+ UP BND       X024      57.10
+ UP BND       X025      116.59
+ UP BND       X026      83.38
+ UP BND       X027      54.87
+ UP BND       X028      89.55
+ UP BND       X029      93.74
+ UP BND       X030      45.86
+ UP BND       X031      96.28
+ UP BND       X032      115.11
+ UP BND       X033      90.74
+ UP BND       X034      40.28
+ UP BND       X035      110.65
+ UP BND       X036      111.92
+ UP BND       X037      72.51
+ UP BND       X038      41.98
+ UP BND       X039      48.65
+ UP BND       X040      58.21
+ UP BND       X041      118.49
+ UP BND       X042      48.67
+ UP BND       X043      96.70
+ UP BND       X044      45.60
+ UP BND       X045      72.19
+ UP BND       X046      64.08
+ UP BND       X047      57.10
+ UP BND       X048      66.82
+ UP BND       X049      107.98
+ UP BND       X050      92.48
+ UP BND       X051      44.02
+ UP BND       X052      116.00
+ UP BND       X053      77.97
+ UP BND       X054      46.20
+ UP BND       X055      45.14
+ UP BND       X056      95.64
+ UP BND       X057      73.52
+ UP BND       X058      66.89
+ UP BND       X059      85.15
+ UP BND       X060      66.15
+ UP BND       X061      119.99
+ UP BND       X062      41.63
+ UP BND       X063      88.58
+ UP BND       X064      94.19
+ UP BND       X065      108.02
+ UP BND       X066      80.48
+ UP BND       X067      74.84
+ UP BND       X068      98.48
+ UP BND       X069      70.32
+ UP BND       X070      96.09
+ UP BND       X071      91.67
+ UP BND       X072      77.86
+ UP BND       X073      55.41
+ UP BND       X074      118.13
+ UP BND       X075      61.94
+ UP BND       X076      85.93
+ UP BND       X077      45.93
+ UP BND       X078      101.16
+ UP BND       X079      64.43
+ UP BND       X080      52.56
+ UP BND       X081      96.24
+ UP BND       X082      74.01
+ UP BND       X083      85.54
+ UP BND       X084      46.44
+ UP BND       X085      116.06
+ UP BND       X086      113.29
+ UP BND       X087      108.62
+ UP BND       X088      65.16
+ UP BND       X089      55.01
+ UP BND       X090      75.05
+ UP BND       X091      47.46
+ UP BND       X092      80.71
+ UP BND       X093      110.35
+ UP BND       X094      62.63
+ UP BND       X095      83.47
+ UP BND       X096      43.49
+ UP BND       X097      42.96
+ UP BND       X098      97.80
+ UP BND       X099      108.14
+ UP BND       X100      42.87
+ UP BND       X101      109.81
+ UP BND       X102      51.65
+ UP BND       X103      113.03
+ UP BND       X104      94.21
+ UP BND       X105      55.94
+ UP BND       X106      118.24
+ UP BND       X107      112.33
+ UP BND       X108      97.67
+ UP BND       X109      98.59
+ UP BND       X110      82.47
+ UP BND       X111      49.21
+ UP BND       X112      104.37
+ UP BND       X113      105.79
+ UP BND       X114      57.71
+ UP BND       X115      79.41
+ UP BND       X116      73.53
+ UP BND       X117      69.64
+ UP BND       X118      68.69
+ UP BND       X119      41.71
+QUADOBJ
+    X000      X000      1.1329
+    X001      X001      0.8307
+    X002      X002      1.0049
+    X003      X003      1.9597
+    X004      X004      0.8418
+    X005      X005      1.0553
+    X006      X006      1.0692
+    X007      X007      0.5482
+    X008      X008      1.8718
+    X009      X009      1.0991
+    X010      X010      1.1332
+    X011      X011      1.5811
+    X012      X012      1.8138
+    X013      X013      1.4135
+    X014      X014      1.8936
+    X015      X015      1.2290
+    X016      X016      1.1347
+    X017      X017      1.1572
+    X018      X018      1.4467
+    X019      X019      0.6985
+    X020      X020      1.1354
+    X021      X021      1.7925
+    X022      X022      1.7920
+    X023      X023      0.7495
+    X024      X024      1.1825
+    X025      X025      1.9531
+    X026      X026      1.9412
+    X027      X027      0.8693
+    X028      X028      0.8580
+    X029      X029      1.9977
+    X030      X030      0.7366
+    X031      X031      0.9491
+    X032      X032      1.5764
+    X033      X033      1.1354
+    X034      X034      0.5145
+    X035      X035      0.6912
+    X036      X036      1.6702
+    X037      X037      1.7162
+    X038      X038      0.9002
+    X039      X039      0.9578
+    X040      X040      1.4622
+    X041      X041      1.9438
+    X042      X042      1.3649
+    X043      X043      1.5059
+    X044      X044      0.9639
+    X045      X045      1.8542
+    X046      X046      1.1975
+    X047      X047      1.2732
+    X048      X048      0.8673
+    X049      X049      1.2416
+    X050      X050      1.9369
+    X051      X051      1.9818
+    X052      X052      1.8458
+    X053      X053      1.4401
+    X054      X054      1.5409
+    X055      X055      1.8573
+    X056      X056      1.7802
+    X057      X057      1.1538
+    X058      X058      0.5404
+    X059      X059      1.0687
+    X060      X060      0.5291
+    X061      X061      1.9244
+    X062      X062      1.6503
+    X063      X063      0.5385
+    X064      X064      0.6529
+    X065      X065      1.1426
+    X066      X066      1.7431
+    X067      X067      1.2252
+    X068      X068      1.1971
+    X069      X069      1.0105
+    X070      X070      1.6372
+    X071      X071      0.9593
+    X072      X072      0.8771
+    X073      X073      1.2263
+    X074      X074      0.5212
+    X075      X075      1.2363
+    X076      X076      1.7332
+    X077      X077      1.9909
+    X078      X078      1.7902
+    X079      X079      0.8165
+    X080      X080      0.8472
+    X081      X081      1.4918
+    X082      X082      0.9614
+    X083      X083      1.2507
+    X084      X084      1.7539
+    X085      X085      1.2058
+    X086      X086      1.0000
+    X087      X087      1.3251
+    X088      X088      1.3139
+    X089      X089      1.3238
+    X090      X090      1.3263
+    X091      X091      1.2476
+    X092      X092      1.8828
+    X093      X093      1.2616
+    X094      X094      1.0177
+    X095      X095      0.8503
+    X096      X096      1.9712
+    X097      X097      1.2889
+    X098      X098      1.5391
+    X099      X099      1.6391
+    X100      X100      0.6477
+    X101      X101      0.9401
+    X102      X102      1.4296
+    X103      X103      1.7069
+    X104      X104      0.8751
+    X105      X105      1.9890
+    X106      X106      1.4096
+    X107      X107      1.4313
+    X108      X108      1.1612
+    X109      X109      1.3091
+    X110      X110      1.6198
+    X111      X111      1.9699
+    X112      X112      1.5085
+    X113      X113      1.3421
+    X114      X114      1.9194
+    X115      X115      1.6147
+    X116      X116      1.9273
+    X117      X117      1.3167
+    X118      X118      1.4626
+    X119      X119      1.6477
+ENDATA

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/enlight_hard.mps.gz",
+  "member": "enlight_hard.mps",
+  "sha256": "572ca23c17d0ad734895e8338af458525a753ee76bdb117d2917e4069c6b65b0",
+  "name": "enlight_hard",
+  "rows": 100,
+  "columns": 200,
+  "binaries": 100,
+  "integers": 100,
+  "nonzeros": 560,
+  "reference_objective": 37.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

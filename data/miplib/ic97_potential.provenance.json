@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/ic97_potential.mps.gz",
+  "member": "ic97_potential.mps",
+  "sha256": "4260f75027c7712b7bbf2c13b5e903185703a8cbac7353cb8739b97f988b7f37",
+  "name": "ic97_potential",
+  "rows": 1046,
+  "columns": 728,
+  "binaries": 450,
+  "integers": 73,
+  "nonzeros": 3138,
+  "reference_objective": 3941.99993090225,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

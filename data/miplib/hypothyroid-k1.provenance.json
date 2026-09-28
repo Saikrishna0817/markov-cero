@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/hypothyroid-k1.mps.gz",
+  "member": "hypothyroid-k1.mps",
+  "sha256": "f1e02ce5876f6424ab26a13af41c55bae6bc1cc65d4164087dc981865e407107",
+  "name": "hypothyroid-k1",
+  "rows": 5195,
+  "columns": 2602,
+  "binaries": 2601,
+  "integers": 1,
+  "nonzeros": 433884,
+  "reference_objective": -2851.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

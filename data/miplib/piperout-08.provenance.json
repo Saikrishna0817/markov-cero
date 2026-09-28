@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/piperout-08.mps.gz",
+  "member": "piperout-08.mps",
+  "sha256": "4f2393fb47ebda389300cdcc3f787a3f96c9978705cd03e11aa316fe8442a721",
+  "name": "piperout-08",
+  "rows": 14589,
+  "columns": 10399,
+  "binaries": 10245,
+  "integers": 130,
+  "nonzeros": 44959,
+  "reference_objective": 125054.9999999999,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

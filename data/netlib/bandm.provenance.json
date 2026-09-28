@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/bandm.mps.gz",
+  "member": "bandm.mps",
+  "sha256": "696daa77a79a0715c2fad877285e49bd7fcd7f5513f3cb83fbe0be916b6d8c81",
+  "name": "bandm",
+  "reference_objective": null
+}

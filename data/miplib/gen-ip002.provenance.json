@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/gen-ip002.mps.gz",
+  "member": "gen-ip002.mps",
+  "sha256": "30ed071e531beea561b330dd8e590eb641a5ec6d4e3f41a8d54735ce27db01b6",
+  "name": "gen-ip002",
+  "rows": 24,
+  "columns": 41,
+  "binaries": 0,
+  "integers": 41,
+  "nonzeros": 922,
+  "reference_objective": -4783.733392,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

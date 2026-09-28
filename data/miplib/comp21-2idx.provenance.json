@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/comp21-2idx.mps.gz",
+  "member": "comp21-2idx.mps",
+  "sha256": "8c87dce69951beb38d337173b0d7ea568564d63187c3029d230dd4145f3250c0",
+  "name": "comp21-2idx",
+  "rows": 14038,
+  "columns": 10863,
+  "binaries": 10792,
+  "integers": 71,
+  "nonzeros": 57301,
+  "reference_objective": 74.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

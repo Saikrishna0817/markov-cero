@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/pg.mps.gz",
+  "member": "pg.mps",
+  "sha256": "765a365c6d851573ef12a4c6c08b5fec0c3514e195986618c9d37075e84a3a0c",
+  "name": "pg",
+  "rows": 125,
+  "columns": 2700,
+  "binaries": 100,
+  "integers": 0,
+  "nonzeros": 5200,
+  "reference_objective": -8674.34260712,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/ns1830653.mps.gz",
+  "member": "ns1830653.mps",
+  "sha256": "98b3656ef998c2f666648a52acf1f477f6d008bbe97408d3e618546a41fc8b00",
+  "name": "ns1830653",
+  "rows": 2932,
+  "columns": 1629,
+  "binaries": 1458,
+  "integers": 0,
+  "nonzeros": 100933,
+  "reference_objective": 20622.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

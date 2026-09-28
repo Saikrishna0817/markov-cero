@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/istanbul-no-cutoff.mps.gz",
+  "member": "istanbul-no-cutoff.mps",
+  "sha256": "5eb00dd3c6bd06bd3407b37247bc07db68bdfcc7c0547543d06049aa516e0785",
+  "name": "istanbul-no-cutoff",
+  "rows": 20346,
+  "columns": 5282,
+  "binaries": 30,
+  "integers": 0,
+  "nonzeros": 71477,
+  "reference_objective": 204.08170701,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

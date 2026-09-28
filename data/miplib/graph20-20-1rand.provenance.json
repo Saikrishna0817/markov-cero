@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/graph20-20-1rand.mps.gz",
+  "member": "graph20-20-1rand.mps",
+  "sha256": "452473ec1588337a04c553033d9a4ed8eb30180989069af12c9cd685151dc4d6",
+  "name": "graph20-20-1rand",
+  "rows": 5587,
+  "columns": 2183,
+  "binaries": 2183,
+  "integers": 0,
+  "nonzeros": 19277,
+  "reference_objective": -9.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

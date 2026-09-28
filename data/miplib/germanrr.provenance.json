@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/germanrr.mps.gz",
+  "member": "germanrr.mps",
+  "sha256": "5dbed5fe40c250554655a175bb84516788b7a4331211eb205170c8c19afae1d0",
+  "name": "germanrr",
+  "rows": 10779,
+  "columns": 10813,
+  "binaries": 5323,
+  "integers": 5251,
+  "nonzeros": 175547,
+  "reference_objective": 47095869.649,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

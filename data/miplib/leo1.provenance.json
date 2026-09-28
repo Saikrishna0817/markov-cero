@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/leo1.mps.gz",
+  "member": "leo1.mps",
+  "sha256": "8d7b36c158eec9e5366b202710081bac07fccaa411967bb3839d1f4c041f6079",
+  "name": "leo1",
+  "rows": 593,
+  "columns": 6731,
+  "binaries": 6730,
+  "integers": 0,
+  "nonzeros": 131218,
+  "reference_objective": 404227536.16,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

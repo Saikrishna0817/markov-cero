@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/beasleyC3.mps.gz",
+  "member": "beasleyC3.mps",
+  "sha256": "728c9616ca793393f90d6bf7780b4871e71f33add9f81eacfc12bf05976130c8",
+  "name": "beasleyC3",
+  "rows": 1750,
+  "columns": 2500,
+  "binaries": 1250,
+  "integers": 0,
+  "nonzeros": 5000,
+  "reference_objective": 753.9999999999128,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,12 @@
+{
+  "source": "https://plato.asu.edu/ftp/lptestset/pds/pds-20.bz2",
+  "member": "pds-20.mps",
+  "sha256": "1c9a78e3ae1c7368d15c59446e644bf2545072c0711e22d17cc70526c572e626",
+  "name": "pds-20",
+  "rows": 33874,
+  "columns": 105728,
+  "nonzeros": 124472,
+  "problem_type": "LP",
+  "listed_on": "https://plato.asu.edu/ftp/lptestset/pds/",
+  "note": "bzip2/gzip archive holding an MPC-compressed MPS file, expanded with http://www.netlib.org/lp/data/emps.c"
+}

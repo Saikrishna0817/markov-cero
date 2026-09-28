@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/stocfor2.mps.gz",
+  "member": "stocfor2.mps",
+  "sha256": "d54988bc39e9c48d13c8a3248913e9b6b77c2f8e9b9f4c3e4c76b060f6096b50",
+  "name": "stocfor2",
+  "reference_objective": null
+}

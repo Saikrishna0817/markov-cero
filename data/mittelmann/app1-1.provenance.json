@@ -1,0 +1,12 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/app1-1.mps.gz",
+  "member": "app1-1.mps",
+  "sha256": "39d133b738913cee4bc0c5c77ec6f33a74e80e20da722be476513e9b805d195f",
+  "name": "app1-1",
+  "rows": 4926,
+  "columns": 2480,
+  "nonzeros": 9754,
+  "problem_type": "MILP",
+  "listed_on": "https://plato.asu.edu/ftp/milp_tables/12threads.res",
+  "note": "archive of a plain MPS file"
+}

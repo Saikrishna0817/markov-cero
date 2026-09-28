@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/standata.mps.gz",
+  "member": "standata.mps",
+  "sha256": "a513e8587cb8d72ac1f6fb07b33642a212f55646fb2c04521cdfd04b959c6fb1",
+  "name": "standata",
+  "reference_objective": null
+}

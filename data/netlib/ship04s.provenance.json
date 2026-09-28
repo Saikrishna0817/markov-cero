@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/ship04s.mps.gz",
+  "member": "ship04s.mps",
+  "sha256": "2ed2828b251173a05004349121cd9a271a3434bf2efe4e1b70d7e0bdf2d76f94",
+  "name": "ship04s",
+  "reference_objective": null
+}

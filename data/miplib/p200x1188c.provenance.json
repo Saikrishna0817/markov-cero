@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/p200x1188c.mps.gz",
+  "member": "p200x1188c.mps",
+  "sha256": "52e616e7a1e0dc95b14a8e381bda45bd1618cadcf5f8393609b1b7fe81a5459e",
+  "name": "p200x1188c",
+  "rows": 1388,
+  "columns": 2376,
+  "binaries": 1188,
+  "integers": 0,
+  "nonzeros": 4752,
+  "reference_objective": 15078.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

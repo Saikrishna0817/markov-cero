@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/dws008-01.mps.gz",
+  "member": "dws008-01.mps",
+  "sha256": "be53e2e6d46f8c196b102b3a6cffc85c808e86820c75ccae61be294faeba7648",
+  "name": "dws008-01",
+  "rows": 6064,
+  "columns": 11096,
+  "binaries": 6608,
+  "integers": 0,
+  "nonzeros": 56400,
+  "reference_objective": 37412.60458794508,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

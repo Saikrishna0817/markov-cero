@@ -1,0 +1,12 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/50v-10.mps.gz",
+  "member": "50v-10.mps",
+  "sha256": "ab32c42d0b916c3b858dae1f160f4367f0dbe17016b0714955765ff4d8471133",
+  "name": "50v-10",
+  "rows": 233,
+  "columns": 2013,
+  "nonzeros": 2745,
+  "problem_type": "MILP",
+  "listed_on": "https://plato.asu.edu/ftp/milp_tables/12threads.res",
+  "note": "archive of a plain MPS file"
+}

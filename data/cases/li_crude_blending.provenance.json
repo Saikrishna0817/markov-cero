@@ -1,0 +1,11 @@
+{
+  "paper": "X. Li, et al., 'Planning and scheduling of crude oil operations', AIChE / Computers & Chemical Engineering literature (2002) - multiperiod blending LP subset.",
+  "modeled_structure": "Multiperiod crude blending to a single charge unit with sulfur quality caps, per-period supply limits and inventory carryover.",
+  "parameterization": {
+    "periods": 6,
+    "crudes": 4,
+    "note": "sulfur fractions 0.2..1.25 by crude index; charge 100/period; per-crude material balance v+i_-i-u=0; pooling variables omitted (single-pool subset)"
+  },
+  "problem_class": "LP",
+  "source": "open literature (see paper citation); parameterized subset, not a copy of any dataset"
+}

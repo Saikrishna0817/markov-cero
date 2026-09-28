@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-911970.mps.gz",
+  "member": "neos-911970.mps",
+  "sha256": "31e8f835a9499de4897eb23838453cb83bee093abb8fab881b44f9937236eaa6",
+  "name": "neos-911970",
+  "rows": 107,
+  "columns": 888,
+  "binaries": 840,
+  "integers": 0,
+  "nonzeros": 3408,
+  "reference_objective": 54.76,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

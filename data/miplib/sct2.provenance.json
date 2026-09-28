@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/sct2.mps.gz",
+  "member": "sct2.mps",
+  "sha256": "ec532dc5c51e11345d546eaddecb53ba4e48593a3003f3315fe6c6d303a19e8e",
+  "name": "sct2",
+  "rows": 2151,
+  "columns": 5885,
+  "binaries": 2872,
+  "integers": 0,
+  "nonzeros": 23643,
+  "reference_objective": -230.9891623,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

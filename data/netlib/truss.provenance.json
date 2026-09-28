@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/SkyLiu0/NETLIB/main/feasible/truss.mps",
+  "member": "truss.mps",
+  "sha256": "4a632c68a929da2214ff7de438b196eacdb637e8e0a5674deabc31cda798fac4",
+  "name": "truss",
+  "reference_objective": 458815.84719
+}

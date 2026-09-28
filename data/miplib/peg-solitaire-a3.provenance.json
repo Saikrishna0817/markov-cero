@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/peg-solitaire-a3.mps.gz",
+  "member": "peg-solitaire-a3.mps",
+  "sha256": "50ce4460e4a8d11011193f6d07e897e16508cb8c2192acd956b0b1091e381a26",
+  "name": "peg-solitaire-a3",
+  "rows": 4587,
+  "columns": 4552,
+  "binaries": 4552,
+  "integers": 0,
+  "nonzeros": 28387,
+  "reference_objective": 1.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

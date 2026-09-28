@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/bnatt400.mps.gz",
+  "member": "bnatt400.mps",
+  "sha256": "50565a2a2e80dd9563ce7b5d06e3053d986acf72d57ab787d97d1d10ad519ef8",
+  "name": "bnatt400",
+  "rows": 5614,
+  "columns": 3600,
+  "binaries": 3600,
+  "integers": 0,
+  "nonzeros": 21698,
+  "reference_objective": 1.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

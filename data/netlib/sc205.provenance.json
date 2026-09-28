@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/sc205.mps.gz",
+  "member": "sc205.mps",
+  "sha256": "bcecc8d8cafd08c6d97cf8e39a740f5d777e317600bb9f6f158f2ceb550005f9",
+  "name": "sc205",
+  "reference_objective": -52.202061211707
+}

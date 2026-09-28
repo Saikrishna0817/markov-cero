@@ -1,0 +1,14 @@
+{
+  "source": "data/qp/raw/QPLIB_8845.qplib",
+  "member": "QPLIB_8845.qplib",
+  "sha256": "6e245ab7aec4c7a96b68818a175c398a0d388e936bc73f467d821849b09bb93b",
+  "name": "QPLIB_8845",
+  "problem_class": "CCL",
+  "direction": "minimize",
+  "rows": 777,
+  "columns": 1546,
+  "quadratic_nonzeros": 58114,
+  "linear_constraint_nonzeros": 10247,
+  "reference_objective": 10907992.4939988,
+  "reference_solution": "data/qp/sol/QPLIB_8845.sol"
+}

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/drayage-25-23.mps.gz",
+  "member": "drayage-25-23.mps",
+  "sha256": "2d4475840547b7b7253ced6a5e692cd3fc2351799f956cee7bac772015fb201e",
+  "name": "drayage-25-23",
+  "rows": 4630,
+  "columns": 11090,
+  "binaries": 11025,
+  "integers": 0,
+  "nonzeros": 41550,
+  "reference_objective": 101282.647018,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

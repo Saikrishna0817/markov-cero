@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/flugpl.mps.gz",
+  "member": "flugpl.mps",
+  "sha256": "ed4b1fcb07d26b513027721d61344c2c4371cb506bf66098df328047c183b0c0",
+  "name": "flugpl",
+  "rows": 18,
+  "columns": 18,
+  "binaries": 0,
+  "integers": 11,
+  "nonzeros": 46,
+  "reference_objective": 1201500.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

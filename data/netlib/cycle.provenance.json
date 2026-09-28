@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/cycle.mps.gz",
+  "member": "cycle.mps",
+  "sha256": "bfc8edde30952b8dfa354679ea3a3231c2e7eb762c0ff8f0f845505741816d53",
+  "name": "cycle",
+  "reference_objective": null
+}

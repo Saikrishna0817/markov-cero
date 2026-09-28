@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/vtpbase.mps.gz",
+  "member": "vtpbase.mps",
+  "sha256": "7c34b37d7714796bc0fe30d920f3ecf9866c018a018ee0349ceb85350581dc68",
+  "name": "vtpbase",
+  "reference_objective": null
+}

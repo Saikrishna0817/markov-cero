@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/agg3.mps.gz",
+  "member": "agg3.mps",
+  "sha256": "1a6e78a0b7d210c935c97527ce49449d0655f9605fcbc33bfdfc93952f3b12d1",
+  "name": "agg3",
+  "reference_objective": null
+}

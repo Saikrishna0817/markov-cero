@@ -1,0 +1,156 @@
+{
+  "magic": "MCONLOG1",
+  "generator": "scripts/ml/collect_training_data.py",
+  "decision": "D-05 (self-collected strong-branching log, sovereignty R10)",
+  "feature_order": [
+    "fractionality",
+    "objective_coefficient",
+    "pseudocost_down_ratio",
+    "pseudocost_up_ratio",
+    "bound_width",
+    "column_density"
+  ],
+  "feature_order_citations": {
+    "fractionality": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:92",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:157",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:29",
+      "extract": "src/milp/branch_selector.cpp:235"
+    },
+    "objective_coefficient": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:93",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:158",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:30",
+      "extract": "src/milp/branch_selector.cpp:236"
+    },
+    "pseudocost_down_ratio": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:94",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:159",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:31",
+      "extract": "src/milp/branch_selector.cpp:245"
+    },
+    "pseudocost_up_ratio": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:95",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:160",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:32",
+      "extract": "src/milp/branch_selector.cpp:246"
+    },
+    "bound_width": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:96",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:161",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:33",
+      "extract": "src/milp/branch_selector.cpp:254"
+    },
+    "column_density": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:97",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:162",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:34",
+      "extract": "src/milp/branch_selector.cpp:260"
+    }
+  },
+  "feature_order_audit": {
+    "rows": 88,
+    "ok": true,
+    "violations": {},
+    "column_ranges": {
+      "fractionality": [
+        0.0042544891594316495,
+        0.5
+      ],
+      "objective_coefficient": [
+        0.0,
+        2700.0
+      ],
+      "pseudocost_down_ratio": [
+        0.0,
+        1.0
+      ],
+      "pseudocost_up_ratio": [
+        0.0,
+        1.0
+      ],
+      "bound_width": [
+        1.0,
+        18.0
+      ],
+      "column_density": [
+        0.009523809523809525,
+        1.0
+      ]
+    },
+    "ratio_sum_max_abs_error": 0.0,
+    "tolerance_note": "ratio-sum tolerance 1e-06; range checks use \u00b11e-9 slack"
+  },
+  "records": [
+    {
+      "instance": "stein9.mps",
+      "sha256": "a07e4e004a694727379e6d9c11cbdbfb28bea5958cae6bb62dc6ba9ea9ed7b17",
+      "status": "ok",
+      "seconds": 0.07,
+      "log_bytes": 1268,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:29:19Z",
+      "started_epoch": 1790544559.451867
+    },
+    {
+      "instance": "stein15.mps",
+      "sha256": "8c8903ab3f05d273556c4c325932b4e296d7977bd76857e67b0f1e3cbfad0681",
+      "status": "ok",
+      "seconds": 0.39,
+      "log_bytes": 2612,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:29:19Z",
+      "started_epoch": 1790544559.524939
+    },
+    {
+      "instance": "flugpl.mps",
+      "sha256": "ed4b1fcb07d26b513027721d61344c2c4371cb506bf66098df328047c183b0c0",
+      "status": "exit_1",
+      "seconds": 0.16,
+      "log_bytes": 1548,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:29:19Z",
+      "started_epoch": 1790544559.9149375
+    },
+    {
+      "instance": "markshare_4_0.mps",
+      "sha256": "a05d1c8c1a1e0646ea31965fd5e05af7a41801db3cb1820b2ab4cd95c7bc32db",
+      "status": "ok",
+      "seconds": 0.07,
+      "log_bytes": 692,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:29:20Z",
+      "started_epoch": 1790544560.0724964
+    },
+    {
+      "instance": "pk1.mps",
+      "sha256": "13851ed426a2dfd7c6af7b021236553c391d77a675ab9223dd9135d3351c2e66",
+      "status": "ok",
+      "seconds": 1.33,
+      "log_bytes": 5660,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:29:20Z",
+      "started_epoch": 1790544560.140025
+    },
+    {
+      "instance": "enlight_hard.mps",
+      "sha256": "572ca23c17d0ad734895e8338af458525a753ee76bdb117d2917e4069c6b65b0",
+      "status": "exit_1",
+      "seconds": 18.8,
+      "log_bytes": 4772,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:29:21Z",
+      "started_epoch": 1790544561.469628
+    },
+    {
+      "instance": "mas76.mps",
+      "sha256": "114b73dbe17c1d1b4d37a09311424571781225e01edfbec1c6acb320214593f6",
+      "status": "ok",
+      "seconds": 3.65,
+      "log_bytes": 2460,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:29:40Z",
+      "started_epoch": 1790544580.265568
+    }
+  ]
+}

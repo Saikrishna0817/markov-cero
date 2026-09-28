@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/cost266-UUE.mps.gz",
+  "member": "cost266-UUE.mps",
+  "sha256": "4c278416403bb2a1388eaabaf13061c879ab97c96d73c754c1b4fd76d8570e86",
+  "name": "cost266-UUE",
+  "rows": 1446,
+  "columns": 4161,
+  "binaries": 171,
+  "integers": 0,
+  "nonzeros": 12312,
+  "reference_objective": 25148940.55999998,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

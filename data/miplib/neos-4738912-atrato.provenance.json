@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-4738912-atrato.mps.gz",
+  "member": "neos-4738912-atrato.mps",
+  "sha256": "83c51dba0916162c7351df99e66ca8eff52d878a26c13980a0273685d259ff28",
+  "name": "neos-4738912-atrato",
+  "rows": 1947,
+  "columns": 6216,
+  "binaries": 1120,
+  "integers": 5096,
+  "nonzeros": 19521,
+  "reference_objective": 283627956.595,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

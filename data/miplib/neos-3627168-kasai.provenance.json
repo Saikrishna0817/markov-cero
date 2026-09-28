@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-3627168-kasai.mps.gz",
+  "member": "neos-3627168-kasai.mps",
+  "sha256": "e0fce9d13f3ec671ad4f7964d1b01a398c9c5d128eca8ba40cf67a4949cca37e",
+  "name": "neos-3627168-kasai",
+  "rows": 1655,
+  "columns": 1462,
+  "binaries": 535,
+  "integers": 0,
+  "nonzeros": 5158,
+  "reference_objective": 988585.6199999998,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

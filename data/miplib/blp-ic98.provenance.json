@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/blp-ic98.mps.gz",
+  "member": "blp-ic98.mps",
+  "sha256": "3874a2e9fa6245dfe03afe17abd89125b942e821b161f6c4c90e3b5c57ba7a50",
+  "name": "blp-ic98",
+  "rows": 717,
+  "columns": 13640,
+  "binaries": 13550,
+  "integers": 0,
+  "nonzeros": 191947,
+  "reference_objective": 4491.44758395,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

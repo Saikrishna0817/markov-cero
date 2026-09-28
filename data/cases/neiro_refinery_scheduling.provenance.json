@@ -1,0 +1,13 @@
+{
+  "paper": "S.M.S. Neiro, J.M. Pinto, 'Scheduling of petroleum refineries using mathematical programming', Annals of Operations Research 127 (2004) 159-174.",
+  "modeled_structure": "Multiperiod refinery scheduling subset: crude procurement, distillation unit on/off modes, product blending demand and final inventory.",
+  "parameterization": {
+    "periods": 4,
+    "crudes": 3,
+    "units": 2,
+    "products": 3,
+    "note": "simplified yield/demand coefficients chosen to keep the literature structure at a size solvable in seconds; binary modes and selection preserved"
+  },
+  "problem_class": "MILP",
+  "source": "open literature (see paper citation); parameterized subset, not a copy of any dataset"
+}

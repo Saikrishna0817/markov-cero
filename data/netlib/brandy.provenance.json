@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/brandy.mps.gz",
+  "member": "brandy.mps",
+  "sha256": "56fa020b84a0a106b7883b7da006c2852449598898c41ec8dd2575151d0e0917",
+  "name": "brandy",
+  "reference_objective": null
+}

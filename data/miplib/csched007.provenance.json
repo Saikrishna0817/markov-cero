@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/csched007.mps.gz",
+  "member": "csched007.mps",
+  "sha256": "9c78014447850a4947f7aebcb504aacdd03940e4f9268547032389ed44b1d0de",
+  "name": "csched007",
+  "rows": 351,
+  "columns": 1758,
+  "binaries": 1457,
+  "integers": 0,
+  "nonzeros": 6379,
+  "reference_objective": 350.9999999999955,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

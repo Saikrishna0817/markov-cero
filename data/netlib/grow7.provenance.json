@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/grow7.mps.gz",
+  "member": "grow7.mps",
+  "sha256": "6b8734ffdf991a36f17cfddf306834a4a3ced3e17964cac9fa2983a043906cd4",
+  "name": "grow7",
+  "reference_objective": null
+}

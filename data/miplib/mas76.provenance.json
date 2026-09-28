@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/mas76.mps.gz",
+  "member": "mas76.mps",
+  "sha256": "114b73dbe17c1d1b4d37a09311424571781225e01edfbec1c6acb320214593f6",
+  "name": "mas76",
+  "rows": 12,
+  "columns": 151,
+  "binaries": 150,
+  "integers": 0,
+  "nonzeros": 1640,
+  "reference_objective": 40005.05398999999,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

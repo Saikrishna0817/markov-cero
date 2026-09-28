@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/cod105.mps.gz",
+  "member": "cod105.mps",
+  "sha256": "243f5816b0d494edca2e0d77b90fd0b119697a89cd116d172cfe773bfd7b2a5d",
+  "name": "cod105",
+  "rows": 1024,
+  "columns": 1024,
+  "binaries": 1024,
+  "integers": 0,
+  "nonzeros": 57344,
+  "reference_objective": -12.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

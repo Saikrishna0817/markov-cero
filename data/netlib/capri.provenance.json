@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/capri.mps.gz",
+  "member": "capri.mps",
+  "sha256": "4932bc8861fcdaf19256827b7ee229941fa6f2e84f2044b65300326c226fba78",
+  "name": "capri",
+  "reference_objective": null
+}

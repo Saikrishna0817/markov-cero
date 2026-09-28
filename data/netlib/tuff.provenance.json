@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/tuff.mps.gz",
+  "member": "tuff.mps",
+  "sha256": "768782d2ab2d7d044061f56ba54ddd53cf5ea0666a965edd33d48803098e15e2",
+  "name": "tuff",
+  "reference_objective": null
+}

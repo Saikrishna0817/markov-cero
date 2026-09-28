@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-4387871-tavua.mps.gz",
+  "member": "neos-4387871-tavua.mps",
+  "sha256": "3607bd503256e50bace2185e5e9f0fee5c189ba9cae016a310b3c0a0af05a744",
+  "name": "neos-4387871-tavua",
+  "rows": 4554,
+  "columns": 4004,
+  "binaries": 2000,
+  "integers": 0,
+  "nonzeros": 23496,
+  "reference_objective": 33.384729927,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

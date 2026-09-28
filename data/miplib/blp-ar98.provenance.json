@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/blp-ar98.mps.gz",
+  "member": "blp-ar98.mps",
+  "sha256": "b57094efbc630a2e05900a0794a3287281db58117d60825032a8f1c70c1dd287",
+  "name": "blp-ar98",
+  "rows": 1128,
+  "columns": 16021,
+  "binaries": 15806,
+  "integers": 0,
+  "nonzeros": 200601,
+  "reference_objective": 6205.2147104,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

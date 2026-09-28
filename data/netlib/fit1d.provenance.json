@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/fit1d.mps.gz",
+  "member": "fit1d.mps",
+  "sha256": "59cee4fedd040a05c05d8410474ee014f42ef910e083689202be708491fe8717",
+  "name": "fit1d",
+  "reference_objective": null
+}

@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/scagr7.mps.gz",
+  "member": "scagr7.mps",
+  "sha256": "2170c16fd0cc04a823172c1564e89593e75aac5225e2c2f893a6837ba0b26085",
+  "name": "scagr7",
+  "reference_objective": -2331389.82433098
+}

@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/czprob.mps.gz",
+  "member": "czprob.mps",
+  "sha256": "b1f30bd25705fcc3c4f195d7e627e437788035f81fae9198e3096471b947f704",
+  "name": "czprob",
+  "reference_objective": null
+}

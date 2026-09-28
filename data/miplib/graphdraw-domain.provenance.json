@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/graphdraw-domain.mps.gz",
+  "member": "graphdraw-domain.mps",
+  "sha256": "4e24709cf43956e4aba937f9fd8e574266ef7049fa1dc007b427cfed00bfcfd1",
+  "name": "graphdraw-domain",
+  "rows": 865,
+  "columns": 254,
+  "binaries": 180,
+  "integers": 20,
+  "nonzeros": 2600,
+  "reference_objective": 19685.99997550038,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

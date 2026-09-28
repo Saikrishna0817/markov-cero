@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/sp97ar.mps.gz",
+  "member": "sp97ar.mps",
+  "sha256": "b5ed0a51ac2c1472f6afdc8c3af43218f3fed2166ca8b5bb23c8c1536dd8af72",
+  "name": "sp97ar",
+  "rows": 1761,
+  "columns": 14101,
+  "binaries": 14101,
+  "integers": 0,
+  "nonzeros": 290968,
+  "reference_objective": 660705645.759,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

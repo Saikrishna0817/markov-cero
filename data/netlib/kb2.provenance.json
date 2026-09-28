@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/kb2.mps.gz",
+  "member": "kb2.mps",
+  "sha256": "f0eb647d1d9aac84f49d88662b6b02c6cecc04496e5435be733eced36d7f48f2",
+  "name": "kb2",
+  "reference_objective": null
+}

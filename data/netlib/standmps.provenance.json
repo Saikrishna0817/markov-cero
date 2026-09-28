@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/standmps.mps.gz",
+  "member": "standmps.mps",
+  "sha256": "93bd6bc6251b7fee0f943e1c69a7b7e836b4b34e4c011c1a871be66a1cb7e00d",
+  "name": "standmps",
+  "reference_objective": null
+}

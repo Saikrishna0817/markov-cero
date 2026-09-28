@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/uct-subprob.mps.gz",
+  "member": "uct-subprob.mps",
+  "sha256": "64eacf24f120207d88f6c4420495bd625f043f268587097a8433c34339091248",
+  "name": "uct-subprob",
+  "rows": 1973,
+  "columns": 2256,
+  "binaries": 379,
+  "integers": 0,
+  "nonzeros": 10147,
+  "reference_objective": 314.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/rococoB10-011000.mps.gz",
+  "member": "rococoB10-011000.mps",
+  "sha256": "9060d70e880117d6b95b5d8ced7a7c94242baa471407335818a8a30ea68cd0f8",
+  "name": "rococoB10-011000",
+  "rows": 1667,
+  "columns": 4456,
+  "binaries": 4320,
+  "integers": 136,
+  "nonzeros": 16517,
+  "reference_objective": 19449.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

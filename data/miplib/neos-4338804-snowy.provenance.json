@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-4338804-snowy.mps.gz",
+  "member": "neos-4338804-snowy.mps",
+  "sha256": "867380141abb94f45a54fcddf8c26316358cf25698ad44ed88d0e0fb721c2988",
+  "name": "neos-4338804-snowy",
+  "rows": 1701,
+  "columns": 1344,
+  "binaries": 1260,
+  "integers": 42,
+  "nonzeros": 6342,
+  "reference_objective": 1471.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,11 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/mkc1.mps.gz",
+  "member": "mkc1.mps",
+  "sha256": "9ef7092bd7bad770f9f463e6f60a99e9581edff6bb1192f4512b6a40d3c4b264",
+  "name": "mkc1",
+  "rows": 3411,
+  "columns": 5325,
+  "nonzeros": 8698,
+  "problem_type": "MILP",
+  "note": "identical to the MIPLIB copy apart from trailing whitespace on the NAME line"
+}

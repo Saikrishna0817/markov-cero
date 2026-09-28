@@ -1,0 +1,957 @@
+{
+  "magic": "MCONLOG3",
+  "generator": "scripts/ml/collect_training_data.py",
+  "decision": "D-05 (self-collected strong-branching log, sovereignty R10)",
+  "feature_order": [
+    "fractionality",
+    "objective_coefficient",
+    "pseudocost_down_ratio",
+    "pseudocost_up_ratio",
+    "bound_width",
+    "column_density"
+  ],
+  "feature_order_citations": {
+    "fractionality": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:266",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:386",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:30",
+      "extract": "src/milp/branch_selector.cpp:256"
+    },
+    "objective_coefficient": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:266",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:386",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:31",
+      "extract": "src/milp/branch_selector.cpp:257"
+    },
+    "pseudocost_down_ratio": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:267",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:387",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:32",
+      "extract": "src/milp/branch_selector.cpp:266"
+    },
+    "pseudocost_up_ratio": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:267",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:387",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:33",
+      "extract": "src/milp/branch_selector.cpp:267"
+    },
+    "bound_width": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:267",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:387",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:34",
+      "extract": "src/milp/branch_selector.cpp:275"
+    },
+    "column_density": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:267",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:387",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:35",
+      "extract": "src/milp/branch_selector.cpp:281"
+    }
+  },
+  "feature_order_audit": {
+    "rows": 100,
+    "ok": true,
+    "violations": {},
+    "column_ranges": {
+      "fractionality": [
+        0.0042544891594316495,
+        0.5
+      ],
+      "objective_coefficient": [
+        0.0,
+        2700.0
+      ],
+      "pseudocost_down_ratio": [
+        0.0,
+        1.0
+      ],
+      "pseudocost_up_ratio": [
+        0.0,
+        1.0
+      ],
+      "bound_width": [
+        1.0,
+        18.0
+      ],
+      "column_density": [
+        0.009523809523809525,
+        1.0
+      ]
+    },
+    "ratio_sum_max_abs_error": 0.0,
+    "tolerance_note": "ratio-sum tolerance 1e-06; range checks use \u00b11e-9 slack"
+  },
+  "records": [
+    {
+      "instance": "assign1-5-8.mps",
+      "sha256": "cb63a8b3480eaca33562ab4960b0b795604aa520e4241761eae6aa86df30ca6b",
+      "status": "timeout",
+      "seconds": 60.02,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:56:45Z",
+      "started_epoch": 1790546205.503352,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "beasleyC3.mps",
+      "sha256": "728c9616ca793393f90d6bf7780b4871e71f33add9f81eacfc12bf05976130c8",
+      "status": "timeout",
+      "seconds": 60.03,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:57:45Z",
+      "started_epoch": 1790546265.528642,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "binkar10_1.mps",
+      "sha256": "71dc18a14f1d26f39473eaf64b81c12691a0c0d4ab00dec43679071ed7f3e09c",
+      "status": "timeout",
+      "seconds": 60.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:58:45Z",
+      "started_epoch": 1790546325.5643907,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "bnatt400.mps",
+      "sha256": "50565a2a2e80dd9563ce7b5d06e3053d986acf72d57ab787d97d1d10ad519ef8",
+      "status": "exit_6",
+      "seconds": 0.27,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:59:45Z",
+      "started_epoch": 1790546385.6298475,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "cod105.mps",
+      "sha256": "243f5816b0d494edca2e0d77b90fd0b119697a89cd116d172cfe773bfd7b2a5d",
+      "status": "timeout",
+      "seconds": 60.07,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:59:45Z",
+      "started_epoch": 1790546385.8988628,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "cost266-UUE.mps",
+      "sha256": "4c278416403bb2a1388eaabaf13061c879ab97c96d73c754c1b4fd76d8570e86",
+      "status": "timeout",
+      "seconds": 60.07,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:00:45Z",
+      "started_epoch": 1790546445.968964,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "csched008.mps",
+      "sha256": "cc1366afd23d38b0cdb63150b7e69913a98a526c4bafd6537989d34837d8fecf",
+      "status": "timeout",
+      "seconds": 60.07,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:01:46Z",
+      "started_epoch": 1790546506.0386877,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "cvs16r128-89.mps",
+      "sha256": "9c31a000fb71ac2db6101310194d44f97557cf597f2e68f542725f64f87346ff",
+      "status": "timeout",
+      "seconds": 60.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:02:46Z",
+      "started_epoch": 1790546566.1059399,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "dano3_3.mps",
+      "sha256": "50fde62b2d086cf2f15e226bc16f0e4d4444fa14c1686a1812706069c1ba7812",
+      "status": "exit_6",
+      "seconds": 26.18,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:03:46Z",
+      "started_epoch": 1790546626.1702461,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "dano3_5.mps",
+      "sha256": "23e50a226c4d335defd440cdbdebf7f91b442be5f77c75fae58586fa405890c7",
+      "status": "exit_6",
+      "seconds": 26.76,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:04:12Z",
+      "started_epoch": 1790546652.3497593,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "drayage-100-23.mps",
+      "sha256": "507cd6f4a345747f1b3a55c62fb156062068e9f9dad045ee37d539e611fd931a",
+      "status": "exit_6",
+      "seconds": 15.96,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:04:39Z",
+      "started_epoch": 1790546679.116025,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "dws008-01.mps",
+      "sha256": "be53e2e6d46f8c196b102b3a6cffc85c808e86820c75ccae61be294faeba7648",
+      "status": "exit_6",
+      "seconds": 1.47,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:04:55Z",
+      "started_epoch": 1790546695.0799294,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "enlight_hard.mps",
+      "sha256": "572ca23c17d0ad734895e8338af458525a753ee76bdb117d2917e4069c6b65b0",
+      "status": "exit_1",
+      "seconds": 18.5,
+      "log_bytes": 5612,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:04:56Z",
+      "started_epoch": 1790546696.5501845
+    },
+    {
+      "instance": "exp-1-500-5-5.mps",
+      "sha256": "32bcb5e23d511b3ee530e7016765cc724e06bc77225648669c443aa7be0a68f2",
+      "status": "timeout",
+      "seconds": 60.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:05:15Z",
+      "started_epoch": 1790546715.04933,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "flugpl.mps",
+      "sha256": "ed4b1fcb07d26b513027721d61344c2c4371cb506bf66098df328047c183b0c0",
+      "status": "exit_1",
+      "seconds": 0.17,
+      "log_bytes": 1476,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:54:25Z",
+      "started_epoch": 1790546065.04607
+    },
+    {
+      "instance": "gen-ip002.mps",
+      "sha256": "30ed071e531beea561b330dd8e590eb641a5ec6d4e3f41a8d54735ce27db01b6",
+      "status": "ok",
+      "seconds": 0.05,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:06:15Z",
+      "started_epoch": 1790546775.1144958,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "gen-ip054.mps",
+      "sha256": "8b71b70a6f92ea9bde78b375f4366e7cc021cfb517df87130775f8b8bdf47333",
+      "status": "exit_1",
+      "seconds": 0.02,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:06:15Z",
+      "started_epoch": 1790546775.167287,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "germanrr.mps",
+      "sha256": "5dbed5fe40c250554655a175bb84516788b7a4331211eb205170c8c19afae1d0",
+      "status": "exit_6",
+      "seconds": 31.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:06:15Z",
+      "started_epoch": 1790546775.1908555,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "glass-sc.mps",
+      "sha256": "51183ff96e9d8ac965eb782e9cb77d0734ed1b716261e75f329b2b1a465caa6d",
+      "status": "exit_6",
+      "seconds": 15.36,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:06:46Z",
+      "started_epoch": 1790546806.2585318,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "gmu-35-40.mps",
+      "sha256": "c0ae69e1cddf62318987abb2f4fdab189b3c84374e168c532ab4d917d0753895",
+      "status": "timeout",
+      "seconds": 60.07,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:07:01Z",
+      "started_epoch": 1790546821.6181757,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "graph20-20-1rand.mps",
+      "sha256": "452473ec1588337a04c553033d9a4ed8eb30180989069af12c9cd685151dc4d6",
+      "status": "timeout",
+      "seconds": 60.05,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:08:01Z",
+      "started_epoch": 1790546881.684302,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "hypothyroid-k1.mps",
+      "sha256": "f1e02ce5876f6424ab26a13af41c55bae6bc1cc65d4164087dc981865e407107",
+      "status": "timeout",
+      "seconds": 60.03,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:09:01Z",
+      "started_epoch": 1790546941.7373545,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "ic97_potential.mps",
+      "sha256": "4260f75027c7712b7bbf2c13b5e903185703a8cbac7353cb8739b97f988b7f37",
+      "status": "timeout",
+      "seconds": 60.01,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:10:01Z",
+      "started_epoch": 1790547001.7831547,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "irp.mps",
+      "sha256": "754905341c843153bd2caa6a73985dcb1b841423b6825370a1293b6d39bfd9da",
+      "status": "exit_6",
+      "seconds": 25.78,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:11:01Z",
+      "started_epoch": 1790547061.7972245,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "istanbul-no-cutoff.mps",
+      "sha256": "5eb00dd3c6bd06bd3407b37247bc07db68bdfcc7c0547543d06049aa516e0785",
+      "status": "exit_6",
+      "seconds": 23.17,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:11:27Z",
+      "started_epoch": 1790547087.5862021,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "leo2.mps",
+      "sha256": "25ad71b55b4cc733754b4c5e6a1c113422617956459c16fd47b42b8d3b1eaea1",
+      "status": "exit_3",
+      "seconds": 0.47,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:11:50Z",
+      "started_epoch": 1790547110.7965515
+    },
+    {
+      "instance": "lotsize.mps",
+      "sha256": "9fcea318555b277974f8a6f475afabba33f17e2dc90e215f5ce5f692938ab721",
+      "status": "timeout",
+      "seconds": 60.04,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:11:51Z",
+      "started_epoch": 1790547111.2793264,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "markshare_4_0.mps",
+      "sha256": "a05d1c8c1a1e0646ea31965fd5e05af7a41801db3cb1820b2ab4cd95c7bc32db",
+      "status": "ok",
+      "seconds": 0.07,
+      "log_bytes": 628,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:54:25Z",
+      "started_epoch": 1790546065.2157562
+    },
+    {
+      "instance": "mas74.mps",
+      "sha256": "181f02fd634306ad6431f21d5e8115f3e8112f2e7d2bebed1690475b49acc4af",
+      "status": "ok",
+      "seconds": 4.48,
+      "log_bytes": 2868,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:12:51Z",
+      "started_epoch": 1790547171.3215532
+    },
+    {
+      "instance": "mas76.mps",
+      "sha256": "114b73dbe17c1d1b4d37a09311424571781225e01edfbec1c6acb320214593f6",
+      "status": "ok",
+      "seconds": 3.89,
+      "log_bytes": 2508,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:12:55Z",
+      "started_epoch": 1790547175.8002687
+    },
+    {
+      "instance": "mc11.mps",
+      "sha256": "f134128b38fdc1167a132123c65d6a6ffe95465258f07469daee35e3a59217f7",
+      "status": "timeout",
+      "seconds": 60.09,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:12:59Z",
+      "started_epoch": 1790547179.6881642,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "mcsched.mps",
+      "sha256": "39c18a78edecfde12f10f4baf958986d9de827a030c6b25d0d86f46a2ebf4d3a",
+      "status": "timeout",
+      "seconds": 60.08,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:13:59Z",
+      "started_epoch": 1790547239.7739654,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "milo-v12-6-r2-40-1.mps",
+      "sha256": "c15ae3acd258d4dd0991c3f735414f388c42df538d784fe38c68be65ee794493",
+      "status": "exit_6",
+      "seconds": 6.74,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:14:59Z",
+      "started_epoch": 1790547299.856845,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "mzzv11.mps",
+      "sha256": "7f14d78667ff20777e963a66815c63a0dc4f12a6ee573eeed107d8a5d9712620",
+      "status": "exit_6",
+      "seconds": 35.94,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:15:06Z",
+      "started_epoch": 1790547306.5962145,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "mzzv42z.mps",
+      "sha256": "0afc736e575c85109850b03ea8aa217271add6ad13199552aae5a0cbaa6a334d",
+      "status": "exit_6",
+      "seconds": 41.75,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:15:42Z",
+      "started_epoch": 1790547342.5412698,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "n2seq36q.mps",
+      "sha256": "2255f6f612eb6d26564f874afa9161c0c97b4f225589cff9f34ef2720c605491",
+      "status": "timeout",
+      "seconds": 60.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:16:24Z",
+      "started_epoch": 1790547384.297303,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "n5-3.mps",
+      "sha256": "9369795c7d1f3943e9204b140fc2c77714790d4b4856fe354d48e6abef00f31f",
+      "status": "timeout",
+      "seconds": 60.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:17:24Z",
+      "started_epoch": 1790547444.3765116,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-1171737.mps",
+      "sha256": "9c11ef450081fcac8e6ff4dbbaa695656a2f7d2df3e6cfd3db768e49b932b6dc",
+      "status": "exit_6",
+      "seconds": 2.38,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:18:24Z",
+      "started_epoch": 1790547504.4424405,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-1354092.mps",
+      "sha256": "8f21f11b4783ddebe5a9341c187db81f20876cb62711067d66f0e7a0497c2095",
+      "status": "exit_6",
+      "seconds": 57.2,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:18:26Z",
+      "started_epoch": 1790547506.825218,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-1582420.mps",
+      "sha256": "29ed8162c6c480dd85e8ee79058f0d647c71858d0815ddc60e069554a8bb40e3",
+      "status": "exit_6",
+      "seconds": 14.69,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:19:24Z",
+      "started_epoch": 1790547564.0354495,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-2657525-crna.mps",
+      "sha256": "31a5a4880f97d3844a273b57221e88a6491bb392b1185290548d9f18b17402eb",
+      "status": "timeout",
+      "seconds": 60.04,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:19:38Z",
+      "started_epoch": 1790547578.728591,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-3024952-loue.mps",
+      "sha256": "c35a114cc6e63556ba76182d35cf7ef0d963f137dd8eb3085f305784814581c7",
+      "status": "exit_6",
+      "seconds": 6.45,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:20:38Z",
+      "started_epoch": 1790547638.7683208,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-3381206-awhea.mps",
+      "sha256": "738f0bf51278e4dd1f0418b149de72ee2614a5a9b805c838705565397cd0514d",
+      "status": "timeout",
+      "seconds": 60.02,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:20:45Z",
+      "started_epoch": 1790547645.2169838,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-3627168-kasai.mps",
+      "sha256": "e0fce9d13f3ec671ad4f7964d1b01a398c9c5d128eca8ba40cf67a4949cca37e",
+      "status": "timeout",
+      "seconds": 60.04,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:21:45Z",
+      "started_epoch": 1790547705.236326,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-3754480-nidda.mps",
+      "sha256": "f9b9bf4718a28ac757b176d4f30476758936ea361dad6733a096f5835ad9dcf3",
+      "status": "timeout",
+      "seconds": 60.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:22:45Z",
+      "started_epoch": 1790547765.2779744,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-4387871-tavua.mps",
+      "sha256": "3607bd503256e50bace2185e5e9f0fee5c189ba9cae016a310b3c0a0af05a744",
+      "status": "exit_6",
+      "seconds": 7.41,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:23:45Z",
+      "started_epoch": 1790547825.3400419,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-4738912-atrato.mps",
+      "sha256": "83c51dba0916162c7351df99e66ca8eff52d878a26c13980a0273685d259ff28",
+      "status": "exit_6",
+      "seconds": 7.63,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:23:52Z",
+      "started_epoch": 1790547832.7477775,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-5107597-kakapo.mps",
+      "sha256": "f919a7ea8d7d9a82ad55bb84d5921831c638fff9956d1f52a63f09b587318968",
+      "status": "exit_6",
+      "seconds": 1.42,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:24:00Z",
+      "started_epoch": 1790547840.3824692,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-662469.mps",
+      "sha256": "fe28b73565ab9168bf90504445af9a27423a52a51ccaa6d23fe22b26c18fcf1c",
+      "status": "exit_6",
+      "seconds": 42.21,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:24:01Z",
+      "started_epoch": 1790547841.8020115,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos-860300.mps",
+      "sha256": "e55f58674c081e4c3e0e74e145cddc549a57e13c70657035fdf3b8ccc428c035",
+      "status": "timeout",
+      "seconds": 60.04,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:24:44Z",
+      "started_epoch": 1790547884.0212505,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "neos17.mps",
+      "sha256": "4ea347bc9061a49b4737f2e77b3c15541c031eb8df14881cc9a4bd96a2d65c00",
+      "status": "timeout",
+      "seconds": 60.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:25:44Z",
+      "started_epoch": 1790547944.0711484,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "net12.mps",
+      "sha256": "c868d2fbb64bd340b8875501e7183118058989dd0ffe941a86c44c51401ec216",
+      "status": "exit_6",
+      "seconds": 25.71,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:26:44Z",
+      "started_epoch": 1790548004.1344125,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "nexp-150-20-8-5.mps",
+      "sha256": "90bd312a5e1ba3e2fbedb8e8c9366626a680034dafe62f43b207768f6706544b",
+      "status": "exit_6",
+      "seconds": 12.32,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:27:09Z",
+      "started_epoch": 1790548029.8453543,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "ns1208400.mps",
+      "sha256": "7fb147bfe61f8b028dca80f6b7648a7c82e5dc377885808df18bd3e93704d06d",
+      "status": "exit_6",
+      "seconds": 6.3,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:27:22Z",
+      "started_epoch": 1790548042.1687956,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "ns1830653.mps",
+      "sha256": "98b3656ef998c2f666648a52acf1f477f6d008bbe97408d3e618546a41fc8b00",
+      "status": "exit_6",
+      "seconds": 30.15,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:27:28Z",
+      "started_epoch": 1790548048.4694357,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "ns1952667.mps",
+      "sha256": "8f462679c9bb1ac6d38dcd3bc8db3103295128920f377c633bc1c9027b7dfe06",
+      "status": "timeout",
+      "seconds": 60.07,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:27:58Z",
+      "started_epoch": 1790548078.6192603,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "nu25-pr12.mps",
+      "sha256": "c05644f79dc7a3b2475a5ebe9046a3954f902f774a9555467567eb72a22b917b",
+      "status": "exit_6",
+      "seconds": 7.07,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:28:58Z",
+      "started_epoch": 1790548138.6918168,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "p200x1188c.mps",
+      "sha256": "52e616e7a1e0dc95b14a8e381bda45bd1618cadcf5f8393609b1b7fe81a5459e",
+      "status": "timeout",
+      "seconds": 60.08,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:29:05Z",
+      "started_epoch": 1790548145.7648273,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "peg-solitaire-a3.mps",
+      "sha256": "50ce4460e4a8d11011193f6d07e897e16508cb8c2192acd956b0b1091e381a26",
+      "status": "exit_6",
+      "seconds": 11.82,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:30:05Z",
+      "started_epoch": 1790548205.8436801,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "pg.mps",
+      "sha256": "765a365c6d851573ef12a4c6c08b5fec0c3514e195986618c9d37075e84a3a0c",
+      "status": "timeout",
+      "seconds": 60.08,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:30:17Z",
+      "started_epoch": 1790548217.670589,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "pg5_34.mps",
+      "sha256": "308af9b3ba0703bdd29725574ea91da2fc9a84b356481086552135435c852d43",
+      "status": "timeout",
+      "seconds": 60.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:31:17Z",
+      "started_epoch": 1790548277.7464683,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "piperout-08.mps",
+      "sha256": "4f2393fb47ebda389300cdcc3f787a3f96c9978705cd03e11aa316fe8442a721",
+      "status": "exit_6",
+      "seconds": 23.88,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:32:17Z",
+      "started_epoch": 1790548337.8114977,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "pk1.mps",
+      "sha256": "13851ed426a2dfd7c6af7b021236553c391d77a675ab9223dd9135d3351c2e66",
+      "status": "ok",
+      "seconds": 1.34,
+      "log_bytes": 5900,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:54:25Z",
+      "started_epoch": 1790546065.2898226
+    },
+    {
+      "instance": "qap10.mps",
+      "sha256": "a317ab99d08ad4d4b5cb8286a8a1c4c4f77ad801ff3f8b50d565390219485789",
+      "status": "exit_6",
+      "seconds": 6.99,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:32:41Z",
+      "started_epoch": 1790548361.693148,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "ran14x18-disj-8.mps",
+      "sha256": "42c8804fa44742cf94b09238f1f03781ae89b25f6c31902c15ce25c2ba22f1cd",
+      "status": "exit_7",
+      "seconds": 39.32,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:32:48Z",
+      "started_epoch": 1790548368.6879396,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "rmatr100-p10.mps",
+      "sha256": "4b946d51d55001c125945774699790ac15daa6c4be2602264ab588c737119fc9",
+      "status": "exit_6",
+      "seconds": 11.1,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:33:28Z",
+      "started_epoch": 1790548408.0076373,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "rocI-4-11.mps",
+      "sha256": "c166b13804e83e2e086646bd6888f8fb24bffeb5baed9f976ccd789e7f14d4d1",
+      "status": "exit_6",
+      "seconds": 15.39,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:33:39Z",
+      "started_epoch": 1790548419.1127145,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "rococoB10-011000.mps",
+      "sha256": "9060d70e880117d6b95b5d8ced7a7c94242baa471407335818a8a30ea68cd0f8",
+      "status": "exit_6",
+      "seconds": 5.76,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:33:54Z",
+      "started_epoch": 1790548434.5041716,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "rococoC10-001000.mps",
+      "sha256": "028c9e0c356be3b23cf597ccd8b74e3fb910070dee5543fe1c502fedf246eb7b",
+      "status": "exit_6",
+      "seconds": 4.04,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:34:00Z",
+      "started_epoch": 1790548440.263058,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "sct2.mps",
+      "sha256": "ec532dc5c51e11345d546eaddecb53ba4e48593a3003f3315fe6c6d303a19e8e",
+      "status": "exit_6",
+      "seconds": 8.99,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:34:04Z",
+      "started_epoch": 1790548444.3079681,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "seymour.mps",
+      "sha256": "0b5cac17833e32f94ab267a6ca34029e30d2c55122701a1f44aafe0de74746d3",
+      "status": "exit_6",
+      "seconds": 9.01,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:34:13Z",
+      "started_epoch": 1790548453.2964969,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "sp150x300d.mps",
+      "sha256": "339aa4411ef126df72dc66718090fc6915debdc44d732a0f0be903310e52cf4a",
+      "status": "timeout",
+      "seconds": 60.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:34:22Z",
+      "started_epoch": 1790548462.313128,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "sp97ar.mps",
+      "sha256": "b5ed0a51ac2c1472f6afdc8c3af43218f3fed2166ca8b5bb23c8c1536dd8af72",
+      "status": "exit_6",
+      "seconds": 42.82,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:35:22Z",
+      "started_epoch": 1790548522.3757288,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "sp98ar.mps",
+      "sha256": "5146fa844d42557d036356d4858b578d7c77e3055d5f7f43593b73975f6e2f96",
+      "status": "timeout",
+      "seconds": 60.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:36:05Z",
+      "started_epoch": 1790548565.2102718,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "stein15.mps",
+      "sha256": "8c8903ab3f05d273556c4c325932b4e296d7977bd76857e67b0f1e3cbfad0681",
+      "status": "ok",
+      "seconds": 0.42,
+      "log_bytes": 2044,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:54:24Z",
+      "started_epoch": 1790546064.6286423
+    },
+    {
+      "instance": "stein9.mps",
+      "sha256": "a07e4e004a694727379e6d9c11cbdbfb28bea5958cae6bb62dc6ba9ea9ed7b17",
+      "status": "ok",
+      "seconds": 0.07,
+      "log_bytes": 1268,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T21:54:24Z",
+      "started_epoch": 1790546064.5602593
+    },
+    {
+      "instance": "supportcase18.mps",
+      "sha256": "d9f9372512bcaaf3fd5e2e2edc8b6875cb22e505dce09d0590fc3068218615ce",
+      "status": "exit_5",
+      "seconds": 58.82,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:37:05Z",
+      "started_epoch": 1790548625.2898507,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "supportcase26.mps",
+      "sha256": "1973ccac4667abab6eb274f4017b72d33d35dbfddfe72eb4c893e1e2611def67",
+      "status": "timeout",
+      "seconds": 60.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:38:04Z",
+      "started_epoch": 1790548684.1081612,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "timtab1.mps",
+      "sha256": "bc196d8cba1f846a3de1cdbed4463f6444186105ef3d3545935091b8403b0435",
+      "status": "timeout",
+      "seconds": 60.06,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:39:04Z",
+      "started_epoch": 1790548744.1714463,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "traininstance2.mps",
+      "sha256": "cc0722b3ebf4eb9ec3c128f26fe9b8e86ad3f4cf08813c86eb6e9d1a7e546212",
+      "status": "exit_6",
+      "seconds": 22.35,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T22:40:04Z",
+      "started_epoch": 1790548804.232772,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    }
+  ]
+}

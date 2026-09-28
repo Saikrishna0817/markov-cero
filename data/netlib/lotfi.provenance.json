@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/lotfi.mps.gz",
+  "member": "lotfi.mps",
+  "sha256": "fcb90a1b5e02b2eae67adacd0937a073d420ca92ac6af514ee13a348d7f31623",
+  "name": "lotfi",
+  "reference_objective": null
+}

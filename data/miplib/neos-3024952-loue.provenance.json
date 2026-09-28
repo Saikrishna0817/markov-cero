@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-3024952-loue.mps.gz",
+  "member": "neos-3024952-loue.mps",
+  "sha256": "c35a114cc6e63556ba76182d35cf7ef0d963f137dd8eb3085f305784814581c7",
+  "name": "neos-3024952-loue",
+  "rows": 3705,
+  "columns": 3255,
+  "binaries": 0,
+  "integers": 3255,
+  "nonzeros": 17310,
+  "reference_objective": 26756.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

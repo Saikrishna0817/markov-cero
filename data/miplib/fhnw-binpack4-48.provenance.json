@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/fhnw-binpack4-48.mps.gz",
+  "member": "fhnw-binpack4-48.mps",
+  "sha256": "fea87c0b08be7e9bf3e8f9bc8bf7740ff1066302bf7ffdefc78cdc7ffca39211",
+  "name": "fhnw-binpack4-48",
+  "rows": 4480,
+  "columns": 3710,
+  "binaries": 3605,
+  "integers": 0,
+  "nonzeros": 17290,
+  "reference_objective": 0.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

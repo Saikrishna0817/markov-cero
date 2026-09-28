@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/dano3_5.mps.gz",
+  "member": "dano3_5.mps",
+  "sha256": "23e50a226c4d335defd440cdbdebf7f91b442be5f77c75fae58586fa405890c7",
+  "name": "dano3_5",
+  "rows": 3202,
+  "columns": 13873,
+  "binaries": 115,
+  "integers": 0,
+  "nonzeros": 79655,
+  "reference_objective": 576.9249159565619,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

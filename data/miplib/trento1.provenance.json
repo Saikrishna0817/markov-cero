@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/trento1.mps.gz",
+  "member": "trento1.mps",
+  "sha256": "9540f011efd2c51173fd26145378c4319be33abe885f49cc85365e0eee236e9e",
+  "name": "trento1",
+  "rows": 1265,
+  "columns": 7687,
+  "binaries": 6415,
+  "integers": 0,
+  "nonzeros": 93571,
+  "reference_objective": 5189487.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

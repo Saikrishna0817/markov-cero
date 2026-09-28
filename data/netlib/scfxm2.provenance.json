@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/scfxm2.mps.gz",
+  "member": "scfxm2.mps",
+  "sha256": "64d44da9d2e6329705e73b1e083f52a7560124c13af4c67ff60d55b0a46b0f0e",
+  "name": "scfxm2",
+  "reference_objective": null
+}

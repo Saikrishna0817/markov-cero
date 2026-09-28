@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/sp150x300d.mps.gz",
+  "member": "sp150x300d.mps",
+  "sha256": "339aa4411ef126df72dc66718090fc6915debdc44d732a0f0be903310e52cf4a",
+  "name": "sp150x300d",
+  "rows": 450,
+  "columns": 600,
+  "binaries": 300,
+  "integers": 0,
+  "nonzeros": 1200,
+  "reference_objective": 69.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

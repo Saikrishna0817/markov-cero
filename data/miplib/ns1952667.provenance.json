@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/ns1952667.mps.gz",
+  "member": "ns1952667.mps",
+  "sha256": "8f462679c9bb1ac6d38dcd3bc8db3103295128920f377c633bc1c9027b7dfe06",
+  "name": "ns1952667",
+  "rows": 41,
+  "columns": 13264,
+  "binaries": 0,
+  "integers": 13264,
+  "nonzeros": 335643,
+  "reference_objective": 0.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

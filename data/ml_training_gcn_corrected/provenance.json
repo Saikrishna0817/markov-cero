@@ -1,0 +1,207 @@
+{
+  "magic": "MCONLOG3",
+  "generator": "scripts/ml/collect_training_data.py",
+  "decision": "D-05 (self-collected strong-branching log, sovereignty R10)",
+  "feature_order": [
+    "fractionality",
+    "objective_coefficient",
+    "pseudocost_down_ratio",
+    "pseudocost_up_ratio",
+    "bound_width",
+    "column_density"
+  ],
+  "feature_order_citations": {
+    "fractionality": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:266",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:386",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:30",
+      "extract": "src/milp/branch_selector.cpp:256"
+    },
+    "objective_coefficient": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:266",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:386",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:31",
+      "extract": "src/milp/branch_selector.cpp:257"
+    },
+    "pseudocost_down_ratio": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:267",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:387",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:32",
+      "extract": "src/milp/branch_selector.cpp:266"
+    },
+    "pseudocost_up_ratio": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:267",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:387",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:33",
+      "extract": "src/milp/branch_selector.cpp:267"
+    },
+    "bound_width": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:267",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:387",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:34",
+      "extract": "src/milp/branch_selector.cpp:275"
+    },
+    "column_density": {
+      "scorer": "src/milp/ml_branching/onnx_scorer.cpp:267",
+      "logger": "src/milp/ml_branching/onnx_scorer.cpp:387",
+      "struct": "include/markov_cero/milp/branch_selector.hpp:35",
+      "extract": "src/milp/branch_selector.cpp:281"
+    }
+  },
+  "feature_order_audit": {
+    "rows": 64,
+    "ok": true,
+    "violations": {},
+    "column_ranges": {
+      "fractionality": [
+        0.003724056496662076,
+        0.49856286403288386
+      ],
+      "objective_coefficient": [
+        0.0,
+        2700.0
+      ],
+      "pseudocost_down_ratio": [
+        0.0,
+        1.0
+      ],
+      "pseudocost_up_ratio": [
+        0.0,
+        1.0
+      ],
+      "bound_width": [
+        1.0,
+        18.0
+      ],
+      "column_density": [
+        0.34782608695652173,
+        1.0
+      ]
+    },
+    "ratio_sum_max_abs_error": 2.220446049250313e-16,
+    "tolerance_note": "ratio-sum tolerance 1e-06; range checks use \u00b11e-9 slack"
+  },
+  "records": [
+    {
+      "instance": "enlight_hard.mps",
+      "sha256": "572ca23c17d0ad734895e8338af458525a753ee76bdb117d2917e4069c6b65b0",
+      "status": "exit_5",
+      "seconds": 29.5,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T23:13:31Z",
+      "started_epoch": 1790550811.6598866,
+      "solver_status": "ResourceLimit",
+      "verified": false,
+      "solver_message": "time limit reached with no incumbent",
+      "rows": 100,
+      "columns": 200,
+      "nonzeros": 560,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "flugpl.mps",
+      "sha256": "ed4b1fcb07d26b513027721d61344c2c4371cb506bf66098df328047c183b0c0",
+      "status": "exit_5",
+      "seconds": 28.02,
+      "log_bytes": 1288,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T23:14:01Z",
+      "started_epoch": 1790550841.1565795,
+      "solver_status": "ResourceLimit",
+      "verified": false,
+      "solver_message": "time limit reached before proof of optimality",
+      "rows": 18,
+      "columns": 18,
+      "nonzeros": 46
+    },
+    {
+      "instance": "markshare_4_0.mps",
+      "sha256": "a05d1c8c1a1e0646ea31965fd5e05af7a41801db3cb1820b2ab4cd95c7bc32db",
+      "status": "exit_5",
+      "seconds": 28.01,
+      "log_bytes": 10708,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T23:14:29Z",
+      "started_epoch": 1790550869.1772099,
+      "solver_status": "ResourceLimit",
+      "verified": false,
+      "solver_message": "time limit reached before proof of optimality",
+      "rows": 4,
+      "columns": 34,
+      "nonzeros": 123
+    },
+    {
+      "instance": "mas74.mps",
+      "sha256": "181f02fd634306ad6431f21d5e8115f3e8112f2e7d2bebed1690475b49acc4af",
+      "status": "timeout",
+      "seconds": 30.02,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T23:14:57Z",
+      "started_epoch": 1790550897.191171,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "mas76.mps",
+      "sha256": "114b73dbe17c1d1b4d37a09311424571781225e01edfbec1c6acb320214593f6",
+      "status": "timeout",
+      "seconds": 30.03,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T23:15:27Z",
+      "started_epoch": 1790550927.2156608,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "pk1.mps",
+      "sha256": "13851ed426a2dfd7c6af7b021236553c391d77a675ab9223dd9135d3351c2e66",
+      "status": "exit_5",
+      "seconds": 28.01,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T23:15:57Z",
+      "started_epoch": 1790550957.2470832,
+      "solver_status": "ResourceLimit",
+      "verified": false,
+      "solver_message": "time limit reached before proof of optimality",
+      "rows": 45,
+      "columns": 86,
+      "nonzeros": 915,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "stein15.mps",
+      "sha256": "8c8903ab3f05d273556c4c325932b4e296d7977bd76857e67b0f1e3cbfad0681",
+      "status": "ok",
+      "seconds": 14.11,
+      "log_bytes": 0,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T23:16:25Z",
+      "started_epoch": 1790550985.2584765,
+      "solver_status": "Optimal",
+      "verified": true,
+      "solver_message": "branch-and-cut MILP optimum",
+      "rows": 36,
+      "columns": 15,
+      "nonzeros": 120,
+      "note": "empty SB log (no strong-branching nodes or ML build off)"
+    },
+    {
+      "instance": "stein9.mps",
+      "sha256": "a07e4e004a694727379e6d9c11cbdbfb28bea5958cae6bb62dc6ba9ea9ed7b17",
+      "status": "ok",
+      "seconds": 0.38,
+      "log_bytes": 864,
+      "solver": "build_ml/markov-cero-solve",
+      "started_at": "2026-09-27T23:16:39Z",
+      "started_epoch": 1790550999.3656857,
+      "solver_status": "Optimal",
+      "verified": true,
+      "solver_message": "branch-and-cut MILP optimum",
+      "rows": 13,
+      "columns": 9,
+      "nonzeros": 45
+    }
+  ]
+}

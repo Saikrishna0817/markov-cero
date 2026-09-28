@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/share2b.mps.gz",
+  "member": "share2b.mps",
+  "sha256": "2816c0a71096acc08fd88f65c960366856802c074601e5fa544f9c3eab640c96",
+  "name": "share2b",
+  "reference_objective": -415.732240741418
+}

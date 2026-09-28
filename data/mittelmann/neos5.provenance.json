@@ -1,0 +1,11 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos5.mps.gz",
+  "member": "neos5.mps",
+  "sha256": "6004edda3e48c0d2e6b109e88c059bd874875535fa420cd486461e68a7375870",
+  "name": "neos5",
+  "rows": 63,
+  "columns": 63,
+  "nonzeros": 1008,
+  "problem_type": "MILP",
+  "note": "byte-identical to the MIPLIB copy"
+}

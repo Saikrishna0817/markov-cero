@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/israel.mps.gz",
+  "member": "israel.mps",
+  "sha256": "96564e1fddcbb6e3d46447fceb54b9d18260b95e95075c3a19f5812f9bf5ceeb",
+  "name": "israel",
+  "reference_objective": null
+}

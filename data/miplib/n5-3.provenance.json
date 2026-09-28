@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/n5-3.mps.gz",
+  "member": "n5-3.mps",
+  "sha256": "9369795c7d1f3943e9204b140fc2c77714790d4b4856fe354d48e6abef00f31f",
+  "name": "n5-3",
+  "rows": 1062,
+  "columns": 2550,
+  "binaries": 0,
+  "integers": 150,
+  "nonzeros": 9900,
+  "reference_objective": 8104.999999993999,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

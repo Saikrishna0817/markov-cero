@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/timtab1.mps.gz",
+  "member": "timtab1.mps",
+  "sha256": "bc196d8cba1f846a3de1cdbed4463f6444186105ef3d3545935091b8403b0435",
+  "name": "timtab1",
+  "rows": 171,
+  "columns": 397,
+  "binaries": 77,
+  "integers": 94,
+  "nonzeros": 829,
+  "reference_objective": 764771.99999978,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,14 @@
+{
+  "source": "data/qp/raw/QPLIB_0002.qplib",
+  "member": "QPLIB_0002.qplib",
+  "sha256": "ff230daa7dc1b76fc0a6593505f4bfa81e8a6e73559a09a7708f7121b205e50c",
+  "name": "QPLIB_0002",
+  "problem_class": "QCL",
+  "direction": "minimize",
+  "rows": 2,
+  "columns": 4,
+  "quadratic_nonzeros": 4,
+  "linear_constraint_nonzeros": 6,
+  "reference_objective": null,
+  "reference_solution": null
+}

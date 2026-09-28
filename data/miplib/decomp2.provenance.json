@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/decomp2.mps.gz",
+  "member": "decomp2.mps",
+  "sha256": "a8c6e04ca58e4fdc11a01256d39c96c8b9d3cbd70af635865eb2b47b218d1230",
+  "name": "decomp2",
+  "rows": 10765,
+  "columns": 14387,
+  "binaries": 14387,
+  "integers": 0,
+  "nonzeros": 64073,
+  "reference_objective": -160.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

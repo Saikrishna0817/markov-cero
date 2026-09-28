@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-5107597-kakapo.mps.gz",
+  "member": "neos-5107597-kakapo.mps",
+  "sha256": "f919a7ea8d7d9a82ad55bb84d5921831c638fff9956d1f52a63f09b587318968",
+  "name": "neos-5107597-kakapo",
+  "rows": 6498,
+  "columns": 3114,
+  "binaries": 2976,
+  "integers": 0,
+  "nonzeros": 19392,
+  "reference_objective": 3644.99999999952,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

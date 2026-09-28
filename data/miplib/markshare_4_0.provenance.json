@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/markshare_4_0.mps.gz",
+  "member": "markshare_4_0.mps",
+  "sha256": "a05d1c8c1a1e0646ea31965fd5e05af7a41801db3cb1820b2ab4cd95c7bc32db",
+  "name": "markshare_4_0",
+  "rows": 4,
+  "columns": 34,
+  "binaries": 30,
+  "integers": 0,
+  "nonzeros": 123,
+  "reference_objective": 1.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

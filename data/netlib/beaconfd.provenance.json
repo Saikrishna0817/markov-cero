@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/beaconfd.mps.gz",
+  "member": "beaconfd.mps",
+  "sha256": "7138e7b58b1d6160f1ad42112a61ed00b5db1c92d73dc48d77f6a26fc717dbfc",
+  "name": "beaconfd",
+  "reference_objective": 33592.4858072
+}

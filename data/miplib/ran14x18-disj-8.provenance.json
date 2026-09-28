@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/ran14x18-disj-8.mps.gz",
+  "member": "ran14x18-disj-8.mps",
+  "sha256": "42c8804fa44742cf94b09238f1f03781ae89b25f6c31902c15ce25c2ba22f1cd",
+  "name": "ran14x18-disj-8",
+  "rows": 447,
+  "columns": 504,
+  "binaries": 252,
+  "integers": 0,
+  "nonzeros": 10277,
+  "reference_objective": 3712.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

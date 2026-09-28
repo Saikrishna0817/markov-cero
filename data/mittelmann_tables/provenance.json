@@ -1,0 +1,16 @@
+{
+  "accessed": "2026-09-27",
+  "source": "http://plato.asu.edu/bench.html",
+  "pages": {
+    "bench_index": {
+      "url": "http://plato.asu.edu/bench.html",
+      "sha256": "143cb40dd656f5e9",
+      "bytes": 12198
+    },
+    "milp_12threads": {
+      "url": "https://plato.asu.edu/ftp/milp_tables/12threads.res",
+      "sha256": "f983b5010256c769",
+      "bytes": 36581
+    }
+  }
+}

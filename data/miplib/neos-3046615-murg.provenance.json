@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-3046615-murg.mps.gz",
+  "member": "neos-3046615-murg.mps",
+  "sha256": "d8bfe7f051fdf60fdd27c0c5e7e6286729561275f13d87e2f71b1e78b19ccaf5",
+  "name": "neos-3046615-murg",
+  "rows": 498,
+  "columns": 274,
+  "binaries": 240,
+  "integers": 16,
+  "nonzeros": 1266,
+  "reference_objective": 1600.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

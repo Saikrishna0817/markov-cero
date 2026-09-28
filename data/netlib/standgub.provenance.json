@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/standgub.mps.gz",
+  "member": "standgub.mps",
+  "sha256": "ce813a2b3750969cf58b48bd7f05dd43be240296acdde9141e09523b1f21e1cf",
+  "name": "standgub",
+  "reference_objective": null
+}

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/supportcase26.mps.gz",
+  "member": "supportcase26.mps",
+  "sha256": "1973ccac4667abab6eb274f4017b72d33d35dbfddfe72eb4c893e1e2611def67",
+  "name": "supportcase26",
+  "rows": 870,
+  "columns": 436,
+  "binaries": 396,
+  "integers": 0,
+  "nonzeros": 2492,
+  "reference_objective": 1745.123813,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

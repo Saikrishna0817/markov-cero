@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/wachplan.mps.gz",
+  "member": "wachplan.mps",
+  "sha256": "f6c205519a6015617483766617d80b87794b9fbf65eb931efc4cb91735783881",
+  "name": "wachplan",
+  "rows": 1553,
+  "columns": 3361,
+  "binaries": 3360,
+  "integers": 1,
+  "nonzeros": 89361,
+  "reference_objective": -8.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

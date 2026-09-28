@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/blend.mps.gz",
+  "member": "blend.mps",
+  "sha256": "38e1d84a38f1e0adaa16d3dd0abe758f6cea13a21f33681aa92742b693260aef",
+  "name": "blend",
+  "reference_objective": null
+}

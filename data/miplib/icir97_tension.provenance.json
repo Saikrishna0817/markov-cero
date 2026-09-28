@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/icir97_tension.mps.gz",
+  "member": "icir97_tension.mps",
+  "sha256": "9c937b1c796c430b318c8547e73adbf29eadb1d2697e36b1e1306f5a8d2e1741",
+  "name": "icir97_tension",
+  "rows": 1203,
+  "columns": 2494,
+  "binaries": 262,
+  "integers": 573,
+  "nonzeros": 22333,
+  "reference_objective": 6375.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/sc50b.mps.gz",
+  "member": "sc50b.mps",
+  "sha256": "bfc47ffcf8f037552130a75142a203dc768d82d15c3b7b9f718c444ffa472f15",
+  "name": "sc50b",
+  "reference_objective": -70.0
+}

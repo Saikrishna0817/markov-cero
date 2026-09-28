@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/grow22.mps.gz",
+  "member": "grow22.mps",
+  "sha256": "671111a1623539730f4caa9366c7eda43fb472137773cd9444dc96ed87f9810e",
+  "name": "grow22",
+  "reference_objective": null
+}

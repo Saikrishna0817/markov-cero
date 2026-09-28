@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/swath1.mps.gz",
+  "member": "swath1.mps",
+  "sha256": "610a6a396beb446617858d7dbf0a491bc5dd63718a541994f4c63e657650a58f",
+  "name": "swath1",
+  "rows": 884,
+  "columns": 6805,
+  "binaries": 2306,
+  "integers": 0,
+  "nonzeros": 34965,
+  "reference_objective": 379.07129575,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

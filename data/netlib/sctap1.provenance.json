@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/sctap1.mps.gz",
+  "member": "sctap1.mps",
+  "sha256": "2b1ab5950d3e37fd21327892e2bc830c5f0d8d3fc1f687c0f57a5cdefd9caa21",
+  "name": "sctap1",
+  "reference_objective": null
+}

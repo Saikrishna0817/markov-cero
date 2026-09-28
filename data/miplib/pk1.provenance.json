@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/pk1.mps.gz",
+  "member": "pk1.mps",
+  "sha256": "13851ed426a2dfd7c6af7b021236553c391d77a675ab9223dd9135d3351c2e66",
+  "name": "pk1",
+  "rows": 45,
+  "columns": 86,
+  "binaries": 55,
+  "integers": 0,
+  "nonzeros": 915,
+  "reference_objective": 11.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/milo-v12-6-r2-40-1.mps.gz",
+  "member": "milo-v12-6-r2-40-1.mps",
+  "sha256": "c15ae3acd258d4dd0991c3f735414f388c42df538d784fe38c68be65ee794493",
+  "name": "milo-v12-6-r2-40-1",
+  "rows": 5628,
+  "columns": 2688,
+  "binaries": 840,
+  "integers": 0,
+  "nonzeros": 14604,
+  "reference_objective": 326481.14282799,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

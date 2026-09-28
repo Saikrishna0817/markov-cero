@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/SkyLiu0/NETLIB/main/feasible/qap8.mps",
+  "member": "qap8.mps",
+  "sha256": "94daba7817bc1b498da91a92abfb8ca618a8548e41d4a79e8232452314252cc4",
+  "name": "qap8",
+  "reference_objective": 203.5
+}

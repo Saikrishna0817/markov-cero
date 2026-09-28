@@ -1,0 +1,12 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/30n20b8.mps.gz",
+  "member": "30n20b8.mps",
+  "sha256": "152b62344fb15ee3e080137ea304d998c351f56c3b3bcea3f2a421cdbb7a55f9",
+  "name": "30n20b8",
+  "rows": 576,
+  "columns": 18380,
+  "nonzeros": 109706,
+  "problem_type": "MILP",
+  "listed_on": "https://plato.asu.edu/ftp/milp_tables/12threads.res",
+  "note": "archive of a plain MPS file"
+}

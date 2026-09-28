@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/ns1208400.mps.gz",
+  "member": "ns1208400.mps",
+  "sha256": "7fb147bfe61f8b028dca80f6b7648a7c82e5dc377885808df18bd3e93704d06d",
+  "name": "ns1208400",
+  "rows": 4289,
+  "columns": 2883,
+  "binaries": 2880,
+  "integers": 0,
+  "nonzeros": 81746,
+  "reference_objective": 2.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

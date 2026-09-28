@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/nu25-pr12.mps.gz",
+  "member": "nu25-pr12.mps",
+  "sha256": "c05644f79dc7a3b2475a5ebe9046a3954f902f774a9555467567eb72a22b917b",
+  "name": "nu25-pr12",
+  "rows": 2313,
+  "columns": 5868,
+  "binaries": 5832,
+  "integers": 36,
+  "nonzeros": 17712,
+  "reference_objective": 53904.99999999999,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

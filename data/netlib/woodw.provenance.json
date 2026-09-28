@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/woodw.mps.gz",
+  "member": "woodw.mps",
+  "sha256": "01450b5407d3bb282595e2874e78c26dd7cdde87d70d663065e58bd3e6c288b0",
+  "name": "woodw",
+  "reference_objective": null
+}

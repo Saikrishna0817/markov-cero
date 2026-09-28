@@ -1,0 +1,14 @@
+{
+  "source": "data/qp/raw/QPLIB_8616.qplib",
+  "member": "QPLIB_8616.qplib",
+  "sha256": "351094962982fc2420ca297c4806a0f398efae26e96b0bb9dd0394945c0e788b",
+  "name": "QPLIB_8616",
+  "problem_class": "DCL",
+  "direction": "minimize",
+  "rows": 10404,
+  "columns": 13870,
+  "quadratic_nonzeros": 13870,
+  "linear_constraint_nonzeros": 27740,
+  "reference_objective": 245.068597771206,
+  "reference_solution": "data/qp/sol/QPLIB_8616.sol"
+}

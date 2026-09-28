@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/net12.mps.gz",
+  "member": "net12.mps",
+  "sha256": "c868d2fbb64bd340b8875501e7183118058989dd0ffe941a86c44c51401ec216",
+  "name": "net12",
+  "rows": 14021,
+  "columns": 14115,
+  "binaries": 1603,
+  "integers": 0,
+  "nonzeros": 80384,
+  "reference_objective": 214.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

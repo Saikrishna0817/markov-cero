@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/traininstance6.mps.gz",
+  "member": "traininstance6.mps",
+  "sha256": "8decae28026b14103a7a0799158fb487d679082015220efb743d7605f7d8232e",
+  "name": "traininstance6",
+  "rows": 12309,
+  "columns": 10218,
+  "binaries": 4154,
+  "integers": 2056,
+  "nonzeros": 32785,
+  "reference_objective": 28290.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

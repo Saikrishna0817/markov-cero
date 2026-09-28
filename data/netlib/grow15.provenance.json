@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/grow15.mps.gz",
+  "member": "grow15.mps",
+  "sha256": "ab84e2f83d00c5bd26291e0505f23804b050bc96dc1e576d9da8f04e1f6ed51f",
+  "name": "grow15",
+  "reference_objective": null
+}

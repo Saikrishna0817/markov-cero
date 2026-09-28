@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-4954672-berkel.mps.gz",
+  "member": "neos-4954672-berkel.mps",
+  "sha256": "c3d0897fc7b75b0335a43da0fd2919f8d1fa04b0360947d70897ab114b9ca382",
+  "name": "neos-4954672-berkel",
+  "rows": 1848,
+  "columns": 1533,
+  "binaries": 630,
+  "integers": 0,
+  "nonzeros": 8007,
+  "reference_objective": 2612710.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

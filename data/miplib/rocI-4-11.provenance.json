@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/rocI-4-11.mps.gz",
+  "member": "rocI-4-11.mps",
+  "sha256": "c166b13804e83e2e086646bd6888f8fb24bffeb5baed9f976ccd789e7f14d4d1",
+  "name": "rocI-4-11",
+  "rows": 10883,
+  "columns": 6839,
+  "binaries": 5192,
+  "integers": 1016,
+  "nonzeros": 27383,
+  "reference_objective": -6020203.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

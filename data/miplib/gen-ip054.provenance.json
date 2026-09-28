@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/gen-ip054.mps.gz",
+  "member": "gen-ip054.mps",
+  "sha256": "8b71b70a6f92ea9bde78b375f4366e7cc021cfb517df87130775f8b8bdf47333",
+  "name": "gen-ip054",
+  "rows": 27,
+  "columns": 30,
+  "binaries": 0,
+  "integers": 30,
+  "nonzeros": 532,
+  "reference_objective": 6840.96564179,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

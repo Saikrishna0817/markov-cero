@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/cvs16r128-89.mps.gz",
+  "member": "cvs16r128-89.mps",
+  "sha256": "9c31a000fb71ac2db6101310194d44f97557cf597f2e68f542725f64f87346ff",
+  "name": "cvs16r128-89",
+  "rows": 4633,
+  "columns": 3472,
+  "binaries": 3472,
+  "integers": 0,
+  "nonzeros": 12528,
+  "reference_objective": -97.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

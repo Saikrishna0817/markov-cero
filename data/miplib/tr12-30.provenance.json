@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/tr12-30.mps.gz",
+  "member": "tr12-30.mps",
+  "sha256": "2a7983305400189ae1ecb8e40a22e39d96fada3e9eb67b2583b92d7cb056c83a",
+  "name": "tr12-30",
+  "rows": 750,
+  "columns": 1080,
+  "binaries": 360,
+  "integers": 0,
+  "nonzeros": 2508,
+  "reference_objective": 130595.9999999999,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

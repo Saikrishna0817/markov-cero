@@ -1,0 +1,11 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/bienst2.mps.gz",
+  "member": "bienst2.mps",
+  "sha256": "9c44383d3657efd919118a2e8d2495eb163e314dc000ffdc7f5c5cb47701472b",
+  "name": "bienst2",
+  "rows": 576,
+  "columns": 505,
+  "nonzeros": 2184,
+  "problem_type": "MILP",
+  "note": "identical to the MIPLIB copy apart from trailing whitespace on the NAME line"
+}

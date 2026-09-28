@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-662469.mps.gz",
+  "member": "neos-662469.mps",
+  "sha256": "fe28b73565ab9168bf90504445af9a27423a52a51ccaa6d23fe22b26c18fcf1c",
+  "name": "neos-662469",
+  "rows": 1085,
+  "columns": 18235,
+  "binaries": 17907,
+  "integers": 328,
+  "nonzeros": 200055,
+  "reference_objective": 184379.9999999999,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/boeing1.mps.gz",
+  "member": "boeing1.mps",
+  "sha256": "1d9d58afaf41bad6866d5355330b261d3776ca86753d121eb9b688ee6128ab9e",
+  "name": "boeing1",
+  "reference_objective": null
+}

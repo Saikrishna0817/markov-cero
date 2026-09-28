@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/dfl001.mps.gz",
+  "member": "dfl001.mps",
+  "sha256": "85d47c5f8a5fc53772eabac1805b7a1af72431cad9e14d26d673043980952730",
+  "name": "dfl001",
+  "reference_objective": null
+}

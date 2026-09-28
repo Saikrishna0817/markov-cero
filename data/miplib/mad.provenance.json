@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/mad.mps.gz",
+  "member": "mad.mps",
+  "sha256": "7fb9d385e3358b98df263d85d10d7161927ef153f2dd6b38e3738c8ae97295f3",
+  "name": "mad",
+  "rows": 51,
+  "columns": 220,
+  "binaries": 200,
+  "integers": 0,
+  "nonzeros": 2808,
+  "reference_objective": 0.0268,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

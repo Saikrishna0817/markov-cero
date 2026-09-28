@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/shell.mps.gz",
+  "member": "shell.mps",
+  "sha256": "e21331e8282f8d8616cbee27e093e50d140ea03f9bc3fd0b6da0ccff638d2f91",
+  "name": "shell",
+  "reference_objective": null
+}

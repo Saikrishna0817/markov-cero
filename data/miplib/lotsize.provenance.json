@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/lotsize.mps.gz",
+  "member": "lotsize.mps",
+  "sha256": "9fcea318555b277974f8a6f475afabba33f17e2dc90e215f5ce5f692938ab721",
+  "name": "lotsize",
+  "rows": 1920,
+  "columns": 2985,
+  "binaries": 1195,
+  "integers": 0,
+  "nonzeros": 6565,
+  "reference_objective": 1480195.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

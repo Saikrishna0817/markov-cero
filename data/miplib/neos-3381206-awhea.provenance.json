@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-3381206-awhea.mps.gz",
+  "member": "neos-3381206-awhea.mps",
+  "sha256": "738f0bf51278e4dd1f0418b149de72ee2614a5a9b805c838705565397cd0514d",
+  "name": "neos-3381206-awhea",
+  "rows": 479,
+  "columns": 2375,
+  "binaries": 475,
+  "integers": 1900,
+  "nonzeros": 4275,
+  "reference_objective": 453.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

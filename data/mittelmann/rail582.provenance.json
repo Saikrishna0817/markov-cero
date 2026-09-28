@@ -1,0 +1,12 @@
+{
+  "source": "https://plato.asu.edu/ftp/lptestset/rail/rail582.bz2",
+  "member": "rail582.mps",
+  "sha256": "7d686248ac0441419163c210aeb50ea5111c00dcc46a7070b10f0e1a8db8e369",
+  "name": "rail582",
+  "rows": 582,
+  "columns": 55515,
+  "nonzeros": 190716,
+  "problem_type": "LP",
+  "listed_on": "https://plato.asu.edu/ftp/lptestset/rail/",
+  "note": "bzip2/gzip archive holding an MPC-compressed MPS file, expanded with http://www.netlib.org/lp/data/emps.c"
+}

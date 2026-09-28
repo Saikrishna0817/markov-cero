@@ -1,0 +1,19 @@
+# Pre-registered shared LP instance set (markov-cero vs HiGHS) — R16.
+# Format: name<TAB>path-relative-to-repo-root. Do not edit after results exist.
+afiro	data/netlib/afiro.mps
+blend	data/netlib/blend.mps
+sc50a	data/netlib/sc50a.mps
+sc50b	data/netlib/sc50b.mps
+adlittle	data/netlib/adlittle.mps
+share2b	data/netlib/share2b.mps
+recipe	data/netlib/recipe.mps
+sc105	data/netlib/sc105.mps
+sc205	data/netlib/sc205.mps
+kb2	data/netlib/kb2.mps
+lotfi	data/netlib/lotfi.mps
+beaconfd	data/netlib/beaconfd.mps
+scsd1	data/netlib/scsd1.mps
+scsd6	data/netlib/scsd6.mps
+share1b	data/netlib/share1b.mps
+scorpion	data/netlib/scorpion.mps
+scagr7	data/netlib/scagr7.mps

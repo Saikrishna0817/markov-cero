@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/etamacro.mps.gz",
+  "member": "etamacro.mps",
+  "sha256": "41701e1add7af2ed2b21a421ab7271bc867e6bc7ad98ac189748d6522e7d4926",
+  "name": "etamacro",
+  "reference_objective": null
+}

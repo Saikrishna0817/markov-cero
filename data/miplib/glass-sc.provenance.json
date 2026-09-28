@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/glass-sc.mps.gz",
+  "member": "glass-sc.mps",
+  "sha256": "51183ff96e9d8ac965eb782e9cb77d0734ed1b716261e75f329b2b1a465caa6d",
+  "name": "glass-sc",
+  "rows": 6119,
+  "columns": 214,
+  "binaries": 214,
+  "integers": 0,
+  "nonzeros": 63918,
+  "reference_objective": 23.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/mushroom-best.mps.gz",
+  "member": "mushroom-best.mps",
+  "sha256": "de65e991e3abbda516ce27b02de4907e7f1773c282d976a352d4ae4b0b4fce89",
+  "name": "mushroom-best",
+  "rows": 8580,
+  "columns": 8468,
+  "binaries": 8237,
+  "integers": 118,
+  "nonzeros": 188735,
+  "reference_objective": 0.0553337612,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

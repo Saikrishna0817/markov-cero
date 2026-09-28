@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-3754480-nidda.mps.gz",
+  "member": "neos-3754480-nidda.mps",
+  "sha256": "f9b9bf4718a28ac757b176d4f30476758936ea361dad6733a096f5835ad9dcf3",
+  "name": "neos-3754480-nidda",
+  "rows": 402,
+  "columns": 253,
+  "binaries": 50,
+  "integers": 0,
+  "nonzeros": 1488,
+  "reference_objective": 12939.7540104743,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

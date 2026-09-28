@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/h80x6320d.mps.gz",
+  "member": "h80x6320d.mps",
+  "sha256": "468cc10f24029e48c439447b40c4532cb1e4a66fb85a04bcd522b085a54a16b3",
+  "name": "h80x6320d",
+  "rows": 6558,
+  "columns": 12640,
+  "binaries": 6320,
+  "integers": 0,
+  "nonzeros": 31521,
+  "reference_objective": 6382.099048245999,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

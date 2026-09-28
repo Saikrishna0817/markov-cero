@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/bore3d.mps.gz",
+  "member": "bore3d.mps",
+  "sha256": "c7cfe0d4abd466346e3cda4e16d00651f44f3ce1da317cf583c5fed5dfc0515a",
+  "name": "bore3d",
+  "reference_objective": null
+}

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/irp.mps.gz",
+  "member": "irp.mps",
+  "sha256": "754905341c843153bd2caa6a73985dcb1b841423b6825370a1293b6d39bfd9da",
+  "name": "irp",
+  "rows": 39,
+  "columns": 20315,
+  "binaries": 20315,
+  "integers": 0,
+  "nonzeros": 98254,
+  "reference_objective": 12159.49283539698,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

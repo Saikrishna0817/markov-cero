@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/SkyLiu0/NETLIB/main/feasible/qap15.mps",
+  "member": "qap15.mps",
+  "sha256": "872a7cfa2ea3d11b67d932c34ffa90a2ada9dc400558151a2b719889c0c595b2",
+  "name": "qap15",
+  "reference_objective": 1040.994041
+}

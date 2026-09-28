@@ -1,0 +1,59 @@
+{
+  "paper": "F. Capitanescu, et al., 'State-of-the-art, challenges, and future trends in security constrained optimal power flow', Electric Power Systems Research 81 (2011) 1731-1741.",
+  "modeled_structure": "DC-OPF convex QP: quadratic generation costs, linear DC network with theta variables, line thermal limits, nodal balance.",
+  "parameterization": {
+    "buses": 9,
+    "branches": [
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        3,
+        6
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        5,
+        6
+      ],
+      [
+        4,
+        7
+      ],
+      [
+        5,
+        8
+      ],
+      [
+        6,
+        9
+      ]
+    ],
+    "gens": [
+      1,
+      2,
+      3
+    ],
+    "demand_mw": {
+      "5": 60.0,
+      "6": 45.0,
+      "8": 30.0
+    },
+    "cost": "0.02 pg^2 + 10 pg",
+    "note": "9-bus Ward-Hale equivalent; susceptance 100 pu; angle limits +/-0.6 rad"
+  },
+  "problem_class": "QP",
+  "source": "open literature (see paper citation); parameterized subset, not a copy of any dataset"
+}

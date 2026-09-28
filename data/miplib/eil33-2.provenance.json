@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/eil33-2.mps.gz",
+  "member": "eil33-2.mps",
+  "sha256": "6e6c3e48fa0df3ec627baab65c0b8da7a5ef1bd920ed52b3e5706cd70edd9966",
+  "name": "eil33-2",
+  "rows": 32,
+  "columns": 4516,
+  "binaries": 4516,
+  "integers": 0,
+  "nonzeros": 44243,
+  "reference_objective": 934.007915999999,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

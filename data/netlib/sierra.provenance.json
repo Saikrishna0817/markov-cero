@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/sierra.mps.gz",
+  "member": "sierra.mps",
+  "sha256": "dbabb4bb56b9de7efbca7df842922c7c1ef620bcbee2aeb28f4bf3c5a3868cc9",
+  "name": "sierra",
+  "reference_objective": null
+}

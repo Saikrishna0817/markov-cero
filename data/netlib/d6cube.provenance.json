@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/d6cube.mps.gz",
+  "member": "d6cube.mps",
+  "sha256": "8cd94ee7783bcbce884acde1f4769f5c79739c9460fe73cb948924e724b02dfa",
+  "name": "d6cube",
+  "reference_objective": null
+}

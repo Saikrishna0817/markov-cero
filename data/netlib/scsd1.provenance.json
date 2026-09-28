@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/scsd1.mps.gz",
+  "member": "scsd1.mps",
+  "sha256": "8c4aac4987a81ef66715b5cb2debdb1993afe6cb5e2a29f32556a03802bf55f5",
+  "name": "scsd1",
+  "reference_objective": null
+}

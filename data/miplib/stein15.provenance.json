@@ -1,0 +1,10 @@
+{
+  "source": "data/miplib/stein15.mps",
+  "member": "stein15.mps",
+  "sha256": "8c8903ab3f05d273556c4c325932b4e296d7977bd76857e67b0f1e3cbfad0681",
+  "name": "stein15",
+  "rows": null,
+  "columns": null,
+  "reference_objective": null,
+  "suite": "MIPLIB (pre-existing file, no site metadata found)"
+}

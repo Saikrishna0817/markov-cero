@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/gmu-35-40.mps.gz",
+  "member": "gmu-35-40.mps",
+  "sha256": "c0ae69e1cddf62318987abb2f4fdab189b3c84374e168c532ab4d917d0753895",
+  "name": "gmu-35-40",
+  "rows": 424,
+  "columns": 1205,
+  "binaries": 1200,
+  "integers": 0,
+  "nonzeros": 4843,
+  "reference_objective": -2406733.3688,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

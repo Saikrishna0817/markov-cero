@@ -1,0 +1,1843 @@
+NAME PROCESS_NETWORK_LARGE
+ROWS
+ N COST
+ E MEX_CDU_0
+ G FMIN_CDU_LOW_0
+ L FMAX_CDU_LOW_0
+ G FMIN_CDU_BASE_0
+ L FMAX_CDU_BASE_0
+ G FMIN_CDU_HIGH_0
+ L FMAX_CDU_HIGH_0
+ E MEX_VDU_0
+ G FMIN_VDU_LOW_0
+ L FMAX_VDU_LOW_0
+ G FMIN_VDU_BASE_0
+ L FMAX_VDU_BASE_0
+ G FMIN_VDU_HIGH_0
+ L FMAX_VDU_HIGH_0
+ E MEX_CCR_0
+ G FMIN_CCR_LOW_0
+ L FMAX_CCR_LOW_0
+ G FMIN_CCR_BASE_0
+ L FMAX_CCR_BASE_0
+ G FMIN_CCR_HIGH_0
+ L FMAX_CCR_HIGH_0
+ E MEX_FCC_0
+ G FMIN_FCC_LOW_0
+ L FMAX_FCC_LOW_0
+ G FMIN_FCC_BASE_0
+ L FMAX_FCC_BASE_0
+ G FMIN_FCC_HIGH_0
+ L FMAX_FCC_HIGH_0
+ E MEX_DHDT_0
+ G FMIN_DHDT_LOW_0
+ L FMAX_DHDT_LOW_0
+ G FMIN_DHDT_BASE_0
+ L FMAX_DHDT_BASE_0
+ G FMIN_DHDT_HIGH_0
+ L FMAX_DHDT_HIGH_0
+ E MEX_HCU_0
+ G FMIN_HCU_LOW_0
+ L FMAX_HCU_LOW_0
+ G FMIN_HCU_BASE_0
+ L FMAX_HCU_BASE_0
+ G FMIN_HCU_HIGH_0
+ L FMAX_HCU_HIGH_0
+ E MEX_HGU_0
+ G FMIN_HGU_LOW_0
+ L FMAX_HGU_LOW_0
+ G FMIN_HGU_BASE_0
+ L FMAX_HGU_BASE_0
+ G FMIN_HGU_HIGH_0
+ L FMAX_HGU_HIGH_0
+ E MEX_SRU_0
+ G FMIN_SRU_LOW_0
+ L FMAX_SRU_LOW_0
+ G FMIN_SRU_BASE_0
+ L FMAX_SRU_BASE_0
+ G FMIN_SRU_HIGH_0
+ L FMAX_SRU_HIGH_0
+ L VDU_LNK_0
+ G H2_BAL_0
+ G SRU_BAL_0
+ G FG_BAL_0
+ E MEX_CDU_1
+ G FMIN_CDU_LOW_1
+ L FMAX_CDU_LOW_1
+ G FMIN_CDU_BASE_1
+ L FMAX_CDU_BASE_1
+ G FMIN_CDU_HIGH_1
+ L FMAX_CDU_HIGH_1
+ E MEX_VDU_1
+ G FMIN_VDU_LOW_1
+ L FMAX_VDU_LOW_1
+ G FMIN_VDU_BASE_1
+ L FMAX_VDU_BASE_1
+ G FMIN_VDU_HIGH_1
+ L FMAX_VDU_HIGH_1
+ E MEX_CCR_1
+ G FMIN_CCR_LOW_1
+ L FMAX_CCR_LOW_1
+ G FMIN_CCR_BASE_1
+ L FMAX_CCR_BASE_1
+ G FMIN_CCR_HIGH_1
+ L FMAX_CCR_HIGH_1
+ E MEX_FCC_1
+ G FMIN_FCC_LOW_1
+ L FMAX_FCC_LOW_1
+ G FMIN_FCC_BASE_1
+ L FMAX_FCC_BASE_1
+ G FMIN_FCC_HIGH_1
+ L FMAX_FCC_HIGH_1
+ E MEX_DHDT_1
+ G FMIN_DHDT_LOW_1
+ L FMAX_DHDT_LOW_1
+ G FMIN_DHDT_BASE_1
+ L FMAX_DHDT_BASE_1
+ G FMIN_DHDT_HIGH_1
+ L FMAX_DHDT_HIGH_1
+ E MEX_HCU_1
+ G FMIN_HCU_LOW_1
+ L FMAX_HCU_LOW_1
+ G FMIN_HCU_BASE_1
+ L FMAX_HCU_BASE_1
+ G FMIN_HCU_HIGH_1
+ L FMAX_HCU_HIGH_1
+ E MEX_HGU_1
+ G FMIN_HGU_LOW_1
+ L FMAX_HGU_LOW_1
+ G FMIN_HGU_BASE_1
+ L FMAX_HGU_BASE_1
+ G FMIN_HGU_HIGH_1
+ L FMAX_HGU_HIGH_1
+ E MEX_SRU_1
+ G FMIN_SRU_LOW_1
+ L FMAX_SRU_LOW_1
+ G FMIN_SRU_BASE_1
+ L FMAX_SRU_BASE_1
+ G FMIN_SRU_HIGH_1
+ L FMAX_SRU_HIGH_1
+ L VDU_LNK_1
+ G H2_BAL_1
+ G SRU_BAL_1
+ G FG_BAL_1
+ E MEX_CDU_2
+ G FMIN_CDU_LOW_2
+ L FMAX_CDU_LOW_2
+ G FMIN_CDU_BASE_2
+ L FMAX_CDU_BASE_2
+ G FMIN_CDU_HIGH_2
+ L FMAX_CDU_HIGH_2
+ E MEX_VDU_2
+ G FMIN_VDU_LOW_2
+ L FMAX_VDU_LOW_2
+ G FMIN_VDU_BASE_2
+ L FMAX_VDU_BASE_2
+ G FMIN_VDU_HIGH_2
+ L FMAX_VDU_HIGH_2
+ E MEX_CCR_2
+ G FMIN_CCR_LOW_2
+ L FMAX_CCR_LOW_2
+ G FMIN_CCR_BASE_2
+ L FMAX_CCR_BASE_2
+ G FMIN_CCR_HIGH_2
+ L FMAX_CCR_HIGH_2
+ E MEX_FCC_2
+ G FMIN_FCC_LOW_2
+ L FMAX_FCC_LOW_2
+ G FMIN_FCC_BASE_2
+ L FMAX_FCC_BASE_2
+ G FMIN_FCC_HIGH_2
+ L FMAX_FCC_HIGH_2
+ E MEX_DHDT_2
+ G FMIN_DHDT_LOW_2
+ L FMAX_DHDT_LOW_2
+ G FMIN_DHDT_BASE_2
+ L FMAX_DHDT_BASE_2
+ G FMIN_DHDT_HIGH_2
+ L FMAX_DHDT_HIGH_2
+ E MEX_HCU_2
+ G FMIN_HCU_LOW_2
+ L FMAX_HCU_LOW_2
+ G FMIN_HCU_BASE_2
+ L FMAX_HCU_BASE_2
+ G FMIN_HCU_HIGH_2
+ L FMAX_HCU_HIGH_2
+ E MEX_HGU_2
+ G FMIN_HGU_LOW_2
+ L FMAX_HGU_LOW_2
+ G FMIN_HGU_BASE_2
+ L FMAX_HGU_BASE_2
+ G FMIN_HGU_HIGH_2
+ L FMAX_HGU_HIGH_2
+ E MEX_SRU_2
+ G FMIN_SRU_LOW_2
+ L FMAX_SRU_LOW_2
+ G FMIN_SRU_BASE_2
+ L FMAX_SRU_BASE_2
+ G FMIN_SRU_HIGH_2
+ L FMAX_SRU_HIGH_2
+ L VDU_LNK_2
+ G H2_BAL_2
+ G SRU_BAL_2
+ G FG_BAL_2
+ E MEX_CDU_3
+ G FMIN_CDU_LOW_3
+ L FMAX_CDU_LOW_3
+ G FMIN_CDU_BASE_3
+ L FMAX_CDU_BASE_3
+ G FMIN_CDU_HIGH_3
+ L FMAX_CDU_HIGH_3
+ E MEX_VDU_3
+ G FMIN_VDU_LOW_3
+ L FMAX_VDU_LOW_3
+ G FMIN_VDU_BASE_3
+ L FMAX_VDU_BASE_3
+ G FMIN_VDU_HIGH_3
+ L FMAX_VDU_HIGH_3
+ E MEX_CCR_3
+ G FMIN_CCR_LOW_3
+ L FMAX_CCR_LOW_3
+ G FMIN_CCR_BASE_3
+ L FMAX_CCR_BASE_3
+ G FMIN_CCR_HIGH_3
+ L FMAX_CCR_HIGH_3
+ E MEX_FCC_3
+ G FMIN_FCC_LOW_3
+ L FMAX_FCC_LOW_3
+ G FMIN_FCC_BASE_3
+ L FMAX_FCC_BASE_3
+ G FMIN_FCC_HIGH_3
+ L FMAX_FCC_HIGH_3
+ E MEX_DHDT_3
+ G FMIN_DHDT_LOW_3
+ L FMAX_DHDT_LOW_3
+ G FMIN_DHDT_BASE_3
+ L FMAX_DHDT_BASE_3
+ G FMIN_DHDT_HIGH_3
+ L FMAX_DHDT_HIGH_3
+ E MEX_HCU_3
+ G FMIN_HCU_LOW_3
+ L FMAX_HCU_LOW_3
+ G FMIN_HCU_BASE_3
+ L FMAX_HCU_BASE_3
+ G FMIN_HCU_HIGH_3
+ L FMAX_HCU_HIGH_3
+ E MEX_HGU_3
+ G FMIN_HGU_LOW_3
+ L FMAX_HGU_LOW_3
+ G FMIN_HGU_BASE_3
+ L FMAX_HGU_BASE_3
+ G FMIN_HGU_HIGH_3
+ L FMAX_HGU_HIGH_3
+ E MEX_SRU_3
+ G FMIN_SRU_LOW_3
+ L FMAX_SRU_LOW_3
+ G FMIN_SRU_BASE_3
+ L FMAX_SRU_BASE_3
+ G FMIN_SRU_HIGH_3
+ L FMAX_SRU_HIGH_3
+ L VDU_LNK_3
+ G H2_BAL_3
+ G SRU_BAL_3
+ G FG_BAL_3
+ E MEX_CDU_4
+ G FMIN_CDU_LOW_4
+ L FMAX_CDU_LOW_4
+ G FMIN_CDU_BASE_4
+ L FMAX_CDU_BASE_4
+ G FMIN_CDU_HIGH_4
+ L FMAX_CDU_HIGH_4
+ E MEX_VDU_4
+ G FMIN_VDU_LOW_4
+ L FMAX_VDU_LOW_4
+ G FMIN_VDU_BASE_4
+ L FMAX_VDU_BASE_4
+ G FMIN_VDU_HIGH_4
+ L FMAX_VDU_HIGH_4
+ E MEX_CCR_4
+ G FMIN_CCR_LOW_4
+ L FMAX_CCR_LOW_4
+ G FMIN_CCR_BASE_4
+ L FMAX_CCR_BASE_4
+ G FMIN_CCR_HIGH_4
+ L FMAX_CCR_HIGH_4
+ E MEX_FCC_4
+ G FMIN_FCC_LOW_4
+ L FMAX_FCC_LOW_4
+ G FMIN_FCC_BASE_4
+ L FMAX_FCC_BASE_4
+ G FMIN_FCC_HIGH_4
+ L FMAX_FCC_HIGH_4
+ E MEX_DHDT_4
+ G FMIN_DHDT_LOW_4
+ L FMAX_DHDT_LOW_4
+ G FMIN_DHDT_BASE_4
+ L FMAX_DHDT_BASE_4
+ G FMIN_DHDT_HIGH_4
+ L FMAX_DHDT_HIGH_4
+ E MEX_HCU_4
+ G FMIN_HCU_LOW_4
+ L FMAX_HCU_LOW_4
+ G FMIN_HCU_BASE_4
+ L FMAX_HCU_BASE_4
+ G FMIN_HCU_HIGH_4
+ L FMAX_HCU_HIGH_4
+ E MEX_HGU_4
+ G FMIN_HGU_LOW_4
+ L FMAX_HGU_LOW_4
+ G FMIN_HGU_BASE_4
+ L FMAX_HGU_BASE_4
+ G FMIN_HGU_HIGH_4
+ L FMAX_HGU_HIGH_4
+ E MEX_SRU_4
+ G FMIN_SRU_LOW_4
+ L FMAX_SRU_LOW_4
+ G FMIN_SRU_BASE_4
+ L FMAX_SRU_BASE_4
+ G FMIN_SRU_HIGH_4
+ L FMAX_SRU_HIGH_4
+ L VDU_LNK_4
+ G H2_BAL_4
+ G SRU_BAL_4
+ G FG_BAL_4
+ E MEX_CDU_5
+ G FMIN_CDU_LOW_5
+ L FMAX_CDU_LOW_5
+ G FMIN_CDU_BASE_5
+ L FMAX_CDU_BASE_5
+ G FMIN_CDU_HIGH_5
+ L FMAX_CDU_HIGH_5
+ E MEX_VDU_5
+ G FMIN_VDU_LOW_5
+ L FMAX_VDU_LOW_5
+ G FMIN_VDU_BASE_5
+ L FMAX_VDU_BASE_5
+ G FMIN_VDU_HIGH_5
+ L FMAX_VDU_HIGH_5
+ E MEX_CCR_5
+ G FMIN_CCR_LOW_5
+ L FMAX_CCR_LOW_5
+ G FMIN_CCR_BASE_5
+ L FMAX_CCR_BASE_5
+ G FMIN_CCR_HIGH_5
+ L FMAX_CCR_HIGH_5
+ E MEX_FCC_5
+ G FMIN_FCC_LOW_5
+ L FMAX_FCC_LOW_5
+ G FMIN_FCC_BASE_5
+ L FMAX_FCC_BASE_5
+ G FMIN_FCC_HIGH_5
+ L FMAX_FCC_HIGH_5
+ E MEX_DHDT_5
+ G FMIN_DHDT_LOW_5
+ L FMAX_DHDT_LOW_5
+ G FMIN_DHDT_BASE_5
+ L FMAX_DHDT_BASE_5
+ G FMIN_DHDT_HIGH_5
+ L FMAX_DHDT_HIGH_5
+ E MEX_HCU_5
+ G FMIN_HCU_LOW_5
+ L FMAX_HCU_LOW_5
+ G FMIN_HCU_BASE_5
+ L FMAX_HCU_BASE_5
+ G FMIN_HCU_HIGH_5
+ L FMAX_HCU_HIGH_5
+ E MEX_HGU_5
+ G FMIN_HGU_LOW_5
+ L FMAX_HGU_LOW_5
+ G FMIN_HGU_BASE_5
+ L FMAX_HGU_BASE_5
+ G FMIN_HGU_HIGH_5
+ L FMAX_HGU_HIGH_5
+ E MEX_SRU_5
+ G FMIN_SRU_LOW_5
+ L FMAX_SRU_LOW_5
+ G FMIN_SRU_BASE_5
+ L FMAX_SRU_BASE_5
+ G FMIN_SRU_HIGH_5
+ L FMAX_SRU_HIGH_5
+ L VDU_LNK_5
+ G H2_BAL_5
+ G SRU_BAL_5
+ G FG_BAL_5
+ E MEX_CDU_6
+ G FMIN_CDU_LOW_6
+ L FMAX_CDU_LOW_6
+ G FMIN_CDU_BASE_6
+ L FMAX_CDU_BASE_6
+ G FMIN_CDU_HIGH_6
+ L FMAX_CDU_HIGH_6
+ E MEX_VDU_6
+ G FMIN_VDU_LOW_6
+ L FMAX_VDU_LOW_6
+ G FMIN_VDU_BASE_6
+ L FMAX_VDU_BASE_6
+ G FMIN_VDU_HIGH_6
+ L FMAX_VDU_HIGH_6
+ E MEX_CCR_6
+ G FMIN_CCR_LOW_6
+ L FMAX_CCR_LOW_6
+ G FMIN_CCR_BASE_6
+ L FMAX_CCR_BASE_6
+ G FMIN_CCR_HIGH_6
+ L FMAX_CCR_HIGH_6
+ E MEX_FCC_6
+ G FMIN_FCC_LOW_6
+ L FMAX_FCC_LOW_6
+ G FMIN_FCC_BASE_6
+ L FMAX_FCC_BASE_6
+ G FMIN_FCC_HIGH_6
+ L FMAX_FCC_HIGH_6
+ E MEX_DHDT_6
+ G FMIN_DHDT_LOW_6
+ L FMAX_DHDT_LOW_6
+ G FMIN_DHDT_BASE_6
+ L FMAX_DHDT_BASE_6
+ G FMIN_DHDT_HIGH_6
+ L FMAX_DHDT_HIGH_6
+ E MEX_HCU_6
+ G FMIN_HCU_LOW_6
+ L FMAX_HCU_LOW_6
+ G FMIN_HCU_BASE_6
+ L FMAX_HCU_BASE_6
+ G FMIN_HCU_HIGH_6
+ L FMAX_HCU_HIGH_6
+ E MEX_HGU_6
+ G FMIN_HGU_LOW_6
+ L FMAX_HGU_LOW_6
+ G FMIN_HGU_BASE_6
+ L FMAX_HGU_BASE_6
+ G FMIN_HGU_HIGH_6
+ L FMAX_HGU_HIGH_6
+ E MEX_SRU_6
+ G FMIN_SRU_LOW_6
+ L FMAX_SRU_LOW_6
+ G FMIN_SRU_BASE_6
+ L FMAX_SRU_BASE_6
+ G FMIN_SRU_HIGH_6
+ L FMAX_SRU_HIGH_6
+ L VDU_LNK_6
+ G H2_BAL_6
+ G SRU_BAL_6
+ G FG_BAL_6
+COLUMNS
+    MARK0000  'MARKER'                 'INTORG'
+    Y_CDU_L_0      COST      50.00      MEX_CDU_0 1.0
+    Y_CDU_L_0      FMIN_CDU_LOW_0 -90.00     FMAX_CDU_LOW_0 -300.00   
+    Y_CDU_B_0      COST      60.00      MEX_CDU_0 1.0
+    Y_CDU_B_0      FMIN_CDU_BASE_0 -90.00     FMAX_CDU_BASE_0 -300.00   
+    Y_CDU_H_0      COST      70.00      MEX_CDU_0 1.0
+    Y_CDU_H_0      FMIN_CDU_HIGH_0 -90.00     FMAX_CDU_HIGH_0 -300.00   
+    Y_VDU_L_0      COST      50.00      MEX_VDU_0 1.0
+    Y_VDU_L_0      FMIN_VDU_LOW_0 -42.00     FMAX_VDU_LOW_0 -140.00   
+    Y_VDU_B_0      COST      60.00      MEX_VDU_0 1.0
+    Y_VDU_B_0      FMIN_VDU_BASE_0 -42.00     FMAX_VDU_BASE_0 -140.00   
+    Y_VDU_H_0      COST      70.00      MEX_VDU_0 1.0
+    Y_VDU_H_0      FMIN_VDU_HIGH_0 -42.00     FMAX_VDU_HIGH_0 -140.00   
+    Y_CCR_L_0      COST      50.00      MEX_CCR_0 1.0
+    Y_CCR_L_0      FMIN_CCR_LOW_0 -13.50     FMAX_CCR_LOW_0 -45.00    
+    Y_CCR_B_0      COST      60.00      MEX_CCR_0 1.0
+    Y_CCR_B_0      FMIN_CCR_BASE_0 -13.50     FMAX_CCR_BASE_0 -45.00    
+    Y_CCR_H_0      COST      70.00      MEX_CCR_0 1.0
+    Y_CCR_H_0      FMIN_CCR_HIGH_0 -13.50     FMAX_CCR_HIGH_0 -45.00    
+    Y_FCC_L_0      COST      50.00      MEX_FCC_0 1.0
+    Y_FCC_L_0      FMIN_FCC_LOW_0 -19.50     FMAX_FCC_LOW_0 -65.00    
+    Y_FCC_B_0      COST      60.00      MEX_FCC_0 1.0
+    Y_FCC_B_0      FMIN_FCC_BASE_0 -19.50     FMAX_FCC_BASE_0 -65.00    
+    Y_FCC_H_0      COST      70.00      MEX_FCC_0 1.0
+    Y_FCC_H_0      FMIN_FCC_HIGH_0 -19.50     FMAX_FCC_HIGH_0 -65.00    
+    Y_DHD_L_0      COST      50.00      MEX_DHDT_0 1.0
+    Y_DHD_L_0      FMIN_DHDT_LOW_0 -22.50     FMAX_DHDT_LOW_0 -75.00    
+    Y_DHD_B_0      COST      60.00      MEX_DHDT_0 1.0
+    Y_DHD_B_0      FMIN_DHDT_BASE_0 -22.50     FMAX_DHDT_BASE_0 -75.00    
+    Y_DHD_H_0      COST      70.00      MEX_DHDT_0 1.0
+    Y_DHD_H_0      FMIN_DHDT_HIGH_0 -22.50     FMAX_DHDT_HIGH_0 -75.00    
+    Y_HCU_L_0      COST      50.00      MEX_HCU_0 1.0
+    Y_HCU_L_0      FMIN_HCU_LOW_0 -15.00     FMAX_HCU_LOW_0 -50.00    
+    Y_HCU_B_0      COST      60.00      MEX_HCU_0 1.0
+    Y_HCU_B_0      FMIN_HCU_BASE_0 -15.00     FMAX_HCU_BASE_0 -50.00    
+    Y_HCU_H_0      COST      70.00      MEX_HCU_0 1.0
+    Y_HCU_H_0      FMIN_HCU_HIGH_0 -15.00     FMAX_HCU_HIGH_0 -50.00    
+    Y_HGU_L_0      COST      50.00      MEX_HGU_0 1.0
+    Y_HGU_L_0      FMIN_HGU_LOW_0 -27.00     FMAX_HGU_LOW_0 -90.00    
+    Y_HGU_B_0      COST      60.00      MEX_HGU_0 1.0
+    Y_HGU_B_0      FMIN_HGU_BASE_0 -27.00     FMAX_HGU_BASE_0 -90.00    
+    Y_HGU_H_0      COST      70.00      MEX_HGU_0 1.0
+    Y_HGU_H_0      FMIN_HGU_HIGH_0 -27.00     FMAX_HGU_HIGH_0 -90.00    
+    Y_SRU_L_0      COST      50.00      MEX_SRU_0 1.0
+    Y_SRU_L_0      FMIN_SRU_LOW_0 -12.00     FMAX_SRU_LOW_0 -40.00    
+    Y_SRU_B_0      COST      60.00      MEX_SRU_0 1.0
+    Y_SRU_B_0      FMIN_SRU_BASE_0 -12.00     FMAX_SRU_BASE_0 -40.00    
+    Y_SRU_H_0      COST      70.00      MEX_SRU_0 1.0
+    Y_SRU_H_0      FMIN_SRU_HIGH_0 -12.00     FMAX_SRU_HIGH_0 -40.00    
+    Y_CDU_L_1      COST      50.00      MEX_CDU_1 1.0
+    Y_CDU_L_1      FMIN_CDU_LOW_1 -90.00     FMAX_CDU_LOW_1 -300.00   
+    Y_CDU_B_1      COST      60.00      MEX_CDU_1 1.0
+    Y_CDU_B_1      FMIN_CDU_BASE_1 -90.00     FMAX_CDU_BASE_1 -300.00   
+    Y_CDU_H_1      COST      70.00      MEX_CDU_1 1.0
+    Y_CDU_H_1      FMIN_CDU_HIGH_1 -90.00     FMAX_CDU_HIGH_1 -300.00   
+    Y_VDU_L_1      COST      50.00      MEX_VDU_1 1.0
+    Y_VDU_L_1      FMIN_VDU_LOW_1 -42.00     FMAX_VDU_LOW_1 -140.00   
+    Y_VDU_B_1      COST      60.00      MEX_VDU_1 1.0
+    Y_VDU_B_1      FMIN_VDU_BASE_1 -42.00     FMAX_VDU_BASE_1 -140.00   
+    Y_VDU_H_1      COST      70.00      MEX_VDU_1 1.0
+    Y_VDU_H_1      FMIN_VDU_HIGH_1 -42.00     FMAX_VDU_HIGH_1 -140.00   
+    Y_CCR_L_1      COST      50.00      MEX_CCR_1 1.0
+    Y_CCR_L_1      FMIN_CCR_LOW_1 -13.50     FMAX_CCR_LOW_1 -45.00    
+    Y_CCR_B_1      COST      60.00      MEX_CCR_1 1.0
+    Y_CCR_B_1      FMIN_CCR_BASE_1 -13.50     FMAX_CCR_BASE_1 -45.00    
+    Y_CCR_H_1      COST      70.00      MEX_CCR_1 1.0
+    Y_CCR_H_1      FMIN_CCR_HIGH_1 -13.50     FMAX_CCR_HIGH_1 -45.00    
+    Y_FCC_L_1      COST      50.00      MEX_FCC_1 1.0
+    Y_FCC_L_1      FMIN_FCC_LOW_1 -19.50     FMAX_FCC_LOW_1 -65.00    
+    Y_FCC_B_1      COST      60.00      MEX_FCC_1 1.0
+    Y_FCC_B_1      FMIN_FCC_BASE_1 -19.50     FMAX_FCC_BASE_1 -65.00    
+    Y_FCC_H_1      COST      70.00      MEX_FCC_1 1.0
+    Y_FCC_H_1      FMIN_FCC_HIGH_1 -19.50     FMAX_FCC_HIGH_1 -65.00    
+    Y_DHD_L_1      COST      50.00      MEX_DHDT_1 1.0
+    Y_DHD_L_1      FMIN_DHDT_LOW_1 -22.50     FMAX_DHDT_LOW_1 -75.00    
+    Y_DHD_B_1      COST      60.00      MEX_DHDT_1 1.0
+    Y_DHD_B_1      FMIN_DHDT_BASE_1 -22.50     FMAX_DHDT_BASE_1 -75.00    
+    Y_DHD_H_1      COST      70.00      MEX_DHDT_1 1.0
+    Y_DHD_H_1      FMIN_DHDT_HIGH_1 -22.50     FMAX_DHDT_HIGH_1 -75.00    
+    Y_HCU_L_1      COST      50.00      MEX_HCU_1 1.0
+    Y_HCU_L_1      FMIN_HCU_LOW_1 -15.00     FMAX_HCU_LOW_1 -50.00    
+    Y_HCU_B_1      COST      60.00      MEX_HCU_1 1.0
+    Y_HCU_B_1      FMIN_HCU_BASE_1 -15.00     FMAX_HCU_BASE_1 -50.00    
+    Y_HCU_H_1      COST      70.00      MEX_HCU_1 1.0
+    Y_HCU_H_1      FMIN_HCU_HIGH_1 -15.00     FMAX_HCU_HIGH_1 -50.00    
+    Y_HGU_L_1      COST      50.00      MEX_HGU_1 1.0
+    Y_HGU_L_1      FMIN_HGU_LOW_1 -27.00     FMAX_HGU_LOW_1 -90.00    
+    Y_HGU_B_1      COST      60.00      MEX_HGU_1 1.0
+    Y_HGU_B_1      FMIN_HGU_BASE_1 -27.00     FMAX_HGU_BASE_1 -90.00    
+    Y_HGU_H_1      COST      70.00      MEX_HGU_1 1.0
+    Y_HGU_H_1      FMIN_HGU_HIGH_1 -27.00     FMAX_HGU_HIGH_1 -90.00    
+    Y_SRU_L_1      COST      50.00      MEX_SRU_1 1.0
+    Y_SRU_L_1      FMIN_SRU_LOW_1 -12.00     FMAX_SRU_LOW_1 -40.00    
+    Y_SRU_B_1      COST      60.00      MEX_SRU_1 1.0
+    Y_SRU_B_1      FMIN_SRU_BASE_1 -12.00     FMAX_SRU_BASE_1 -40.00    
+    Y_SRU_H_1      COST      70.00      MEX_SRU_1 1.0
+    Y_SRU_H_1      FMIN_SRU_HIGH_1 -12.00     FMAX_SRU_HIGH_1 -40.00    
+    Y_CDU_L_2      COST      50.00      MEX_CDU_2 1.0
+    Y_CDU_L_2      FMIN_CDU_LOW_2 -90.00     FMAX_CDU_LOW_2 -300.00   
+    Y_CDU_B_2      COST      60.00      MEX_CDU_2 1.0
+    Y_CDU_B_2      FMIN_CDU_BASE_2 -90.00     FMAX_CDU_BASE_2 -300.00   
+    Y_CDU_H_2      COST      70.00      MEX_CDU_2 1.0
+    Y_CDU_H_2      FMIN_CDU_HIGH_2 -90.00     FMAX_CDU_HIGH_2 -300.00   
+    Y_VDU_L_2      COST      50.00      MEX_VDU_2 1.0
+    Y_VDU_L_2      FMIN_VDU_LOW_2 -42.00     FMAX_VDU_LOW_2 -140.00   
+    Y_VDU_B_2      COST      60.00      MEX_VDU_2 1.0
+    Y_VDU_B_2      FMIN_VDU_BASE_2 -42.00     FMAX_VDU_BASE_2 -140.00   
+    Y_VDU_H_2      COST      70.00      MEX_VDU_2 1.0
+    Y_VDU_H_2      FMIN_VDU_HIGH_2 -42.00     FMAX_VDU_HIGH_2 -140.00   
+    Y_CCR_L_2      COST      50.00      MEX_CCR_2 1.0
+    Y_CCR_L_2      FMIN_CCR_LOW_2 -13.50     FMAX_CCR_LOW_2 -45.00    
+    Y_CCR_B_2      COST      60.00      MEX_CCR_2 1.0
+    Y_CCR_B_2      FMIN_CCR_BASE_2 -13.50     FMAX_CCR_BASE_2 -45.00    
+    Y_CCR_H_2      COST      70.00      MEX_CCR_2 1.0
+    Y_CCR_H_2      FMIN_CCR_HIGH_2 -13.50     FMAX_CCR_HIGH_2 -45.00    
+    Y_FCC_L_2      COST      50.00      MEX_FCC_2 1.0
+    Y_FCC_L_2      FMIN_FCC_LOW_2 -19.50     FMAX_FCC_LOW_2 -65.00    
+    Y_FCC_B_2      COST      60.00      MEX_FCC_2 1.0
+    Y_FCC_B_2      FMIN_FCC_BASE_2 -19.50     FMAX_FCC_BASE_2 -65.00    
+    Y_FCC_H_2      COST      70.00      MEX_FCC_2 1.0
+    Y_FCC_H_2      FMIN_FCC_HIGH_2 -19.50     FMAX_FCC_HIGH_2 -65.00    
+    Y_DHD_L_2      COST      50.00      MEX_DHDT_2 1.0
+    Y_DHD_L_2      FMIN_DHDT_LOW_2 -22.50     FMAX_DHDT_LOW_2 -75.00    
+    Y_DHD_B_2      COST      60.00      MEX_DHDT_2 1.0
+    Y_DHD_B_2      FMIN_DHDT_BASE_2 -22.50     FMAX_DHDT_BASE_2 -75.00    
+    Y_DHD_H_2      COST      70.00      MEX_DHDT_2 1.0
+    Y_DHD_H_2      FMIN_DHDT_HIGH_2 -22.50     FMAX_DHDT_HIGH_2 -75.00    
+    Y_HCU_L_2      COST      50.00      MEX_HCU_2 1.0
+    Y_HCU_L_2      FMIN_HCU_LOW_2 -15.00     FMAX_HCU_LOW_2 -50.00    
+    Y_HCU_B_2      COST      60.00      MEX_HCU_2 1.0
+    Y_HCU_B_2      FMIN_HCU_BASE_2 -15.00     FMAX_HCU_BASE_2 -50.00    
+    Y_HCU_H_2      COST      70.00      MEX_HCU_2 1.0
+    Y_HCU_H_2      FMIN_HCU_HIGH_2 -15.00     FMAX_HCU_HIGH_2 -50.00    
+    Y_HGU_L_2      COST      50.00      MEX_HGU_2 1.0
+    Y_HGU_L_2      FMIN_HGU_LOW_2 -27.00     FMAX_HGU_LOW_2 -90.00    
+    Y_HGU_B_2      COST      60.00      MEX_HGU_2 1.0
+    Y_HGU_B_2      FMIN_HGU_BASE_2 -27.00     FMAX_HGU_BASE_2 -90.00    
+    Y_HGU_H_2      COST      70.00      MEX_HGU_2 1.0
+    Y_HGU_H_2      FMIN_HGU_HIGH_2 -27.00     FMAX_HGU_HIGH_2 -90.00    
+    Y_SRU_L_2      COST      50.00      MEX_SRU_2 1.0
+    Y_SRU_L_2      FMIN_SRU_LOW_2 -12.00     FMAX_SRU_LOW_2 -40.00    
+    Y_SRU_B_2      COST      60.00      MEX_SRU_2 1.0
+    Y_SRU_B_2      FMIN_SRU_BASE_2 -12.00     FMAX_SRU_BASE_2 -40.00    
+    Y_SRU_H_2      COST      70.00      MEX_SRU_2 1.0
+    Y_SRU_H_2      FMIN_SRU_HIGH_2 -12.00     FMAX_SRU_HIGH_2 -40.00    
+    Y_CDU_L_3      COST      50.00      MEX_CDU_3 1.0
+    Y_CDU_L_3      FMIN_CDU_LOW_3 -90.00     FMAX_CDU_LOW_3 -300.00   
+    Y_CDU_B_3      COST      60.00      MEX_CDU_3 1.0
+    Y_CDU_B_3      FMIN_CDU_BASE_3 -90.00     FMAX_CDU_BASE_3 -300.00   
+    Y_CDU_H_3      COST      70.00      MEX_CDU_3 1.0
+    Y_CDU_H_3      FMIN_CDU_HIGH_3 -90.00     FMAX_CDU_HIGH_3 -300.00   
+    Y_VDU_L_3      COST      50.00      MEX_VDU_3 1.0
+    Y_VDU_L_3      FMIN_VDU_LOW_3 -42.00     FMAX_VDU_LOW_3 -140.00   
+    Y_VDU_B_3      COST      60.00      MEX_VDU_3 1.0
+    Y_VDU_B_3      FMIN_VDU_BASE_3 -42.00     FMAX_VDU_BASE_3 -140.00   
+    Y_VDU_H_3      COST      70.00      MEX_VDU_3 1.0
+    Y_VDU_H_3      FMIN_VDU_HIGH_3 -42.00     FMAX_VDU_HIGH_3 -140.00   
+    Y_CCR_L_3      COST      50.00      MEX_CCR_3 1.0
+    Y_CCR_L_3      FMIN_CCR_LOW_3 -13.50     FMAX_CCR_LOW_3 -45.00    
+    Y_CCR_B_3      COST      60.00      MEX_CCR_3 1.0
+    Y_CCR_B_3      FMIN_CCR_BASE_3 -13.50     FMAX_CCR_BASE_3 -45.00    
+    Y_CCR_H_3      COST      70.00      MEX_CCR_3 1.0
+    Y_CCR_H_3      FMIN_CCR_HIGH_3 -13.50     FMAX_CCR_HIGH_3 -45.00    
+    Y_FCC_L_3      COST      50.00      MEX_FCC_3 1.0
+    Y_FCC_L_3      FMIN_FCC_LOW_3 -19.50     FMAX_FCC_LOW_3 -65.00    
+    Y_FCC_B_3      COST      60.00      MEX_FCC_3 1.0
+    Y_FCC_B_3      FMIN_FCC_BASE_3 -19.50     FMAX_FCC_BASE_3 -65.00    
+    Y_FCC_H_3      COST      70.00      MEX_FCC_3 1.0
+    Y_FCC_H_3      FMIN_FCC_HIGH_3 -19.50     FMAX_FCC_HIGH_3 -65.00    
+    Y_DHD_L_3      COST      50.00      MEX_DHDT_3 1.0
+    Y_DHD_L_3      FMIN_DHDT_LOW_3 -22.50     FMAX_DHDT_LOW_3 -75.00    
+    Y_DHD_B_3      COST      60.00      MEX_DHDT_3 1.0
+    Y_DHD_B_3      FMIN_DHDT_BASE_3 -22.50     FMAX_DHDT_BASE_3 -75.00    
+    Y_DHD_H_3      COST      70.00      MEX_DHDT_3 1.0
+    Y_DHD_H_3      FMIN_DHDT_HIGH_3 -22.50     FMAX_DHDT_HIGH_3 -75.00    
+    Y_HCU_L_3      COST      50.00      MEX_HCU_3 1.0
+    Y_HCU_L_3      FMIN_HCU_LOW_3 -15.00     FMAX_HCU_LOW_3 -50.00    
+    Y_HCU_B_3      COST      60.00      MEX_HCU_3 1.0
+    Y_HCU_B_3      FMIN_HCU_BASE_3 -15.00     FMAX_HCU_BASE_3 -50.00    
+    Y_HCU_H_3      COST      70.00      MEX_HCU_3 1.0
+    Y_HCU_H_3      FMIN_HCU_HIGH_3 -15.00     FMAX_HCU_HIGH_3 -50.00    
+    Y_HGU_L_3      COST      50.00      MEX_HGU_3 1.0
+    Y_HGU_L_3      FMIN_HGU_LOW_3 -27.00     FMAX_HGU_LOW_3 -90.00    
+    Y_HGU_B_3      COST      60.00      MEX_HGU_3 1.0
+    Y_HGU_B_3      FMIN_HGU_BASE_3 -27.00     FMAX_HGU_BASE_3 -90.00    
+    Y_HGU_H_3      COST      70.00      MEX_HGU_3 1.0
+    Y_HGU_H_3      FMIN_HGU_HIGH_3 -27.00     FMAX_HGU_HIGH_3 -90.00    
+    Y_SRU_L_3      COST      50.00      MEX_SRU_3 1.0
+    Y_SRU_L_3      FMIN_SRU_LOW_3 -12.00     FMAX_SRU_LOW_3 -40.00    
+    Y_SRU_B_3      COST      60.00      MEX_SRU_3 1.0
+    Y_SRU_B_3      FMIN_SRU_BASE_3 -12.00     FMAX_SRU_BASE_3 -40.00    
+    Y_SRU_H_3      COST      70.00      MEX_SRU_3 1.0
+    Y_SRU_H_3      FMIN_SRU_HIGH_3 -12.00     FMAX_SRU_HIGH_3 -40.00    
+    Y_CDU_L_4      COST      50.00      MEX_CDU_4 1.0
+    Y_CDU_L_4      FMIN_CDU_LOW_4 -90.00     FMAX_CDU_LOW_4 -300.00   
+    Y_CDU_B_4      COST      60.00      MEX_CDU_4 1.0
+    Y_CDU_B_4      FMIN_CDU_BASE_4 -90.00     FMAX_CDU_BASE_4 -300.00   
+    Y_CDU_H_4      COST      70.00      MEX_CDU_4 1.0
+    Y_CDU_H_4      FMIN_CDU_HIGH_4 -90.00     FMAX_CDU_HIGH_4 -300.00   
+    Y_VDU_L_4      COST      50.00      MEX_VDU_4 1.0
+    Y_VDU_L_4      FMIN_VDU_LOW_4 -42.00     FMAX_VDU_LOW_4 -140.00   
+    Y_VDU_B_4      COST      60.00      MEX_VDU_4 1.0
+    Y_VDU_B_4      FMIN_VDU_BASE_4 -42.00     FMAX_VDU_BASE_4 -140.00   
+    Y_VDU_H_4      COST      70.00      MEX_VDU_4 1.0
+    Y_VDU_H_4      FMIN_VDU_HIGH_4 -42.00     FMAX_VDU_HIGH_4 -140.00   
+    Y_CCR_L_4      COST      50.00      MEX_CCR_4 1.0
+    Y_CCR_L_4      FMIN_CCR_LOW_4 -13.50     FMAX_CCR_LOW_4 -45.00    
+    Y_CCR_B_4      COST      60.00      MEX_CCR_4 1.0
+    Y_CCR_B_4      FMIN_CCR_BASE_4 -13.50     FMAX_CCR_BASE_4 -45.00    
+    Y_CCR_H_4      COST      70.00      MEX_CCR_4 1.0
+    Y_CCR_H_4      FMIN_CCR_HIGH_4 -13.50     FMAX_CCR_HIGH_4 -45.00    
+    Y_FCC_L_4      COST      50.00      MEX_FCC_4 1.0
+    Y_FCC_L_4      FMIN_FCC_LOW_4 -19.50     FMAX_FCC_LOW_4 -65.00    
+    Y_FCC_B_4      COST      60.00      MEX_FCC_4 1.0
+    Y_FCC_B_4      FMIN_FCC_BASE_4 -19.50     FMAX_FCC_BASE_4 -65.00    
+    Y_FCC_H_4      COST      70.00      MEX_FCC_4 1.0
+    Y_FCC_H_4      FMIN_FCC_HIGH_4 -19.50     FMAX_FCC_HIGH_4 -65.00    
+    Y_DHD_L_4      COST      50.00      MEX_DHDT_4 1.0
+    Y_DHD_L_4      FMIN_DHDT_LOW_4 -22.50     FMAX_DHDT_LOW_4 -75.00    
+    Y_DHD_B_4      COST      60.00      MEX_DHDT_4 1.0
+    Y_DHD_B_4      FMIN_DHDT_BASE_4 -22.50     FMAX_DHDT_BASE_4 -75.00    
+    Y_DHD_H_4      COST      70.00      MEX_DHDT_4 1.0
+    Y_DHD_H_4      FMIN_DHDT_HIGH_4 -22.50     FMAX_DHDT_HIGH_4 -75.00    
+    Y_HCU_L_4      COST      50.00      MEX_HCU_4 1.0
+    Y_HCU_L_4      FMIN_HCU_LOW_4 -15.00     FMAX_HCU_LOW_4 -50.00    
+    Y_HCU_B_4      COST      60.00      MEX_HCU_4 1.0
+    Y_HCU_B_4      FMIN_HCU_BASE_4 -15.00     FMAX_HCU_BASE_4 -50.00    
+    Y_HCU_H_4      COST      70.00      MEX_HCU_4 1.0
+    Y_HCU_H_4      FMIN_HCU_HIGH_4 -15.00     FMAX_HCU_HIGH_4 -50.00    
+    Y_HGU_L_4      COST      50.00      MEX_HGU_4 1.0
+    Y_HGU_L_4      FMIN_HGU_LOW_4 -27.00     FMAX_HGU_LOW_4 -90.00    
+    Y_HGU_B_4      COST      60.00      MEX_HGU_4 1.0
+    Y_HGU_B_4      FMIN_HGU_BASE_4 -27.00     FMAX_HGU_BASE_4 -90.00    
+    Y_HGU_H_4      COST      70.00      MEX_HGU_4 1.0
+    Y_HGU_H_4      FMIN_HGU_HIGH_4 -27.00     FMAX_HGU_HIGH_4 -90.00    
+    Y_SRU_L_4      COST      50.00      MEX_SRU_4 1.0
+    Y_SRU_L_4      FMIN_SRU_LOW_4 -12.00     FMAX_SRU_LOW_4 -40.00    
+    Y_SRU_B_4      COST      60.00      MEX_SRU_4 1.0
+    Y_SRU_B_4      FMIN_SRU_BASE_4 -12.00     FMAX_SRU_BASE_4 -40.00    
+    Y_SRU_H_4      COST      70.00      MEX_SRU_4 1.0
+    Y_SRU_H_4      FMIN_SRU_HIGH_4 -12.00     FMAX_SRU_HIGH_4 -40.00    
+    Y_CDU_L_5      COST      50.00      MEX_CDU_5 1.0
+    Y_CDU_L_5      FMIN_CDU_LOW_5 -90.00     FMAX_CDU_LOW_5 -300.00   
+    Y_CDU_B_5      COST      60.00      MEX_CDU_5 1.0
+    Y_CDU_B_5      FMIN_CDU_BASE_5 -90.00     FMAX_CDU_BASE_5 -300.00   
+    Y_CDU_H_5      COST      70.00      MEX_CDU_5 1.0
+    Y_CDU_H_5      FMIN_CDU_HIGH_5 -90.00     FMAX_CDU_HIGH_5 -300.00   
+    Y_VDU_L_5      COST      50.00      MEX_VDU_5 1.0
+    Y_VDU_L_5      FMIN_VDU_LOW_5 -42.00     FMAX_VDU_LOW_5 -140.00   
+    Y_VDU_B_5      COST      60.00      MEX_VDU_5 1.0
+    Y_VDU_B_5      FMIN_VDU_BASE_5 -42.00     FMAX_VDU_BASE_5 -140.00   
+    Y_VDU_H_5      COST      70.00      MEX_VDU_5 1.0
+    Y_VDU_H_5      FMIN_VDU_HIGH_5 -42.00     FMAX_VDU_HIGH_5 -140.00   
+    Y_CCR_L_5      COST      50.00      MEX_CCR_5 1.0
+    Y_CCR_L_5      FMIN_CCR_LOW_5 -13.50     FMAX_CCR_LOW_5 -45.00    
+    Y_CCR_B_5      COST      60.00      MEX_CCR_5 1.0
+    Y_CCR_B_5      FMIN_CCR_BASE_5 -13.50     FMAX_CCR_BASE_5 -45.00    
+    Y_CCR_H_5      COST      70.00      MEX_CCR_5 1.0
+    Y_CCR_H_5      FMIN_CCR_HIGH_5 -13.50     FMAX_CCR_HIGH_5 -45.00    
+    Y_FCC_L_5      COST      50.00      MEX_FCC_5 1.0
+    Y_FCC_L_5      FMIN_FCC_LOW_5 -19.50     FMAX_FCC_LOW_5 -65.00    
+    Y_FCC_B_5      COST      60.00      MEX_FCC_5 1.0
+    Y_FCC_B_5      FMIN_FCC_BASE_5 -19.50     FMAX_FCC_BASE_5 -65.00    
+    Y_FCC_H_5      COST      70.00      MEX_FCC_5 1.0
+    Y_FCC_H_5      FMIN_FCC_HIGH_5 -19.50     FMAX_FCC_HIGH_5 -65.00    
+    Y_DHD_L_5      COST      50.00      MEX_DHDT_5 1.0
+    Y_DHD_L_5      FMIN_DHDT_LOW_5 -22.50     FMAX_DHDT_LOW_5 -75.00    
+    Y_DHD_B_5      COST      60.00      MEX_DHDT_5 1.0
+    Y_DHD_B_5      FMIN_DHDT_BASE_5 -22.50     FMAX_DHDT_BASE_5 -75.00    
+    Y_DHD_H_5      COST      70.00      MEX_DHDT_5 1.0
+    Y_DHD_H_5      FMIN_DHDT_HIGH_5 -22.50     FMAX_DHDT_HIGH_5 -75.00    
+    Y_HCU_L_5      COST      50.00      MEX_HCU_5 1.0
+    Y_HCU_L_5      FMIN_HCU_LOW_5 -15.00     FMAX_HCU_LOW_5 -50.00    
+    Y_HCU_B_5      COST      60.00      MEX_HCU_5 1.0
+    Y_HCU_B_5      FMIN_HCU_BASE_5 -15.00     FMAX_HCU_BASE_5 -50.00    
+    Y_HCU_H_5      COST      70.00      MEX_HCU_5 1.0
+    Y_HCU_H_5      FMIN_HCU_HIGH_5 -15.00     FMAX_HCU_HIGH_5 -50.00    
+    Y_HGU_L_5      COST      50.00      MEX_HGU_5 1.0
+    Y_HGU_L_5      FMIN_HGU_LOW_5 -27.00     FMAX_HGU_LOW_5 -90.00    
+    Y_HGU_B_5      COST      60.00      MEX_HGU_5 1.0
+    Y_HGU_B_5      FMIN_HGU_BASE_5 -27.00     FMAX_HGU_BASE_5 -90.00    
+    Y_HGU_H_5      COST      70.00      MEX_HGU_5 1.0
+    Y_HGU_H_5      FMIN_HGU_HIGH_5 -27.00     FMAX_HGU_HIGH_5 -90.00    
+    Y_SRU_L_5      COST      50.00      MEX_SRU_5 1.0
+    Y_SRU_L_5      FMIN_SRU_LOW_5 -12.00     FMAX_SRU_LOW_5 -40.00    
+    Y_SRU_B_5      COST      60.00      MEX_SRU_5 1.0
+    Y_SRU_B_5      FMIN_SRU_BASE_5 -12.00     FMAX_SRU_BASE_5 -40.00    
+    Y_SRU_H_5      COST      70.00      MEX_SRU_5 1.0
+    Y_SRU_H_5      FMIN_SRU_HIGH_5 -12.00     FMAX_SRU_HIGH_5 -40.00    
+    Y_CDU_L_6      COST      50.00      MEX_CDU_6 1.0
+    Y_CDU_L_6      FMIN_CDU_LOW_6 -90.00     FMAX_CDU_LOW_6 -300.00   
+    Y_CDU_B_6      COST      60.00      MEX_CDU_6 1.0
+    Y_CDU_B_6      FMIN_CDU_BASE_6 -90.00     FMAX_CDU_BASE_6 -300.00   
+    Y_CDU_H_6      COST      70.00      MEX_CDU_6 1.0
+    Y_CDU_H_6      FMIN_CDU_HIGH_6 -90.00     FMAX_CDU_HIGH_6 -300.00   
+    Y_VDU_L_6      COST      50.00      MEX_VDU_6 1.0
+    Y_VDU_L_6      FMIN_VDU_LOW_6 -42.00     FMAX_VDU_LOW_6 -140.00   
+    Y_VDU_B_6      COST      60.00      MEX_VDU_6 1.0
+    Y_VDU_B_6      FMIN_VDU_BASE_6 -42.00     FMAX_VDU_BASE_6 -140.00   
+    Y_VDU_H_6      COST      70.00      MEX_VDU_6 1.0
+    Y_VDU_H_6      FMIN_VDU_HIGH_6 -42.00     FMAX_VDU_HIGH_6 -140.00   
+    Y_CCR_L_6      COST      50.00      MEX_CCR_6 1.0
+    Y_CCR_L_6      FMIN_CCR_LOW_6 -13.50     FMAX_CCR_LOW_6 -45.00    
+    Y_CCR_B_6      COST      60.00      MEX_CCR_6 1.0
+    Y_CCR_B_6      FMIN_CCR_BASE_6 -13.50     FMAX_CCR_BASE_6 -45.00    
+    Y_CCR_H_6      COST      70.00      MEX_CCR_6 1.0
+    Y_CCR_H_6      FMIN_CCR_HIGH_6 -13.50     FMAX_CCR_HIGH_6 -45.00    
+    Y_FCC_L_6      COST      50.00      MEX_FCC_6 1.0
+    Y_FCC_L_6      FMIN_FCC_LOW_6 -19.50     FMAX_FCC_LOW_6 -65.00    
+    Y_FCC_B_6      COST      60.00      MEX_FCC_6 1.0
+    Y_FCC_B_6      FMIN_FCC_BASE_6 -19.50     FMAX_FCC_BASE_6 -65.00    
+    Y_FCC_H_6      COST      70.00      MEX_FCC_6 1.0
+    Y_FCC_H_6      FMIN_FCC_HIGH_6 -19.50     FMAX_FCC_HIGH_6 -65.00    
+    Y_DHD_L_6      COST      50.00      MEX_DHDT_6 1.0
+    Y_DHD_L_6      FMIN_DHDT_LOW_6 -22.50     FMAX_DHDT_LOW_6 -75.00    
+    Y_DHD_B_6      COST      60.00      MEX_DHDT_6 1.0
+    Y_DHD_B_6      FMIN_DHDT_BASE_6 -22.50     FMAX_DHDT_BASE_6 -75.00    
+    Y_DHD_H_6      COST      70.00      MEX_DHDT_6 1.0
+    Y_DHD_H_6      FMIN_DHDT_HIGH_6 -22.50     FMAX_DHDT_HIGH_6 -75.00    
+    Y_HCU_L_6      COST      50.00      MEX_HCU_6 1.0
+    Y_HCU_L_6      FMIN_HCU_LOW_6 -15.00     FMAX_HCU_LOW_6 -50.00    
+    Y_HCU_B_6      COST      60.00      MEX_HCU_6 1.0
+    Y_HCU_B_6      FMIN_HCU_BASE_6 -15.00     FMAX_HCU_BASE_6 -50.00    
+    Y_HCU_H_6      COST      70.00      MEX_HCU_6 1.0
+    Y_HCU_H_6      FMIN_HCU_HIGH_6 -15.00     FMAX_HCU_HIGH_6 -50.00    
+    Y_HGU_L_6      COST      50.00      MEX_HGU_6 1.0
+    Y_HGU_L_6      FMIN_HGU_LOW_6 -27.00     FMAX_HGU_LOW_6 -90.00    
+    Y_HGU_B_6      COST      60.00      MEX_HGU_6 1.0
+    Y_HGU_B_6      FMIN_HGU_BASE_6 -27.00     FMAX_HGU_BASE_6 -90.00    
+    Y_HGU_H_6      COST      70.00      MEX_HGU_6 1.0
+    Y_HGU_H_6      FMIN_HGU_HIGH_6 -27.00     FMAX_HGU_HIGH_6 -90.00    
+    Y_SRU_L_6      COST      50.00      MEX_SRU_6 1.0
+    Y_SRU_L_6      FMIN_SRU_LOW_6 -12.00     FMAX_SRU_LOW_6 -40.00    
+    Y_SRU_B_6      COST      60.00      MEX_SRU_6 1.0
+    Y_SRU_B_6      FMIN_SRU_BASE_6 -12.00     FMAX_SRU_BASE_6 -40.00    
+    Y_SRU_H_6      COST      70.00      MEX_SRU_6 1.0
+    Y_SRU_H_6      FMIN_SRU_HIGH_6 -12.00     FMAX_SRU_HIGH_6 -40.00    
+    MARK0001  'MARKER'                 'INTEND'
+    F_CDU_L_0      COST      1.20       FMIN_CDU_LOW_0 1.0
+    F_CDU_L_0      FMAX_CDU_LOW_0 1.0
+    F_CDU_L_0      VDU_LNK_0 -0.45
+    F_CDU_L_0      FG_BAL_0 0.0200    
+    F_CDU_B_0      COST      1.50       FMIN_CDU_BASE_0 1.0
+    F_CDU_B_0      FMAX_CDU_BASE_0 1.0
+    F_CDU_B_0      VDU_LNK_0 -0.45
+    F_CDU_B_0      FG_BAL_0 0.0200    
+    F_CDU_H_0      COST      2.00       FMIN_CDU_HIGH_0 1.0
+    F_CDU_H_0      FMAX_CDU_HIGH_0 1.0
+    F_CDU_H_0      VDU_LNK_0 -0.45
+    F_CDU_H_0      FG_BAL_0 0.0200    
+    F_VDU_L_0      COST      1.00       FMIN_VDU_LOW_0 1.0
+    F_VDU_L_0      FMAX_VDU_LOW_0 1.0
+    F_VDU_L_0      VDU_LNK_0 1.0
+    F_VDU_L_0      FG_BAL_0 0.0200    
+    F_VDU_B_0      COST      1.30       FMIN_VDU_BASE_0 1.0
+    F_VDU_B_0      FMAX_VDU_BASE_0 1.0
+    F_VDU_B_0      VDU_LNK_0 1.0
+    F_VDU_B_0      FG_BAL_0 0.0200    
+    F_VDU_H_0      COST      1.80       FMIN_VDU_HIGH_0 1.0
+    F_VDU_H_0      FMAX_VDU_HIGH_0 1.0
+    F_VDU_H_0      VDU_LNK_0 1.0
+    F_VDU_H_0      FG_BAL_0 0.0200    
+    F_CCR_L_0      COST      3.50       FMIN_CCR_LOW_0 1.0
+    F_CCR_L_0      FMAX_CCR_LOW_0 1.0
+    F_CCR_L_0      H2_BAL_0 18.00     
+    F_CCR_L_0      FG_BAL_0 0.0800    
+    F_CCR_B_0      COST      4.20       FMIN_CCR_BASE_0 1.0
+    F_CCR_B_0      FMAX_CCR_BASE_0 1.0
+    F_CCR_B_0      H2_BAL_0 22.00     
+    F_CCR_B_0      FG_BAL_0 0.0800    
+    F_CCR_H_0      COST      5.50       FMIN_CCR_HIGH_0 1.0
+    F_CCR_H_0      FMAX_CCR_HIGH_0 1.0
+    F_CCR_H_0      H2_BAL_0 26.00     
+    F_CCR_H_0      FG_BAL_0 0.0800    
+    F_FCC_L_0      COST      2.80       FMIN_FCC_LOW_0 1.0
+    F_FCC_L_0      FMAX_FCC_LOW_0 1.0
+    F_FCC_L_0      FG_BAL_0 0.0800    
+    F_FCC_B_0      COST      3.40       FMIN_FCC_BASE_0 1.0
+    F_FCC_B_0      FMAX_FCC_BASE_0 1.0
+    F_FCC_B_0      FG_BAL_0 0.0800    
+    F_FCC_H_0      COST      4.50       FMIN_FCC_HIGH_0 1.0
+    F_FCC_H_0      FMAX_FCC_HIGH_0 1.0
+    F_FCC_H_0      FG_BAL_0 0.0800    
+    F_DHD_L_0      COST      2.00       FMIN_DHDT_LOW_0 1.0
+    F_DHD_L_0      FMAX_DHDT_LOW_0 1.0
+    F_DHD_L_0      H2_BAL_0 -8.00     
+    F_DHD_L_0      SRU_BAL_0 -0.05
+    F_DHD_L_0      FG_BAL_0 0.0200    
+    F_DHD_B_0      COST      2.50       FMIN_DHDT_BASE_0 1.0
+    F_DHD_B_0      FMAX_DHDT_BASE_0 1.0
+    F_DHD_B_0      H2_BAL_0 -10.00    
+    F_DHD_B_0      SRU_BAL_0 -0.05
+    F_DHD_B_0      FG_BAL_0 0.0200    
+    F_DHD_H_0      COST      3.20       FMIN_DHDT_HIGH_0 1.0
+    F_DHD_H_0      FMAX_DHDT_HIGH_0 1.0
+    F_DHD_H_0      H2_BAL_0 -14.00    
+    F_DHD_H_0      SRU_BAL_0 -0.05
+    F_DHD_H_0      FG_BAL_0 0.0200    
+    F_HCU_L_0      COST      3.80       FMIN_HCU_LOW_0 1.0
+    F_HCU_L_0      FMAX_HCU_LOW_0 1.0
+    F_HCU_L_0      H2_BAL_0 -25.00    
+    F_HCU_L_0      FG_BAL_0 0.0200    
+    F_HCU_B_0      COST      4.50       FMIN_HCU_BASE_0 1.0
+    F_HCU_B_0      FMAX_HCU_BASE_0 1.0
+    F_HCU_B_0      H2_BAL_0 -32.00    
+    F_HCU_B_0      FG_BAL_0 0.0200    
+    F_HCU_H_0      COST      5.80       FMIN_HCU_HIGH_0 1.0
+    F_HCU_H_0      FMAX_HCU_HIGH_0 1.0
+    F_HCU_H_0      H2_BAL_0 -42.00    
+    F_HCU_H_0      FG_BAL_0 0.0200    
+    F_HGU_L_0      COST      1.50       FMIN_HGU_LOW_0 1.0
+    F_HGU_L_0      FMAX_HGU_LOW_0 1.0
+    F_HGU_L_0      H2_BAL_0 50.00     
+    F_HGU_L_0      FG_BAL_0 0.0200    
+    F_HGU_B_0      COST      1.80       FMIN_HGU_BASE_0 1.0
+    F_HGU_B_0      FMAX_HGU_BASE_0 1.0
+    F_HGU_B_0      H2_BAL_0 60.00     
+    F_HGU_B_0      FG_BAL_0 0.0200    
+    F_HGU_H_0      COST      2.40       FMIN_HGU_HIGH_0 1.0
+    F_HGU_H_0      FMAX_HGU_HIGH_0 1.0
+    F_HGU_H_0      H2_BAL_0 70.00     
+    F_HGU_H_0      FG_BAL_0 0.0200    
+    F_SRU_L_0      COST      0.80       FMIN_SRU_LOW_0 1.0
+    F_SRU_L_0      FMAX_SRU_LOW_0 1.0
+    F_SRU_L_0      SRU_BAL_0 1.0
+    F_SRU_L_0      FG_BAL_0 0.0200    
+    F_SRU_B_0      COST      1.00       FMIN_SRU_BASE_0 1.0
+    F_SRU_B_0      FMAX_SRU_BASE_0 1.0
+    F_SRU_B_0      SRU_BAL_0 1.0
+    F_SRU_B_0      FG_BAL_0 0.0200    
+    F_SRU_H_0      COST      1.40       FMIN_SRU_HIGH_0 1.0
+    F_SRU_H_0      FMAX_SRU_HIGH_0 1.0
+    F_SRU_H_0      SRU_BAL_0 1.0
+    F_SRU_H_0      FG_BAL_0 0.0200    
+    F_CDU_L_1      COST      1.20       FMIN_CDU_LOW_1 1.0
+    F_CDU_L_1      FMAX_CDU_LOW_1 1.0
+    F_CDU_L_1      VDU_LNK_1 -0.45
+    F_CDU_L_1      FG_BAL_1 0.0200    
+    F_CDU_B_1      COST      1.50       FMIN_CDU_BASE_1 1.0
+    F_CDU_B_1      FMAX_CDU_BASE_1 1.0
+    F_CDU_B_1      VDU_LNK_1 -0.45
+    F_CDU_B_1      FG_BAL_1 0.0200    
+    F_CDU_H_1      COST      2.00       FMIN_CDU_HIGH_1 1.0
+    F_CDU_H_1      FMAX_CDU_HIGH_1 1.0
+    F_CDU_H_1      VDU_LNK_1 -0.45
+    F_CDU_H_1      FG_BAL_1 0.0200    
+    F_VDU_L_1      COST      1.00       FMIN_VDU_LOW_1 1.0
+    F_VDU_L_1      FMAX_VDU_LOW_1 1.0
+    F_VDU_L_1      VDU_LNK_1 1.0
+    F_VDU_L_1      FG_BAL_1 0.0200    
+    F_VDU_B_1      COST      1.30       FMIN_VDU_BASE_1 1.0
+    F_VDU_B_1      FMAX_VDU_BASE_1 1.0
+    F_VDU_B_1      VDU_LNK_1 1.0
+    F_VDU_B_1      FG_BAL_1 0.0200    
+    F_VDU_H_1      COST      1.80       FMIN_VDU_HIGH_1 1.0
+    F_VDU_H_1      FMAX_VDU_HIGH_1 1.0
+    F_VDU_H_1      VDU_LNK_1 1.0
+    F_VDU_H_1      FG_BAL_1 0.0200    
+    F_CCR_L_1      COST      3.50       FMIN_CCR_LOW_1 1.0
+    F_CCR_L_1      FMAX_CCR_LOW_1 1.0
+    F_CCR_L_1      H2_BAL_1 18.00     
+    F_CCR_L_1      FG_BAL_1 0.0800    
+    F_CCR_B_1      COST      4.20       FMIN_CCR_BASE_1 1.0
+    F_CCR_B_1      FMAX_CCR_BASE_1 1.0
+    F_CCR_B_1      H2_BAL_1 22.00     
+    F_CCR_B_1      FG_BAL_1 0.0800    
+    F_CCR_H_1      COST      5.50       FMIN_CCR_HIGH_1 1.0
+    F_CCR_H_1      FMAX_CCR_HIGH_1 1.0
+    F_CCR_H_1      H2_BAL_1 26.00     
+    F_CCR_H_1      FG_BAL_1 0.0800    
+    F_FCC_L_1      COST      2.80       FMIN_FCC_LOW_1 1.0
+    F_FCC_L_1      FMAX_FCC_LOW_1 1.0
+    F_FCC_L_1      FG_BAL_1 0.0800    
+    F_FCC_B_1      COST      3.40       FMIN_FCC_BASE_1 1.0
+    F_FCC_B_1      FMAX_FCC_BASE_1 1.0
+    F_FCC_B_1      FG_BAL_1 0.0800    
+    F_FCC_H_1      COST      4.50       FMIN_FCC_HIGH_1 1.0
+    F_FCC_H_1      FMAX_FCC_HIGH_1 1.0
+    F_FCC_H_1      FG_BAL_1 0.0800    
+    F_DHD_L_1      COST      2.00       FMIN_DHDT_LOW_1 1.0
+    F_DHD_L_1      FMAX_DHDT_LOW_1 1.0
+    F_DHD_L_1      H2_BAL_1 -8.00     
+    F_DHD_L_1      SRU_BAL_1 -0.05
+    F_DHD_L_1      FG_BAL_1 0.0200    
+    F_DHD_B_1      COST      2.50       FMIN_DHDT_BASE_1 1.0
+    F_DHD_B_1      FMAX_DHDT_BASE_1 1.0
+    F_DHD_B_1      H2_BAL_1 -10.00    
+    F_DHD_B_1      SRU_BAL_1 -0.05
+    F_DHD_B_1      FG_BAL_1 0.0200    
+    F_DHD_H_1      COST      3.20       FMIN_DHDT_HIGH_1 1.0
+    F_DHD_H_1      FMAX_DHDT_HIGH_1 1.0
+    F_DHD_H_1      H2_BAL_1 -14.00    
+    F_DHD_H_1      SRU_BAL_1 -0.05
+    F_DHD_H_1      FG_BAL_1 0.0200    
+    F_HCU_L_1      COST      3.80       FMIN_HCU_LOW_1 1.0
+    F_HCU_L_1      FMAX_HCU_LOW_1 1.0
+    F_HCU_L_1      H2_BAL_1 -25.00    
+    F_HCU_L_1      FG_BAL_1 0.0200    
+    F_HCU_B_1      COST      4.50       FMIN_HCU_BASE_1 1.0
+    F_HCU_B_1      FMAX_HCU_BASE_1 1.0
+    F_HCU_B_1      H2_BAL_1 -32.00    
+    F_HCU_B_1      FG_BAL_1 0.0200    
+    F_HCU_H_1      COST      5.80       FMIN_HCU_HIGH_1 1.0
+    F_HCU_H_1      FMAX_HCU_HIGH_1 1.0
+    F_HCU_H_1      H2_BAL_1 -42.00    
+    F_HCU_H_1      FG_BAL_1 0.0200    
+    F_HGU_L_1      COST      1.50       FMIN_HGU_LOW_1 1.0
+    F_HGU_L_1      FMAX_HGU_LOW_1 1.0
+    F_HGU_L_1      H2_BAL_1 50.00     
+    F_HGU_L_1      FG_BAL_1 0.0200    
+    F_HGU_B_1      COST      1.80       FMIN_HGU_BASE_1 1.0
+    F_HGU_B_1      FMAX_HGU_BASE_1 1.0
+    F_HGU_B_1      H2_BAL_1 60.00     
+    F_HGU_B_1      FG_BAL_1 0.0200    
+    F_HGU_H_1      COST      2.40       FMIN_HGU_HIGH_1 1.0
+    F_HGU_H_1      FMAX_HGU_HIGH_1 1.0
+    F_HGU_H_1      H2_BAL_1 70.00     
+    F_HGU_H_1      FG_BAL_1 0.0200    
+    F_SRU_L_1      COST      0.80       FMIN_SRU_LOW_1 1.0
+    F_SRU_L_1      FMAX_SRU_LOW_1 1.0
+    F_SRU_L_1      SRU_BAL_1 1.0
+    F_SRU_L_1      FG_BAL_1 0.0200    
+    F_SRU_B_1      COST      1.00       FMIN_SRU_BASE_1 1.0
+    F_SRU_B_1      FMAX_SRU_BASE_1 1.0
+    F_SRU_B_1      SRU_BAL_1 1.0
+    F_SRU_B_1      FG_BAL_1 0.0200    
+    F_SRU_H_1      COST      1.40       FMIN_SRU_HIGH_1 1.0
+    F_SRU_H_1      FMAX_SRU_HIGH_1 1.0
+    F_SRU_H_1      SRU_BAL_1 1.0
+    F_SRU_H_1      FG_BAL_1 0.0200    
+    F_CDU_L_2      COST      1.20       FMIN_CDU_LOW_2 1.0
+    F_CDU_L_2      FMAX_CDU_LOW_2 1.0
+    F_CDU_L_2      VDU_LNK_2 -0.45
+    F_CDU_L_2      FG_BAL_2 0.0200    
+    F_CDU_B_2      COST      1.50       FMIN_CDU_BASE_2 1.0
+    F_CDU_B_2      FMAX_CDU_BASE_2 1.0
+    F_CDU_B_2      VDU_LNK_2 -0.45
+    F_CDU_B_2      FG_BAL_2 0.0200    
+    F_CDU_H_2      COST      2.00       FMIN_CDU_HIGH_2 1.0
+    F_CDU_H_2      FMAX_CDU_HIGH_2 1.0
+    F_CDU_H_2      VDU_LNK_2 -0.45
+    F_CDU_H_2      FG_BAL_2 0.0200    
+    F_VDU_L_2      COST      1.00       FMIN_VDU_LOW_2 1.0
+    F_VDU_L_2      FMAX_VDU_LOW_2 1.0
+    F_VDU_L_2      VDU_LNK_2 1.0
+    F_VDU_L_2      FG_BAL_2 0.0200    
+    F_VDU_B_2      COST      1.30       FMIN_VDU_BASE_2 1.0
+    F_VDU_B_2      FMAX_VDU_BASE_2 1.0
+    F_VDU_B_2      VDU_LNK_2 1.0
+    F_VDU_B_2      FG_BAL_2 0.0200    
+    F_VDU_H_2      COST      1.80       FMIN_VDU_HIGH_2 1.0
+    F_VDU_H_2      FMAX_VDU_HIGH_2 1.0
+    F_VDU_H_2      VDU_LNK_2 1.0
+    F_VDU_H_2      FG_BAL_2 0.0200    
+    F_CCR_L_2      COST      3.50       FMIN_CCR_LOW_2 1.0
+    F_CCR_L_2      FMAX_CCR_LOW_2 1.0
+    F_CCR_L_2      H2_BAL_2 18.00     
+    F_CCR_L_2      FG_BAL_2 0.0800    
+    F_CCR_B_2      COST      4.20       FMIN_CCR_BASE_2 1.0
+    F_CCR_B_2      FMAX_CCR_BASE_2 1.0
+    F_CCR_B_2      H2_BAL_2 22.00     
+    F_CCR_B_2      FG_BAL_2 0.0800    
+    F_CCR_H_2      COST      5.50       FMIN_CCR_HIGH_2 1.0
+    F_CCR_H_2      FMAX_CCR_HIGH_2 1.0
+    F_CCR_H_2      H2_BAL_2 26.00     
+    F_CCR_H_2      FG_BAL_2 0.0800    
+    F_FCC_L_2      COST      2.80       FMIN_FCC_LOW_2 1.0
+    F_FCC_L_2      FMAX_FCC_LOW_2 1.0
+    F_FCC_L_2      FG_BAL_2 0.0800    
+    F_FCC_B_2      COST      3.40       FMIN_FCC_BASE_2 1.0
+    F_FCC_B_2      FMAX_FCC_BASE_2 1.0
+    F_FCC_B_2      FG_BAL_2 0.0800    
+    F_FCC_H_2      COST      4.50       FMIN_FCC_HIGH_2 1.0
+    F_FCC_H_2      FMAX_FCC_HIGH_2 1.0
+    F_FCC_H_2      FG_BAL_2 0.0800    
+    F_DHD_L_2      COST      2.00       FMIN_DHDT_LOW_2 1.0
+    F_DHD_L_2      FMAX_DHDT_LOW_2 1.0
+    F_DHD_L_2      H2_BAL_2 -8.00     
+    F_DHD_L_2      SRU_BAL_2 -0.05
+    F_DHD_L_2      FG_BAL_2 0.0200    
+    F_DHD_B_2      COST      2.50       FMIN_DHDT_BASE_2 1.0
+    F_DHD_B_2      FMAX_DHDT_BASE_2 1.0
+    F_DHD_B_2      H2_BAL_2 -10.00    
+    F_DHD_B_2      SRU_BAL_2 -0.05
+    F_DHD_B_2      FG_BAL_2 0.0200    
+    F_DHD_H_2      COST      3.20       FMIN_DHDT_HIGH_2 1.0
+    F_DHD_H_2      FMAX_DHDT_HIGH_2 1.0
+    F_DHD_H_2      H2_BAL_2 -14.00    
+    F_DHD_H_2      SRU_BAL_2 -0.05
+    F_DHD_H_2      FG_BAL_2 0.0200    
+    F_HCU_L_2      COST      3.80       FMIN_HCU_LOW_2 1.0
+    F_HCU_L_2      FMAX_HCU_LOW_2 1.0
+    F_HCU_L_2      H2_BAL_2 -25.00    
+    F_HCU_L_2      FG_BAL_2 0.0200    
+    F_HCU_B_2      COST      4.50       FMIN_HCU_BASE_2 1.0
+    F_HCU_B_2      FMAX_HCU_BASE_2 1.0
+    F_HCU_B_2      H2_BAL_2 -32.00    
+    F_HCU_B_2      FG_BAL_2 0.0200    
+    F_HCU_H_2      COST      5.80       FMIN_HCU_HIGH_2 1.0
+    F_HCU_H_2      FMAX_HCU_HIGH_2 1.0
+    F_HCU_H_2      H2_BAL_2 -42.00    
+    F_HCU_H_2      FG_BAL_2 0.0200    
+    F_HGU_L_2      COST      1.50       FMIN_HGU_LOW_2 1.0
+    F_HGU_L_2      FMAX_HGU_LOW_2 1.0
+    F_HGU_L_2      H2_BAL_2 50.00     
+    F_HGU_L_2      FG_BAL_2 0.0200    
+    F_HGU_B_2      COST      1.80       FMIN_HGU_BASE_2 1.0
+    F_HGU_B_2      FMAX_HGU_BASE_2 1.0
+    F_HGU_B_2      H2_BAL_2 60.00     
+    F_HGU_B_2      FG_BAL_2 0.0200    
+    F_HGU_H_2      COST      2.40       FMIN_HGU_HIGH_2 1.0
+    F_HGU_H_2      FMAX_HGU_HIGH_2 1.0
+    F_HGU_H_2      H2_BAL_2 70.00     
+    F_HGU_H_2      FG_BAL_2 0.0200    
+    F_SRU_L_2      COST      0.80       FMIN_SRU_LOW_2 1.0
+    F_SRU_L_2      FMAX_SRU_LOW_2 1.0
+    F_SRU_L_2      SRU_BAL_2 1.0
+    F_SRU_L_2      FG_BAL_2 0.0200    
+    F_SRU_B_2      COST      1.00       FMIN_SRU_BASE_2 1.0
+    F_SRU_B_2      FMAX_SRU_BASE_2 1.0
+    F_SRU_B_2      SRU_BAL_2 1.0
+    F_SRU_B_2      FG_BAL_2 0.0200    
+    F_SRU_H_2      COST      1.40       FMIN_SRU_HIGH_2 1.0
+    F_SRU_H_2      FMAX_SRU_HIGH_2 1.0
+    F_SRU_H_2      SRU_BAL_2 1.0
+    F_SRU_H_2      FG_BAL_2 0.0200    
+    F_CDU_L_3      COST      1.20       FMIN_CDU_LOW_3 1.0
+    F_CDU_L_3      FMAX_CDU_LOW_3 1.0
+    F_CDU_L_3      VDU_LNK_3 -0.45
+    F_CDU_L_3      FG_BAL_3 0.0200    
+    F_CDU_B_3      COST      1.50       FMIN_CDU_BASE_3 1.0
+    F_CDU_B_3      FMAX_CDU_BASE_3 1.0
+    F_CDU_B_3      VDU_LNK_3 -0.45
+    F_CDU_B_3      FG_BAL_3 0.0200    
+    F_CDU_H_3      COST      2.00       FMIN_CDU_HIGH_3 1.0
+    F_CDU_H_3      FMAX_CDU_HIGH_3 1.0
+    F_CDU_H_3      VDU_LNK_3 -0.45
+    F_CDU_H_3      FG_BAL_3 0.0200    
+    F_VDU_L_3      COST      1.00       FMIN_VDU_LOW_3 1.0
+    F_VDU_L_3      FMAX_VDU_LOW_3 1.0
+    F_VDU_L_3      VDU_LNK_3 1.0
+    F_VDU_L_3      FG_BAL_3 0.0200    
+    F_VDU_B_3      COST      1.30       FMIN_VDU_BASE_3 1.0
+    F_VDU_B_3      FMAX_VDU_BASE_3 1.0
+    F_VDU_B_3      VDU_LNK_3 1.0
+    F_VDU_B_3      FG_BAL_3 0.0200    
+    F_VDU_H_3      COST      1.80       FMIN_VDU_HIGH_3 1.0
+    F_VDU_H_3      FMAX_VDU_HIGH_3 1.0
+    F_VDU_H_3      VDU_LNK_3 1.0
+    F_VDU_H_3      FG_BAL_3 0.0200    
+    F_CCR_L_3      COST      3.50       FMIN_CCR_LOW_3 1.0
+    F_CCR_L_3      FMAX_CCR_LOW_3 1.0
+    F_CCR_L_3      H2_BAL_3 18.00     
+    F_CCR_L_3      FG_BAL_3 0.0800    
+    F_CCR_B_3      COST      4.20       FMIN_CCR_BASE_3 1.0
+    F_CCR_B_3      FMAX_CCR_BASE_3 1.0
+    F_CCR_B_3      H2_BAL_3 22.00     
+    F_CCR_B_3      FG_BAL_3 0.0800    
+    F_CCR_H_3      COST      5.50       FMIN_CCR_HIGH_3 1.0
+    F_CCR_H_3      FMAX_CCR_HIGH_3 1.0
+    F_CCR_H_3      H2_BAL_3 26.00     
+    F_CCR_H_3      FG_BAL_3 0.0800    
+    F_FCC_L_3      COST      2.80       FMIN_FCC_LOW_3 1.0
+    F_FCC_L_3      FMAX_FCC_LOW_3 1.0
+    F_FCC_L_3      FG_BAL_3 0.0800    
+    F_FCC_B_3      COST      3.40       FMIN_FCC_BASE_3 1.0
+    F_FCC_B_3      FMAX_FCC_BASE_3 1.0
+    F_FCC_B_3      FG_BAL_3 0.0800    
+    F_FCC_H_3      COST      4.50       FMIN_FCC_HIGH_3 1.0
+    F_FCC_H_3      FMAX_FCC_HIGH_3 1.0
+    F_FCC_H_3      FG_BAL_3 0.0800    
+    F_DHD_L_3      COST      2.00       FMIN_DHDT_LOW_3 1.0
+    F_DHD_L_3      FMAX_DHDT_LOW_3 1.0
+    F_DHD_L_3      H2_BAL_3 -8.00     
+    F_DHD_L_3      SRU_BAL_3 -0.05
+    F_DHD_L_3      FG_BAL_3 0.0200    
+    F_DHD_B_3      COST      2.50       FMIN_DHDT_BASE_3 1.0
+    F_DHD_B_3      FMAX_DHDT_BASE_3 1.0
+    F_DHD_B_3      H2_BAL_3 -10.00    
+    F_DHD_B_3      SRU_BAL_3 -0.05
+    F_DHD_B_3      FG_BAL_3 0.0200    
+    F_DHD_H_3      COST      3.20       FMIN_DHDT_HIGH_3 1.0
+    F_DHD_H_3      FMAX_DHDT_HIGH_3 1.0
+    F_DHD_H_3      H2_BAL_3 -14.00    
+    F_DHD_H_3      SRU_BAL_3 -0.05
+    F_DHD_H_3      FG_BAL_3 0.0200    
+    F_HCU_L_3      COST      3.80       FMIN_HCU_LOW_3 1.0
+    F_HCU_L_3      FMAX_HCU_LOW_3 1.0
+    F_HCU_L_3      H2_BAL_3 -25.00    
+    F_HCU_L_3      FG_BAL_3 0.0200    
+    F_HCU_B_3      COST      4.50       FMIN_HCU_BASE_3 1.0
+    F_HCU_B_3      FMAX_HCU_BASE_3 1.0
+    F_HCU_B_3      H2_BAL_3 -32.00    
+    F_HCU_B_3      FG_BAL_3 0.0200    
+    F_HCU_H_3      COST      5.80       FMIN_HCU_HIGH_3 1.0
+    F_HCU_H_3      FMAX_HCU_HIGH_3 1.0
+    F_HCU_H_3      H2_BAL_3 -42.00    
+    F_HCU_H_3      FG_BAL_3 0.0200    
+    F_HGU_L_3      COST      1.50       FMIN_HGU_LOW_3 1.0
+    F_HGU_L_3      FMAX_HGU_LOW_3 1.0
+    F_HGU_L_3      H2_BAL_3 50.00     
+    F_HGU_L_3      FG_BAL_3 0.0200    
+    F_HGU_B_3      COST      1.80       FMIN_HGU_BASE_3 1.0
+    F_HGU_B_3      FMAX_HGU_BASE_3 1.0
+    F_HGU_B_3      H2_BAL_3 60.00     
+    F_HGU_B_3      FG_BAL_3 0.0200    
+    F_HGU_H_3      COST      2.40       FMIN_HGU_HIGH_3 1.0
+    F_HGU_H_3      FMAX_HGU_HIGH_3 1.0
+    F_HGU_H_3      H2_BAL_3 70.00     
+    F_HGU_H_3      FG_BAL_3 0.0200    
+    F_SRU_L_3      COST      0.80       FMIN_SRU_LOW_3 1.0
+    F_SRU_L_3      FMAX_SRU_LOW_3 1.0
+    F_SRU_L_3      SRU_BAL_3 1.0
+    F_SRU_L_3      FG_BAL_3 0.0200    
+    F_SRU_B_3      COST      1.00       FMIN_SRU_BASE_3 1.0
+    F_SRU_B_3      FMAX_SRU_BASE_3 1.0
+    F_SRU_B_3      SRU_BAL_3 1.0
+    F_SRU_B_3      FG_BAL_3 0.0200    
+    F_SRU_H_3      COST      1.40       FMIN_SRU_HIGH_3 1.0
+    F_SRU_H_3      FMAX_SRU_HIGH_3 1.0
+    F_SRU_H_3      SRU_BAL_3 1.0
+    F_SRU_H_3      FG_BAL_3 0.0200    
+    F_CDU_L_4      COST      1.20       FMIN_CDU_LOW_4 1.0
+    F_CDU_L_4      FMAX_CDU_LOW_4 1.0
+    F_CDU_L_4      VDU_LNK_4 -0.45
+    F_CDU_L_4      FG_BAL_4 0.0200    
+    F_CDU_B_4      COST      1.50       FMIN_CDU_BASE_4 1.0
+    F_CDU_B_4      FMAX_CDU_BASE_4 1.0
+    F_CDU_B_4      VDU_LNK_4 -0.45
+    F_CDU_B_4      FG_BAL_4 0.0200    
+    F_CDU_H_4      COST      2.00       FMIN_CDU_HIGH_4 1.0
+    F_CDU_H_4      FMAX_CDU_HIGH_4 1.0
+    F_CDU_H_4      VDU_LNK_4 -0.45
+    F_CDU_H_4      FG_BAL_4 0.0200    
+    F_VDU_L_4      COST      1.00       FMIN_VDU_LOW_4 1.0
+    F_VDU_L_4      FMAX_VDU_LOW_4 1.0
+    F_VDU_L_4      VDU_LNK_4 1.0
+    F_VDU_L_4      FG_BAL_4 0.0200    
+    F_VDU_B_4      COST      1.30       FMIN_VDU_BASE_4 1.0
+    F_VDU_B_4      FMAX_VDU_BASE_4 1.0
+    F_VDU_B_4      VDU_LNK_4 1.0
+    F_VDU_B_4      FG_BAL_4 0.0200    
+    F_VDU_H_4      COST      1.80       FMIN_VDU_HIGH_4 1.0
+    F_VDU_H_4      FMAX_VDU_HIGH_4 1.0
+    F_VDU_H_4      VDU_LNK_4 1.0
+    F_VDU_H_4      FG_BAL_4 0.0200    
+    F_CCR_L_4      COST      3.50       FMIN_CCR_LOW_4 1.0
+    F_CCR_L_4      FMAX_CCR_LOW_4 1.0
+    F_CCR_L_4      H2_BAL_4 18.00     
+    F_CCR_L_4      FG_BAL_4 0.0800    
+    F_CCR_B_4      COST      4.20       FMIN_CCR_BASE_4 1.0
+    F_CCR_B_4      FMAX_CCR_BASE_4 1.0
+    F_CCR_B_4      H2_BAL_4 22.00     
+    F_CCR_B_4      FG_BAL_4 0.0800    
+    F_CCR_H_4      COST      5.50       FMIN_CCR_HIGH_4 1.0
+    F_CCR_H_4      FMAX_CCR_HIGH_4 1.0
+    F_CCR_H_4      H2_BAL_4 26.00     
+    F_CCR_H_4      FG_BAL_4 0.0800    
+    F_FCC_L_4      COST      2.80       FMIN_FCC_LOW_4 1.0
+    F_FCC_L_4      FMAX_FCC_LOW_4 1.0
+    F_FCC_L_4      FG_BAL_4 0.0800    
+    F_FCC_B_4      COST      3.40       FMIN_FCC_BASE_4 1.0
+    F_FCC_B_4      FMAX_FCC_BASE_4 1.0
+    F_FCC_B_4      FG_BAL_4 0.0800    
+    F_FCC_H_4      COST      4.50       FMIN_FCC_HIGH_4 1.0
+    F_FCC_H_4      FMAX_FCC_HIGH_4 1.0
+    F_FCC_H_4      FG_BAL_4 0.0800    
+    F_DHD_L_4      COST      2.00       FMIN_DHDT_LOW_4 1.0
+    F_DHD_L_4      FMAX_DHDT_LOW_4 1.0
+    F_DHD_L_4      H2_BAL_4 -8.00     
+    F_DHD_L_4      SRU_BAL_4 -0.05
+    F_DHD_L_4      FG_BAL_4 0.0200    
+    F_DHD_B_4      COST      2.50       FMIN_DHDT_BASE_4 1.0
+    F_DHD_B_4      FMAX_DHDT_BASE_4 1.0
+    F_DHD_B_4      H2_BAL_4 -10.00    
+    F_DHD_B_4      SRU_BAL_4 -0.05
+    F_DHD_B_4      FG_BAL_4 0.0200    
+    F_DHD_H_4      COST      3.20       FMIN_DHDT_HIGH_4 1.0
+    F_DHD_H_4      FMAX_DHDT_HIGH_4 1.0
+    F_DHD_H_4      H2_BAL_4 -14.00    
+    F_DHD_H_4      SRU_BAL_4 -0.05
+    F_DHD_H_4      FG_BAL_4 0.0200    
+    F_HCU_L_4      COST      3.80       FMIN_HCU_LOW_4 1.0
+    F_HCU_L_4      FMAX_HCU_LOW_4 1.0
+    F_HCU_L_4      H2_BAL_4 -25.00    
+    F_HCU_L_4      FG_BAL_4 0.0200    
+    F_HCU_B_4      COST      4.50       FMIN_HCU_BASE_4 1.0
+    F_HCU_B_4      FMAX_HCU_BASE_4 1.0
+    F_HCU_B_4      H2_BAL_4 -32.00    
+    F_HCU_B_4      FG_BAL_4 0.0200    
+    F_HCU_H_4      COST      5.80       FMIN_HCU_HIGH_4 1.0
+    F_HCU_H_4      FMAX_HCU_HIGH_4 1.0
+    F_HCU_H_4      H2_BAL_4 -42.00    
+    F_HCU_H_4      FG_BAL_4 0.0200    
+    F_HGU_L_4      COST      1.50       FMIN_HGU_LOW_4 1.0
+    F_HGU_L_4      FMAX_HGU_LOW_4 1.0
+    F_HGU_L_4      H2_BAL_4 50.00     
+    F_HGU_L_4      FG_BAL_4 0.0200    
+    F_HGU_B_4      COST      1.80       FMIN_HGU_BASE_4 1.0
+    F_HGU_B_4      FMAX_HGU_BASE_4 1.0
+    F_HGU_B_4      H2_BAL_4 60.00     
+    F_HGU_B_4      FG_BAL_4 0.0200    
+    F_HGU_H_4      COST      2.40       FMIN_HGU_HIGH_4 1.0
+    F_HGU_H_4      FMAX_HGU_HIGH_4 1.0
+    F_HGU_H_4      H2_BAL_4 70.00     
+    F_HGU_H_4      FG_BAL_4 0.0200    
+    F_SRU_L_4      COST      0.80       FMIN_SRU_LOW_4 1.0
+    F_SRU_L_4      FMAX_SRU_LOW_4 1.0
+    F_SRU_L_4      SRU_BAL_4 1.0
+    F_SRU_L_4      FG_BAL_4 0.0200    
+    F_SRU_B_4      COST      1.00       FMIN_SRU_BASE_4 1.0
+    F_SRU_B_4      FMAX_SRU_BASE_4 1.0
+    F_SRU_B_4      SRU_BAL_4 1.0
+    F_SRU_B_4      FG_BAL_4 0.0200    
+    F_SRU_H_4      COST      1.40       FMIN_SRU_HIGH_4 1.0
+    F_SRU_H_4      FMAX_SRU_HIGH_4 1.0
+    F_SRU_H_4      SRU_BAL_4 1.0
+    F_SRU_H_4      FG_BAL_4 0.0200    
+    F_CDU_L_5      COST      1.20       FMIN_CDU_LOW_5 1.0
+    F_CDU_L_5      FMAX_CDU_LOW_5 1.0
+    F_CDU_L_5      VDU_LNK_5 -0.45
+    F_CDU_L_5      FG_BAL_5 0.0200    
+    F_CDU_B_5      COST      1.50       FMIN_CDU_BASE_5 1.0
+    F_CDU_B_5      FMAX_CDU_BASE_5 1.0
+    F_CDU_B_5      VDU_LNK_5 -0.45
+    F_CDU_B_5      FG_BAL_5 0.0200    
+    F_CDU_H_5      COST      2.00       FMIN_CDU_HIGH_5 1.0
+    F_CDU_H_5      FMAX_CDU_HIGH_5 1.0
+    F_CDU_H_5      VDU_LNK_5 -0.45
+    F_CDU_H_5      FG_BAL_5 0.0200    
+    F_VDU_L_5      COST      1.00       FMIN_VDU_LOW_5 1.0
+    F_VDU_L_5      FMAX_VDU_LOW_5 1.0
+    F_VDU_L_5      VDU_LNK_5 1.0
+    F_VDU_L_5      FG_BAL_5 0.0200    
+    F_VDU_B_5      COST      1.30       FMIN_VDU_BASE_5 1.0
+    F_VDU_B_5      FMAX_VDU_BASE_5 1.0
+    F_VDU_B_5      VDU_LNK_5 1.0
+    F_VDU_B_5      FG_BAL_5 0.0200    
+    F_VDU_H_5      COST      1.80       FMIN_VDU_HIGH_5 1.0
+    F_VDU_H_5      FMAX_VDU_HIGH_5 1.0
+    F_VDU_H_5      VDU_LNK_5 1.0
+    F_VDU_H_5      FG_BAL_5 0.0200    
+    F_CCR_L_5      COST      3.50       FMIN_CCR_LOW_5 1.0
+    F_CCR_L_5      FMAX_CCR_LOW_5 1.0
+    F_CCR_L_5      H2_BAL_5 18.00     
+    F_CCR_L_5      FG_BAL_5 0.0800    
+    F_CCR_B_5      COST      4.20       FMIN_CCR_BASE_5 1.0
+    F_CCR_B_5      FMAX_CCR_BASE_5 1.0
+    F_CCR_B_5      H2_BAL_5 22.00     
+    F_CCR_B_5      FG_BAL_5 0.0800    
+    F_CCR_H_5      COST      5.50       FMIN_CCR_HIGH_5 1.0
+    F_CCR_H_5      FMAX_CCR_HIGH_5 1.0
+    F_CCR_H_5      H2_BAL_5 26.00     
+    F_CCR_H_5      FG_BAL_5 0.0800    
+    F_FCC_L_5      COST      2.80       FMIN_FCC_LOW_5 1.0
+    F_FCC_L_5      FMAX_FCC_LOW_5 1.0
+    F_FCC_L_5      FG_BAL_5 0.0800    
+    F_FCC_B_5      COST      3.40       FMIN_FCC_BASE_5 1.0
+    F_FCC_B_5      FMAX_FCC_BASE_5 1.0
+    F_FCC_B_5      FG_BAL_5 0.0800    
+    F_FCC_H_5      COST      4.50       FMIN_FCC_HIGH_5 1.0
+    F_FCC_H_5      FMAX_FCC_HIGH_5 1.0
+    F_FCC_H_5      FG_BAL_5 0.0800    
+    F_DHD_L_5      COST      2.00       FMIN_DHDT_LOW_5 1.0
+    F_DHD_L_5      FMAX_DHDT_LOW_5 1.0
+    F_DHD_L_5      H2_BAL_5 -8.00     
+    F_DHD_L_5      SRU_BAL_5 -0.05
+    F_DHD_L_5      FG_BAL_5 0.0200    
+    F_DHD_B_5      COST      2.50       FMIN_DHDT_BASE_5 1.0
+    F_DHD_B_5      FMAX_DHDT_BASE_5 1.0
+    F_DHD_B_5      H2_BAL_5 -10.00    
+    F_DHD_B_5      SRU_BAL_5 -0.05
+    F_DHD_B_5      FG_BAL_5 0.0200    
+    F_DHD_H_5      COST      3.20       FMIN_DHDT_HIGH_5 1.0
+    F_DHD_H_5      FMAX_DHDT_HIGH_5 1.0
+    F_DHD_H_5      H2_BAL_5 -14.00    
+    F_DHD_H_5      SRU_BAL_5 -0.05
+    F_DHD_H_5      FG_BAL_5 0.0200    
+    F_HCU_L_5      COST      3.80       FMIN_HCU_LOW_5 1.0
+    F_HCU_L_5      FMAX_HCU_LOW_5 1.0
+    F_HCU_L_5      H2_BAL_5 -25.00    
+    F_HCU_L_5      FG_BAL_5 0.0200    
+    F_HCU_B_5      COST      4.50       FMIN_HCU_BASE_5 1.0
+    F_HCU_B_5      FMAX_HCU_BASE_5 1.0
+    F_HCU_B_5      H2_BAL_5 -32.00    
+    F_HCU_B_5      FG_BAL_5 0.0200    
+    F_HCU_H_5      COST      5.80       FMIN_HCU_HIGH_5 1.0
+    F_HCU_H_5      FMAX_HCU_HIGH_5 1.0
+    F_HCU_H_5      H2_BAL_5 -42.00    
+    F_HCU_H_5      FG_BAL_5 0.0200    
+    F_HGU_L_5      COST      1.50       FMIN_HGU_LOW_5 1.0
+    F_HGU_L_5      FMAX_HGU_LOW_5 1.0
+    F_HGU_L_5      H2_BAL_5 50.00     
+    F_HGU_L_5      FG_BAL_5 0.0200    
+    F_HGU_B_5      COST      1.80       FMIN_HGU_BASE_5 1.0
+    F_HGU_B_5      FMAX_HGU_BASE_5 1.0
+    F_HGU_B_5      H2_BAL_5 60.00     
+    F_HGU_B_5      FG_BAL_5 0.0200    
+    F_HGU_H_5      COST      2.40       FMIN_HGU_HIGH_5 1.0
+    F_HGU_H_5      FMAX_HGU_HIGH_5 1.0
+    F_HGU_H_5      H2_BAL_5 70.00     
+    F_HGU_H_5      FG_BAL_5 0.0200    
+    F_SRU_L_5      COST      0.80       FMIN_SRU_LOW_5 1.0
+    F_SRU_L_5      FMAX_SRU_LOW_5 1.0
+    F_SRU_L_5      SRU_BAL_5 1.0
+    F_SRU_L_5      FG_BAL_5 0.0200    
+    F_SRU_B_5      COST      1.00       FMIN_SRU_BASE_5 1.0
+    F_SRU_B_5      FMAX_SRU_BASE_5 1.0
+    F_SRU_B_5      SRU_BAL_5 1.0
+    F_SRU_B_5      FG_BAL_5 0.0200    
+    F_SRU_H_5      COST      1.40       FMIN_SRU_HIGH_5 1.0
+    F_SRU_H_5      FMAX_SRU_HIGH_5 1.0
+    F_SRU_H_5      SRU_BAL_5 1.0
+    F_SRU_H_5      FG_BAL_5 0.0200    
+    F_CDU_L_6      COST      1.20       FMIN_CDU_LOW_6 1.0
+    F_CDU_L_6      FMAX_CDU_LOW_6 1.0
+    F_CDU_L_6      VDU_LNK_6 -0.45
+    F_CDU_L_6      FG_BAL_6 0.0200    
+    F_CDU_B_6      COST      1.50       FMIN_CDU_BASE_6 1.0
+    F_CDU_B_6      FMAX_CDU_BASE_6 1.0
+    F_CDU_B_6      VDU_LNK_6 -0.45
+    F_CDU_B_6      FG_BAL_6 0.0200    
+    F_CDU_H_6      COST      2.00       FMIN_CDU_HIGH_6 1.0
+    F_CDU_H_6      FMAX_CDU_HIGH_6 1.0
+    F_CDU_H_6      VDU_LNK_6 -0.45
+    F_CDU_H_6      FG_BAL_6 0.0200    
+    F_VDU_L_6      COST      1.00       FMIN_VDU_LOW_6 1.0
+    F_VDU_L_6      FMAX_VDU_LOW_6 1.0
+    F_VDU_L_6      VDU_LNK_6 1.0
+    F_VDU_L_6      FG_BAL_6 0.0200    
+    F_VDU_B_6      COST      1.30       FMIN_VDU_BASE_6 1.0
+    F_VDU_B_6      FMAX_VDU_BASE_6 1.0
+    F_VDU_B_6      VDU_LNK_6 1.0
+    F_VDU_B_6      FG_BAL_6 0.0200    
+    F_VDU_H_6      COST      1.80       FMIN_VDU_HIGH_6 1.0
+    F_VDU_H_6      FMAX_VDU_HIGH_6 1.0
+    F_VDU_H_6      VDU_LNK_6 1.0
+    F_VDU_H_6      FG_BAL_6 0.0200    
+    F_CCR_L_6      COST      3.50       FMIN_CCR_LOW_6 1.0
+    F_CCR_L_6      FMAX_CCR_LOW_6 1.0
+    F_CCR_L_6      H2_BAL_6 18.00     
+    F_CCR_L_6      FG_BAL_6 0.0800    
+    F_CCR_B_6      COST      4.20       FMIN_CCR_BASE_6 1.0
+    F_CCR_B_6      FMAX_CCR_BASE_6 1.0
+    F_CCR_B_6      H2_BAL_6 22.00     
+    F_CCR_B_6      FG_BAL_6 0.0800    
+    F_CCR_H_6      COST      5.50       FMIN_CCR_HIGH_6 1.0
+    F_CCR_H_6      FMAX_CCR_HIGH_6 1.0
+    F_CCR_H_6      H2_BAL_6 26.00     
+    F_CCR_H_6      FG_BAL_6 0.0800    
+    F_FCC_L_6      COST      2.80       FMIN_FCC_LOW_6 1.0
+    F_FCC_L_6      FMAX_FCC_LOW_6 1.0
+    F_FCC_L_6      FG_BAL_6 0.0800    
+    F_FCC_B_6      COST      3.40       FMIN_FCC_BASE_6 1.0
+    F_FCC_B_6      FMAX_FCC_BASE_6 1.0
+    F_FCC_B_6      FG_BAL_6 0.0800    
+    F_FCC_H_6      COST      4.50       FMIN_FCC_HIGH_6 1.0
+    F_FCC_H_6      FMAX_FCC_HIGH_6 1.0
+    F_FCC_H_6      FG_BAL_6 0.0800    
+    F_DHD_L_6      COST      2.00       FMIN_DHDT_LOW_6 1.0
+    F_DHD_L_6      FMAX_DHDT_LOW_6 1.0
+    F_DHD_L_6      H2_BAL_6 -8.00     
+    F_DHD_L_6      SRU_BAL_6 -0.05
+    F_DHD_L_6      FG_BAL_6 0.0200    
+    F_DHD_B_6      COST      2.50       FMIN_DHDT_BASE_6 1.0
+    F_DHD_B_6      FMAX_DHDT_BASE_6 1.0
+    F_DHD_B_6      H2_BAL_6 -10.00    
+    F_DHD_B_6      SRU_BAL_6 -0.05
+    F_DHD_B_6      FG_BAL_6 0.0200    
+    F_DHD_H_6      COST      3.20       FMIN_DHDT_HIGH_6 1.0
+    F_DHD_H_6      FMAX_DHDT_HIGH_6 1.0
+    F_DHD_H_6      H2_BAL_6 -14.00    
+    F_DHD_H_6      SRU_BAL_6 -0.05
+    F_DHD_H_6      FG_BAL_6 0.0200    
+    F_HCU_L_6      COST      3.80       FMIN_HCU_LOW_6 1.0
+    F_HCU_L_6      FMAX_HCU_LOW_6 1.0
+    F_HCU_L_6      H2_BAL_6 -25.00    
+    F_HCU_L_6      FG_BAL_6 0.0200    
+    F_HCU_B_6      COST      4.50       FMIN_HCU_BASE_6 1.0
+    F_HCU_B_6      FMAX_HCU_BASE_6 1.0
+    F_HCU_B_6      H2_BAL_6 -32.00    
+    F_HCU_B_6      FG_BAL_6 0.0200    
+    F_HCU_H_6      COST      5.80       FMIN_HCU_HIGH_6 1.0
+    F_HCU_H_6      FMAX_HCU_HIGH_6 1.0
+    F_HCU_H_6      H2_BAL_6 -42.00    
+    F_HCU_H_6      FG_BAL_6 0.0200    
+    F_HGU_L_6      COST      1.50       FMIN_HGU_LOW_6 1.0
+    F_HGU_L_6      FMAX_HGU_LOW_6 1.0
+    F_HGU_L_6      H2_BAL_6 50.00     
+    F_HGU_L_6      FG_BAL_6 0.0200    
+    F_HGU_B_6      COST      1.80       FMIN_HGU_BASE_6 1.0
+    F_HGU_B_6      FMAX_HGU_BASE_6 1.0
+    F_HGU_B_6      H2_BAL_6 60.00     
+    F_HGU_B_6      FG_BAL_6 0.0200    
+    F_HGU_H_6      COST      2.40       FMIN_HGU_HIGH_6 1.0
+    F_HGU_H_6      FMAX_HGU_HIGH_6 1.0
+    F_HGU_H_6      H2_BAL_6 70.00     
+    F_HGU_H_6      FG_BAL_6 0.0200    
+    F_SRU_L_6      COST      0.80       FMIN_SRU_LOW_6 1.0
+    F_SRU_L_6      FMAX_SRU_LOW_6 1.0
+    F_SRU_L_6      SRU_BAL_6 1.0
+    F_SRU_L_6      FG_BAL_6 0.0200    
+    F_SRU_B_6      COST      1.00       FMIN_SRU_BASE_6 1.0
+    F_SRU_B_6      FMAX_SRU_BASE_6 1.0
+    F_SRU_B_6      SRU_BAL_6 1.0
+    F_SRU_B_6      FG_BAL_6 0.0200    
+    F_SRU_H_6      COST      1.40       FMIN_SRU_HIGH_6 1.0
+    F_SRU_H_6      FMAX_SRU_HIGH_6 1.0
+    F_SRU_H_6      SRU_BAL_6 1.0
+    F_SRU_H_6      FG_BAL_6 0.0200    
+RHS
+    RHS1      MEX_CDU_0            1.0000
+    RHS1      MEX_VDU_0            1.0000
+    RHS1      MEX_CCR_0            1.0000
+    RHS1      MEX_FCC_0            1.0000
+    RHS1      MEX_DHDT_0           1.0000
+    RHS1      MEX_HCU_0            1.0000
+    RHS1      MEX_HGU_0            1.0000
+    RHS1      MEX_SRU_0            1.0000
+    RHS1      H2_BAL_0             50.0000
+    RHS1      FG_BAL_0             10.0000
+    RHS1      MEX_CDU_1            1.0000
+    RHS1      MEX_VDU_1            1.0000
+    RHS1      MEX_CCR_1            1.0000
+    RHS1      MEX_FCC_1            1.0000
+    RHS1      MEX_DHDT_1           1.0000
+    RHS1      MEX_HCU_1            1.0000
+    RHS1      MEX_HGU_1            1.0000
+    RHS1      MEX_SRU_1            1.0000
+    RHS1      H2_BAL_1             50.0000
+    RHS1      FG_BAL_1             10.0000
+    RHS1      MEX_CDU_2            1.0000
+    RHS1      MEX_VDU_2            1.0000
+    RHS1      MEX_CCR_2            1.0000
+    RHS1      MEX_FCC_2            1.0000
+    RHS1      MEX_DHDT_2           1.0000
+    RHS1      MEX_HCU_2            1.0000
+    RHS1      MEX_HGU_2            1.0000
+    RHS1      MEX_SRU_2            1.0000
+    RHS1      H2_BAL_2             50.0000
+    RHS1      FG_BAL_2             10.0000
+    RHS1      MEX_CDU_3            1.0000
+    RHS1      MEX_VDU_3            1.0000
+    RHS1      MEX_CCR_3            1.0000
+    RHS1      MEX_FCC_3            1.0000
+    RHS1      MEX_DHDT_3           1.0000
+    RHS1      MEX_HCU_3            1.0000
+    RHS1      MEX_HGU_3            1.0000
+    RHS1      MEX_SRU_3            1.0000
+    RHS1      H2_BAL_3             50.0000
+    RHS1      FG_BAL_3             10.0000
+    RHS1      MEX_CDU_4            1.0000
+    RHS1      MEX_VDU_4            1.0000
+    RHS1      MEX_CCR_4            1.0000
+    RHS1      MEX_FCC_4            1.0000
+    RHS1      MEX_DHDT_4           1.0000
+    RHS1      MEX_HCU_4            1.0000
+    RHS1      MEX_HGU_4            1.0000
+    RHS1      MEX_SRU_4            1.0000
+    RHS1      H2_BAL_4             50.0000
+    RHS1      FG_BAL_4             10.0000
+    RHS1      MEX_CDU_5            1.0000
+    RHS1      MEX_VDU_5            1.0000
+    RHS1      MEX_CCR_5            1.0000
+    RHS1      MEX_FCC_5            1.0000
+    RHS1      MEX_DHDT_5           1.0000
+    RHS1      MEX_HCU_5            1.0000
+    RHS1      MEX_HGU_5            1.0000
+    RHS1      MEX_SRU_5            1.0000
+    RHS1      H2_BAL_5             50.0000
+    RHS1      FG_BAL_5             10.0000
+    RHS1      MEX_CDU_6            1.0000
+    RHS1      MEX_VDU_6            1.0000
+    RHS1      MEX_CCR_6            1.0000
+    RHS1      MEX_FCC_6            1.0000
+    RHS1      MEX_DHDT_6           1.0000
+    RHS1      MEX_HCU_6            1.0000
+    RHS1      MEX_HGU_6            1.0000
+    RHS1      MEX_SRU_6            1.0000
+    RHS1      H2_BAL_6             50.0000
+    RHS1      FG_BAL_6             10.0000
+BOUNDS
+ BV BND       Y_CDU_L_0
+ BV BND       Y_CDU_B_0
+ BV BND       Y_CDU_H_0
+ BV BND       Y_VDU_L_0
+ BV BND       Y_VDU_B_0
+ BV BND       Y_VDU_H_0
+ BV BND       Y_CCR_L_0
+ BV BND       Y_CCR_B_0
+ BV BND       Y_CCR_H_0
+ BV BND       Y_FCC_L_0
+ BV BND       Y_FCC_B_0
+ BV BND       Y_FCC_H_0
+ BV BND       Y_DHD_L_0
+ BV BND       Y_DHD_B_0
+ BV BND       Y_DHD_H_0
+ BV BND       Y_HCU_L_0
+ BV BND       Y_HCU_B_0
+ BV BND       Y_HCU_H_0
+ BV BND       Y_HGU_L_0
+ BV BND       Y_HGU_B_0
+ BV BND       Y_HGU_H_0
+ BV BND       Y_SRU_L_0
+ BV BND       Y_SRU_B_0
+ BV BND       Y_SRU_H_0
+ BV BND       Y_CDU_L_1
+ BV BND       Y_CDU_B_1
+ BV BND       Y_CDU_H_1
+ BV BND       Y_VDU_L_1
+ BV BND       Y_VDU_B_1
+ BV BND       Y_VDU_H_1
+ BV BND       Y_CCR_L_1
+ BV BND       Y_CCR_B_1
+ BV BND       Y_CCR_H_1
+ BV BND       Y_FCC_L_1
+ BV BND       Y_FCC_B_1
+ BV BND       Y_FCC_H_1
+ BV BND       Y_DHD_L_1
+ BV BND       Y_DHD_B_1
+ BV BND       Y_DHD_H_1
+ BV BND       Y_HCU_L_1
+ BV BND       Y_HCU_B_1
+ BV BND       Y_HCU_H_1
+ BV BND       Y_HGU_L_1
+ BV BND       Y_HGU_B_1
+ BV BND       Y_HGU_H_1
+ BV BND       Y_SRU_L_1
+ BV BND       Y_SRU_B_1
+ BV BND       Y_SRU_H_1
+ BV BND       Y_CDU_L_2
+ BV BND       Y_CDU_B_2
+ BV BND       Y_CDU_H_2
+ BV BND       Y_VDU_L_2
+ BV BND       Y_VDU_B_2
+ BV BND       Y_VDU_H_2
+ BV BND       Y_CCR_L_2
+ BV BND       Y_CCR_B_2
+ BV BND       Y_CCR_H_2
+ BV BND       Y_FCC_L_2
+ BV BND       Y_FCC_B_2
+ BV BND       Y_FCC_H_2
+ BV BND       Y_DHD_L_2
+ BV BND       Y_DHD_B_2
+ BV BND       Y_DHD_H_2
+ BV BND       Y_HCU_L_2
+ BV BND       Y_HCU_B_2
+ BV BND       Y_HCU_H_2
+ BV BND       Y_HGU_L_2
+ BV BND       Y_HGU_B_2
+ BV BND       Y_HGU_H_2
+ BV BND       Y_SRU_L_2
+ BV BND       Y_SRU_B_2
+ BV BND       Y_SRU_H_2
+ BV BND       Y_CDU_L_3
+ BV BND       Y_CDU_B_3
+ BV BND       Y_CDU_H_3
+ BV BND       Y_VDU_L_3
+ BV BND       Y_VDU_B_3
+ BV BND       Y_VDU_H_3
+ BV BND       Y_CCR_L_3
+ BV BND       Y_CCR_B_3
+ BV BND       Y_CCR_H_3
+ BV BND       Y_FCC_L_3
+ BV BND       Y_FCC_B_3
+ BV BND       Y_FCC_H_3
+ BV BND       Y_DHD_L_3
+ BV BND       Y_DHD_B_3
+ BV BND       Y_DHD_H_3
+ BV BND       Y_HCU_L_3
+ BV BND       Y_HCU_B_3
+ BV BND       Y_HCU_H_3
+ BV BND       Y_HGU_L_3
+ BV BND       Y_HGU_B_3
+ BV BND       Y_HGU_H_3
+ BV BND       Y_SRU_L_3
+ BV BND       Y_SRU_B_3
+ BV BND       Y_SRU_H_3
+ BV BND       Y_CDU_L_4
+ BV BND       Y_CDU_B_4
+ BV BND       Y_CDU_H_4
+ BV BND       Y_VDU_L_4
+ BV BND       Y_VDU_B_4
+ BV BND       Y_VDU_H_4
+ BV BND       Y_CCR_L_4
+ BV BND       Y_CCR_B_4
+ BV BND       Y_CCR_H_4
+ BV BND       Y_FCC_L_4
+ BV BND       Y_FCC_B_4
+ BV BND       Y_FCC_H_4
+ BV BND       Y_DHD_L_4
+ BV BND       Y_DHD_B_4
+ BV BND       Y_DHD_H_4
+ BV BND       Y_HCU_L_4
+ BV BND       Y_HCU_B_4
+ BV BND       Y_HCU_H_4
+ BV BND       Y_HGU_L_4
+ BV BND       Y_HGU_B_4
+ BV BND       Y_HGU_H_4
+ BV BND       Y_SRU_L_4
+ BV BND       Y_SRU_B_4
+ BV BND       Y_SRU_H_4
+ BV BND       Y_CDU_L_5
+ BV BND       Y_CDU_B_5
+ BV BND       Y_CDU_H_5
+ BV BND       Y_VDU_L_5
+ BV BND       Y_VDU_B_5
+ BV BND       Y_VDU_H_5
+ BV BND       Y_CCR_L_5
+ BV BND       Y_CCR_B_5
+ BV BND       Y_CCR_H_5
+ BV BND       Y_FCC_L_5
+ BV BND       Y_FCC_B_5
+ BV BND       Y_FCC_H_5
+ BV BND       Y_DHD_L_5
+ BV BND       Y_DHD_B_5
+ BV BND       Y_DHD_H_5
+ BV BND       Y_HCU_L_5
+ BV BND       Y_HCU_B_5
+ BV BND       Y_HCU_H_5
+ BV BND       Y_HGU_L_5
+ BV BND       Y_HGU_B_5
+ BV BND       Y_HGU_H_5
+ BV BND       Y_SRU_L_5
+ BV BND       Y_SRU_B_5
+ BV BND       Y_SRU_H_5
+ BV BND       Y_CDU_L_6
+ BV BND       Y_CDU_B_6
+ BV BND       Y_CDU_H_6
+ BV BND       Y_VDU_L_6
+ BV BND       Y_VDU_B_6
+ BV BND       Y_VDU_H_6
+ BV BND       Y_CCR_L_6
+ BV BND       Y_CCR_B_6
+ BV BND       Y_CCR_H_6
+ BV BND       Y_FCC_L_6
+ BV BND       Y_FCC_B_6
+ BV BND       Y_FCC_H_6
+ BV BND       Y_DHD_L_6
+ BV BND       Y_DHD_B_6
+ BV BND       Y_DHD_H_6
+ BV BND       Y_HCU_L_6
+ BV BND       Y_HCU_B_6
+ BV BND       Y_HCU_H_6
+ BV BND       Y_HGU_L_6
+ BV BND       Y_HGU_B_6
+ BV BND       Y_HGU_H_6
+ BV BND       Y_SRU_L_6
+ BV BND       Y_SRU_B_6
+ BV BND       Y_SRU_H_6
+ UP BND       F_CDU_L_0      300.00
+ UP BND       F_CDU_B_0      300.00
+ UP BND       F_CDU_H_0      300.00
+ UP BND       F_VDU_L_0      140.00
+ UP BND       F_VDU_B_0      140.00
+ UP BND       F_VDU_H_0      140.00
+ UP BND       F_CCR_L_0      45.00
+ UP BND       F_CCR_B_0      45.00
+ UP BND       F_CCR_H_0      45.00
+ UP BND       F_FCC_L_0      65.00
+ UP BND       F_FCC_B_0      65.00
+ UP BND       F_FCC_H_0      65.00
+ UP BND       F_DHD_L_0      75.00
+ UP BND       F_DHD_B_0      75.00
+ UP BND       F_DHD_H_0      75.00
+ UP BND       F_HCU_L_0      50.00
+ UP BND       F_HCU_B_0      50.00
+ UP BND       F_HCU_H_0      50.00
+ UP BND       F_HGU_L_0      90.00
+ UP BND       F_HGU_B_0      90.00
+ UP BND       F_HGU_H_0      90.00
+ UP BND       F_SRU_L_0      40.00
+ UP BND       F_SRU_B_0      40.00
+ UP BND       F_SRU_H_0      40.00
+ UP BND       F_CDU_L_1      300.00
+ UP BND       F_CDU_B_1      300.00
+ UP BND       F_CDU_H_1      300.00
+ UP BND       F_VDU_L_1      140.00
+ UP BND       F_VDU_B_1      140.00
+ UP BND       F_VDU_H_1      140.00
+ UP BND       F_CCR_L_1      45.00
+ UP BND       F_CCR_B_1      45.00
+ UP BND       F_CCR_H_1      45.00
+ UP BND       F_FCC_L_1      65.00
+ UP BND       F_FCC_B_1      65.00
+ UP BND       F_FCC_H_1      65.00
+ UP BND       F_DHD_L_1      75.00
+ UP BND       F_DHD_B_1      75.00
+ UP BND       F_DHD_H_1      75.00
+ UP BND       F_HCU_L_1      50.00
+ UP BND       F_HCU_B_1      50.00
+ UP BND       F_HCU_H_1      50.00
+ UP BND       F_HGU_L_1      90.00
+ UP BND       F_HGU_B_1      90.00
+ UP BND       F_HGU_H_1      90.00
+ UP BND       F_SRU_L_1      40.00
+ UP BND       F_SRU_B_1      40.00
+ UP BND       F_SRU_H_1      40.00
+ UP BND       F_CDU_L_2      300.00
+ UP BND       F_CDU_B_2      300.00
+ UP BND       F_CDU_H_2      300.00
+ UP BND       F_VDU_L_2      140.00
+ UP BND       F_VDU_B_2      140.00
+ UP BND       F_VDU_H_2      140.00
+ UP BND       F_CCR_L_2      45.00
+ UP BND       F_CCR_B_2      45.00
+ UP BND       F_CCR_H_2      45.00
+ UP BND       F_FCC_L_2      65.00
+ UP BND       F_FCC_B_2      65.00
+ UP BND       F_FCC_H_2      65.00
+ UP BND       F_DHD_L_2      75.00
+ UP BND       F_DHD_B_2      75.00
+ UP BND       F_DHD_H_2      75.00
+ UP BND       F_HCU_L_2      50.00
+ UP BND       F_HCU_B_2      50.00
+ UP BND       F_HCU_H_2      50.00
+ UP BND       F_HGU_L_2      90.00
+ UP BND       F_HGU_B_2      90.00
+ UP BND       F_HGU_H_2      90.00
+ UP BND       F_SRU_L_2      40.00
+ UP BND       F_SRU_B_2      40.00
+ UP BND       F_SRU_H_2      40.00
+ UP BND       F_CDU_L_3      300.00
+ UP BND       F_CDU_B_3      300.00
+ UP BND       F_CDU_H_3      300.00
+ UP BND       F_VDU_L_3      140.00
+ UP BND       F_VDU_B_3      140.00
+ UP BND       F_VDU_H_3      140.00
+ UP BND       F_CCR_L_3      45.00
+ UP BND       F_CCR_B_3      45.00
+ UP BND       F_CCR_H_3      45.00
+ UP BND       F_FCC_L_3      65.00
+ UP BND       F_FCC_B_3      65.00
+ UP BND       F_FCC_H_3      65.00
+ UP BND       F_DHD_L_3      75.00
+ UP BND       F_DHD_B_3      75.00
+ UP BND       F_DHD_H_3      75.00
+ UP BND       F_HCU_L_3      50.00
+ UP BND       F_HCU_B_3      50.00
+ UP BND       F_HCU_H_3      50.00
+ UP BND       F_HGU_L_3      90.00
+ UP BND       F_HGU_B_3      90.00
+ UP BND       F_HGU_H_3      90.00
+ UP BND       F_SRU_L_3      40.00
+ UP BND       F_SRU_B_3      40.00
+ UP BND       F_SRU_H_3      40.00
+ UP BND       F_CDU_L_4      300.00
+ UP BND       F_CDU_B_4      300.00
+ UP BND       F_CDU_H_4      300.00
+ UP BND       F_VDU_L_4      140.00
+ UP BND       F_VDU_B_4      140.00
+ UP BND       F_VDU_H_4      140.00
+ UP BND       F_CCR_L_4      45.00
+ UP BND       F_CCR_B_4      45.00
+ UP BND       F_CCR_H_4      45.00
+ UP BND       F_FCC_L_4      65.00
+ UP BND       F_FCC_B_4      65.00
+ UP BND       F_FCC_H_4      65.00
+ UP BND       F_DHD_L_4      75.00
+ UP BND       F_DHD_B_4      75.00
+ UP BND       F_DHD_H_4      75.00
+ UP BND       F_HCU_L_4      50.00
+ UP BND       F_HCU_B_4      50.00
+ UP BND       F_HCU_H_4      50.00
+ UP BND       F_HGU_L_4      90.00
+ UP BND       F_HGU_B_4      90.00
+ UP BND       F_HGU_H_4      90.00
+ UP BND       F_SRU_L_4      40.00
+ UP BND       F_SRU_B_4      40.00
+ UP BND       F_SRU_H_4      40.00
+ UP BND       F_CDU_L_5      300.00
+ UP BND       F_CDU_B_5      300.00
+ UP BND       F_CDU_H_5      300.00
+ UP BND       F_VDU_L_5      140.00
+ UP BND       F_VDU_B_5      140.00
+ UP BND       F_VDU_H_5      140.00
+ UP BND       F_CCR_L_5      45.00
+ UP BND       F_CCR_B_5      45.00
+ UP BND       F_CCR_H_5      45.00
+ UP BND       F_FCC_L_5      65.00
+ UP BND       F_FCC_B_5      65.00
+ UP BND       F_FCC_H_5      65.00
+ UP BND       F_DHD_L_5      75.00
+ UP BND       F_DHD_B_5      75.00
+ UP BND       F_DHD_H_5      75.00
+ UP BND       F_HCU_L_5      50.00
+ UP BND       F_HCU_B_5      50.00
+ UP BND       F_HCU_H_5      50.00
+ UP BND       F_HGU_L_5      90.00
+ UP BND       F_HGU_B_5      90.00
+ UP BND       F_HGU_H_5      90.00
+ UP BND       F_SRU_L_5      40.00
+ UP BND       F_SRU_B_5      40.00
+ UP BND       F_SRU_H_5      40.00
+ UP BND       F_CDU_L_6      300.00
+ UP BND       F_CDU_B_6      300.00
+ UP BND       F_CDU_H_6      300.00
+ UP BND       F_VDU_L_6      140.00
+ UP BND       F_VDU_B_6      140.00
+ UP BND       F_VDU_H_6      140.00
+ UP BND       F_CCR_L_6      45.00
+ UP BND       F_CCR_B_6      45.00
+ UP BND       F_CCR_H_6      45.00
+ UP BND       F_FCC_L_6      65.00
+ UP BND       F_FCC_B_6      65.00
+ UP BND       F_FCC_H_6      65.00
+ UP BND       F_DHD_L_6      75.00
+ UP BND       F_DHD_B_6      75.00
+ UP BND       F_DHD_H_6      75.00
+ UP BND       F_HCU_L_6      50.00
+ UP BND       F_HCU_B_6      50.00
+ UP BND       F_HCU_H_6      50.00
+ UP BND       F_HGU_L_6      90.00
+ UP BND       F_HGU_B_6      90.00
+ UP BND       F_HGU_H_6      90.00
+ UP BND       F_SRU_L_6      40.00
+ UP BND       F_SRU_B_6      40.00
+ UP BND       F_SRU_H_6      40.00
+ENDATA

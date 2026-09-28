@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/bppc4-08.mps.gz",
+  "member": "bppc4-08.mps",
+  "sha256": "e596783b23be27e1165bc6080050736d499f163ee1bb184c3846b72e312a7fec",
+  "name": "bppc4-08",
+  "rows": 111,
+  "columns": 1456,
+  "binaries": 1454,
+  "integers": 0,
+  "nonzeros": 23964,
+  "reference_objective": 53.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

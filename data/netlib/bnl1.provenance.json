@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/bnl1.mps.gz",
+  "member": "bnl1.mps",
+  "sha256": "7a842adca058eaa3cb712b3bbae357602f22df6cc318c4d278f6600167fe2300",
+  "name": "bnl1",
+  "reference_objective": null
+}

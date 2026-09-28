@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/degen3.mps.gz",
+  "member": "degen3.mps",
+  "sha256": "08d600688c524fea548e946af5551ef8c359c7a7e71b8841acc839b00eefadeb",
+  "name": "degen3",
+  "reference_objective": null
+}

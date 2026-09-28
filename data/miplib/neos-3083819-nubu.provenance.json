@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-3083819-nubu.mps.gz",
+  "member": "neos-3083819-nubu.mps",
+  "sha256": "3ef375d725612b2b385a22e62a8d4de9eb998c71af7ca0119910ba0bacab27d3",
+  "name": "neos-3083819-nubu",
+  "rows": 4725,
+  "columns": 8644,
+  "binaries": 0,
+  "integers": 8644,
+  "nonzeros": 24048,
+  "reference_objective": 6307996.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

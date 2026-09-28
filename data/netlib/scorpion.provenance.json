@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/scorpion.mps.gz",
+  "member": "scorpion.mps",
+  "sha256": "39b61cae042ce4adffb441faec77f5cc003fa725baa25edfb1738aef93a83c5d",
+  "name": "scorpion",
+  "reference_objective": 1878.1248227381
+}

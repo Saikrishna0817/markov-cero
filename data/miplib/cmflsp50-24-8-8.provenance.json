@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/cmflsp50-24-8-8.mps.gz",
+  "member": "cmflsp50-24-8-8.mps",
+  "sha256": "7fe19f1983b85a6e580cf689e1540aaf0316b2737ac8ff1f8595ddb8d48ac425",
+  "name": "cmflsp50-24-8-8",
+  "rows": 3520,
+  "columns": 16392,
+  "binaries": 1392,
+  "integers": 0,
+  "nonzeros": 158622,
+  "reference_objective": 55789389.886,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

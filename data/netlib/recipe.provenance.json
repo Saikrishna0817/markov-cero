@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/recipe.mps.gz",
+  "member": "recipe.mps",
+  "sha256": "277b34645cc89526db4a3365fa781ce28aa9768a65c4f301416a8a05c934af61",
+  "name": "recipe",
+  "reference_objective": -266.616
+}

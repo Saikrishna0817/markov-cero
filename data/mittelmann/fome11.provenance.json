@@ -1,0 +1,12 @@
+{
+  "source": "https://plato.asu.edu/ftp/lptestset/fome/fome11.bz2",
+  "member": "fome11.mps",
+  "sha256": "99a745d9b65e4da1777e32479c53fca33968871c48117582456e732c4231b576",
+  "name": "fome11",
+  "rows": 12142,
+  "columns": 24460,
+  "nonzeros": 41420,
+  "problem_type": "LP",
+  "listed_on": "https://plato.asu.edu/ftp/lptestset/fome/",
+  "note": "bzip2/gzip archive holding an MPC-compressed MPS file, expanded with http://www.netlib.org/lp/data/emps.c"
+}

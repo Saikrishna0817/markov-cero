@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-3216931-puriri.mps.gz",
+  "member": "neos-3216931-puriri.mps",
+  "sha256": "9414ba2e14a0c58229ac6be0b1a4ddc1f5ee6600ebfd63cb957e3f9268e7443a",
+  "name": "neos-3216931-puriri",
+  "rows": 5989,
+  "columns": 3555,
+  "binaries": 3268,
+  "integers": 0,
+  "nonzeros": 91691,
+  "reference_objective": 71320.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

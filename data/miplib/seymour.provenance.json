@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/seymour.mps.gz",
+  "member": "seymour.mps",
+  "sha256": "0b5cac17833e32f94ab267a6ca34029e30d2c55122701a1f44aafe0de74746d3",
+  "name": "seymour",
+  "rows": 4944,
+  "columns": 1372,
+  "binaries": 1372,
+  "integers": 0,
+  "nonzeros": 33549,
+  "reference_objective": 423.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/fastxgemm-n2r6s0t2.mps.gz",
+  "member": "fastxgemm-n2r6s0t2.mps",
+  "sha256": "38fb9f03c920e05bac3337979ec6bb52a56525f5c932cc6474b6ef9a77be2bce",
+  "name": "fastxgemm-n2r6s0t2",
+  "rows": 5998,
+  "columns": 784,
+  "binaries": 48,
+  "integers": 0,
+  "nonzeros": 19376,
+  "reference_objective": 230.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/binkar10_1.mps.gz",
+  "member": "binkar10_1.mps",
+  "sha256": "71dc18a14f1d26f39473eaf64b81c12691a0c0d4ab00dec43679071ed7f3e09c",
+  "name": "binkar10_1",
+  "rows": 1026,
+  "columns": 2298,
+  "binaries": 170,
+  "integers": 0,
+  "nonzeros": 4496,
+  "reference_objective": 6741.38002393972,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

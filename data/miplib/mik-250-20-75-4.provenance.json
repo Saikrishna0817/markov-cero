@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/mik-250-20-75-4.mps.gz",
+  "member": "mik-250-20-75-4.mps",
+  "sha256": "b29fe88b56bf3c924894f473cee77e25efb4dbaccb322e95c98b9210fb875e6d",
+  "name": "mik-250-20-75-4",
+  "rows": 195,
+  "columns": 270,
+  "binaries": 75,
+  "integers": 175,
+  "nonzeros": 9270,
+  "reference_objective": -52301.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

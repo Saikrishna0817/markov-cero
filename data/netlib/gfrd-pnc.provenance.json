@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/gfrd-pnc.mps.gz",
+  "member": "gfrd-pnc.mps",
+  "sha256": "d66ea78a803e91e4f38dcd74ca4c575aa742e27e7120c1c3494d4d424ee5c936",
+  "name": "gfrd-pnc",
+  "reference_objective": null
+}

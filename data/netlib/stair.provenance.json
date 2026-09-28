@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/stair.mps.gz",
+  "member": "stair.mps",
+  "sha256": "30a16ec0d02cf6c490495340d2a718f533d8e5d88f839693eb4bc06671bd8649",
+  "name": "stair",
+  "reference_objective": null
+}

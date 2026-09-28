@@ -1,0 +1,12 @@
+{
+  "source": "https://plato.asu.edu/ftp/lptestset/qap15.mps.bz2",
+  "member": "qap15.mps",
+  "sha256": "a24d84de54c73d7ea01ebaf07739e6884d57794d4b1184c0e01a6a4495695712",
+  "name": "qap15",
+  "rows": 6330,
+  "columns": 22275,
+  "nonzeros": 94950,
+  "problem_type": "LP",
+  "listed_on": "https://plato.asu.edu/ftp/lptestset/",
+  "note": "archive of a plain MPS file"
+}

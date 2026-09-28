@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/rmatr100-p10.mps.gz",
+  "member": "rmatr100-p10.mps",
+  "sha256": "4b946d51d55001c125945774699790ac15daa6c4be2602264ab588c737119fc9",
+  "name": "rmatr100-p10",
+  "rows": 7260,
+  "columns": 7359,
+  "binaries": 100,
+  "integers": 0,
+  "nonzeros": 21877,
+  "reference_objective": 423.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

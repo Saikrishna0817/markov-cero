@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/ship08l.mps.gz",
+  "member": "ship08l.mps",
+  "sha256": "58b6142628facaa1b056f32f9f47167097db66825f0c6b42c6f65e4da1b5da07",
+  "name": "ship08l",
+  "reference_objective": null
+}

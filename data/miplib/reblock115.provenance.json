@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/reblock115.mps.gz",
+  "member": "reblock115.mps",
+  "sha256": "83fac9bfcbeb1934fa03a30bac1372f540afcdc5681e4532a8f459184e6a6005",
+  "name": "reblock115",
+  "rows": 4735,
+  "columns": 1150,
+  "binaries": 1150,
+  "integers": 0,
+  "nonzeros": 13724,
+  "reference_objective": -36800603.2332,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

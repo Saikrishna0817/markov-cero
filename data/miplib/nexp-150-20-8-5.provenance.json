@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/nexp-150-20-8-5.mps.gz",
+  "member": "nexp-150-20-8-5.mps",
+  "sha256": "90bd312a5e1ba3e2fbedb8e8c9366626a680034dafe62f43b207768f6706544b",
+  "name": "nexp-150-20-8-5",
+  "rows": 4620,
+  "columns": 20115,
+  "binaries": 17880,
+  "integers": 0,
+  "nonzeros": 42465,
+  "reference_objective": 231.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

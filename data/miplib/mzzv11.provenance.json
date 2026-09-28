@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/mzzv11.mps.gz",
+  "member": "mzzv11.mps",
+  "sha256": "7f14d78667ff20777e963a66815c63a0dc4f12a6ee573eeed107d8a5d9712620",
+  "name": "mzzv11",
+  "rows": 9499,
+  "columns": 10240,
+  "binaries": 9989,
+  "integers": 251,
+  "nonzeros": 134603,
+  "reference_objective": -21718.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

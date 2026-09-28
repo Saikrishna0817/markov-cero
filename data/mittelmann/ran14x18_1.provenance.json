@@ -1,0 +1,11 @@
+{
+  "source": "data/mittelmann/ran14x18_1.mps",
+  "member": "ran14x18_1.mps",
+  "sha256": "211ff8ce77c6fdcdb7cbbf6b594448e7beb7cc490fe003754395598d1ba1f289",
+  "name": "ran14x18_1",
+  "rows": 284,
+  "columns": 504,
+  "nonzeros": 1008,
+  "problem_type": "MILP",
+  "note": "no upstream URL found (legacy MIPLIB-era instance); on-disk path recorded"
+}

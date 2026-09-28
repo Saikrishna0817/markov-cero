@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/assign1-5-8.mps.gz",
+  "member": "assign1-5-8.mps",
+  "sha256": "cb63a8b3480eaca33562ab4960b0b795604aa520e4241761eae6aa86df30ca6b",
+  "name": "assign1-5-8",
+  "rows": 161,
+  "columns": 156,
+  "binaries": 130,
+  "integers": 0,
+  "nonzeros": 3720,
+  "reference_objective": 211.999999999998,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

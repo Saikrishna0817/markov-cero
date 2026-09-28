@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/pilot87.mps.gz",
+  "member": "pilot87.mps",
+  "sha256": "0ecfcc173d82c8a0252f58a99b2a529d8ad0155ee9212b8451cc25c0e387caa4",
+  "name": "pilot87",
+  "reference_objective": null
+}

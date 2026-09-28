@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/maros-r7.mps.gz",
+  "member": "maros-r7.mps",
+  "sha256": "e97f59ab32a8280526c26c210aacabd6e0c05300e67a0d4afd00b95d245f8db7",
+  "name": "maros-r7",
+  "reference_objective": null
+}

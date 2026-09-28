@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/neos-2657525-crna.mps.gz",
+  "member": "neos-2657525-crna.mps",
+  "sha256": "31a5a4880f97d3844a273b57221e88a6491bb392b1185290548d9f18b17402eb",
+  "name": "neos-2657525-crna",
+  "rows": 342,
+  "columns": 524,
+  "binaries": 146,
+  "integers": 378,
+  "nonzeros": 1690,
+  "reference_objective": 1.810748,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

@@ -1,0 +1,4 @@
+# Pre-registered shared MILP instance set (markov-cero vs HiGHS) — R16.
+stein9	data/miplib/stein9.mps
+stein15	data/miplib/stein15.mps
+flugpl	data/miplib/flugpl.mps

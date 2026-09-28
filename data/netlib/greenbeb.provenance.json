@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/greenbeb.mps.gz",
+  "member": "greenbeb.mps",
+  "sha256": "21f92f6a32f71ec72c8f693d6685e4a91ecb2debec732ec61302bc866f370865",
+  "name": "greenbeb",
+  "reference_objective": null
+}

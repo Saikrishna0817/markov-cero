@@ -1,0 +1,13 @@
+{
+  "source": "https://miplib.zib.de/WebData/instances/n2seq36q.mps.gz",
+  "member": "n2seq36q.mps",
+  "sha256": "2255f6f612eb6d26564f874afa9161c0c97b4f225589cff9f34ef2720c605491",
+  "name": "n2seq36q",
+  "rows": 2565,
+  "columns": 22480,
+  "binaries": 22480,
+  "integers": 0,
+  "nonzeros": 183292,
+  "reference_objective": 52200.0,
+  "suite": "MIPLIB 2017 (benchmark set, status easy)"
+}

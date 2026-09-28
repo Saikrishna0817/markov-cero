@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/greenbea.mps.gz",
+  "member": "greenbea.mps",
+  "sha256": "cb701e3ba5153e385b8cb6426e34b5d23bad4b1b9c9a037802e351c24b0f653d",
+  "name": "greenbea",
+  "reference_objective": null
+}

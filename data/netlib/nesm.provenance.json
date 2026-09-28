@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/coin-or-tools/Data-Netlib/master/nesm.mps.gz",
+  "member": "nesm.mps",
+  "sha256": "20b55063a879a649ef5c7a1a701f81917717b414943f58dea37a1c30495bc5ba",
+  "name": "nesm",
+  "reference_objective": null
+}
