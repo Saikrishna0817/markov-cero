@@ -1,5 +1,6 @@
 #pragma once
 
+#include "markov_cero/api/solve.hpp"
 #include "markov_cero/foundation/build_info.hpp"
 #include "markov_cero/lp/reference/revised_simplex.hpp"
 #include "markov_cero/verify/primal_verifier.hpp"
@@ -122,6 +123,21 @@ struct JsonOutputData {
     double pdlp_total_ms = 0.0;
     std::string error;
     std::string output_path;
+    std::string problem_class;
+    std::string classification_reason;
+    std::string recommended_backend;
+    markov_cero::api::NumericalDiagnostic diagnostic;
+    // D-15: stagnation / crossover note (empty when the solve was clean).
+    std::string convergence_note;
+    // D-16: ADMM rho penalty updates (= KKT re-factorizations) for QP solves.
+    std::size_t admm_rho_updates = 0;
+    bool ml_requested = false;
+    bool ml_model_loaded = false;
+    std::size_t ml_scoring_calls = 0;
+    std::size_t ml_candidates_scored = 0;
+    std::size_t ml_fallback_nodes = 0;
+    std::size_t ml_maximum_candidate_count = 0;
+    std::string ml_fallback_reason;
 };
 
 inline void emit_json_output(const JsonOutputData& data) {
@@ -131,6 +147,7 @@ inline void emit_json_output(const JsonOutputData& data) {
          << "\"milestone\":\"" << json_escape(std::string(markov_cero::foundation::milestone()))
          << "\","
          << "\"engine\":\"" << json_escape(data.resolved_engine) << "\","
+         << "\"problem_class\":\"" << json_escape(data.problem_class) << "\","
          << "\"status\":\"" << markov_cero::lp::reference::to_string(data.result.status) << "\","
          << "\"rows\":" << data.model_rows << ","
          << "\"cols\":" << data.model_cols << ","
@@ -182,7 +199,38 @@ inline void emit_json_output(const JsonOutputData& data) {
          << json_number(data.resolved_engine == "pdlp" ? data.pdlp_total_ms
                                                        : data.elapsed_ms)
          << ","
-         << "\"limitations\":\"Sovereign LP/MILP/QP/MIQP (CPU/GPU) engine.\"";
+          << "\"limitations\":\"Sovereign LP/MILP/QP/MIQP (CPU/GPU) engine.\""
+          << ",\"diagnostic\":{"
+          << "\"primal_residual\":" << json_number(data.diagnostic.primal_residual) << ","
+          << "\"dual_residual\":" << json_number(data.diagnostic.dual_residual) << ","
+          << "\"complementarity_gap\":"
+          << json_number(data.diagnostic.complementarity_gap) << ","
+          << "\"nlp_stationarity_residual\":"
+          << json_number(data.diagnostic.nlp_stationarity_residual) << ","
+          << "\"nlp_inequality_violation\":"
+          << json_number(data.diagnostic.nlp_inequality_violation) << ","
+          << "\"nlp_equality_violation\":"
+          << json_number(data.diagnostic.nlp_equality_violation) << ","
+          << "\"nlp_worst_dual_sign\":"
+          << json_number(data.diagnostic.nlp_worst_dual_sign) << ","
+          << "\"nlp_complementarity_residual\":"
+          << json_number(data.diagnostic.nlp_complementarity_residual) << ","
+          << "\"condition_estimate\":" << json_number(data.diagnostic.condition_estimate) << ","
+          << "\"failure_site\":\"" << json_escape(data.diagnostic.failure_site) << "\","
+          << "\"suggested_recovery\":\"" << json_escape(data.diagnostic.suggested_recovery) << "\""
+          << "}"
+          << ",\"admm_rho_updates\":" << data.admm_rho_updates
+          << ",\"ml_requested\":" << (data.ml_requested ? "true" : "false")
+          << ",\"ml_model_loaded\":" << (data.ml_model_loaded ? "true" : "false")
+          << ",\"ml_scoring_calls\":" << data.ml_scoring_calls
+          << ",\"ml_candidates_scored\":" << data.ml_candidates_scored
+          << ",\"ml_fallback_nodes\":" << data.ml_fallback_nodes
+          << ",\"ml_maximum_candidate_count\":" << data.ml_maximum_candidate_count
+          << ",\"ml_fallback_reason\":\""
+          << json_escape(data.ml_fallback_reason) << "\"";
+    if (!data.convergence_note.empty()) {
+        json << ",\"convergence_note\":\"" << json_escape(data.convergence_note) << "\"";
+    }
     if (!data.error.empty()) {
         json << ",\"error\":\"" << json_escape(data.error) << "\"";
     }

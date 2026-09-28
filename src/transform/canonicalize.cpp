@@ -4,9 +4,9 @@
 #include <stdexcept>
 namespace markov_cero::transform {
 namespace {
-constexpr std::size_t maximum_original_dimension = 2048U;
-constexpr std::size_t maximum_canonical_dimension = 8192U;
-constexpr std::size_t maximum_dense_elements = 4U * 1024U * 1024U;
+constexpr std::size_t maximum_original_dimension = 8192U;
+constexpr std::size_t maximum_canonical_dimension = 32768U;
+constexpr std::size_t maximum_dense_elements = 64U * 1024U * 1024U;
 void finite(double v, const char* message) {
     if (!std::isfinite(v))
         throw std::overflow_error(message);

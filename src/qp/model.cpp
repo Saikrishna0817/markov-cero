@@ -3,14 +3,15 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <map>
+#include <queue>
+#include <sstream>
 #include <stdexcept>
+#include <tuple>
 
 namespace markov_cero::qp {
 
 void SparseSymmetricMatrix::validate(std::size_t maximum_nonzeros) const {
-    if (dimension > 4096) {
-        throw std::invalid_argument("SparseSymmetricMatrix dimension exceeds 4096 limit");
-    }
     if (column_offsets.size() != dimension + 1) {
         throw std::invalid_argument("SparseSymmetricMatrix invalid column_offsets size");
     }
@@ -139,70 +140,248 @@ void QuadraticModel::validate() const {
     }
 }
 
-bool check_convexity(const SparseSymmetricMatrix& P, double tolerance) {
+ConvexityReport assess_convexity(const SparseSymmetricMatrix& P, double tolerance,
+                                std::size_t maximum_factor_nonzeros,
+                                std::optional<std::chrono::steady_clock::time_point> deadline) {
+    ConvexityReport report;
+    report.minimum_pivot = std::numeric_limits<double>::infinity();
     const std::size_t n = P.dimension;
+    if (!std::isfinite(tolerance) || tolerance < 0.0 || maximum_factor_nonzeros == 0) {
+        report.message = "invalid convexity-check tolerance or fill limit";
+        return report;
+    }
+    try {
+        P.validate();
+    } catch (const std::exception& e) {
+        report.message = std::string("invalid sparse symmetric matrix: ") + e.what();
+        return report;
+    }
     if (n == 0) {
-        return true;
+        report.status = ConvexityStatus::positive_semidefinite;
+        report.minimum_pivot = 0.0;
+        report.message = "empty matrix is positive semidefinite";
+        return report;
     }
-    // Check diagonal elements first: P_ii < -tolerance implies non-convexity immediately
-    std::vector<double> diag(n, 0.0);
-    for (std::size_t j = 0; j < n; ++j) {
-        const std::size_t start = P.column_offsets[j];
-        const std::size_t end = P.column_offsets[j + 1];
-        for (std::size_t k = start; k < end; ++k) {
-            if (P.row_indices[k] == j) {
-                diag[j] = P.values[k];
-                if (diag[j] < -tolerance) {
-                    return false;
-                }
-            }
-        }
-    }
+    const auto deadline_expired = [&]() {
+        return deadline && std::chrono::steady_clock::now() >= *deadline;
+    };
+    std::size_t work = 0;
 
-    // Dense LDL^T factorization check for n <= 4096
-    // Work with active symmetric submatrix
-    std::vector<double> A_dense(n * n, 0.0);
+    double matrix_scale = 1.0;
+    for (double value : P.values) {
+        if (!std::isfinite(value)) {
+            report.message = "matrix contains a non-finite coefficient";
+            return report;
+        }
+        matrix_scale = std::max(matrix_scale, std::abs(value));
+    }
+    const double pivot_tolerance = tolerance * matrix_scale;
+    std::vector<double> diagonal(n, 0.0);
+    std::vector<std::map<std::size_t, double>> adjacency(n);
+    std::size_t stored_edges = 0;
     for (std::size_t j = 0; j < n; ++j) {
-        const std::size_t start = P.column_offsets[j];
-        const std::size_t end = P.column_offsets[j + 1];
-        for (std::size_t k = start; k < end; ++k) {
+        for (std::size_t k = P.column_offsets[j]; k < P.column_offsets[j + 1]; ++k) {
+            if ((++work & 1023U) == 0U && deadline_expired()) {
+                report.deadline_reached = true;
+                report.message = "deadline reached while building sparse convexity matrix";
+                return report;
+            }
             const std::size_t i = P.row_indices[k];
-            const double v = P.values[k];
-            A_dense[i * n + j] = v;
-            A_dense[j * n + i] = v;
+            const double value = P.values[k];
+            if (i == j) {
+                diagonal[j] += value;
+            } else {
+                adjacency[i][j] += value;
+                adjacency[j][i] += value;
+                ++stored_edges;
+            }
         }
     }
+    report.factor_nonzeros += n;
+    if (stored_edges + n > maximum_factor_nonzeros) {
+        report.message = "input sparsity exceeds the convexity checker fill budget";
+        return report;
+    }
 
-    // Diagonal Gaussian elimination
-    for (std::size_t k = 0; k < n; ++k) {
-        const double pivot = A_dense[k * n + k];
-        if (pivot < -tolerance) {
-            return false;
+    // Minimum-degree pivot ordering controls sparse fill; negative diagonal
+    // values remain direct witnesses of non-convexity.
+    using Pivot = std::tuple<std::size_t, double, std::size_t, std::size_t>;
+    std::priority_queue<Pivot, std::vector<Pivot>, std::greater<Pivot>> pivots;
+    std::vector<std::size_t> versions(n, 0);
+    std::vector<bool> is_active(n, true);
+    for (std::size_t j = 0; j < n; ++j) {
+        pivots.emplace(adjacency[j].size(), -diagonal[j], j, versions[j]);
+    }
+    std::size_t remaining = n;
+    while (remaining > 0) {
+        if (deadline_expired()) {
+            report.deadline_reached = true;
+            report.message = "deadline reached during sparse convexity factorization";
+            return report;
         }
-        if (std::abs(pivot) <= tolerance) {
-            // Check if entire row k is zero. If non-zero entry exists, matrix is indefinite.
-            for (std::size_t j = k + 1; j < n; ++j) {
-                if (std::abs(A_dense[k * n + j]) > tolerance) {
-                    return false;
+        while (!pivots.empty() &&
+               (!is_active[std::get<2>(pivots.top())] ||
+                std::get<3>(pivots.top()) != versions[std::get<2>(pivots.top())])) {
+            pivots.pop();
+        }
+        if (pivots.empty()) {
+            report.message = "sparse LDL pivot queue exhausted before completion";
+            return report;
+        }
+        const std::size_t k = std::get<2>(pivots.top());
+        const double pivot = -std::get<1>(pivots.top());
+        pivots.pop();
+        report.minimum_pivot = std::min(report.minimum_pivot, pivot);
+        if (pivot < -pivot_tolerance) {
+            report.status = ConvexityStatus::non_convex;
+            std::ostringstream detail;
+            detail.precision(17);
+            detail << "negative LDL pivot " << pivot << " at variable " << k
+                   << " certifies a non-convex direction";
+            report.message = detail.str();
+            return report;
+        }
+
+        if (pivot <= pivot_tolerance) {
+            bool any_edge = false;
+            double largest_edge = 0.0;
+            for (std::size_t i = 0; i < n; ++i) {
+                if (is_active[i] && i != k) {
+                    const auto found = adjacency[i].find(k);
+                    if (found != adjacency[i].end() && found->second != 0.0) {
+                        any_edge = true;
+                        largest_edge = std::max(largest_edge, std::abs(found->second));
+                    }
                 }
             }
+            if (any_edge) {
+                // A computed zero pivot with a nonzero Schur-complement edge
+                // is an exact-arithmetic indefiniteness witness, but sparse
+                // floating-point elimination can create tiny residual edges
+                // for singular PSD matrices. Without a backward-error bound,
+                // rejecting the input as non-convex would be unsound.
+                std::ostringstream detail;
+                detail.precision(17);
+                detail << "near-zero diagonal " << pivot << " at variable " << k
+                       << " with active edge " << largest_edge
+                       << " is numerically indeterminate";
+                report.message = detail.str();
+                return report;
+            }
+            for (const auto& [i, value] : adjacency[k]) {
+                (void)value;
+                adjacency[i].erase(k);
+                --stored_edges;
+                ++versions[i];
+                pivots.emplace(adjacency[i].size(), -diagonal[i], i, versions[i]);
+            }
+            is_active[k] = false;
+            --remaining;
+            adjacency[k].clear();
             continue;
         }
-        for (std::size_t i = k + 1; i < n; ++i) {
-            const double factor = A_dense[i * n + k] / pivot;
-            if (std::abs(factor) <= 1e-15) {
-                continue;
+
+        std::vector<std::pair<std::size_t, double>> pivot_neighbors;
+        pivot_neighbors.reserve(adjacency[k].size());
+        for (const auto& [i, value] : adjacency[k]) {
+            if (is_active[i] && value != 0.0) {
+                pivot_neighbors.emplace_back(i, value);
             }
-            for (std::size_t j = i; j < n; ++j) {
-                const double update = factor * A_dense[k * n + j];
-                A_dense[i * n + j] -= update;
-                if (i != j) {
-                    A_dense[j * n + i] -= update;
+        }
+        if (pivot_neighbors.size() > maximum_factor_nonzeros - report.factor_nonzeros) {
+            report.message = "sparse LDL factor exceeded the convexity checker fill budget";
+            return report;
+        }
+        report.factor_nonzeros += pivot_neighbors.size();
+
+        if (pivot_neighbors.size() > 1) {
+            const std::size_t m = pivot_neighbors.size();
+            std::size_t new_fill = 0;
+            for (std::size_t a = 0; a < m; ++a) {
+                for (std::size_t b = a + 1; b < m; ++b) {
+                    const auto i = pivot_neighbors[a].first;
+                    const auto j = pivot_neighbors[b].first;
+                    const auto found = adjacency[i].find(j);
+                    if (found == adjacency[i].end() || found->second == 0.0) {
+                        ++new_fill;
+                    }
                 }
+            }
+            if (new_fill > maximum_factor_nonzeros ||
+                stored_edges > maximum_factor_nonzeros - new_fill) {
+                report.message = "sparse LDL pivot would exceed the convexity checker fill budget";
+                return report;
+            }
+        }
+        std::vector<bool> changed(n, false);
+        for (const auto& [i, aik] : pivot_neighbors) {
+            diagonal[i] -= aik * aik / pivot;
+            changed[i] = true;
+        }
+        for (std::size_t a = 0; a < pivot_neighbors.size(); ++a) {
+            const auto [i, aik] = pivot_neighbors[a];
+            for (std::size_t b = a + 1; b < pivot_neighbors.size(); ++b) {
+                if ((++work & 1023U) == 0U && deadline_expired()) {
+                    report.deadline_reached = true;
+                    report.message = "deadline reached during sparse convexity factorization";
+                    return report;
+                }
+                const auto [j, ajk] = pivot_neighbors[b];
+                double target = 0.0;
+                if (const auto found = adjacency[i].find(j); found != adjacency[i].end()) {
+                    target = found->second;
+                }
+                const bool was_zero = target == 0.0;
+                target -= aik * ajk / pivot;
+                if (was_zero && target != 0.0) {
+                    ++stored_edges;
+                    if (stored_edges + n > maximum_factor_nonzeros) {
+                        report.message = "sparse LDL fill exceeded the convexity checker budget";
+                        return report;
+                    }
+                } else if (!was_zero && target == 0.0) {
+                    --stored_edges;
+                    adjacency[i].erase(j);
+                    adjacency[j].erase(i);
+                    changed[i] = changed[j] = true;
+                    continue;
+                } else if (was_zero && target == 0.0) {
+                    continue;
+                }
+                if (was_zero) changed[i] = changed[j] = true;
+                adjacency[i][j] = target;
+                adjacency[j][i] = target;
+            }
+        }
+        for (const auto& [i, value] : pivot_neighbors) {
+            (void)value;
+            if (adjacency[i].erase(k) > 0) {
+                --stored_edges;
+                changed[i] = true;
+            }
+        }
+        adjacency[k].clear();
+        is_active[k] = false;
+        --remaining;
+        for (const auto& [i, value] : pivot_neighbors) {
+            (void)value;
+            if (changed[i]) {
+                ++versions[i];
+                pivots.emplace(adjacency[i].size(), -diagonal[i], i, versions[i]);
             }
         }
     }
-    return true;
+
+    report.status = ConvexityStatus::positive_semidefinite;
+    if (!std::isfinite(report.minimum_pivot)) {
+        report.minimum_pivot = 0.0;
+    }
+    report.message = "sparse LDL pivots are nonnegative within tolerance";
+    return report;
+}
+
+bool check_convexity(const SparseSymmetricMatrix& P, double tolerance) {
+    return assess_convexity(P, tolerance).status == ConvexityStatus::positive_semidefinite;
 }
 
 QuadraticModel make_quadratic_model(const model::Model& model) {
@@ -228,18 +407,43 @@ QuadraticModel make_quadratic_model(const model::Model& model) {
     qp.P.column_offsets.assign(n + 1, 0);
     if (model.has_quadratic_objective && model.quadratic_matrix.column_count == n) {
         std::vector<std::vector<std::pair<std::size_t, double>>> upper_entries(n);
+        struct SymmetricPair {
+            double upper{0.0};
+            double lower{0.0};
+            bool has_upper{false};
+            bool has_lower{false};
+        };
+        std::map<std::pair<std::size_t, std::size_t>, SymmetricPair> symmetric_pairs;
         for (std::size_t j = 0; j < n; ++j) {
             const std::size_t start = model.quadratic_matrix.column_start[j];
             const std::size_t end = model.quadratic_matrix.column_start[j + 1];
             for (std::size_t k = start; k < end; ++k) {
                 const std::size_t i = model.quadratic_matrix.row_index[k];
                 const double v = sign * model.quadratic_matrix.value[k];
+                auto& pair = symmetric_pairs[{std::min(i, j), std::max(i, j)}];
                 if (i <= j) {
-                    upper_entries[j].emplace_back(i, v);
+                    pair.upper += v;
+                    pair.has_upper = true;
                 } else {
-                    upper_entries[i].emplace_back(j, v);
+                    pair.lower += v;
+                    pair.has_lower = true;
                 }
             }
+        }
+        // Parsed QUADOBJ matrices contain a mirrored pair; QMATRIX inputs may
+        // already be full symmetric or provide one triangle. Convert either
+        // representation to the single upper-triangle value expected by
+        // SparseSymmetricMatrix. Averaging a pair also gives the mathematically
+        // relevant symmetric part when a supplied quadratic matrix is slightly
+        // asymmetric, since x^T Q x = x^T (Q + Q^T)/2 x.
+        for (const auto& [indices, pair] : symmetric_pairs) {
+            double value = 0.0;
+            if (pair.has_upper && pair.has_lower) {
+                value = 0.5 * (pair.upper + pair.lower);
+            } else {
+                value = pair.has_upper ? pair.upper : pair.lower;
+            }
+            upper_entries[indices.second].emplace_back(indices.first, value);
         }
         for (std::size_t j = 0; j < n; ++j) {
             std::sort(upper_entries[j].begin(), upper_entries[j].end(),

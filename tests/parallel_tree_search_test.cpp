@@ -2,6 +2,7 @@
 #include "markov_cero/verify/primal_verifier.hpp"
 
 #include <cassert>
+#include <chrono>
 #include <cmath>
 #include <iostream>
 #include <string>
@@ -160,6 +161,20 @@ void test_knapsack_multi_threads() {
         assert(std::abs(res.primal[2] - 0.0) < 1e-5);
     }
 
+    auto expired_options = opt2;
+    expired_options.deadline = std::chrono::steady_clock::now() - std::chrono::seconds(1);
+    const auto expired = markov_cero::milp::solve_parallel(model, expired_options);
+    assert(expired.status == markov_cero::lp::reference::SolveStatus::resource_limit);
+    assert(expired.status != markov_cero::lp::reference::SolveStatus::optimal);
+
+    auto capped_options = opt4;
+    capped_options.max_nodes = 1;
+    capped_options.enable_heuristics = false;
+    capped_options.enable_cuts = false;
+    capped_options.enable_strong_branching = false;
+    const auto capped = markov_cero::milp::solve_parallel(model, capped_options);
+    assert(capped.status == markov_cero::lp::reference::SolveStatus::resource_limit);
+
     std::cout << "[+] test_knapsack_multi_threads passed (1, 2, 4 threads verified)\n";
 }
 
@@ -278,21 +293,73 @@ void test_thread_safe_queue_unit() {
     queue.prune(15.0);
     assert(queue.size() == 2);
 
+    // RW-2: batch pop — one acquisition returns the best-bounded nodes.
     bool became_active = false;
-    auto popped1 = queue.pop_node(false, 100.0, became_active);
-    assert(popped1 != nullptr);
-    assert(popped1->id == 2); // lowest lower bound popped first
-    assert(became_active);
-
-    auto popped2 = queue.pop_node(true, 100.0, became_active);
-    assert(popped2 != nullptr);
-    assert(popped2->id == 1);
+    auto batch = queue.pop_batch(false, 100.0, became_active);
+    assert(batch.size() == 2);
+    assert(batch[0]->id == 2); // lowest lower bound first
+    assert(batch[1]->id == 1);
     assert(became_active);
 
     queue.deactivate_worker();
     assert(queue.empty());
 
-    std::cout << "[+] test_thread_safe_queue_unit passed\n";
+    std::cout << "[+] test_thread_safe_queue_unit passed (batch API)\n";
+}
+
+void test_queue_lazy_prune_batch() {
+    // RW-2: stale nodes (below the cutoff) are filtered at pop time without a
+    // global heap compaction on each prune request.
+    markov_cero::milp::ThreadSafeNodeQueue queue;
+    for (std::size_t i = 0; i < 20; ++i) {
+        auto n = std::make_shared<markov_cero::milp::BranchNode>();
+        n->id = i;
+        n->lower_bound = static_cast<double>(i); // bounds 0..19
+        queue.push(n);
+    }
+
+    bool became_active = false;
+    // Cutoff 10.0 discards bounds 10..19 lazily and returns the 10 best.
+    auto batch = queue.pop_batch(false, 10.0, became_active, 16);
+    assert(batch.size() == 10);
+    assert(batch.front()->lower_bound <= batch.back()->lower_bound + 1e-12);
+    for (const auto& n : batch) {
+        assert(n->lower_bound < 10.0);
+    }
+
+    // Next batch drains the remainder (empty -> only when quiescent or stopped;
+    // here one worker was activated then deactivated by the next call chain).
+    queue.deactivate_worker();
+    auto empty_batch = queue.pop_batch(false, 10.0, became_active);
+    assert(empty_batch.empty()); // heap only holds pruned nodes; quiescent => stopped
+
+    std::cout << "[+] test_queue_lazy_prune_batch passed\n";
+}
+
+void test_queue_batch_interleave_order() {
+    // RW-2: a batch is interleaved (best, worst, 2nd-best, ...) at the worker
+    // level; the queue itself must hand out nodes in strict best-bound order so
+    // interleaving preserves global best-first semantics.
+    markov_cero::milp::ThreadSafeNodeQueue queue;
+    const double bounds[] = {5.0, 1.0, 9.0, 3.0, 7.0};
+    for (std::size_t i = 0; i < 5; ++i) {
+        auto n = std::make_shared<markov_cero::milp::BranchNode>();
+        n->id = 100 + i;
+        n->lower_bound = bounds[i];
+        queue.push(n);
+    }
+
+    bool became_active = false;
+    auto batch = queue.pop_batch(false, 100.0, became_active, 4);
+    assert(batch.size() == 4);
+    // Expected best-bound order: 1, 3, 5, 7
+    const double expect[] = {1.0, 3.0, 5.0, 7.0};
+    for (std::size_t i = 0; i < 4; ++i) {
+        assert(std::abs(batch[i]->lower_bound - expect[i]) < 1e-12);
+    }
+    queue.deactivate_worker();
+
+    std::cout << "[+] test_queue_batch_interleave_order passed\n";
 }
 
 void test_incumbent_manager_unit() {
@@ -333,6 +400,8 @@ void test_incumbent_manager_unit() {
 int main() {
     try {
         test_thread_safe_queue_unit();
+        test_queue_lazy_prune_batch();
+        test_queue_batch_interleave_order();
         test_incumbent_manager_unit();
         test_knapsack_multi_threads();
         test_refinery_dispatch_multi_threads();

@@ -5,6 +5,7 @@
 #include "markov_cero/model/model.hpp"
 
 #include <cstddef>
+#include <chrono>
 #include <limits>
 #include <optional>
 #include <vector>
@@ -18,6 +19,10 @@ struct StrongBranchingCandidate {
     double score{0.0};
     bool is_down_infeasible{false};
     bool is_up_infeasible{false};
+    // A zero degradation is a valid target only when the child LP was solved
+    // optimally. Resource/iteration-limited probes are unresolved labels.
+    bool down_resolved{false};
+    bool up_resolved{false};
 };
 
 struct DomainReduction {
@@ -34,6 +39,7 @@ struct StrongBranchingOptions {
     double integrality_tolerance{1e-6};
     double feasibility_tolerance{1e-7};
     bool update_pseudo_costs{true};
+    std::optional<std::chrono::steady_clock::time_point> deadline;
 };
 
 struct StrongBranchingResult {
@@ -42,6 +48,7 @@ struct StrongBranchingResult {
     std::vector<StrongBranchingCandidate> candidates;
     std::vector<DomainReduction> domain_reductions;
     bool subproblem_infeasible{false};
+    bool deadline_reached{false};
 };
 
 [[nodiscard]] double compute_strong_branching_score(double delta_down, double delta_up,

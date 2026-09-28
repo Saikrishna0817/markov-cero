@@ -6,40 +6,62 @@
 #include <limits>
 
 namespace markov_cero::milp {
+namespace {
+
+// Maximum nodes handed out by one pop_batch call. Amortizes queue-lock
+// contention over a subtree slice instead of one mutex round-trip per node,
+// and removes the per-pop O(n) heap prune that serialized all workers (RW-2).
+constexpr std::size_t kDefaultBatchSize = 16;
+
+// Discarded (stale) pops tolerated before the heap is compacted. Keeps the
+// heap from retaining null/stale entries without paying a full make_heap on
+// every prune request.
+constexpr std::size_t kPruneCompactionThreshold = 64;
+
+// Bounded wait so a worker blocked on an empty (but non-quiescent) queue
+// re-checks external stop conditions (time/node limits) periodically.
+constexpr auto kWaitSlice = std::chrono::milliseconds(2);
+
+} // namespace
 
 void ThreadSafeNodeQueue::push(std::shared_ptr<BranchNode> node) {
     if (!node) {
         return;
     }
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (stopped_) {
-        return;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (stopped_) {
+            return;
+        }
+        heap_.push_back(std::move(node));
+        std::push_heap(heap_.begin(), heap_.end(), comparator_);
     }
-    heap_.push_back(std::move(node));
-    std::push_heap(heap_.begin(), heap_.end(), NodeCompareBestBound{});
     cv_.notify_one();
 }
 
 void ThreadSafeNodeQueue::push_children(std::shared_ptr<BranchNode> left,
                                         std::shared_ptr<BranchNode> right) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (stopped_) {
-        return;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (stopped_) {
+            return;
+        }
+        bool pushed = false;
+        if (left) {
+            heap_.push_back(std::move(left));
+            std::push_heap(heap_.begin(), heap_.end(), comparator_);
+            pushed = true;
+        }
+        if (right) {
+            heap_.push_back(std::move(right));
+            std::push_heap(heap_.begin(), heap_.end(), comparator_);
+            pushed = true;
+        }
+        if (!pushed) {
+            return;
+        }
     }
-    bool pushed = false;
-    if (left) {
-        heap_.push_back(std::move(left));
-        std::push_heap(heap_.begin(), heap_.end(), NodeCompareBestBound{});
-        pushed = true;
-    }
-    if (right) {
-        heap_.push_back(std::move(right));
-        std::push_heap(heap_.begin(), heap_.end(), NodeCompareBestBound{});
-        pushed = true;
-    }
-    if (pushed) {
-        cv_.notify_all();
-    }
+    cv_.notify_all();
 }
 
 void ThreadSafeNodeQueue::push_branch_children(
@@ -87,6 +109,66 @@ void ThreadSafeNodeQueue::push_branch_children(
     push_children(std::move(down_child), std::move(up_child));
 }
 
+std::vector<std::shared_ptr<BranchNode>>
+ThreadSafeNodeQueue::pop_batch(bool was_active, double prune_cutoff, bool& became_active,
+                               std::size_t max_batch) {
+    std::unique_lock<std::mutex> lock(mutex_);
+
+    if (was_active) {
+        if (active_workers_ > 0) {
+            --active_workers_;
+        }
+    }
+    became_active = false;
+
+    while (!stopped_) {
+        // Extract up to max_batch best-bounded live nodes in one critical
+        // section. Stale nodes (below the cutoff) are skipped lazily; the
+        // heap is compacted only after a discard threshold accumulates.
+        std::vector<std::shared_ptr<BranchNode>> batch;
+        batch.reserve(max_batch);
+        while (!heap_.empty() && batch.size() < max_batch) {
+            std::pop_heap(heap_.begin(), heap_.end(), comparator_);
+            auto node = std::move(heap_.back());
+            heap_.pop_back();
+            if (!node || node->lower_bound >= prune_cutoff) {
+                ++prune_lazily_discarded_;
+                continue;
+            }
+            batch.push_back(std::move(node));
+        }
+
+        if (prune_lazily_discarded_ >= kPruneCompactionThreshold && heap_.size() > 16) {
+            heap_.erase(std::remove_if(heap_.begin(), heap_.end(),
+                                       [](const std::shared_ptr<BranchNode>& n) { return !n; }),
+                        heap_.end());
+            std::make_heap(heap_.begin(), heap_.end(), comparator_);
+            prune_lazily_discarded_ = 0;
+        }
+
+        if (!batch.empty()) {
+            active_workers_ += 1; // one activity claim per batch (per worker)
+            became_active = true;
+            return batch;
+        }
+
+        // Heap drained. Terminate only when no worker holds unprocessed work.
+        if (active_workers_ == 0) {
+            stopped_ = true;
+            cv_.notify_all();
+            return batch; // empty
+        }
+
+        // Work may still be in flight elsewhere: wait briefly and re-check.
+        // prune_cutoff staleness across waits is benign: the incumbent only
+        // improves, so a looser cutoff can at worst surface an already-pruned
+        // node, which the caller re-checks against the live incumbent anyway.
+        cv_.wait_for(lock, kWaitSlice);
+    }
+
+    return {};
+}
+
 void ThreadSafeNodeQueue::prune_locked(double cutoff) {
     if (heap_.empty()) {
         return;
@@ -97,65 +179,36 @@ void ThreadSafeNodeQueue::prune_locked(double cutoff) {
                              });
     if (it != heap_.end()) {
         heap_.erase(it, heap_.end());
-        std::make_heap(heap_.begin(), heap_.end(), NodeCompareBestBound{});
+        std::make_heap(heap_.begin(), heap_.end(), comparator_);
     }
 }
 
 void ThreadSafeNodeQueue::prune(double cutoff) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    prune_locked(cutoff);
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        prune_locked(cutoff);
+    }
     cv_.notify_all();
 }
 
-std::shared_ptr<BranchNode> ThreadSafeNodeQueue::pop_node(bool was_active, double prune_cutoff,
-                                                          bool& became_active) {
-    std::unique_lock<std::mutex> lock(mutex_);
-    if (was_active) {
+void ThreadSafeNodeQueue::deactivate_worker() {
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
         if (active_workers_ > 0) {
             --active_workers_;
         }
-    }
-    became_active = false;
-
-    while (!stopped_) {
-        prune_locked(prune_cutoff);
-
-        if (!heap_.empty()) {
-            std::pop_heap(heap_.begin(), heap_.end(), NodeCompareBestBound{});
-            auto node = std::move(heap_.back());
-            heap_.pop_back();
-
-            ++active_workers_;
-            became_active = true;
-            return node;
-        }
-
-        if (active_workers_ == 0) {
+        if (active_workers_ == 0 && heap_.empty()) {
             stopped_ = true;
-            cv_.notify_all();
-            return nullptr;
         }
-
-        cv_.wait_for(lock, std::chrono::milliseconds(20));
     }
-
-    return nullptr;
-}
-
-void ThreadSafeNodeQueue::deactivate_worker() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (active_workers_ > 0) {
-        --active_workers_;
-    }
-    if (active_workers_ == 0 && heap_.empty()) {
-        stopped_ = true;
-        cv_.notify_all();
-    }
+    cv_.notify_all();
 }
 
 void ThreadSafeNodeQueue::request_stop() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    stopped_ = true;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        stopped_ = true;
+    }
     cv_.notify_all();
 }
 
@@ -184,7 +237,21 @@ double ThreadSafeNodeQueue::min_lower_bound() const {
     if (heap_.empty()) {
         return std::numeric_limits<double>::infinity();
     }
-    return heap_.front()->lower_bound;
+    // Under best_bound ordering the heap front is the minimum-bound node;
+    // under depth_first / best_bound_dive it is the deepest / dive-scored
+    // node, and using it as the frontier bound would close the optimality
+    // gap spuriously (false "Optimal" — same R13/R17 hazard as the
+    // sequential NodeFrontier). Other policies scan the heap.
+    if (comparator_.policy == NodeSelection::best_bound) {
+        return heap_.front()->lower_bound;
+    }
+    double bound = std::numeric_limits<double>::infinity();
+    for (const auto& node : heap_) {
+        if (node && node->lower_bound < bound) {
+            bound = node->lower_bound;
+        }
+    }
+    return bound;
 }
 
 void ThreadSafeNodeQueue::notify_all() { cv_.notify_all(); }

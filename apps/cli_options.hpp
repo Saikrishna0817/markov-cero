@@ -4,6 +4,7 @@
 #include "markov_cero/milp/milp_solver.hpp"
 
 #include <cerrno>
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -15,6 +16,10 @@ struct CliOptions {
     std::string output_path;
     std::string engine_name = "auto";
     std::size_t num_threads = 4;
+    // True only when the user passed --threads on the command line. The W6
+    // auto-dispatch upgrade milp->parallel keys on an explicit request, not on
+    // the compiled-in default (see docs/engine_selection.md rule 3).
+    bool threads_explicit = false;
     std::string warm_start_path;
     std::string save_basis_path;
     bool enable_presolve = true;
@@ -23,6 +28,7 @@ struct CliOptions {
     std::size_t ruiz_iterations = 10;
     double pdlp_tolerance = 1e-4;
     std::string backend_name = "cpu";
+    double time_limit_seconds{60.0};
 
     lp::reference::Options options;
     milp::Options milp_options;
@@ -35,14 +41,18 @@ struct CliOptions {
         out << "usage: markov-cero-solve MODEL.mps [options]\n"
             << "options:\n"
             << "  --output result.json     Write output JSON to file\n"
-            << "  --engine primal|dual|pdlp|milp|parallel|qp|miqp|auto "
+            << "  --engine primal|dual|ipm|pdlp|milp|parallel|qp|miqp|sqp|outer_approx|auto "
             << "Select solver engine (default: auto)\n"
             << "  --threads N              Worker threads for parallel tree search (default: 4)\n"
-            << "  --branching most_fractional|pseudo_cost|strong_branching|reliability Branching "
-               "variable selection rule (default: pseudo_cost)\n"
+            << "  --branching most_fractional|pseudo_cost|strong_branching|reliability|ml_gnn "
+               "Branching variable selection rule (default: pseudo_cost; ml_gnn needs "
+               "MARKOV_CERO_ENABLE_ML + model file, else falls back to pseudo_cost)\n"
             << "  --iteration-limit N      Maximum simplex iterations\n"
             << "  --max-nodes N            Maximum branch-and-cut search nodes (default: 50000)\n"
-            << "  --time-limit SEC         Maximum search time limit in seconds (default: 60.0)\n"
+            << "  --node-selection best-bound|depth-first|dive  Node selection policy "
+               "(default: best-bound)\n"
+            << "  --time-limit SEC         Maximum solve wall-clock time in seconds (default: 60.0)\n"
+            << "  --mip-gap TOL            Relative MIP gap tolerance (default: 1e-4)\n"
             << "  --cuts, --no-cuts        Enable or disable Gomory & MIR mixed-integer cuts "
                "(default: enabled)\n"
             << "  --heuristics, --no-heuristics Enable or disable primal heuristics (default: "
@@ -84,9 +94,11 @@ struct CliOptions {
                 }
                 parsed.engine_name = argv[++i];
                 if (parsed.engine_name != "primal" && parsed.engine_name != "dual" &&
-                    parsed.engine_name != "pdlp" && parsed.engine_name != "milp" &&
-                    parsed.engine_name != "parallel" && parsed.engine_name != "qp" &&
-                    parsed.engine_name != "miqp" && parsed.engine_name != "auto") {
+                    parsed.engine_name != "ipm" && parsed.engine_name != "pdlp" &&
+                    parsed.engine_name != "milp" && parsed.engine_name != "parallel" &&
+                    parsed.engine_name != "qp" && parsed.engine_name != "miqp" &&
+                    parsed.engine_name != "sqp" && parsed.engine_name != "outer_approx" &&
+                    parsed.engine_name != "auto") {
                     std::cerr << "invalid engine: " << parsed.engine_name << "\n";
                     parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
@@ -99,6 +111,7 @@ struct CliOptions {
                 }
                 parsed.num_threads = std::strtoul(argv[++i], nullptr, 10);
                 if (parsed.num_threads == 0) parsed.num_threads = 1;
+                parsed.threads_explicit = true;
                 continue;
             }
             if (arg == "--branching") {
@@ -117,8 +130,34 @@ struct CliOptions {
                         milp::BranchingStrategy::strong_branching;
                 } else if (bval == "reliability") {
                     parsed.milp_options.branching_strategy = milp::BranchingStrategy::reliability;
+                } else if (bval == "ml_gnn") {
+                    // W2/D-04: ML branching requires explicit opt-in. The
+                    // scorer itself loads only when compiled with
+                    // MARKOV_CERO_ENABLE_ML and the model file exists;
+                    // otherwise the solver falls back to pseudo_cost
+                    // silently (LOCKED activation contract).
+                    parsed.milp_options.branching_strategy = milp::BranchingStrategy::ml_gnn;
                 } else {
                     std::cerr << "invalid branching strategy: " << bval << "\n";
+                    parsed.error = true; parsed.exit_code = 8; return parsed;
+                }
+                continue;
+            }
+            if (arg == "--node-selection") {
+                if (i + 1 >= argc) {
+                    usage(std::cerr);
+                    parsed.error = true; parsed.exit_code = 8; return parsed;
+                }
+                const std::string nval = argv[++i];
+                if (nval == "best-bound") {
+                    parsed.milp_options.node_selection = milp::NodeSelection::best_bound;
+                } else if (nval == "depth-first") {
+                    parsed.milp_options.node_selection = milp::NodeSelection::depth_first;
+                } else if (nval == "dive") {
+                    parsed.milp_options.node_selection =
+                        milp::NodeSelection::best_bound_dive;
+                } else {
+                    std::cerr << "invalid node selection: " << nval << "\n";
                     parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
                 continue;
@@ -136,7 +175,27 @@ struct CliOptions {
                     usage(std::cerr);
                     parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
-                parsed.milp_options.time_limit_seconds = std::strtod(argv[++i], nullptr);
+                char* end = nullptr;
+                errno = 0;
+                parsed.time_limit_seconds = std::strtod(argv[++i], &end);
+                if (errno != 0 || end == nullptr || *end != '\0' ||
+                    !std::isfinite(parsed.time_limit_seconds) ||
+                    parsed.time_limit_seconds <= 0.0) {
+                    std::cerr << "invalid time limit: expected a positive finite number\n";
+                    parsed.error = true;
+                    parsed.exit_code = 8;
+                    return parsed;
+                }
+                parsed.milp_options.time_limit_seconds = parsed.time_limit_seconds;
+                parsed.options.time_limit_seconds = parsed.time_limit_seconds;
+                continue;
+            }
+            if (arg == "--mip-gap" || arg == "--relative-gap") {
+                if (i + 1 >= argc) {
+                    usage(std::cerr);
+                    parsed.error = true; parsed.exit_code = 8; return parsed;
+                }
+                parsed.milp_options.relative_gap_tolerance = std::strtod(argv[++i], nullptr);
                 continue;
             }
             if (arg == "--cuts") {

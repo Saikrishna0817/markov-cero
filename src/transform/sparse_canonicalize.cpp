@@ -92,11 +92,16 @@ std::vector<double> SparseCanonicalModel::multiply_transpose(const std::vector<d
 }
 
 CanonicalModel SparseCanonicalModel::to_dense() const {
-    // Keep in sync with reference simplex dense workspace limits (Phase 2).
-    constexpr std::size_t max_dense_rows = 4096;
+    // RW-5 (R12): the dense fast path covers small/medium models; anything above
+    // it needs a genuinely sparse LP solve path (tracked as P1 work, since the
+    // reference/dual simplex workspaces are dense by design today). The error is
+    // explicit and typed — never a silent wrong answer.
+    constexpr std::size_t max_dense_rows = 4096;   // dual/reference row cap
     constexpr std::size_t max_dense_cols = 16384;
     if (matrix.rows > max_dense_rows || matrix.columns > max_dense_cols) {
-        throw std::length_error("sparse model exceeds dense dimension limits");
+        throw std::length_error("sparse model exceeds dense dimension limits "
+                                "(rows<=4096, cols<=16384); sparse LP solve path "
+                                "not yet implemented (P1)");
     }
     CanonicalModel d;
     d.matrix.rows = matrix.rows;
@@ -130,6 +135,7 @@ SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_inte
     SparseCanonicalModel out;
     out.original_variable_types = in.variable_type;
     out.record.variables.resize(in.matrix.column_count);
+    out.record.rows.resize(in.matrix.row_count);
     out.record.objective_sign = in.objective_sense == model::ObjectiveSense::minimize ? 1.0 : -1.0;
 
     std::vector<double> offset(in.matrix.column_count, 0.0);
@@ -161,6 +167,7 @@ SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_inte
     }
     out.record.structural_variables = structural;
 
+    // Transpose input matrix into row-oriented adjacency for efficient row-wise canonicalization
     struct RowEntry {
         std::size_t col;
         double val;
@@ -184,6 +191,8 @@ SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_inte
 
     auto add_canonical_row = [&](std::size_t orig_row, double sign, double bound, bool need_slack) {
         const std::size_t r = out.rhs.size();
+        out.record.rows[orig_row].canonical_index.push_back(r);
+        out.record.rows[orig_row].multiplier.push_back(sign);
         long double shift = 0.0;
         for (const auto& entry : row_entries[orig_row]) {
             shift += static_cast<long double>(entry.val) * offset[entry.col];
@@ -203,6 +212,7 @@ SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_inte
         out.rhs.push_back(b);
     };
 
+    // 1. Structural constraints
     for (std::size_t i = 0; i < in.matrix.row_count; ++i) {
         const auto lo = in.row_lower[i];
         const auto up = in.row_upper[i];
@@ -218,6 +228,7 @@ SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_inte
         }
     }
 
+    // 2. Box bound constraints on structural variables
     for (std::size_t j = 0; j < in.matrix.column_count; ++j) {
         const auto lo = in.variable_lower[j];
         const auto up = in.variable_upper[j];
@@ -232,6 +243,7 @@ SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_inte
         }
     }
 
+    // 3. Objective vector and constant offset
     const std::size_t total_cols = next_col;
     out.objective.assign(total_cols, 0.0);
     long double obj_shift = 0.0;
@@ -246,6 +258,7 @@ SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_inte
     out.objective_offset =
         out.record.objective_sign * static_cast<double>(obj_shift) + in.objective_offset;
 
+    // 4. Assemble SparseCsc matrix from triplets
     const std::size_t total_rows = out.rhs.size();
     out.matrix.rows = total_rows;
     out.matrix.columns = total_cols;
@@ -259,6 +272,7 @@ SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_inte
     std::size_t current_offset = 0;
     for (std::size_t j = 0; j < total_cols; ++j) {
         out.matrix.column_offsets[j] = current_offset;
+        // Combine entries with identical row index in the same column
         auto& entries = col_entries[j];
         if (entries.size() > 1) {
             std::sort(entries.begin(), entries.end(),

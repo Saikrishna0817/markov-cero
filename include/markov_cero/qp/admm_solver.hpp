@@ -6,6 +6,7 @@
 #include <chrono>
 #include <cstddef>
 #include <string>
+#include <optional>
 #include <vector>
 
 namespace markov_cero::qp {
@@ -17,6 +18,7 @@ enum class QpStatus {
     iteration_limit,
     time_limit,
     non_convex,
+    unsupported,
     numerical_error
 };
 
@@ -32,6 +34,7 @@ struct QpOptions {
     double alpha{1.6};
     std::size_t max_iterations{4000};
     double time_limit_seconds{60.0};
+    std::optional<std::chrono::steady_clock::time_point> deadline;
     bool adaptive_rho{true};
     std::size_t adaptive_rho_interval{25};
     bool verbose{false};
@@ -39,6 +42,7 @@ struct QpOptions {
 
 struct QpSolution {
     QpStatus status{QpStatus::numerical_error};
+    std::string message;
     double objective_value{0.0};
     std::vector<double> x;
     std::vector<double> z;
@@ -47,6 +51,13 @@ struct QpSolution {
     double solve_time_seconds{0.0};
     double primal_residual{0.0};
     double dual_residual{0.0};
+    std::size_t refactorization_count{0};
+    // Pivot-ratio condition proxy of the KKT LDL^T diagonal (max|D|/min|D|).
+    // 0.0 when the KKT system was never factorized.
+    double condition_estimate{0.0};
+    // Telemetry for D-08: true when the GPU ADMM residual path was actually
+    // active (backend requested + thresholds met + CUDA device present).
+    bool gpu_path_active{false};
 };
 
 class AdmmQpSolver {
@@ -55,11 +66,23 @@ public:
 
     [[nodiscard]] QpSolution solve(const QuadraticModel& model);
 
+    // W3/D-08: request the GPU-assisted residual path. Activation still
+    // requires the locked thresholds (NNZ(P) > 100,000 plus a CUDA build with
+    // an sm_50+ device); an unmet request falls back to CPU silently.
+    void set_gpu_backend(bool enable) { gpu_requested_ = enable; }
+
 private:
     QpOptions options_;
+    bool gpu_requested_{false};
 };
 
 /// High-level function to solve a QuadraticModel using ADMM.
 [[nodiscard]] QpSolution solve_qp(const QuadraticModel& model, const QpOptions& options = {});
+
+/// solve_qp variant honoring the W3/D-08 GPU request. The request activates
+/// the GPU residual path only when NNZ(P) > 100,000 and a CUDA device is
+/// available; otherwise it silently matches solve_qp.
+[[nodiscard]] QpSolution solve_qp(const QuadraticModel& model, const QpOptions& options,
+                                  bool gpu_backend_requested);
 
 } // namespace markov_cero::qp

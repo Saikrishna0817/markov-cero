@@ -22,6 +22,8 @@ enum class Section {
     bounds,
     quadobj,
     qmatrix,
+    nlobj,
+    nlcon,
     end
 };
 struct QuadEntry {
@@ -83,7 +85,7 @@ double number(const std::string& text, std::size_t line) {
 bool header(const std::string& token) {
     static const std::vector<std::string> names{"NAME", "OBJSENSE", "OBJNAME", "ROWS",
                                                 "COLUMNS", "RHS", "RANGES", "BOUNDS",
-                                                "QUADOBJ", "QMATRIX", "ENDATA"};
+                                                "QUADOBJ", "QMATRIX", "NLOBJ", "NLCON", "ENDATA"};
     return std::find(names.begin(), names.end(), token) != names.end();
 }
 } // namespace
@@ -111,6 +113,10 @@ model::Model parse_mps(std::istream& input, const MpsLimits& limits) {
     };
     std::vector<Coefficient> coefficients;
     std::vector<QuadEntry> quad_entries;
+    std::vector<model::NlobjTerm> nlobj_terms;
+    std::vector<model::NlconConstraint> nlcon_constraints;
+    std::unordered_map<std::string, std::size_t> nlcon_by_name;
+    std::size_t unnamed_nlcon = 0;
     std::string rhs_vector, range_vector, bound_vector;
     bool in_integer_block = false;
     bool saw_end = false;
@@ -171,7 +177,10 @@ model::Model parse_mps(std::istream& input, const MpsLimits& limits) {
         const auto fields = tokens(line);
         if (fields.empty())
             continue;
-        const std::string first = fields.front();
+        std::string first = fields.front();
+        std::transform(first.begin(), first.end(), first.begin(), [](unsigned char c) {
+            return static_cast<char>(std::toupper(c));
+        });
         if (saw_end)
             throw MpsError(line_number, "content after ENDATA");
         const bool starts_in_col1 = (!raw.empty() && raw.front() != ' ' && raw.front() != '\t');
@@ -204,6 +213,10 @@ model::Model parse_mps(std::istream& input, const MpsLimits& limits) {
                 section = Section::quadobj;
             else if (first == "QMATRIX")
                 section = Section::qmatrix;
+            else if (first == "NLOBJ")
+                section = Section::nlobj;
+            else if (first == "NLCON")
+                section = Section::nlcon;
             else {
                 section = Section::end;
                 saw_end = true;
@@ -374,6 +387,74 @@ model::Model parse_mps(std::istream& input, const MpsLimits& limits) {
             quad_entries.push_back({col1, col2, val, section == Section::quadobj});
             continue;
         }
+        if (section == Section::nlobj) {
+            // D-12/D-20: "COEFF VAR1 [VAR2]" polynomial term, degree <= 2.
+            // Comment lines (leading *) were already skipped by the tokenizer.
+            if (fields.size() != 2U && fields.size() != 3U)
+                throw MpsError(line_number,
+                               "NLOBJ record requires COEFF VAR1 [VAR2]");
+            const double coeff = number(fields[0], line_number);
+            require_name(fields[1]);
+            const auto col0 = column_by_name.find(fields[1]);
+            if (col0 == column_by_name.end())
+                throw MpsError(line_number, "unknown NLOBJ variable: " + fields[1]);
+            const auto var0 = col0->second;
+            if (fields.size() == 3U) {
+                require_name(fields[2]);
+                const auto col1 = column_by_name.find(fields[2]);
+                if (col1 == column_by_name.end())
+                    throw MpsError(line_number, "unknown NLOBJ variable: " + fields[2]);
+                const auto var1 = col1->second;
+                nlobj_terms.push_back({coeff, var0, var1, true});
+            } else {
+                nlobj_terms.push_back({coeff, var0, var0, false});
+            }
+            continue;
+        }
+        if (section == Section::nlcon) {
+            const auto op = std::find(fields.begin(), fields.end(), "<=");
+            if (op == fields.end())
+                throw MpsError(line_number, "NLCON record requires COEFF VAR [VAR] <= RHS [NAME]");
+            const std::size_t op_index = static_cast<std::size_t>(op - fields.begin());
+            if ((op_index != 2U && op_index != 3U) ||
+                (fields.size() != op_index + 2U && fields.size() != op_index + 3U))
+                throw MpsError(line_number, "NLCON record requires COEFF VAR [VAR] <= RHS [NAME]");
+            const double coeff = number(fields[0], line_number);
+            const double rhs = number(fields[op_index + 1U], line_number);
+            require_name(fields[1]);
+            const auto col0 = column_by_name.find(fields[1]);
+            if (col0 == column_by_name.end())
+                throw MpsError(line_number, "unknown NLCON variable: " + fields[1]);
+            std::size_t var1 = col0->second;
+            const bool quadratic = op_index == 3U;
+            std::string name;
+            if (quadratic) {
+                require_name(fields[2]);
+                const auto col1 = column_by_name.find(fields[2]);
+                if (col1 == column_by_name.end())
+                    throw MpsError(line_number, "unknown NLCON variable: " + fields[2]);
+                var1 = col1->second;
+            }
+            if (fields.size() == op_index + 3U) {
+                name = fields[op_index + 2U];
+            } else {
+                name = "nlcon_" + std::to_string(++unnamed_nlcon);
+            }
+            std::size_t idx;
+            const auto found = nlcon_by_name.find(name);
+            if (found == nlcon_by_name.end()) {
+                require_name(name);
+                idx = nlcon_constraints.size();
+                nlcon_by_name.emplace(name, idx);
+                nlcon_constraints.push_back({name, rhs, {}});
+            } else {
+                idx = found->second;
+                if (nlcon_constraints[idx].rhs != rhs)
+                    throw MpsError(line_number, "inconsistent RHS for NLCON constraint: " + name);
+            }
+            nlcon_constraints[idx].terms.push_back({coeff, col0->second, var1, quadratic});
+            continue;
+        }
         throw MpsError(line_number, "record outside a supported section");
     }
     if (!saw_end)
@@ -444,6 +525,9 @@ model::Model parse_mps(std::istream& input, const MpsLimits& limits) {
         result.has_quadratic_objective = true;
         result.quadratic_matrix = q_builder.build();
     }
+    result.has_nlobj_section = !nlobj_terms.empty() || !nlcon_constraints.empty();
+    result.nlobj_terms = std::move(nlobj_terms);
+    result.nlcon_constraints = std::move(nlcon_constraints);
     result.validate();
     return result;
 }

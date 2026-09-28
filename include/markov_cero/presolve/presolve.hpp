@@ -5,6 +5,8 @@
 #include "markov_cero/transform/sparse_canonical_model.hpp"
 
 #include <cstddef>
+#include <chrono>
+#include <optional>
 #include <string>
 
 namespace markov_cero::presolve {
@@ -14,6 +16,7 @@ struct PresolveOptions {
     double feasibility_tolerance{1e-9};
     double dual_tolerance{1e-9};
     double pivot_tolerance{1e-12};
+    std::optional<std::chrono::steady_clock::time_point> deadline;
 };
 
 struct PresolveStatistics {
@@ -22,6 +25,9 @@ struct PresolveStatistics {
     std::size_t empty_cols_removed{};
     std::size_t fixed_vars_removed{};
     std::size_t row_singletons_removed{};
+    std::size_t forcing_rows_removed{};   // AP-9
+    std::size_t duplicate_rows_removed{}; // AP-9
+    std::size_t dominated_cols_removed{}; // AP-9
     std::size_t original_rows{};
     std::size_t original_cols{};
     std::size_t presolved_rows{};

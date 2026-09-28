@@ -3,15 +3,19 @@
 #include "markov_cero/lp/reference/revised_simplex.hpp"
 
 #include <cstddef>
+#include <chrono>
+#include <optional>
 #include <optional>
 #include <string>
 #include <vector>
 
 namespace markov_cero::lp::dual {
 
-// tableau_norm uses ||A^T B^{-T} e_i||^2. That is not conventional dual steepest-edge
-// (||B^{-T} e_i||^2) and must not be advertised as exact DSE.
-enum class PricingPolicy { bland, tableau_norm };
+// Pricing policies:
+// - bland: smallest index anti-cycling rule
+// - tableau_norm: ||A^T B^{-T} e_i||^2
+// - steepest_edge: exact Forrest-Goldfarb dual steepest-edge ||B^{-T} e_i||^2 with O(m) updates
+enum class PricingPolicy { bland, tableau_norm, steepest_edge };
 
 struct BasisState {
     std::size_t rows{};
@@ -29,7 +33,8 @@ struct Options {
     double condition_trigger{1e-14};
     bool harris_ratio{true};
     bool allow_cold_fallback{true};
-    PricingPolicy pricing{PricingPolicy::tableau_norm};
+    PricingPolicy pricing{PricingPolicy::steepest_edge};
+    std::optional<std::chrono::steady_clock::time_point> deadline;
 };
 
 struct IterationRecord {

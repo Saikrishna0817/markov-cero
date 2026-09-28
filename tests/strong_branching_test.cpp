@@ -6,6 +6,7 @@
 #include "markov_cero/verify/primal_verifier.hpp"
 
 #include <cassert>
+#include <chrono>
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -249,6 +250,12 @@ void test_strong_branching_and_domain_reduction() {
 
     const auto sb_res = markov_cero::milp::evaluate_strong_branching(
         model, primal, root_obj, basis_state, sb_opts, &pseudo_costs);
+    auto expired_sb_options = sb_opts;
+    expired_sb_options.deadline = std::chrono::steady_clock::now() - std::chrono::seconds(1);
+    const auto expired_sb = markov_cero::milp::evaluate_strong_branching(
+        model, primal, root_obj, basis_state, expired_sb_options, nullptr);
+    assert(expired_sb.deadline_reached);
+    assert(expired_sb.candidates.empty());
 
     // 1. Verify that candidates were evaluated
     assert(!sb_res.candidates.empty());
@@ -258,6 +265,7 @@ void test_strong_branching_and_domain_reduction() {
     for (const auto& cand : sb_res.candidates) {
         if (cand.variable_index == 0 || cand.variable_index == 1) {
             if (cand.is_down_infeasible) {
+                assert(cand.down_resolved);
                 detected_infeasible_branch = true;
             }
         }
@@ -286,6 +294,19 @@ void test_strong_branching_and_domain_reduction() {
         }
     }
     assert(has_pseudo_cost);
+
+    // An interrupted child LP cannot be converted into a zero-degradation
+    // training/selection label just because it has a primal telemetry point.
+    auto interrupted_opts = sb_opts;
+    interrupted_opts.max_lookahead_iterations = 0;
+    interrupted_opts.update_pseudo_costs = false;
+    const auto interrupted = markov_cero::milp::evaluate_strong_branching(
+        model, primal, root_obj, basis_state, interrupted_opts, nullptr);
+    bool saw_unresolved = false;
+    for (const auto& cand : interrupted.candidates) {
+        saw_unresolved = saw_unresolved || !cand.down_resolved || !cand.up_resolved;
+    }
+    assert(saw_unresolved);
 
     std::cout << "[+] test_strong_branching_and_domain_reduction passed (best_var="
               << sb_res.best_variable << ", score=" << sb_res.best_score

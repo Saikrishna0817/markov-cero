@@ -4,6 +4,8 @@
 #include "markov_cero/model/model.hpp"
 
 #include <cstddef>
+#include <chrono>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -65,8 +67,28 @@ struct QuadraticModel {
     void validate() const;
 };
 
-/// Checks whether a symmetric matrix P is positive semidefinite (convex).
-/// Performs sparse LDL^T inertia decomposition. Returns false if any negative eigenvalue is found.
+enum class ConvexityStatus { positive_semidefinite, non_convex, indeterminate };
+
+struct ConvexityReport {
+    ConvexityStatus status{ConvexityStatus::indeterminate};
+    double minimum_pivot{0.0};
+    std::size_t factor_nonzeros{0};
+    bool deadline_reached{false};
+    std::string message;
+};
+
+/// Numerically classify the inertia of a sparse symmetric matrix using sparse
+/// LDL^T elimination. Near-zero pivots are accepted only when their remaining
+/// row is also zero within tolerance. If fill exceeds the safety cap or
+/// numerical evidence is inconclusive, returns indeterminate (never labels an
+/// unknown matrix non-convex).
+[[nodiscard]] ConvexityReport assess_convexity(
+    const SparseSymmetricMatrix& P, double tolerance = 1e-10,
+    std::size_t maximum_factor_nonzeros = 5U * 1024U * 1024U,
+    std::optional<std::chrono::steady_clock::time_point> deadline = std::nullopt);
+
+/// Compatibility predicate: true only when positive semidefiniteness is
+/// certified within tolerance. Use assess_convexity when the reason matters.
 [[nodiscard]] bool check_convexity(const SparseSymmetricMatrix& P, double tolerance = 1e-10);
 
 /// Converts a parsed model::Model with optional quadratic terms into a canonical QuadraticModel.

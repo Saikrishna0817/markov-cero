@@ -6,7 +6,9 @@
 #include "markov_cero/qp/verifier.hpp"
 
 #include <cmath>
+#include <chrono>
 #include <iostream>
+#include <limits>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -48,6 +50,10 @@ int main() {
         kkt.solve({1.0, 2.0}, {3.0}, sol_x, sol_nu);
         require(sol_x.size() == 2, "sol_x size");
         require(sol_nu.size() == 1, "sol_nu size");
+        require(!kkt.factorize(P, A, sigma, rho,
+                               std::chrono::steady_clock::now() - std::chrono::seconds(1)) &&
+                    kkt.deadline_reached() && !kkt.is_factorized(),
+                "KKT factorization reports an expired deadline without a usable factor");
     }
 
     std::cout << "[Test] 2. Unconstrained Convex QP\n";
@@ -108,6 +114,8 @@ int main() {
 
         const auto model = io::parse_mps_string(mps);
         const auto qp = make_quadratic_model(model);
+        require(std::abs(qp.P.evaluate_energy({1.0, 1.0}) - 8.0) < 1e-12,
+                "QUADOBJ off-diagonal term is represented once in P");
 
         QpOptions opts;
         opts.absolute_tolerance = 1e-5;
@@ -140,6 +148,61 @@ int main() {
 
         const auto sol = solve_qp(qp);
         require(sol.status == QpStatus::non_convex, "solver safely rejected non-convex QP");
+    }
+
+    std::cout << "[Test] 4a. Sparse convexity classification and large dimensions\n";
+    {
+        SparseSymmetricMatrix singular;
+        singular.dimension = 2;
+        singular.column_offsets = {0, 1, 3};
+        singular.row_indices = {0, 0, 1};
+        singular.values = {1.0, 1.0, 1.0};
+        require(assess_convexity(singular).status == ConvexityStatus::positive_semidefinite,
+                "rank-deficient PSD matrix is certified");
+
+        SparseSymmetricMatrix near_singular;
+        near_singular.dimension = 2;
+        near_singular.column_offsets = {0, 1, 3};
+        near_singular.row_indices = {0, 0, 1};
+        near_singular.values = {1e-14, 1.0, 1.0};
+        require(assess_convexity(near_singular).status == ConvexityStatus::non_convex,
+                "symmetric pivoting finds the negative direction despite a tiny leading diagonal");
+
+        const auto fill_limited = assess_convexity(singular, 1e-10, 2);
+        require(fill_limited.status == ConvexityStatus::indeterminate,
+                "fill-budget exhaustion is indeterminate, not non-convex");
+        QuadraticModel uncertifiable;
+        uncertifiable.P.dimension = 1;
+        uncertifiable.P.column_offsets = {0, 1};
+        uncertifiable.P.row_indices = {0};
+        uncertifiable.P.values = {std::numeric_limits<double>::quiet_NaN()};
+        uncertifiable.q = {0.0};
+        uncertifiable.A.rows = 0;
+        uncertifiable.A.columns = 1;
+        uncertifiable.A.column_offsets = {0, 0};
+        require(solve_qp(uncertifiable).status == QpStatus::unsupported,
+                "uncertifiable convexity is returned as unsupported, not non-convex");
+
+        const std::size_t n = 16002;
+        SparseSymmetricMatrix large_diagonal;
+        large_diagonal.dimension = n;
+        large_diagonal.column_offsets.reserve(n + 1);
+        large_diagonal.row_indices.reserve(n);
+        large_diagonal.values.reserve(n);
+        large_diagonal.column_offsets.push_back(0);
+        for (std::size_t j = 0; j < n; ++j) {
+            large_diagonal.row_indices.push_back(j);
+            large_diagonal.values.push_back(1.0);
+            large_diagonal.column_offsets.push_back(j + 1);
+        }
+        const auto large_report = assess_convexity(large_diagonal);
+        require(large_report.status == ConvexityStatus::positive_semidefinite,
+                "16k-variable sparse PSD matrix is certified without dense allocation");
+        require(large_report.factor_nonzeros == n,
+                "large sparse factorization remains linear in diagonal nnz");
+        large_diagonal.values.back() = -1.0;
+        require(assess_convexity(large_diagonal).status == ConvexityStatus::non_convex,
+                "large sparse matrix with negative diagonal is rejected as non-convex");
     }
 
     std::cout << "[Test] 5. Primal Infeasible QP\n";
@@ -261,6 +324,38 @@ int main() {
         require(std::round(res.primal[0]) == 1.0, "x1 is 1");
         require(std::round(res.primal[1]) == 2.0, "x2 is 2");
         require(std::abs(res.objective - 0.68) < 1e-2, "MIQP objective is ~0.68");
+    }
+
+    std::cout << "[Test] 8. Adaptive Rho Update and Refactorization Counter\n";
+    {
+        const std::string mps =
+            "NAME PORTFOLIO\n"
+            "ROWS\n"
+            " N RISK\n"
+            " E BUDGET\n"
+            " G RETURN\n"
+            "COLUMNS\n"
+            " X1 BUDGET 1 RETURN 0.10\n"
+            " X2 BUDGET 1 RETURN 0.15\n"
+            "RHS\n"
+            " RHS1 BUDGET 1 RETURN 0.12\n"
+            "QUADOBJ\n"
+            " X1 X1 4\n"
+            " X1 X2 1\n"
+            " X2 X2 9\n"
+            "ENDATA\n";
+        const auto model = io::parse_mps_string(mps);
+        const auto qp = make_quadratic_model(model);
+        QpOptions opts;
+        opts.adaptive_rho = true;
+        opts.adaptive_rho_interval = 25;
+        opts.rho_init = 0.1;
+        opts.max_iterations = 5000;
+        opts.absolute_tolerance = 1e-4;
+        opts.relative_tolerance = 1e-4;
+        const auto sol = solve_qp(qp, opts);
+        require(sol.status == QpStatus::optimal, "adaptive rho QP optimal");
+        require(sol.refactorization_count > 0, "refactorization occurred during adaptive rho");
     }
 
     std::cout << "[Pass] All QP tests passed successfully!\n";

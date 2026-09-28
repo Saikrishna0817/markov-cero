@@ -5,6 +5,8 @@
 #include "markov_cero/transform/sparse_canonical_model.hpp"
 
 #include <cstddef>
+#include <chrono>
+#include <optional>
 #include <vector>
 
 namespace markov_cero::scale {
@@ -14,6 +16,7 @@ struct RuizOptions {
     double tolerance{1e-3};
     double min_scale{1e-4};
     double max_scale{1e4};
+    std::optional<std::chrono::steady_clock::time_point> deadline;
 };
 
 struct RuizScalers {
@@ -23,6 +26,7 @@ struct RuizScalers {
     std::vector<double> inv_col_scale; // D_C^{-1}
     std::size_t iterations_executed{};
     bool converged{false};
+    bool deadline_reached{false};
 };
 
 [[nodiscard]] RuizScalers equilibrate(transform::SparseCanonicalModel& model,

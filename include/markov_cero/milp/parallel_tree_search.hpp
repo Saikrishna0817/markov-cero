@@ -6,12 +6,15 @@
 #include "markov_cero/model/model.hpp"
 
 #include <cstddef>
+#include <chrono>
+#include <optional>
 
 namespace markov_cero::milp {
 
 struct ParallelOptions {
     std::size_t num_threads{4};
     double time_limit_seconds{60.0};
+    std::optional<std::chrono::steady_clock::time_point> deadline;
     std::size_t max_nodes{50000};
     double relative_gap_tolerance{1e-4};
     double absolute_gap_tolerance{1e-6};
@@ -26,6 +29,8 @@ struct ParallelOptions {
     std::size_t max_cut_rounds{5};
     std::size_t max_pump_iterations{10};
     BranchingStrategy branching_strategy{BranchingStrategy::pseudo_cost};
+    /// R5 node-selection policy shared by all workers (best-bound by default).
+    NodeSelection node_selection{NodeSelection::best_bound};
 };
 
 using ParallelResult = Result;

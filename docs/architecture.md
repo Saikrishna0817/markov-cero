@@ -51,8 +51,10 @@ Comprehensive technical specification of the markov-cero optimization solver arc
 ### Layer 2: Transformation, Presolve & Scaling (`src/transform`, `src/presolve`, `src/scale`)
 - **Canonicalization (`src/transform/canonicalize.cpp`, `sparse_canonicalize.cpp`)**: Converts
   arbitrary bounded linear programs into canonical standard equality form ($Ax = b, x \ge 0$).
-- **Presolve (`src/presolve/presolve.cpp`)**: Multi-pass reduction removing empty rows/columns,
-  fixing singleton bounds, and pushing inverse postsolve operations onto a typed LIFO stack.
+- **Presolve (`src/presolve/presolve.cpp`)**: Multi-pass reduction with seven rule classes —
+  empty rows/columns, row singletons, forcing rows (all-positive coefficients with zero rhs),
+  duplicate rows, dominated duplicate columns, fixed variables, and zero-range infeasibility —
+  pushing inverse, dual-restoring postsolve operations onto a typed LIFO stack.
 - **Ruiz Scaling (`src/scale/ruiz_scaling.cpp`)**: Iterative $\ell_\infty$ equilibration scaling
   matrix rows and columns into $[1 - \epsilon, 1 + \epsilon]$ with $[10^{-4}, 10^4]$ safeguards.
 
@@ -70,6 +72,13 @@ Comprehensive technical specification of the markov-cero optimization solver arc
   ratio test, basis state serialization, warm-starting, and Farkas certificate generation.
 - **First-Order PDLP (`src/lp/first_order/pdlp.cpp`)**: Matrix-free Primal-Dual Hybrid Gradient
   (PDHG / Chambolle-Pock) executing sparse matrix-vector multiplications without matrix inversion.
+- **Interior-Point Method (`src/lp/interior/ipm.cpp`)**: Infeasible-start Mehrotra
+  predictor-corrector on the canonical standard form over Ruiz-equilibrated data, with
+  normal-equation Newton systems $(A D A^T)\,dy = rhs$, $D = \operatorname{diag}(x_j/s_j)$, a
+  diagonal-perturbation fallback for ill-conditioned systems, and a rank-revealing **crossover**
+  that converts the interior optimum into a certified vertex basis (handed to the dual simplex
+  via a warm start). Dispatched with `--engine ipm`; a solve that cannot be certified falls
+  back to the reference primal simplex with honest telemetry.
 
 ### Layer 5: Mixed-Integer Programming Engine (`src/milp`)
 - **Branch-and-Cut (`src/milp/milp_solver.cpp`)**: Tree search manager supporting best-bound,

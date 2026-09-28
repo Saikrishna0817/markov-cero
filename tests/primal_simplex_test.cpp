@@ -83,8 +83,34 @@ int main() {
     bounded_log.iteration_limit = 100000;
     bounded_log.telemetry_limit = 7;
     auto bounded_log_result = lp::reference::solve(cycling, bounded_log);
+    req(bounded_log_result.status == lp::reference::SolveStatus::optimal,
+        "EXPAND anti-stalling resolves cycling without Bland");
+    req(std::abs(bounded_log_result.objective + 1) < 1e-8, "EXPAND cycling objective");
+    req(verify::verify_reference_result(cycling, bounded_log_result).accepted,
+        "EXPAND cycling certificate");
     req(bounded_log_result.telemetry.size() <= 7, "telemetry bounded");
-    req(bounded_log_result.telemetry_truncated, "telemetry truncation reported");
+    // Klee-Minty cube (n=5, Chvatal/Wikipedia scaled, inequality form with slack
+    // columns FIRST so the crash basis is the all-slack origin): Dantzig pricing
+    // takes 9 pivots, overflowing the 3-entry telemetry window and exercising the
+    // truncation flag (EXPAND resolves the Beale example too quickly to overflow it).
+    auto klee_minty =
+        cm(5, 10, {1, 0, 0, 0, 0,   1, 0, 0, 0, 0,
+                   0, 1, 0, 0, 0,   20, 1, 0, 0, 0,
+                   0, 0, 1, 0, 0,   200, 20, 1, 0, 0,
+                   0, 0, 0, 1, 0,   2000, 200, 20, 1, 0,
+                   0, 0, 0, 0, 1,   20000, 2000, 200, 20, 1},
+           {1, 100, 10000, 1000000, 100000000},
+           {0, 0, 0, 0, 0,   -10000, -1000, -100, -10, -1});
+    lp::reference::Options km_options;
+    km_options.bland_anti_cycling = false;
+    km_options.iteration_limit = 100000;
+    km_options.telemetry_limit = 3;
+    auto km_result = lp::reference::solve(klee_minty, km_options);
+    req(km_result.status == lp::reference::SolveStatus::optimal, "Klee-Minty status");
+    req(std::abs(km_result.objective + 1e8) < 1.0, "Klee-Minty objective");
+    req(verify::verify_reference_result(klee_minty, km_result).accepted, "Klee-Minty certificate");
+    req(km_result.telemetry.size() <= 3, "Klee-Minty telemetry bounded");
+    req(km_result.telemetry_truncated, "Klee-Minty telemetry truncation reported");
     auto invalid_ray = ru;
     invalid_ray.ray[0] = -1e-308;
     req(!verify::verify_reference_result(unbounded, invalid_ray).accepted,
@@ -103,5 +129,10 @@ int main() {
     limit.iteration_limit = 1;
     auto rl = lp::reference::solve(cycling, limit);
     req(rl.status == lp::reference::SolveStatus::iteration_limit, "iteration limit");
+    lp::reference::Options deadline;
+    deadline.deadline = std::chrono::steady_clock::now() - std::chrono::seconds(1);
+    auto timed = lp::reference::solve(cycling, deadline);
+    req(timed.status == lp::reference::SolveStatus::resource_limit,
+        "expired wall-clock deadline returns ResourceLimit");
     std::cout << "primal revised simplex tests passed\n";
 }

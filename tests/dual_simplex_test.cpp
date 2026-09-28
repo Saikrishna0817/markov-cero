@@ -54,6 +54,16 @@ int main() {
     bland.harris_ratio = false;
     auto bh = lp::dual::solve(hot_model, bland, parsed);
     req(bh.solution.status == lp::reference::SolveStatus::optimal, "Bland strict ratio");
+    lp::dual::Options dse_opt;
+    dse_opt.pricing = lp::dual::PricingPolicy::steepest_edge;
+    auto dse_res = lp::dual::solve(hot_model, dse_opt, parsed);
+    req(dse_res.solution.status == lp::reference::SolveStatus::optimal, "DSE optimal");
+    req(verify::verify_reference_result(hot_model, dse_res.solution).accepted, "DSE verified");
+    lp::dual::Options tn_opt;
+    tn_opt.pricing = lp::dual::PricingPolicy::tableau_norm;
+    auto tn_res = lp::dual::solve(hot_model, tn_opt, parsed);
+    req(tn_res.solution.status == lp::reference::SolveStatus::optimal, "tableau norm optimal");
+    req(verify::verify_reference_result(hot_model, tn_res.solution).accepted, "tableau norm verified");
     auto duplicate = parsed;
     duplicate.basic_variables[1] = duplicate.basic_variables[0];
     lp::dual::Options no_fallback;

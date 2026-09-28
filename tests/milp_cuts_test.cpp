@@ -63,11 +63,54 @@ void test_gomory_cut_generation() {
     std::cout << "[+] test_gomory_cut_generation passed (" << cuts.size() << " cuts generated)\n";
 }
 
+void test_cover_cut_generation() {
+    markov_cero::model::Model model;
+    model.name = "COVER_TEST";
+    model.objective_sense = markov_cero::model::ObjectiveSense::minimize;
+    model.objective = {-1.0, -1.0, -1.0};
+
+    markov_cero::model::SparseMatrixBuilder builder(1, 3);
+    // 3 x1 + 3 x2 + 3 x3 <= 5
+    builder.add(0, 0, 3.0);
+    builder.add(0, 1, 3.0);
+    builder.add(0, 2, 3.0);
+    model.matrix = builder.build();
+
+    model.row_lower = {markov_cero::model::Bound::negative_infinity()};
+    model.row_upper = {markov_cero::model::Bound::finite(5.0)};
+    model.row_name = {"KNAPSACK"};
+
+    model.variable_lower = {markov_cero::model::Bound::finite(0.0),
+                            markov_cero::model::Bound::finite(0.0),
+                            markov_cero::model::Bound::finite(0.0)};
+    model.variable_upper = {markov_cero::model::Bound::finite(1.0),
+                            markov_cero::model::Bound::finite(1.0),
+                            markov_cero::model::Bound::finite(1.0)};
+    model.variable_type = {markov_cero::model::VariableType::binary,
+                           markov_cero::model::VariableType::binary,
+                           markov_cero::model::VariableType::binary};
+    model.variable_name = {"X1", "X2", "X3"};
+    model.validate();
+
+    // Fractional point: x1 = 0.8333, x2 = 0.8333, x3 = 0.0 (3*0.8333 + 3*0.8333 = 5.0)
+    std::vector<double> frac_primal = {5.0 / 6.0, 5.0 / 6.0, 0.0};
+    const auto cuts = markov_cero::milp::generate_cover_cuts(model, frac_primal, 5);
+    assert(!cuts.empty());
+    for (const auto& cut : cuts) {
+        assert(cut.violation > 0.0);
+        // Valid binary points satisfy the cut: e.g. (1, 0, 0)
+        double lhs = cut.coefficients[0] * 1.0 + cut.coefficients[1] * 0.0 + cut.coefficients[2] * 0.0;
+        assert(lhs >= cut.rhs - 1e-6);
+    }
+    std::cout << "[+] test_cover_cut_generation passed (" << cuts.size() << " cover cuts generated)\n";
+}
+
 } // namespace
 
 int main() {
     try {
         test_gomory_cut_generation();
+        test_cover_cut_generation();
         std::cout << "All cuts tests PASSED successfully!\n";
         return 0;
     } catch (const std::exception& e) {
