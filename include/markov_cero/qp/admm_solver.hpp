@@ -47,6 +47,8 @@ struct QpSolution {
     std::vector<double> x;
     std::vector<double> z;
     std::vector<double> y;
+    std::vector<double> infeasibility_certificate;
+    std::vector<double> unbounded_ray;
     std::size_t iterations{0};
     double solve_time_seconds{0.0};
     double primal_residual{0.0};

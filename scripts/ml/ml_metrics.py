@@ -23,7 +23,7 @@ Definitions (per node record = one ranked candidate list):
                   predicted ranking = predicted score descending (ties broken
                   by candidate index — same "highest score wins" rule the C++
                   solver uses, branch_selector.cpp:181-187)
-                  k defaults: 10 and 20 (PROJECT.md feature 28).
+                  k defaults: 10 and 20.
 
   MSE             mean((predicted - true)^2) over every candidate of the split.
 

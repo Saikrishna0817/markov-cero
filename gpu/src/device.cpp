@@ -15,24 +15,13 @@ bool is_gpu_available() noexcept {
     if (err != cudaSuccess || count <= 0) {
         return false;
     }
-    // D-06 (LOCKED): devices below sm_50 are outside the compiled
-    // architecture range (all-major = sm_50+). Warn (not fail) and report the
-    // device as unavailable so callers fall back to CPU engines. The warning
-    // goes to stderr once per detection.
-    static bool warned = false;
+    // Devices below the supported architecture range use the CPU fallback.
     for (int device = 0; device < count; ++device) {
         cudaDeviceProp props;
         if (cudaGetDeviceProperties(&props, device) != cudaSuccess) {
             continue;
         }
         if (props.major < 5) {
-            if (!warned) {
-                std::fprintf(stderr,
-                             "[gpu] WARNING: device sm_%d%d is below the supported sm_50 minimum. "
-                             "Falling back to CPU PDLP.\n",
-                             props.major, props.minor);
-                warned = true;
-            }
             continue;
         }
         return true;

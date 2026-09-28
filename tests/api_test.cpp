@@ -135,7 +135,9 @@ void test_api_nlp_callbacks_path_a() {
     assert(res.problem_class == "NLP");
     assert(res.classification_reason == "nlp_callbacks");
     assert(res.resolved_engine == "sqp");
-    assert(res.status == markov_cero::lp::reference::SolveStatus::optimal);
+    assert(res.status == markov_cero::lp::reference::SolveStatus::local_optimal);
+    assert(res.certificate_type == "local_kkt");
+    assert(!res.verified); // Local KKT does not establish global optimality.
     assert(res.primal.size() == 2);
     assert(std::abs(res.primal[0] - 1.25) < 1e-4);
     assert(std::abs(res.primal[1] - 1.75) < 1e-4);

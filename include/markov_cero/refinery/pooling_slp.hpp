@@ -4,11 +4,16 @@
 
 #include <cstddef>
 #include <vector>
+#include <string>
+#include <limits>
 
 namespace markov_cero::refinery {
 
 struct HaverlyResult {
     bool converged{false};
+    bool original_feasible{false};
+    double maximum_original_violation{std::numeric_limits<double>::infinity()};
+    std::string termination_reason{"iteration_limit"};
     std::size_t iterations{0};
     double final_pool_quality{0.0};
     double profit{0.0};
@@ -22,7 +27,7 @@ struct HaverlyResult {
 };
 
 /// Solves the Haverly Non-Convex Bilinear Pooling benchmark using Successive Linear Programming (SLP).
-/// Demonstrates non-linear refinery pooling resolution via sequential outer-approximation.
+/// Fixed-quality LP iteration heuristic; convergence does not prove local or global optimality.
 [[nodiscard]] HaverlyResult solve_haverly_pooling(double initial_quality_guess = 2.0,
                                                   std::size_t max_iterations = 50,
                                                   double tolerance = 1e-5);

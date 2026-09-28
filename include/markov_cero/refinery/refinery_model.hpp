@@ -13,7 +13,7 @@ struct CrudeAssay {
     double max_availability_kbpd{0.0};  // Thousand barrels per day (kbpd)
     double api_gravity{0.0};
     double sulfur_wt_pct{0.0};
-    
+
     // Distillation yields (volume fraction summing to ~1.0)
     double lpg_yield{0.0};
     double light_naphtha_yield{0.0};
@@ -37,20 +37,24 @@ struct ProductSpecification {
 };
 
 struct RefineryPlanningConfig {
-    std::string refinery_name{"MRPL_Mangalore_Refinery"};
+    std::string refinery_name{"Synthetic_Volume_Planning"};
     double cdu_capacity_kbpd{300.0};   // CDU throughput limit
     double ccr_capacity_kbpd{50.0};    // Reformer capacity
     double fcc_capacity_kbpd{70.0};    // FCC capacity
     double dhdt_capacity_kbpd{80.0};   // Hydrotreater capacity
-    
+
     std::vector<CrudeAssay> crudes;
     std::vector<ProductSpecification> products;
 };
 
-/// Builds a linear programming Model for refinery crude allocation, unit throughput, and quality blending.
+/// Synthetic volume-planning demonstration, not a plant mass/quality model.
+/// Only the gasoline RON proxy is supported; other quality limits are rejected.
 [[nodiscard]] model::Model build_refinery_lp(const RefineryPlanningConfig& config);
 
-/// Generates standard MRPL reference refinery configuration with Arab Light and Arab Heavy crudes.
+/// Generates explicitly synthetic demonstration data.
+[[nodiscard]] RefineryPlanningConfig make_synthetic_config();
+
+/// Legacy compatibility name; returns synthetic data, never MRPL operating data.
 [[nodiscard]] RefineryPlanningConfig make_standard_mrpl_config();
 
 } // namespace markov_cero::refinery

@@ -1,0 +1,210 @@
+{
+  "name": "Fawley published illustrative benchmark",
+  "source_url": "https://www.gams.com/latest/gamslib_ml/libhtml/gamslib_fawley.html",
+  "reference": "Palmer, A Model Management Framework for Mathematical Programming, 1984; GAMS FAWLEY model 65",
+  "retrieved": "2026-09-28",
+  "provenance": "Numeric facts transcribed from the public model; generator independently implemented. Not MRPL data or plant-approved operating data.",
+  "flow_unit": "1000 tonnes per period",
+  "objective_unit": "1000 historical USD per period",
+  "limitations": ["Historical illustrative model, including lead-additive cost; not a current fuel specification.", "RON and viscosity blending rules are illustrative approximations in the source.", "fuel-equiv and transfers are energy-equivalent accounting quantities, not conserved physical mass."],
+  "barrels_per_m3": 6.29,
+  "lead_cost_per_m3": 3.12,
+  "crudes": {
+    "arabian-l": [110, 35, 24.15, 0.858],
+    "arabian-h": [165, 34, 24.15, 0.886],
+    "brega": [80, 42, 10.05, 0.823]
+  },
+  "crude_columns": ["supply_kt", "price_usd_per_bbl", "transport_usd_per_t", "density_t_per_m3"],
+  "products": {
+    "motor-gas": [40, 430],
+    "jet-fuel": [20, 300],
+    "heat-oil": [50, 315],
+    "fuel-oil": [145, 250]
+  },
+  "product_columns": ["demand_kt", "price_usd_per_t"],
+  "units": {
+    "pipestill": [65, 0.15, 31],
+    "reformer": [7.5, 0.6, 28],
+    "c-cracker": [8, 0.65, 28]
+  },
+  "unit_columns": ["capacity_kbpd", "operating_cost_usd_per_bbl_feed", "days_per_period"],
+  "processes": {
+    "d-arab-l": {
+      "unit": "pipestill",
+      "feed": "arabian-l",
+      "outputs": {
+        "lv-naphtha": 0.035,
+        "iv-naphtha": 0.1,
+        "v-heat-oil": 0.39,
+        "vacuum-dst": 0.285,
+        "res-arab-l": 0.165
+      }
+    },
+    "d-arab-h": {
+      "unit": "pipestill",
+      "feed": "arabian-h",
+      "outputs": {
+        "lv-naphtha": 0.03,
+        "iv-naphtha": 0.075,
+        "v-heat-oil": 0.3,
+        "vacuum-dst": 0.23,
+        "res-arab-h": 0.335
+      }
+    },
+    "d-brega": {
+      "unit": "pipestill",
+      "feed": "brega",
+      "outputs": {
+        "lv-naphtha": 0.045,
+        "iv-naphtha": 0.135,
+        "v-heat-oil": 0.43,
+        "vacuum-dst": 0.28,
+        "res-brega": 0.1
+      }
+    },
+    "reform": {
+      "unit": "reformer",
+      "feed": "iv-naphtha",
+      "outputs": {
+        "butane": 0.02,
+        "reformate": 0.9,
+        "fuel-equiv": 0.08
+      }
+    },
+    "ho-low-s": {
+      "unit": "c-cracker",
+      "feed": "v-heat-oil",
+      "outputs": {
+        "butane": 0.02,
+        "cc-naph-l": 0.275,
+        "cc-dist": 0.68,
+        "fuel-equiv": 0.025
+      }
+    },
+    "ho-high-s": {
+      "unit": "c-cracker",
+      "feed": "v-heat-oil",
+      "outputs": {
+        "butane": 0.0325,
+        "cc-naph-h": 0.3775,
+        "cc-dist": 0.555,
+        "fuel-equiv": 0.035
+      }
+    },
+    "vd-low-s": {
+      "unit": "c-cracker",
+      "feed": "vacuum-dst",
+      "outputs": {
+        "butane": 0.05,
+        "cc-naph-l": 0.325,
+        "cc-dist": 0.585,
+        "fuel-equiv": 0.04
+      }
+    },
+    "vd-high-s": {
+      "unit": "c-cracker",
+      "feed": "vacuum-dst",
+      "outputs": {
+        "butane": 0.06,
+        "cc-naph-h": 0.45,
+        "cc-dist": 0.44,
+        "fuel-equiv": 0.05
+      }
+    }
+  },
+  "recipes": {
+    "heat-oil": [{"v-heat-oil": 1}, {"cc-dist": 1}],
+    "jet-fuel": [{"iv-naphtha": 0.3, "v-heat-oil": 0.7}, {"lv-naphtha": 0.2, "v-heat-oil": 0.8}, {"iv-naphtha": 0.1, "v-heat-oil": 0.1, "cc-dist": 0.8}]
+  },
+  "transfers": {
+    "tr-1": {
+      "feed": "lv-naphtha",
+      "fuel_equiv_yield": 1.11
+    },
+    "tr-2": {
+      "feed": "butane",
+      "fuel_equiv_yield": 1.07
+    }
+  },
+  "blend_components": {
+    "motor-gas": ["lv-naphtha", "butane", "reformate", "cc-naph-l", "cc-naph-h"],
+    "fuel-oil": ["v-heat-oil", "vacuum-dst", "res-arab-l", "res-arab-h", "res-brega", "cc-dist", "fuel-equiv", "fuel-imp"]
+  },
+  "properties": {
+    "butane": {
+      "rvp": 75,
+      "ron": 101.6,
+      "pct-212f": 100,
+      "density": 0.57
+    },
+    "lv-naphtha": {
+      "rvp": 12,
+      "ron": 86.3,
+      "pct-212f": 95,
+      "density": 0.65
+    },
+    "iv-naphtha": {
+      "density": 0.737
+    },
+    "reformate": {
+      "rvp": 6,
+      "ron": 102.5,
+      "pct-212f": 35,
+      "density": 0.865
+    },
+    "cc-naph-l": {
+      "rvp": 7,
+      "ron": 94.9,
+      "pct-212f": 60,
+      "density": 0.73
+    },
+    "cc-naph-h": {
+      "rvp": 9,
+      "ron": 99.1,
+      "pct-212f": 64,
+      "density": 0.75
+    },
+    "v-heat-oil": {
+      "sulfur": 1.0,
+      "vbn": 14.8,
+      "density": 0.886
+    },
+    "vacuum-dst": {
+      "sulfur": 1.7,
+      "vbn": 21.8,
+      "density": 0.92
+    },
+    "res-arab-l": {
+      "sulfur": 4,
+      "vbn": 48
+    },
+    "res-arab-h": {
+      "sulfur": 5,
+      "vbn": 51
+    },
+    "res-brega": {
+      "sulfur": 0.6,
+      "vbn": 44
+    },
+    "cc-dist": {
+      "sulfur": 1.5,
+      "vbn": 18
+    },
+    "fuel-imp": {
+      "sulfur": 3,
+      "vbn": 37.5
+    },
+    "fuel-equiv": {
+      "sulfur": 3.5,
+      "vbn": 44
+    }
+  },
+  "quality_specs": [["motor-gas", "lower", "rvp", 10, "volume"], ["motor-gas", "lower", "ron", 99, "volume"], ["motor-gas", "upper", "pct-212f", 60, "volume"], ["fuel-oil", "upper", "sulfur", 3, "weight"], ["fuel-oil", "upper", "vbn", 37.5, "weight"]],
+  "import_price": {
+    "fuel-imp": 245
+  },
+  "inventory_change": {
+    "cc-naph-l": -0.58,
+    "reformate": 1.65
+  }
+}

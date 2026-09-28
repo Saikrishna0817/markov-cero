@@ -141,15 +141,13 @@ int main() {
         m.variable_name = {"x0", "x1"};
         m.validate();
 
-        req(::setenv("MARKOV_CERO_SB_LOG", log_path.c_str(), 1) == 0,
-            "set training log path");
         milp::Options options;
+        options.strong_branching_log_path = log_path;
         options.branching_strategy = milp::BranchingStrategy::strong_branching;
         options.enable_cuts = false;
         options.enable_heuristics = false;
         options.max_nodes = 16;
         const auto solved = milp::solve(m, options);
-        req(::unsetenv("MARKOV_CERO_SB_LOG") == 0, "clear training log path");
         if (solved.status != lp::reference::SolveStatus::optimal) {
             std::cerr << "feature snapshot fixture: " << lp::reference::to_string(solved.status)
                       << ": " << solved.message << '\n';

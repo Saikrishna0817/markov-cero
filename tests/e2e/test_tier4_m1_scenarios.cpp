@@ -98,7 +98,7 @@ E2E_TEST(T4_APP_02_MarkowitzPortfolioAllocation,
     E2E_ASSERT_NEAR(sol.x[0] + sol.x[1], 1.0, 1e-3, "Budget fully invested");
     E2E_ASSERT(0.10 * sol.x[0] + 0.15 * sol.x[1] >= 0.119, "Target return achieved");
 
-    auto rep = qp::verify_qp_solution(qp, sol, 1e-3);
+    auto rep = qp::verify_qp_solution(qp, sol, 1e-4);
     E2E_ASSERT(rep.passed, "Portfolio KKT verified");
 }
 

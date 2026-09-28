@@ -59,31 +59,11 @@ def find_solver_binary() -> Optional[str]:
 
 
 def ensure_instance(name: str, data_dir: str) -> str:
-    os.makedirs(data_dir, exist_ok=True)
-    mps_path = os.path.join(data_dir, f"{name}.mps")
-    if os.path.isfile(mps_path) and os.path.getsize(mps_path) > 0:
-        return mps_path
-
-    meta = MIPLIB_BENCHMARKS.get(name)
-    if not meta or "url" not in meta:
-        raise ValueError(f"Unknown instance: {name}")
-
-    url = meta["url"]
-    print(f"[*] Downloading {name} from {url}...")
-    req = urllib.request.Request(url, headers={"User-Agent": "markov-cero-runner/1.0"})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        raw = resp.read()
-
-    # Decompress if gzipped
-    if raw[:2] == b"\x1f\x8b":
-        content = gzip.decompress(raw).decode("utf-8")
-    else:
-        content = raw.decode("utf-8")
-
-    with open(mps_path, "w", encoding="utf-8") as f:
-        f.write(content)
-
-    return mps_path
+    target = os.path.join(data_dir, f"{name}.mps")
+    if not os.path.isfile(target) or os.path.getsize(target) == 0:
+        raise FileNotFoundError(
+            f"DatasetUnavailable: {target}; explicitly run scripts/datasets.py --name {name}")
+    return target
 
 
 def run_instance(
@@ -196,12 +176,12 @@ def main():
         meta = MIPLIB_BENCHMARKS[name]
         try:
             mps_file = ensure_instance(name, args.data_dir)
-        except Exception as e:
-            print(f"[-] {name}: Failed to access/download: {e}")
+            res = run_instance(solver, mps_file)
+        except FileNotFoundError as error:
+            print(f"[-] {name}: {error}")
+            res = {"status": "DatasetUnavailable", "verified": False, "exit_code": -1}
             all_passed = False
-            continue
 
-        res = run_instance(solver, mps_file)
         status = res.get("status", "Unknown")
         verified = res.get("verified", False)
         computed_obj = res.get("objective", float("nan"))
@@ -269,7 +249,7 @@ def main():
     # Save CSV
     os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)
     with open(args.output, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=list(results[0].keys()))
+        writer = csv.DictWriter(f, fieldnames=list(results[0].keys()) if results else ["instance", "status"])
         writer.writeheader()
         writer.writerows(results)
 

@@ -42,6 +42,7 @@ struct PrimalVerificationReport final {
                                                      const Candidate& candidate,
                                                      const Tolerance& feasibility_tolerance = {},
                                                      const Tolerance& objective_tolerance = {},
-                                                     double integrality_tolerance = 1e-6);
+                                                     double integrality_tolerance = 1e-6,
+                                                     bool require_integrality = true);
 
 } // namespace markov_cero::verify

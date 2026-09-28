@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=64", "pybind11>=2.12"]
+requires = ["setuptools>=64", "pybind11>=2.12", "cmake>=3.25"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -15,9 +15,6 @@ ml-training = ["torch>=2.9", "onnx>=1.16", "onnxruntime>=1.19"]
 [tool.setuptools]
 package-dir = {"" = "python"}
 packages = ["markov_cero"]
-
-[tool.setuptools.package-data]
-markov_cero = ["*.so", "*.pyd"]
 
 [tool.pytest.ini_options]
 testpaths = ["python/tests"]

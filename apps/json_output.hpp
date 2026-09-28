@@ -20,7 +20,10 @@ namespace markov_cero::apps {
 inline int exit_code(markov_cero::lp::reference::SolveStatus status) {
     using markov_cero::lp::reference::SolveStatus;
     switch (status) {
-    case SolveStatus::optimal: return 0;
+    case SolveStatus::optimal:
+    case SolveStatus::gap_satisfied:
+    case SolveStatus::local_optimal:
+    case SolveStatus::feasible: return 0;
     case SolveStatus::infeasible: return 1;
     case SolveStatus::unbounded: return 2;
     case SolveStatus::invalid_model: return 3;
@@ -89,7 +92,27 @@ inline std::string json_array(const std::vector<double>& values) {
     return o.str();
 }
 
+inline std::string json_array(const std::vector<std::string>& values) {
+    std::string result = "[";
+    for (std::size_t i = 0; i < values.size(); ++i) {
+        if (i) result += ',';
+        result += "\"" + json_escape(values[i]) + "\"";
+    }
+    return result + "]";
+}
+
 struct JsonOutputData {
+    std::string certificate_type;
+    std::shared_ptr<const markov_cero::verify::MipProof> mip_proof;
+    std::string proof_message;
+    std::vector<std::string> variable_names;
+    std::vector<std::string> row_names;
+    std::vector<double> row_activities;
+    std::vector<double> row_lower_slacks;
+    std::vector<double> row_upper_slacks;
+    std::vector<double> row_duals;
+    std::vector<double> reduced_costs;
+
     std::string resolved_engine;
     markov_cero::lp::reference::Result result;
     std::size_t model_rows = 0;
@@ -152,6 +175,14 @@ inline void emit_json_output(const JsonOutputData& data) {
          << "\"rows\":" << data.model_rows << ","
          << "\"cols\":" << data.model_cols << ","
          << "\"nonzeros\":" << data.model_nnz << ","
+         << "\"certificate_type\":\"" << json_escape(data.certificate_type) << "\","
+         << "\"variable_names\":" << json_array(data.variable_names) << ","
+         << "\"row_names\":" << json_array(data.row_names) << ","
+         << "\"row_activities\":" << json_array(data.row_activities) << ","
+         << "\"row_lower_slacks\":" << json_array(data.row_lower_slacks) << ","
+         << "\"row_upper_slacks\":" << json_array(data.row_upper_slacks) << ","
+         << "\"row_duals\":" << json_array(data.row_duals) << ","
+         << "\"reduced_costs\":" << json_array(data.reduced_costs) << ","
          << "\"verified\":" << (data.verified ? "true" : "false") << ","
          << "\"message\":\"" << json_escape(data.result.message) << "\","
          << "\"objective\":"
@@ -230,6 +261,12 @@ inline void emit_json_output(const JsonOutputData& data) {
           << json_escape(data.ml_fallback_reason) << "\"";
     if (!data.convergence_note.empty()) {
         json << ",\"convergence_note\":\"" << json_escape(data.convergence_note) << "\"";
+    }
+    json << ",\"proof_message\":\"" << json_escape(data.proof_message) << "\"";
+    if (data.mip_proof) {
+        std::ostringstream proof;
+        markov_cero::verify::write_mip_proof(proof, *data.mip_proof);
+        json << ",\"mip_proof\":\"" << json_escape(proof.str()) << "\"";
     }
     if (!data.error.empty()) {
         json << ",\"error\":\"" << json_escape(data.error) << "\"";

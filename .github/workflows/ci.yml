@@ -51,6 +51,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Enforce source modularity
+        run: python3 scripts/check_source_limits.py
+
       - name: Configure CMake
         run: |
           cmake -S . -B build \
@@ -84,37 +87,36 @@ jobs:
           MARKOV_CERO_BUILD_DIR: build
 
   cuda-build:
-    # AP-10: the CUDA build path must compile in CI, not only on dev machines.
-    # GPU runners are scarce, so this job validates compilation and the
-    # no-device fallback behavior of the GPU engine; device-timing evidence
-    # stays a local-workstation artifact (see docs/gpu.md).
-    name: cuda-build (compile + fallback)
+    name: CUDA compilation and CPU fallback
     runs-on: ubuntu-latest
+    container: nvidia/cuda:12.6.3-devel-ubuntu24.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install CUDA toolkit (nvcc only, no driver)
+      - name: Install build tools
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends cuda-toolkit-* || \
-            echo "CUDA toolkit unavailable on this runner image"
-
-      - name: Configure CMake with CUDA enabled
+          apt-get update
+          apt-get install -y --no-install-recommends cmake g++ make git python3
+          nvcc --version
+      - uses: actions/checkout@v4
+      - name: Configure actual CUDA compilation
         run: |
           cmake -S . -B build-cuda \
             -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+            -DCMAKE_CUDA_ARCHITECTURES=75 \
             -DMARKOV_CERO_ENABLE_CUDA=ON \
             -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON
-
-      - name: Record whether CUDA was actually enabled
+      - name: Build and confirm CUDA translation units
         run: |
-          grep -E "MARKOV_CERO_HAS_CUDA" build-cuda/*.h 2>/dev/null || true
-          grep -E "MARKOV_CERO_ENABLE_CUDA" build-cuda/CMakeCache.txt || true
+          cmake --build build-cuda --parallel 2
+          python3 -c "import json; c=json.load(open('build-cuda/compile_commands.json')); assert any(x['file'].endswith('.cu') and 'nvcc' in x['command'] for x in c)"
+      - name: Run fallback checks (no GPU device on hosted runner)
+        run: ctest --test-dir build-cuda -R 'gpu|equivalence' --output-on-failure --timeout 180
 
-      - name: Build targets
-        run: cmake --build build-cuda --parallel 2
-
-      - name: Run CUDA-related CTest targets
-        run: |
-          ctest --test-dir build-cuda -R "gpu|equivalence" --output-on-failure --timeout 180
+  ml-build:
+    name: Optional ML compilation and fallback contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build-ml -DCMAKE_BUILD_TYPE=Release -DMARKOV_CERO_ENABLE_ML=ON -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON
+      - run: cmake --build build-ml --parallel 2
+      - run: ctest --test-dir build-ml -R 'ml_branching|strong_branching|mip_proof' --output-on-failure

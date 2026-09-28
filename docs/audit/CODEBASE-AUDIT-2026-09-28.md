@@ -1,4 +1,6 @@
 ---
+
+> Remediation note: this is the pre-fix audit baseline. Current changes and open gates are recorded in INDUSTRY-READINESS-IMPLEMENTATION-PLAN.md; historical defect descriptions below must not be read as current closure status.
 type: audit
 title: Current Codebase Audit — markov-cero
 status: audit-complete-static-review
@@ -18,6 +20,8 @@ The repository is unusually broad for a solver prototype: LP (primal/dual simple
 The codebase has a credible modular solver architecture and has made substantial progress since the older `FINAL-AUDIT-REPORT.md` dated 2026-09-25. That report is stale as a statement of present capability: it says IPM, comparison, in-tree cuts, and API extraction are absent, while current source and `STATUS.md` describe those as implemented. The newer status register is more careful: benchmark coverage and comparison remain partial, GPU speed benefit is unproven, and R20 competitiveness remains unproven.
 
 The most actionable issue found in this review is CI/test-environment wiring. The full CI CTest run invokes tests that require local Python virtual environments which CI never creates or populates. The CUDA job can also report success without compiling any CUDA code. These make the repository's stated CI gates unreliable until addressed.
+
+**Post-review addendum (2026-09-28):** Source inspection and a read-only HiGHS parse also found a release-blocking MPS domain mismatch: after INTORG, explicit LO/LI lower bounds leave the parser's implicit upper bound at 1, while HiGHS reads bundled `gen-ip002` and `gen-ip054` integer columns as unbounded above. This narrows the parser finding to bound overrides; the marker-only 0–1 default itself follows major MPS conventions. See [F-26](sih_2026_findings.md) and the [implementation plan](INDUSTRY-READINESS-IMPLEMENTATION-PLAN.md). The original static review did not include this check.
 
 ## Findings
 

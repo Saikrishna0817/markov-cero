@@ -1,0 +1,259 @@
+#include "api_internal.hpp"
+
+namespace markov_cero::api::detail {
+void run_lp(const model::Model& model, const SolveOptions& options, SolveResult& out, lp::reference::Result& result) {
+    std::optional<lp::dual::BasisState> basis_to_save;
+        const auto sparse_canonical =
+            transform::sparse_canonicalize(model, /*relax_integrality=*/true);
+        if (stop_after_deadline(options, out, result, "LP canonicalization")) return;
+        auto working_model = sparse_canonical;
+
+        bool presolve_applied = false, scaling_applied = false;
+        presolve::PresolveResult presolve_res;
+        scale::RuizScalers scalers;
+
+        if (options.enable_presolve) {
+            presolve::PresolveOptions popts;
+            popts.max_passes = options.max_presolve_passes;
+            popts.deadline = options.lp_options.deadline;
+            presolve_res = presolve::presolve(sparse_canonical, popts);
+            if (stop_after_deadline(options, out, result, "LP presolve")) return;
+            if (presolve_res.status == lp::reference::SolveStatus::infeasible ||
+                presolve_res.status == lp::reference::SolveStatus::unbounded) {
+                result.status = presolve_res.status;
+                result.message = presolve_res.message;
+            } else {
+                working_model = presolve_res.model;
+                presolve_applied = true;
+            }
+        }
+
+        if (result.status != lp::reference::SolveStatus::infeasible &&
+            result.status != lp::reference::SolveStatus::unbounded && options.enable_scale &&
+            working_model.matrix.rows > 0 && working_model.matrix.columns > 0) {
+            scale::RuizOptions ropts;
+            ropts.max_iterations = options.ruiz_iterations;
+            ropts.deadline = options.lp_options.deadline;
+            scalers = scale::equilibrate(working_model, ropts);
+            if (stop_after_deadline(options, out, result, "LP scaling")) return;
+            scaling_applied = true;
+        }
+
+        if (result.status != lp::reference::SolveStatus::infeasible &&
+            result.status != lp::reference::SolveStatus::unbounded) {
+            if (working_model.matrix.rows == 0 || working_model.matrix.columns == 0) {
+                result.status = lp::reference::SolveStatus::optimal;
+                result.primal.assign(working_model.matrix.columns, 0.0);
+                result.dual.assign(working_model.matrix.rows, 0.0);
+                result.objective = 0.0;
+            } else {
+                const auto canonical = working_model.to_dense();
+                if (stop_after_deadline(options, out, result, "dense canonical model conversion")) return;
+                if (out.resolved_engine == "ipm") {
+                    // AP-1 (PS R4): interior-point engine. Same canonical path,
+                    // presolve, scaling and dual-gated verification as the
+                    // simplex engines; crossover converts the interior optimum
+                    // into a certified vertex basis.
+                    lp::interior::Options ipm_opts;
+                    ipm_opts.iteration_limit = 100;
+                    ipm_opts.deadline = options.lp_options.deadline;
+                    if (options.lp_options.iteration_limit > 0 &&
+                        options.lp_options.iteration_limit != 10000) {
+                        ipm_opts.iteration_limit =
+                            std::min<std::size_t>(options.lp_options.iteration_limit, 500);
+                    }
+                    // Documented engine fallback policy, the same contract the
+                    // dual engine applies to an unusable warm start: an IPM
+                    // that cannot certify a solution (numerical failure, or an
+                    // uncertified status such as an iteration limit) falls back
+                    // to the reference primal simplex on the same canonical
+                    // model, with honest telemetry. IPM robustness/fallback is
+                    // exactly the Lustig-Marsten-Shanno (1992) concern; a
+                    // fallback keeps `--engine ipm` a solve-or-certify engine
+                    // instead of a source of uncertified answers.
+                    bool ipm_certified = false;
+                    std::string ipm_failure;
+                    lp::interior::Result ipm_res;
+                    try {
+                        ipm_res = lp::interior::solve(working_model, ipm_opts);
+                        ipm_certified =
+                            ipm_res.status == lp::reference::SolveStatus::optimal;
+                    } catch (const std::exception& e) {
+                        ipm_failure = e.what();
+                    }
+                    if (ipm_certified) {
+                        result.status = lp::reference::SolveStatus::optimal;
+                        result.primal = ipm_res.primal;
+                        result.dual = ipm_res.dual;
+                        result.objective = ipm_res.objective;
+                        result.message = ipm_res.message;
+                        result.condition_estimate = ipm_res.condition_estimate;
+                        out.lp_iterations = ipm_res.iterations;
+                        if (ipm_res.basis_state.has_value()) {
+                            basis_to_save = *ipm_res.basis_state;
+                        }
+                    } else {
+                        result = lp::reference::solve(canonical, options.lp_options);
+                        if (result.status == lp::reference::SolveStatus::optimal &&
+                            result.basis.size() == canonical.matrix.rows) {
+                            // Degenerate optimal bases (duplicate indices after
+                            // the primal engine fixes variables at bounds) cannot
+                            // seed a warm start; the dual engine's own contract is
+                            // "keep the solve result, drop the warm start", so the
+                            // API path mirrors it instead of discarding a verified
+                            // optimum behind a thrown exception.
+                            try {
+                                basis_to_save =
+                                    lp::dual::make_basis_state(canonical, result.basis);
+                            } catch (const std::exception&) {
+                                basis_to_save.reset();
+                            }
+                        }
+                        result.message =
+                            (ipm_failure.empty()
+                                 ? "ipm did not certify (" + ipm_res.message +
+                                       "); reference primal revised simplex fallback"
+                                 : "ipm numerical failure (" + ipm_failure +
+                                       "); reference primal revised simplex fallback");
+                        out.used_cold_fallback = true;
+                    }
+                } else if (out.resolved_engine == "dual") {
+                    lp::dual::Options dual_opts;
+                    dual_opts.iteration_limit = options.lp_options.iteration_limit;
+                    dual_opts.deadline = options.lp_options.deadline;
+                    std::optional<lp::dual::BasisState> warm_basis;
+                    if (!options.warm_start_path.empty()) {
+                        std::ifstream bfile(options.warm_start_path);
+                        if (!bfile) {
+                            throw std::invalid_argument("cannot open warm-start basis file");
+                        }
+                        std::string btext((std::istreambuf_iterator<char>(bfile)),
+                                          std::istreambuf_iterator<char>());
+                        warm_basis = lp::dual::parse_basis(btext);
+                    }
+                    const auto dual_res = lp::dual::solve(canonical, dual_opts, warm_basis);
+                    result = dual_res.solution;
+                    basis_to_save = dual_res.basis_state;
+                    out.used_warm_start = dual_res.used_warm_start;
+                    out.used_cold_fallback = dual_res.used_cold_fallback;
+                } else {
+                    result = lp::reference::solve(canonical, options.lp_options);
+                    if (result.status == lp::reference::SolveStatus::optimal &&
+                        result.basis.size() == canonical.matrix.rows) {
+                        // Same degenerate-basis guard as the ipm-fallback path:
+                        // a warm start is an optimization, never worth more than
+                        // the verified optimum it would be attached to.
+                        try {
+                            basis_to_save = lp::dual::make_basis_state(canonical, result.basis);
+                        } catch (const std::exception&) {
+                            basis_to_save.reset();
+                        }
+                    }
+                    if (result.status == lp::reference::SolveStatus::numerical_failure) {
+                        // Engine fallback policy (same contract as the ipm path
+                        // above, in reverse): a primal simplex that cannot certify
+                        // its answer falls back to the interior-point engine on
+                        // the same canonical model. IPM's normal-equation path is
+                        // immune to the pivot-drift that defeats the simplex on
+                        // degenerate scaled models (scsd1/scsd6). The witness check
+                        // below still gates the final answer, so this cannot turn
+                        // an uncertified result into a "verified" one.
+                        lp::interior::Options ipm_retry;
+                        ipm_retry.iteration_limit = 100;
+                        ipm_retry.deadline = options.lp_options.deadline;
+                        try {
+                            auto ipm_r = lp::interior::solve(working_model, ipm_retry);
+                            if (ipm_r.status == lp::reference::SolveStatus::optimal) {
+                                result.status = lp::reference::SolveStatus::optimal;
+                                result.primal = ipm_r.primal;
+                                result.dual = ipm_r.dual;
+                                result.objective = ipm_r.objective;
+                                result.condition_estimate = ipm_r.condition_estimate;
+                                result.message =
+                                    "simplex numerical failure; ipm fallback optimum";
+                                if (ipm_r.basis_state.has_value()) {
+                                    basis_to_save = *ipm_r.basis_state;
+                                } else {
+                                    basis_to_save.reset();
+                                }
+                                out.used_cold_fallback = true;
+                            }
+                        } catch (const std::exception&) {
+                            // keep the simplex result; honest failure stands
+                        }
+                    }
+                }
+            }
+        }
+
+        if (scaling_applied && result.status == lp::reference::SolveStatus::optimal) {
+            scale::unscale_solution(scalers, result);
+        }
+
+        if (presolve_applied && result.status == lp::reference::SolveStatus::optimal) {
+            result = presolve::postsolve(presolve_res.stack, result, sparse_canonical);
+        }
+
+        const double witness_tolerance = std::max({options.lp_options.feasibility_tolerance,
+                                                   options.lp_options.dual_tolerance, 1e-8});
+        out.canonical_report = verify::verify_sparse_result(sparse_canonical, result,
+                                                            witness_tolerance);
+        out.canonical_verified = out.canonical_report.accepted;
+        out.certificate_type = out.canonical_verified ? "canonical_lp_witness" : "none";
+
+        // C-3: |c^T x - b^T y| of the canonical primal/dual witness.
+        if (result.dual.size() == sparse_canonical.matrix.rows &&
+            result.primal.size() == sparse_canonical.objective.size()) {
+            fill_complementarity_gap(out.diagnostic, sparse_canonical.objective,
+                                     sparse_canonical.rhs, result.primal, result.dual);
+        }
+
+        if ((result.status == lp::reference::SolveStatus::optimal ||
+             result.status == lp::reference::SolveStatus::infeasible ||
+             result.status == lp::reference::SolveStatus::unbounded) &&
+            !out.canonical_verified) {
+            result.status = lp::reference::SolveStatus::numerical_failure;
+            result.message = "canonical witness rejected: " + out.canonical_report.message;
+        }
+
+        if (result.status == lp::reference::SolveStatus::optimal) {
+            out.row_duals.assign(model.matrix.row_count, 0.0);
+            for (std::size_t i = 0; i < sparse_canonical.record.rows.size(); ++i) {
+                const auto& mapping = sparse_canonical.record.rows[i];
+                for (std::size_t k = 0; k < mapping.canonical_index.size(); ++k)
+                    out.row_duals[i] += sparse_canonical.record.objective_sign * mapping.multiplier[k] *
+                        result.dual[mapping.canonical_index[k]];
+            }
+            out.reduced_costs = model.objective;
+            for (std::size_t j = 0; j < model.matrix.column_count; ++j)
+                for (std::size_t k = model.matrix.column_start[j]; k < model.matrix.column_start[j + 1]; ++k)
+                    out.reduced_costs[j] -= model.matrix.value[k] * out.row_duals[model.matrix.row_index[k]];
+            out.original_primal =
+                transform::reconstruct_primal(sparse_canonical, result.primal);
+            out.original_objective =
+                transform::reconstruct_objective(sparse_canonical, result.objective);
+            verify::Candidate candidate{out.original_primal, out.original_objective};
+            out.primal_report = verify::verify_primal(model, candidate);
+            out.original_verified = out.primal_report.passed;
+            out.original_message = out.original_verified ? "original primal verified"
+                                                         : "original primal rejected";
+            if (!out.original_verified) {
+                result.status = lp::reference::SolveStatus::numerical_failure;
+                result.message = "original-model verification failed";
+            } else if (!options.save_basis_path.empty() && basis_to_save.has_value()) {
+                std::ofstream bfile(options.save_basis_path);
+                if (bfile) {
+                    bfile << lp::dual::serialize_basis(*basis_to_save);
+                }
+            }
+            out.nodes_explored = 1;
+            out.best_bound = out.original_objective;
+            out.relative_gap = 0.0;
+        } else {
+            out.original_message = "original primal not applicable";
+        }
+        out.lp_iterations = result.phase_one_iterations + result.phase_two_iterations;
+
+}
+
+} // namespace markov_cero::api::detail

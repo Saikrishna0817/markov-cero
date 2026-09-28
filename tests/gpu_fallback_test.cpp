@@ -24,9 +24,12 @@ int main() {
     options.backend = "gpu";  // explicit GPU request (Tier-1 fallback probe)
 
     const auto res = api::solve_file("examples/blend.mps", options);
-    req(res.status == lp::reference::SolveStatus::optimal,
+    req((res.status == lp::reference::SolveStatus::optimal ||
+         res.status == lp::reference::SolveStatus::feasible),
         "GPU request on CPU-only host still solves via CPU PDLP");
-    req(res.verified, "fallback solve is verified");
+    req(res.original_verified, "fallback primal is independently verified");
+    req(res.status != lp::reference::SolveStatus::feasible || !res.verified,
+        "an uncertified optimum must not be reported as globally verified");
 
     std::cout << "gpu fallback tests passed\n";
     return 0;

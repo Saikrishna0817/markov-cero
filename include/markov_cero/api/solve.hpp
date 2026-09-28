@@ -8,6 +8,9 @@
 #include "markov_cero/verify/reference_lp_verifier.hpp"
 
 #include <cstddef>
+#include <limits>
+#include <memory>
+#include "markov_cero/verify/mip_proof.hpp"
 #include <string>
 #include <vector>
 
@@ -27,6 +30,8 @@ struct SolveOptions {
     std::size_t max_presolve_passes = 5;
     std::size_t ruiz_iterations = 10;
     double pdlp_tolerance = 1e-4;
+    bool enable_pdlp_crossover{true};
+    bool enable_mip_proof{true};
     std::string backend = "cpu";
     lp::reference::Options lp_options;
     milp::Options milp_options;
@@ -80,6 +85,17 @@ struct SolveResult {
     std::vector<double> original_primal;
     double original_objective = 0.0;
 
+    // Global verification is distinct from a checked incumbent or local KKT point.
+    std::string certificate_type{"none"};
+    std::shared_ptr<const verify::MipProof> mip_proof;
+    std::string proof_message;
+    std::vector<std::string> variable_names;
+    std::vector<std::string> row_names;
+    std::vector<double> row_activities;
+    std::vector<double> row_lower_slacks;
+    std::vector<double> row_upper_slacks;
+    std::vector<double> row_duals;
+    std::vector<double> reduced_costs;
     bool verified = false;
     bool canonical_verified = false;
     bool original_verified = false;
@@ -93,8 +109,8 @@ struct SolveResult {
     double runtime_ms = 0.0;
     std::size_t nodes_explored = 0;
     std::size_t lp_iterations = 0;
-    double best_bound = 0.0;
-    double relative_gap = 0.0;
+    double best_bound = std::numeric_limits<double>::quiet_NaN();
+    double relative_gap = std::numeric_limits<double>::infinity();
     std::size_t cuts_generated = 0;
     std::size_t heuristics_found = 0;
     bool ml_requested = false;

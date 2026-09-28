@@ -1,6 +1,7 @@
 #pragma once
 #include "markov_cero/lp/reference/revised_simplex.hpp"
 #include <string>
+#include "markov_cero/transform/sparse_canonical_model.hpp"
 namespace markov_cero::verify {
 struct ReferenceVerification {
     bool accepted{};
@@ -12,4 +13,7 @@ struct ReferenceVerification {
 [[nodiscard]] ReferenceVerification verify_reference_result(const transform::CanonicalModel& model,
                                                             const lp::reference::Result& result,
                                                             double tolerance = 1e-8);
+[[nodiscard]] ReferenceVerification verify_sparse_result(
+    const transform::SparseCanonicalModel& model, const lp::reference::Result& result,
+    double tolerance = 1e-8);
 } // namespace markov_cero::verify

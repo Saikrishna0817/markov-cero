@@ -29,6 +29,7 @@ int main() {
     // Without crossover
     markov_cero::api::SolveOptions opts_no_cross;
     opts_no_cross.engine = "pdlp";
+    opts_no_cross.enable_pdlp_crossover = false;
     opts_no_cross.backend = "cpu";
     const auto res_no = markov_cero::api::solve_file(instance, opts_no_cross);
 
@@ -38,9 +39,9 @@ int main() {
     opts_cross.backend = "cpu";
     const auto res_cr = markov_cero::api::solve_file(instance, opts_cross);
 
-    // Both should be Optimal (sc50a is a small well-conditioned LP)
-    const bool ok_no = res_no.status == markov_cero::lp::reference::SolveStatus::optimal;
-    const bool ok_cr = res_cr.status == markov_cero::lp::reference::SolveStatus::optimal;
+    // Both must return independently feasible candidates; optimality needs a finite dual bound.
+    const bool ok_no = res_no.original_verified && (res_no.status == markov_cero::lp::reference::SolveStatus::optimal || res_no.status == markov_cero::lp::reference::SolveStatus::feasible);
+    const bool ok_cr = res_cr.original_verified && (res_cr.status == markov_cero::lp::reference::SolveStatus::optimal || res_cr.status == markov_cero::lp::reference::SolveStatus::feasible);
 
     if (!ok_no) {
         std::fprintf(stderr, "[pdlp_crossover_test] FAIL: no-crossover path failed: %s\n",

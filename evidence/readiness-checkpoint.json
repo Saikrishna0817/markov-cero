@@ -1,0 +1,115 @@
+{
+  "date": "2026-09-28",
+  "worktree": "Uncommitted implementation; HEAD alone does not identify tested source",
+  "base_revision": "9251e3f9debc3fa199f329bbb10c7310a7354405",
+  "environment": {
+    "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+    "python": "3.14.7",
+    "compiler": "c++ (GCC) 16.2.1 20260810"
+  },
+  "source_manifest": {
+    "path": "readiness-validation/source-manifest.csv",
+    "sha256": "4e0deb128d8a4993e915824865aded2b8c395f3d985936e7c1bad859680e806b"
+  },
+  "validation": {
+    "debug_cpu_ctest": {
+      "total": 80,
+      "passed": 80,
+      "failed": [],
+      "junit": "readiness-validation/debug-ctest.xml"
+    },
+    "release_cpu_ml_enabled_ctest": {
+      "total": 80,
+      "passed": 80,
+      "failed": [],
+      "junit": "readiness-validation/release-ml-ctest.xml"
+    },
+    "installed_wheel": {
+      "passed": 16,
+      "failed": 0,
+      "wheel": "markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+      "sha256": "9591998ae4a49fec79b6565d2961c8702ee6b1ab16779152e9f1f9be84aa0587",
+      "log": "readiness-validation/wheel-tests.log"
+    },
+    "installed_cmake_consumer": "built and ran, including proof replay",
+    "sovereignty_guard": "passed",
+    "documentation_links": {
+      "documents": 8,
+      "broken": 0
+    },
+    "source_limit": {
+      "maintained_files": 417,
+      "maximum_physical_lines": 300,
+      "limit": 300,
+      "violations": 0
+    },
+    "five_domain_cases": "readiness-domain-results.json",
+    "comparison_smoke": "readiness-validation/matched-smoke.csv; one afiro case only, no performance claim"
+  },
+  "binaries": {
+    "/home/saikrishna/markov-initial-build/build_readiness/markov-cero-solve": "7bba6650c358dd9aaf221835eb95543aa8848ed42083033f7cfe4b4a6e528e88",
+    "/tmp/markov-readiness-ml/markov-cero-solve": "638f13268d47d7d1185f9dc1495d11639d3723252c81268fec8cbcc1d3ae5030"
+  },
+  "extended_production_proof": {
+    "accepted": true,
+    "nodes": 157,
+    "requested_relative_gap": 0.05,
+    "generation_budget_seconds": 45,
+    "replay_budget_seconds": 10,
+    "log": "readiness-validation/production-proof.log",
+    "harness": "readiness-validation/production-proof-harness.txt",
+    "scope": "Numerical certificate of requested 5% gap, not zero-gap optimality. Default five-second proof budget expires and leaves verified=false."
+  },
+  "closure": {
+    "register": "defect-closure-register.csv",
+    "baseline_items": 36,
+    "actionable_code_defects": 32,
+    "closed": 29,
+    "percentage": 90.625,
+    "open": [
+      {
+        "id": "IR-19",
+        "finding": "Full model copies and lack of immutable node views",
+        "severity": "high"
+      },
+      {
+        "id": "IR-20",
+        "finding": "Deadline gaps in indivisible preprocessing/callback work",
+        "severity": "high"
+      },
+      {
+        "id": "IR-21",
+        "finding": "Incomplete solve-wide memory/fill budgets",
+        "severity": "high"
+      }
+    ],
+    "separate_open_capability_release_gates": [
+      {
+        "id": "IR-28",
+        "finding": "GPU QP x-update absent"
+      },
+      {
+        "id": "IR-33",
+        "finding": "Release supply-chain, support and versioning acceptance"
+      },
+      {
+        "id": "IR-34",
+        "finding": "No refinery engineer approval or shadow pilot"
+      },
+      {
+        "id": "IR-35",
+        "finding": "Broad cut/parallel/commercial performance claims unproven"
+      }
+    ],
+    "scope": "Local implementation tally against triaged baseline; no external independent final closure audit. Not a percentage of all possible bugs. 100% critical/high release gate is not satisfied."
+  },
+  "repository_slimming": "repository-slimming.json; checkout data footprint reduced, existing Git history and local builds preserved",
+  "not_validated_here": [
+    "CUDA hardware rebuild or hosted workflow",
+    "Fresh ASan/TSan matrix",
+    "Release SBOM/vulnerability review and signed release",
+    "Engineer-approved plant model or shadow pilot",
+    "Broad vendor parity or parallel scaling",
+    "Promoted ML model with disjoint evaluation"
+  ]
+}

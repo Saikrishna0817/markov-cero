@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "75b00670ad136e7b",
+        "id": "46ab62470b101517",
         "type": "tabs",
         "children": [
           {
-            "id": "c56b6a258f5b51a7",
+            "id": "194fd15179b27d13",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -181,8 +181,10 @@
       "bases:Create new base": false
     }
   },
-  "active": "c56b6a258f5b51a7",
+  "active": "194fd15179b27d13",
   "lastOpenFiles": [
+    "Untitled.md",
+    "papapap",
     "Welcome.md",
     "create a link.md"
   ]

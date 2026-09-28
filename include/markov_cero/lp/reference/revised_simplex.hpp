@@ -6,6 +6,8 @@
 #include <optional>
 #include <string>
 #include <vector>
+namespace markov_cero::transform { struct SparseCanonicalModel; }
+namespace markov_cero::transform { struct SparseCanonicalModel; }
 namespace markov_cero::lp::reference {
 enum class SolveStatus {
     optimal,
@@ -17,7 +19,10 @@ enum class SolveStatus {
     resource_limit,
     numerical_failure,
     unsupported,
-    non_convex_minlp
+    non_convex_minlp,
+    gap_satisfied,
+    local_optimal,
+    feasible
 };
 struct Options {
     std::size_t iteration_limit{10000};
@@ -60,5 +65,6 @@ struct Result {
     std::string message;
 };
 [[nodiscard]] Result solve(const transform::CanonicalModel& model, const Options& options = {});
+[[nodiscard]] Result solve(const transform::SparseCanonicalModel& model, const Options& options = {});
 [[nodiscard]] const char* to_string(SolveStatus status) noexcept;
 } // namespace markov_cero::lp::reference

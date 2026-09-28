@@ -4,12 +4,17 @@
 
 #include <chrono>
 #include <cmath>
+#include <algorithm>
+#include <stdexcept>
 
 namespace markov_cero::refinery {
 
 HaverlyResult solve_haverly_pooling(double initial_quality_guess,
                                     std::size_t max_iterations,
                                     double tolerance) {
+    if (!std::isfinite(initial_quality_guess) || initial_quality_guess < 1 || initial_quality_guess > 3 ||
+        !std::isfinite(tolerance) || tolerance <= 0 || max_iterations == 0)
+        throw std::invalid_argument("invalid pooling starting quality, tolerance or iteration limit");
     const auto start_time = std::chrono::steady_clock::now();
     HaverlyResult res;
     res.final_pool_quality = initial_quality_guess;
@@ -85,7 +90,8 @@ HaverlyResult solve_haverly_pooling(double initial_quality_guess,
         opts.enable_presolve = false;
         const auto sol = api::solve_model(model, opts);
 
-        if (sol.status != lp::reference::SolveStatus::optimal) {
+        if (sol.status != lp::reference::SolveStatus::optimal || !sol.original_verified) {
+            res.termination_reason = "LP subproblem failed: " + sol.message;
             break;
         }
 
@@ -93,7 +99,7 @@ HaverlyResult solve_haverly_pooling(double initial_quality_guess,
         const double xA = x[0];
         const double xB = x[1];
         const double total_pool_in = xA + xB;
-        
+
         double q_new = q_curr;
         if (total_pool_in > 1e-6) {
             q_new = (3.0 * xA + 1.0 * xB) / total_pool_in;
@@ -109,9 +115,16 @@ HaverlyResult solve_haverly_pooling(double initial_quality_guess,
         res.flow_z1 = x[4];
         res.flow_z2 = x[5];
         res.profit = -sol.objective;
-        res.final_pool_quality = q_curr;
+        res.final_pool_quality = q_new;
+        res.maximum_original_violation = std::max({0.0,
+            std::abs(xA + xB - x[2] - x[3]),
+            std::abs(x[2] + x[4] - x[6]), std::abs(x[3] + x[5] - x[7]),
+            q_new * x[2] + 2 * x[4] - 2.5 * x[6],
+            q_new * x[3] + 2 * x[5] - 1.5 * x[7]});
+        res.original_feasible = res.maximum_original_violation <= tolerance;
 
-        if (diff <= tolerance) {
+        if (diff <= tolerance && res.original_feasible) {
+            res.termination_reason = "feasible fixed point; optimality unproven";
             res.converged = true;
             break;
         }

@@ -55,3 +55,18 @@ reports/
 
 # RW-3 comparison baseline venv (highspy oracle)
 .compare-venv/
+
+# Internal agent dispatch logs are local work artifacts.
+.agents/
+
+# Local CMake build trees (including readiness qualification).
+build_*/
+
+# Materialized optional benchmark corpora; small tracked fixtures remain versioned.
+/data/netlib/*.mps
+/data/miplib/*.mps
+/data/mittelmann/*.mps
+/data/qp/*.mps
+/data/qp/raw/*
+/data/qp/sol/*
+*.refactor-backup

@@ -1,5 +1,6 @@
 #include "markov_cero/verify/primal_verifier.hpp"
 
+#include "markov_cero/qp/model.hpp"
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
@@ -44,7 +45,7 @@ void Tolerance::validate() const {
 PrimalVerificationReport verify_primal(const model::Model& problem, const Candidate& candidate,
                                        const Tolerance& feasibility_tolerance,
                                        const Tolerance& objective_tolerance,
-                                       double integrality_tolerance) {
+                                       double integrality_tolerance, bool require_integrality) {
     problem.validate();
     feasibility_tolerance.validate();
     objective_tolerance.validate();
@@ -64,7 +65,7 @@ PrimalVerificationReport verify_primal(const model::Model& problem, const Candid
                     report, report.maximum_variable_violation);
         check_upper(x, problem.variable_upper[j], feasibility_tolerance, "variable_upper", j,
                     report, report.maximum_variable_violation);
-        if (problem.variable_type[j] != model::VariableType::continuous) {
+        if (require_integrality && problem.variable_type[j] != model::VariableType::continuous) {
             const double lower_integer = std::floor(x);
             const double upper_integer = std::ceil(x);
             const double nearest_integer =
@@ -87,6 +88,11 @@ PrimalVerificationReport verify_primal(const model::Model& problem, const Candid
     long double objective = problem.objective_offset;
     for (std::size_t j = 0; j < candidate.primal.size(); ++j)
         objective += static_cast<long double>(problem.objective[j]) * candidate.primal[j];
+    if (problem.has_quadratic_objective) {
+        const auto q = qp::make_quadratic_model(problem);
+        const double sign = problem.objective_sense == model::ObjectiveSense::maximize ? -1.0 : 1.0;
+        objective += sign * 0.5L * q.P.evaluate_energy(candidate.primal);
+    }
     report.recomputed_objective = static_cast<double>(objective);
     if (!std::isfinite(report.recomputed_objective))
         throw std::overflow_error("recomputed objective is non-finite");

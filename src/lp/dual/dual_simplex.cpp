@@ -1,29 +1,7 @@
-#include "markov_cero/lp/dual/dual_simplex.hpp"
-
-#include "markov_cero/linalg/dense_lu.hpp"
-#include "markov_cero/linalg/sparse_basis.hpp"
-#include "markov_cero/verify/reference_lp_verifier.hpp"
-
-#include <algorithm>
-#include <bit>
-#include <cctype>
-#include <cmath>
-#include <cstdint>
-#include <iomanip>
-#include <limits>
-#include <sstream>
-#include <stdexcept>
-
+#include "dual_simplex_internal.hpp"
 namespace markov_cero::lp::dual {
-namespace {
-
-constexpr std::size_t maximum_rows = 4096;
-constexpr std::size_t maximum_columns = 16384;
-constexpr std::size_t maximum_iterations = 1000000;
-constexpr std::size_t maximum_telemetry = 10000;
-constexpr std::size_t maximum_dense_elements = 64U * 1024U * 1024U;
-constexpr double maximum_tolerance = 1e-4;
-
+using namespace detail_dual_simplex;
+namespace detail_dual_simplex {
 std::uint64_t mix(std::uint64_t h, std::uint64_t v) {
     for (int i = 0; i < 8; ++i) {
         h ^= (v >> (8 * i)) & 255U;
@@ -31,13 +9,17 @@ std::uint64_t mix(std::uint64_t h, std::uint64_t v) {
     }
     return h;
 }
+}
 
+namespace detail_dual_simplex {
 std::string hex(std::uint64_t h) {
     std::ostringstream o;
     o << std::hex << std::setw(16) << std::setfill('0') << h;
     return o.str();
 }
+}
 
+namespace detail_dual_simplex {
 std::uint64_t hash_text(const std::string& s) {
     std::uint64_t h = 1469598103934665603ULL;
     for (unsigned char c : s) {
@@ -46,7 +28,9 @@ std::uint64_t hash_text(const std::string& s) {
     }
     return h;
 }
+}
 
+namespace detail_dual_simplex {
 void check_product(std::size_t a, std::size_t b) {
     if (a && b > std::numeric_limits<std::size_t>::max() / a) {
         throw std::length_error("dual simplex size overflow");
@@ -55,7 +39,9 @@ void check_product(std::size_t a, std::size_t b) {
         throw std::length_error("dual simplex dense workspace limit exceeded");
     }
 }
+}
 
+namespace detail_dual_simplex {
 double dot(const std::vector<double>& a, const std::vector<double>& b) {
     long double s = 0;
     for (std::size_t i = 0; i < a.size(); ++i) s += static_cast<long double>(a[i]) * b[i];
@@ -63,7 +49,9 @@ double dot(const std::vector<double>& a, const std::vector<double>& b) {
     if (!std::isfinite(v)) throw std::overflow_error("non-finite dual simplex dot product");
     return v;
 }
+}
 
+namespace detail_dual_simplex {
 linalg::SparseCsc sparse_basis_matrix(const transform::CanonicalModel& m,
                                       const std::vector<std::size_t>& basis) {
     std::vector<std::vector<double>> columns;
@@ -75,7 +63,9 @@ linalg::SparseCsc sparse_basis_matrix(const transform::CanonicalModel& m,
     }
     return linalg::SparseCsc::from_columns(m.matrix.rows, columns);
 }
+}
 
+namespace detail_dual_simplex {
 linalg::SparseBasisOptions sparse_options(const Options& o) {
     linalg::SparseBasisOptions so;
     so.singular_tolerance = o.pivot_tolerance;
@@ -87,7 +77,9 @@ linalg::SparseBasisOptions sparse_options(const Options& o) {
     so.eta_density_trigger = 0.9;
     return so;
 }
+}
 
+namespace detail_dual_simplex {
 bool significant_negative_reduced_cost(const transform::CanonicalModel& m, std::size_t j,
                                        const std::vector<double>& y, double rc, double tol) {
     long double scale = std::abs(static_cast<long double>(m.objective[j]));
@@ -99,14 +91,18 @@ bool significant_negative_reduced_cost(const transform::CanonicalModel& m, std::
         tol * z + 64.0 * std::numeric_limits<double>::epsilon() * std::max(1.0, z);
     return rc < -allowed;
 }
+}
 
+namespace detail_dual_simplex {
 std::vector<double> full_primal(std::size_t n, const std::vector<std::size_t>& basis,
                                 const std::vector<double>& xb) {
     std::vector<double> x(n);
     for (std::size_t i = 0; i < basis.size(); ++i) x[basis[i]] = xb[i];
     return x;
 }
+}
 
+namespace detail_dual_simplex {
 void validate_options(const Options& o) {
     if (!o.iteration_limit || o.iteration_limit > maximum_iterations ||
         o.telemetry_limit > maximum_telemetry || !std::isfinite(o.feasibility_tolerance) ||
@@ -119,7 +115,9 @@ void validate_options(const Options& o) {
         throw std::invalid_argument("invalid dual simplex options");
     }
 }
+}
 
+namespace detail_dual_simplex {
 void validate_basis_metadata(const transform::CanonicalModel& m, const BasisState& s) {
     if (s.rows != m.matrix.rows || s.columns != m.matrix.columns ||
         s.model_fingerprint != fingerprint(m) || s.basic_variables.size() != m.matrix.rows) {
@@ -135,7 +133,9 @@ void validate_basis_metadata(const transform::CanonicalModel& m, const BasisStat
         throw std::invalid_argument("warm basis cannot be square");
     }
 }
+}
 
+namespace detail_dual_simplex {
 void validate_basis(const transform::CanonicalModel& m, const BasisState& s) {
     validate_basis_metadata(m, s);
     try {
@@ -144,7 +144,9 @@ void validate_basis(const transform::CanonicalModel& m, const BasisState& s) {
         throw std::invalid_argument("warm basis is singular");
     }
 }
+}
 
+namespace detail_dual_simplex {
 Result cold(const transform::CanonicalModel& m, const Options& o, const std::string& why) {
     Result out;
     reference::Options ro;
@@ -168,7 +170,9 @@ Result cold(const transform::CanonicalModel& m, const Options& o, const std::str
     }
     return out;
 }
+}
 
+namespace detail_dual_simplex {
 std::vector<double> compute_exact_dse_weights(const transform::CanonicalModel& m,
                                               linalg::SparseBasisFactorization& factor) {
     std::vector<double> gamma(m.matrix.rows, 1.0);
@@ -180,7 +184,9 @@ std::vector<double> compute_exact_dse_weights(const transform::CanonicalModel& m
     }
     return gamma;
 }
+}
 
+namespace detail_dual_simplex {
 std::size_t select_leaving_row(const transform::CanonicalModel& m,
                                linalg::SparseBasisFactorization& factor,
                                const std::vector<double>& xb, const std::vector<std::size_t>& basis,
@@ -225,344 +231,6 @@ std::size_t select_leaving_row(const transform::CanonicalModel& m,
     }
     return leaving;
 }
-
-std::size_t select_entering_column(const transform::CanonicalModel& m,
-                                   const std::vector<double>& alpha, const std::vector<double>& rc,
-                                   const std::vector<bool>& is_basic, const Options& o,
-                                   double& best_ratio) {
-    std::size_t entering = m.matrix.columns;
-    best_ratio = std::numeric_limits<double>::infinity();
-    double limit = std::numeric_limits<double>::infinity();
-    if (o.harris_ratio) {
-        for (std::size_t j = 0; j < m.matrix.columns; ++j) {
-            if (is_basic[j] || alpha[j] >= -o.pivot_tolerance) {
-                continue;
-            }
-            const double q = (std::max(0.0, rc[j]) + o.dual_tolerance) / (-alpha[j]);
-            if (!std::isfinite(q)) {
-                throw std::overflow_error("non-finite Harris ratio");
-            }
-            limit = std::min(limit, q);
-        }
-    }
-    double best_pivot = 0;
-    for (std::size_t j = 0; j < m.matrix.columns; ++j) {
-        if (is_basic[j] || alpha[j] >= -o.pivot_tolerance) {
-            continue;
-        }
-        const double q = std::max(0.0, rc[j]) / (-alpha[j]);
-        if (!std::isfinite(q)) {
-            throw std::overflow_error("non-finite dual ratio");
-        }
-        if (o.harris_ratio) {
-            if (q <= limit && (entering == m.matrix.columns || -alpha[j] > best_pivot ||
-                               (-alpha[j] == best_pivot && j < entering))) {
-                entering = j;
-                best_ratio = q;
-                best_pivot = -alpha[j];
-            }
-        } else if (q < best_ratio || (q == best_ratio && j < entering)) {
-            entering = j;
-            best_ratio = q;
-            best_pivot = -alpha[j];
-        }
-    }
-    return entering;
 }
 
-Result certified_optimal(const transform::CanonicalModel& m, const std::vector<std::size_t>& basis,
-                         const std::vector<double>& xb, const std::vector<double>& y,
-                         const Options& o) {
-    Result out;
-    out.solution.status = reference::SolveStatus::optimal;
-    out.solution.primal = full_primal(m.matrix.columns, basis, xb);
-    out.solution.dual = y;
-    out.solution.basis = basis;
-    out.solution.objective = dot(m.objective, out.solution.primal) + m.objective_offset;
-    out.solution.message = "dual revised simplex optimum";
-    try {
-        out.basis_state = make_basis_state(m, basis);
-    } catch (...) {
-        // Degenerate optimal basis: keep the solve result, drop the warm start.
-    }
-    auto check = verify::verify_reference_result(
-        m, out.solution, std::max(o.feasibility_tolerance, o.dual_tolerance));
-    if (!check.accepted) {
-        out.solution.status = reference::SolveStatus::numerical_failure;
-        out.solution.message = "dual optimum witness rejected: " + check.message;
-    }
-    out.message = out.solution.message;
-    return out;
 }
-
-Result certified_farkas(const transform::CanonicalModel& m, const std::vector<double>& pi,
-                        const Options& o) {
-    Result out;
-    out.solution.status = reference::SolveStatus::infeasible;
-    out.solution.certificate.resize(m.matrix.rows);
-    for (std::size_t i = 0; i < m.matrix.rows; ++i) out.solution.certificate[i] = -pi[i];
-    out.solution.message = "dual simplex Farkas certificate";
-    auto check = verify::verify_reference_result(
-        m, out.solution, std::max(o.feasibility_tolerance, o.dual_tolerance));
-    if (!check.accepted) {
-        out.solution.status = reference::SolveStatus::numerical_failure;
-        out.solution.message = "dual Farkas witness rejected: " + check.message;
-    }
-    out.message = out.solution.message;
-    return out;
-}
-
-} // namespace
-
-std::string fingerprint(const transform::CanonicalModel& m) {
-    m.validate();
-    std::uint64_t h = 1469598103934665603ULL;
-    h = mix(h, m.matrix.rows);
-    h = mix(h, m.matrix.columns);
-    for (double v : m.matrix.values) {
-        h = mix(h, std::bit_cast<std::uint64_t>(v));
-    }
-    for (double v : m.objective) {
-        h = mix(h, std::bit_cast<std::uint64_t>(v));
-    }
-    return hex(h);
-}
-
-BasisState make_basis_state(const transform::CanonicalModel& m, const std::vector<std::size_t>& b) {
-    BasisState s{m.matrix.rows, m.matrix.columns, fingerprint(m), b};
-    validate_basis(m, s);
-    return s;
-}
-
-void validate_basis_artifact(const BasisState& s) {
-    if (s.rows > maximum_rows || s.columns > maximum_columns || s.rows > s.columns ||
-        s.basic_variables.size() != s.rows || s.model_fingerprint.size() != 16) {
-        throw std::invalid_argument("invalid basis artifact metadata");
-    }
-    for (char c : s.model_fingerprint) {
-        if (!std::isxdigit(static_cast<unsigned char>(c)))
-            throw std::invalid_argument("invalid basis fingerprint");
-    }
-    std::vector<bool> seen(s.columns);
-    for (auto j : s.basic_variables) {
-        if (j >= s.columns || seen[j])
-            throw std::invalid_argument("basis artifact index invalid or duplicate");
-        seen[j] = true;
-    }
-}
-
-std::string serialize_basis(const BasisState& s) {
-    validate_basis_artifact(s);
-    std::ostringstream body;
-    body << "MARKOV-CERO-BASIS-1 " << s.rows << ' ' << s.columns << ' ' << s.model_fingerprint
-         << ' ' << s.basic_variables.size();
-    for (auto j : s.basic_variables) body << ' ' << j;
-    const auto text = body.str();
-    return text + ' ' + hex(hash_text(text)) + "\n";
-}
-
-BasisState parse_basis(const std::string& text) {
-    std::istringstream in(text);
-    std::string magic, fp, checksum, trailing;
-    BasisState s;
-    std::size_t count = 0;
-    if (!(in >> magic >> s.rows >> s.columns >> fp >> count) || magic != "MARKOV-CERO-BASIS-1" ||
-        count > maximum_rows) {
-        throw std::invalid_argument("invalid basis header");
-    }
-    s.model_fingerprint = fp;
-    s.basic_variables.resize(count);
-    for (auto& j : s.basic_variables) {
-        if (!(in >> j)) {
-            throw std::invalid_argument("truncated basis");
-        }
-    }
-    if (!(in >> checksum) || (in >> trailing)) {
-        throw std::invalid_argument("invalid basis trailer");
-    }
-    std::ostringstream body;
-    body << magic << ' ' << s.rows << ' ' << s.columns << ' ' << fp << ' ' << count;
-    for (auto j : s.basic_variables) body << ' ' << j;
-    if (checksum != hex(hash_text(body.str()))) {
-        throw std::invalid_argument("basis checksum mismatch");
-    }
-    validate_basis_artifact(s);
-    return s;
-}
-
-Result solve(const transform::CanonicalModel& m, const Options& o,
-             const std::optional<BasisState>& warm) {
-    Result out;
-    try {
-        m.validate();
-    } catch (const std::exception& e) {
-        out.solution.status = reference::SolveStatus::invalid_model;
-        out.solution.message = e.what();
-        out.message = e.what();
-        return out;
-    }
-    try {
-        validate_options(o);
-    } catch (const std::exception& e) {
-        out.solution.status = reference::SolveStatus::invalid_options;
-        out.solution.message = e.what();
-        out.message = e.what();
-        return out;
-    }
-    try {
-        if (m.matrix.rows > maximum_rows || m.matrix.columns > maximum_columns) {
-            throw std::length_error("dual simplex reference dimension limit exceeded");
-        }
-        check_product(m.matrix.rows, m.matrix.rows);
-        if (!warm) {
-            return cold(m, o, "cold solve delegated to certified M3 oracle");
-        }
-        validate_basis_metadata(m, *warm);
-        auto basis = warm->basic_variables;
-        linalg::SparseBasisFactorization factor;
-        try {
-            factor = linalg::SparseBasisFactorization::factorize(sparse_basis_matrix(m, basis),
-                                                                 sparse_options(o));
-        } catch (const std::exception&) {
-            throw std::invalid_argument("warm basis is singular");
-        }
-        out.used_warm_start = true;
-        out.telemetry.reserve(std::min(o.iteration_limit, o.telemetry_limit));
-        out.refactorizations = factor.statistics().refactorizations;
-        std::vector<double> dse_weights;
-        if (o.pricing == PricingPolicy::steepest_edge) {
-            dse_weights = compute_exact_dse_weights(m, factor);
-        }
-        for (std::size_t step = 0; step < o.iteration_limit; ++step) {
-            if (o.deadline && std::chrono::steady_clock::now() >= *o.deadline) {
-                out.solution.status = reference::SolveStatus::resource_limit;
-                out.solution.message = "dual simplex wall-clock deadline reached";
-                out.message = out.solution.message;
-                out.solution.condition_estimate = factor.current_condition_estimate();
-                return out;
-            }
-            const auto& diagnostics = factor.diagnostics();
-            if (m.matrix.rows > 0 && diagnostics.maximum_absolute_pivot > 0 &&
-                diagnostics.minimum_absolute_pivot / diagnostics.maximum_absolute_pivot <
-                    o.condition_trigger) {
-                throw std::runtime_error("basis condition trigger reached");
-            }
-            auto xb = factor.solve(m.rhs);
-            std::vector<double> cb(m.matrix.rows);
-            std::vector<bool> is_basic(m.matrix.columns);
-            for (std::size_t i = 0; i < m.matrix.rows; ++i) {
-                cb[i] = m.objective[basis[i]];
-                is_basic[basis[i]] = true;
-            }
-            auto y = factor.solve_transpose(cb);
-            auto aty = linalg::multiply_transpose(m.matrix, y);
-            std::vector<double> rc(m.matrix.columns);
-            for (std::size_t j = 0; j < m.matrix.columns; ++j) {
-                rc[j] = m.objective[j] - aty[j];
-                if (significant_negative_reduced_cost(m, j, y, rc[j], o.dual_tolerance)) {
-                    if (step == 0) {
-                        if (o.allow_cold_fallback) {
-                            return cold(m, o, "warm basis is not dual feasible; cold fallback");
-                        }
-                        throw std::runtime_error("warm basis is not dual feasible");
-                    }
-                    throw std::runtime_error("dual feasibility lost after pivot");
-                }
-            }
-            double worst = 0;
-            const std::size_t leaving = select_leaving_row(m, factor, xb, basis, dse_weights, o, worst);
-            if (leaving == m.matrix.rows) {
-                auto certified = certified_optimal(m, basis, xb, y, o);
-                certified.used_warm_start = true;
-                certified.telemetry = std::move(out.telemetry);
-                certified.telemetry_truncated = out.telemetry_truncated;
-                certified.refactorizations = out.refactorizations;
-                certified.solution.condition_estimate = factor.current_condition_estimate();
-                return certified;
-            }
-            std::vector<double> e(m.matrix.rows);
-            e[leaving] = 1;
-            auto pi = factor.solve_transpose(e);
-            auto alpha = linalg::multiply_transpose(m.matrix, pi);
-            double best_ratio = 0;
-            const std::size_t entering =
-                select_entering_column(m, alpha, rc, is_basic, o, best_ratio);
-            if (entering == m.matrix.columns) {
-                auto certified = certified_farkas(m, pi, o);
-                certified.used_warm_start = true;
-                certified.telemetry = std::move(out.telemetry);
-                certified.telemetry_truncated = out.telemetry_truncated;
-                certified.refactorizations = out.refactorizations;
-                certified.solution.condition_estimate = factor.current_condition_estimate();
-                return certified;
-            }
-            if (out.telemetry.size() < o.telemetry_limit) {
-                out.telemetry.push_back({step, dot(cb, xb) + m.objective_offset, xb[leaving],
-                                         basis[leaving], entering, alpha[entering],
-                                         o.harris_ratio});
-            } else {
-                out.telemetry_truncated = true;
-            }
-            std::vector<double> entering_column(m.matrix.rows);
-            for (std::size_t i = 0; i < m.matrix.rows; ++i) {
-                entering_column[i] = m.matrix(i, entering);
-            }
-            if (o.pricing == PricingPolicy::steepest_edge) {
-                // Forrest-Goldfarb update recurrence: O(m) update
-                auto aq_bar = factor.solve(entering_column);
-                const double piv = aq_bar[leaving];
-                if (std::abs(piv) > 1e-14 && leaving < dse_weights.size()) {
-                    auto w = factor.solve(pi);
-                    const double gamma_p = dse_weights[leaving];
-                    for (std::size_t i = 0; i < m.matrix.rows; ++i) {
-                        if (i == leaving) {
-                            dse_weights[i] = std::max(1e-12, gamma_p / (piv * piv));
-                        } else {
-                            const double ratio = aq_bar[i] / piv;
-                            const double upd =
-                                dse_weights[i] - 2.0 * ratio * w[i] + ratio * ratio * gamma_p;
-                            dse_weights[i] = std::max(1e-12, upd);
-                        }
-                    }
-                }
-            }
-            factor.replace_column(leaving, entering_column);
-            basis[leaving] = entering;
-            if (factor.needs_refactorization()) {
-                factor.refactorize();
-                if (o.pricing == PricingPolicy::steepest_edge) {
-                    dse_weights = compute_exact_dse_weights(m, factor);
-                }
-            } else if (o.pricing == PricingPolicy::steepest_edge && (step + 1) % 500 == 0) {
-                dse_weights = compute_exact_dse_weights(m, factor);
-            }
-            out.refactorizations = factor.statistics().refactorizations;
-        }
-        out.solution.status = reference::SolveStatus::iteration_limit;
-        out.solution.message = "dual simplex iteration limit";
-        out.solution.condition_estimate = factor.current_condition_estimate();
-        out.message = out.solution.message;
-        return out;
-    } catch (const std::length_error& e) {
-        out.solution.status = reference::SolveStatus::resource_limit;
-        out.solution.message = out.message = e.what();
-        return out;
-    } catch (const std::invalid_argument& e) {
-        if (warm && o.allow_cold_fallback) {
-            return cold(m, o, std::string("invalid warm start; cold fallback: ") + e.what());
-        }
-        out.solution.status = reference::SolveStatus::numerical_failure;
-        out.solution.message = out.message = e.what();
-        return out;
-    } catch (const std::exception& e) {
-        if (warm && o.allow_cold_fallback) {
-            return cold(m, o, std::string("warm start numerical failure; cold fallback: ") +
-                                 e.what());
-        }
-        out.solution.status = reference::SolveStatus::numerical_failure;
-        out.solution.message = out.message = e.what();
-        return out;
-    }
-}
-
-} // namespace markov_cero::lp::dual

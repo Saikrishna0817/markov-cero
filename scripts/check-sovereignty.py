@@ -52,34 +52,36 @@ def check_cmake(root: Path) -> list[str]:
     if not cmake_path.is_file():
         return [f"CMakeLists.txt not found at {cmake_path}"]
 
-    content = cmake_path.read_text(encoding="utf-8", errors="ignore")
-    find_pattern = re.compile(r"find_package\s*\(\s*([A-Za-z0-9_]+)", re.IGNORECASE)
-    for match in find_pattern.finditer(content):
-        pkg = match.group(1).lower()
-        if pkg not in ALLOWED_FIND_PACKAGES:
-            violations.append(
-                f"CMakeLists.txt: disallowed find_package({match.group(1)})"
-            )
+    # Scan modular build definitions too; root-only scanning misses dependencies.
+    for path in [cmake_path, *sorted((root / "cmake").glob("*.cmake"))]:
+        content = path.read_text(encoding="utf-8", errors="ignore")
+        find_pattern = re.compile(r"find_package\s*\(\s*([A-Za-z0-9_]+)", re.IGNORECASE)
+        for match in find_pattern.finditer(content):
+            pkg = match.group(1).lower()
+            if pkg not in ALLOWED_FIND_PACKAGES and not (pkg == "python3" and path.name in {"Tests.cmake", "BenchmarkTests.cmake"}):
+                violations.append(
+                    f"{path.relative_to(root)}: disallowed find_package({match.group(1)})"
+                )
 
-    link_pattern = re.compile(r"target_link_libraries\s*\([^)]+\)", re.DOTALL)
-    for block in link_pattern.finditer(content):
-        tokens = block.group(0).split()
-        for token in tokens[2:]:
-            clean = token.rstrip(")").lower()
-            if clean in {"private", "public", "interface"}:
-                continue
-            for forbidden in FORBIDDEN_LIBRARIES:
-                if forbidden in clean:
-                    violations.append(
-                        f"CMakeLists.txt: forbidden link target '{token.rstrip(')')}'"
-                    )
+        link_pattern = re.compile(r"target_link_libraries\s*\([^)]+\)", re.DOTALL)
+        for block in link_pattern.finditer(content):
+            tokens = block.group(0).split()
+            for token in tokens[2:]:
+                clean = token.rstrip(")").lower()
+                if clean in {"private", "public", "interface"}:
+                    continue
+                for forbidden in FORBIDDEN_LIBRARIES:
+                    if forbidden in clean:
+                        violations.append(
+                            f"{path.relative_to(root)}: forbidden link target '{token.rstrip(')')}'"
+                        )
 
-    for term in ["FetchContent", "ExternalProject_Add", "add_subdirectory"]:
-        pattern = re.compile(rf"{term}\s*\(", re.IGNORECASE)
-        if pattern.search(content):
-            violations.append(
-                f"CMakeLists.txt: external dependency mechanism '{term}' detected"
-            )
+        for term in ["FetchContent", "ExternalProject_Add", "add_subdirectory"]:
+            pattern = re.compile(rf"{term}\s*\(", re.IGNORECASE)
+            if pattern.search(content):
+                violations.append(
+                    f"{path.relative_to(root)}: external dependency mechanism '{term}' detected"
+                )
 
     return violations
 
@@ -96,7 +98,7 @@ def check_source_tree(root: Path) -> list[str]:
         for path in scan_dir.rglob("*"):
             if not path.is_file():
                 continue
-            if path.suffix not in {".hpp", ".cpp", ".h", ".c", ".cxx", ".cc"}:
+            if path.suffix not in {".hpp", ".cpp", ".h", ".c", ".cxx", ".cc", ".cu", ".cuh"}:
                 continue
             try:
                 text = path.read_text(encoding="utf-8", errors="ignore")
@@ -163,8 +165,8 @@ def inspect_binary(binary_path: Path) -> list[str]:
                     violations.append(
                         f"{binary_path.name}: forbidden library link target '{so_name}'"
                     )
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        pass
+    except (subprocess.CalledProcessError, FileNotFoundError) as err:
+        violations.append(f"Cannot inspect {binary_path}: {err}")
 
     try:
         nm_res = subprocess.run(
@@ -182,8 +184,8 @@ def inspect_binary(binary_path: Path) -> list[str]:
                     violations.append(
                         f"{binary_path.name}: forbidden external solver symbol '{sym}'"
                     )
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        pass
+    except (subprocess.CalledProcessError, FileNotFoundError) as err:
+        violations.append(f"Cannot inspect {binary_path}: {err}")
 
     return violations
 

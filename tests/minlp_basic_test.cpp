@@ -91,7 +91,7 @@ int main() {
     equality_api_opts.engine = "outer_approx";
     const auto equality_api_sol = api::solve_model(equality_row_source, equality_api_opts);
     req(equality_api_sol.status == lp::reference::SolveStatus::optimal &&
-            equality_api_sol.verified,
+            equality_api_sol.original_verified && !equality_api_sol.verified,
         "linear-equality MINLP also passes the independent API verifier");
 
     model::Model infeasible_equality_source = equality_row_source;
@@ -250,7 +250,7 @@ int main() {
     const auto api_sol = api::solve_model(maximize_source, api_opts);
     req(api_sol.status == lp::reference::SolveStatus::optimal,
         "maximize MINLP solves with a global bound");
-    req(api_sol.verified, "maximize MINLP passes independent API verification");
+    req(api_sol.original_verified && !api_sol.verified, "MINLP incumbent verified separately from solver-trusted tree");
     req(std::abs(api_sol.objective + 1.25) < 1e-3,
         "maximize MINLP objective is converted back to the original sign");
     req(std::abs(api_sol.best_bound + 1.25) < 1e-3,
@@ -259,7 +259,7 @@ int main() {
     maximize_source.objective_offset = 2.0;
     const auto offset_api_sol = api::solve_model(maximize_source, api_opts);
     req(offset_api_sol.status == lp::reference::SolveStatus::optimal &&
-            offset_api_sol.verified,
+            offset_api_sol.original_verified && !offset_api_sol.verified,
         "maximize MINLP with objective offset remains verified");
     req(std::abs(offset_api_sol.objective - 0.75) < 1e-3 &&
             std::abs(offset_api_sol.best_bound - 0.75) < 1e-3,

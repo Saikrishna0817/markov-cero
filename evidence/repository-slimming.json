@@ -1,0 +1,10 @@
+{
+  "optional_files": 227,
+  "tracked_data_bytes_before": 588027318,
+  "tracked_data_bytes_after": 3869521,
+  "source_revision": "9251e3f9debc3fa199f329bbb10c7310a7354405",
+  "history_rewritten": false,
+  "retained_data_bytes_with_manifest": 3963454,
+  "markdown_deletions": 66,
+  "invalid_ml_artifact_withdrawn": true
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Feature 26 — strict ML data partitioning + train-only normalizers.
 
-Rules implemented (PROJECT.md feature 26 / ORIGINAL_REQUEST R5 D-10):
+Rules implemented (ORIGINAL_REQUEST.md R5 D-10):
 
   * Fixed instance-based 70% train / 15% validation / 15% test.  Splits are
     assigned at INSTANCE granularity: every node record of an instance stays

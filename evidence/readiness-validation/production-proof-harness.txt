@@ -1,0 +1,21 @@
+#include "markov_cero/api/solve.hpp"
+#include "markov_cero/io/mps.hpp"
+#include "markov_cero/verify/mip_proof.hpp"
+#include <fstream>
+#include <iostream>
+int main() {
+ std::ifstream input("data/cases/production_planning_large.mps");
+ auto model = markov_cero::io::parse_mps(input);
+ markov_cero::api::SolveOptions settings;
+ settings.enable_mip_proof = false;
+ settings.milp_options.relative_gap_tolerance = .05;
+ const auto result = markov_cero::api::solve_model(model, settings);
+ markov_cero::verify::MipProofOptions limits;
+ limits.relative_gap = .05;
+ limits.deadline = std::chrono::steady_clock::now()+std::chrono::seconds(45);
+ auto proof = markov_cero::verify::build_mip_proof(model, result.original_primal, result.original_objective, false, limits);
+ limits.deadline = std::chrono::steady_clock::now()+std::chrono::seconds(10);
+ auto report = markov_cero::verify::verify_mip_proof(model, proof, limits);
+ std::cout << report.accepted << ' ' << proof.nodes.size() << ' ' << report.message << '\n';
+ return report.accepted ? 0 : 1;
+}

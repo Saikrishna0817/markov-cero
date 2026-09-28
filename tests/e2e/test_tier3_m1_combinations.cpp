@@ -112,7 +112,7 @@ E2E_TEST(T3_PAIR_05_AdmmAdaptiveRhoWithQpVerifier,
     auto sol = qp::solve_qp(qp, opts);
     E2E_ASSERT(sol.status == qp::QpStatus::optimal, "ADMM QP optimal");
 
-    auto rep = qp::verify_qp_solution(qp, sol, 1e-3);
+    auto rep = qp::verify_qp_solution(qp, sol, 1e-4);
     E2E_ASSERT(rep.passed, "KKT verifier passes for adaptive rho solution");
     E2E_ASSERT_NEAR(rep.maximum_primal_violation, 0.0, 1e-3, "Primal residual < 1e-3");
 }

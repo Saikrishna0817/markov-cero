@@ -1,0 +1,7 @@
+include CMakeLists.txt LICENSE NOTICE PROVENANCE.md
+recursive-include cmake *.cmake *.in
+recursive-include include *.hpp *.h
+recursive-include src *.cpp *.hpp
+recursive-include gpu *.cpp *.cu *.hpp *.cuh
+recursive-include apps *.cpp *.hpp
+recursive-include python *.cpp *.hpp *.py

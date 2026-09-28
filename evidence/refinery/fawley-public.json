@@ -1,0 +1,17 @@
+{
+  "case": "Fawley public historical qualification",
+  "date": "2026-09-28",
+  "input_sha256": "a35de33a2d9a76f84b5677f40145a984cf0cb7c8361b380d0f7b512d369c97c7",
+  "mps_sha256": "8b5b5ed4e8750bee535618c09229c6f38976e3a8fbfb2154e692f7d7f0f9a3dd",
+  "rows": 29,
+  "columns": 36,
+  "markov_status": "Optimal",
+  "markov_verified": true,
+  "markov_objective": -2899.252790423055,
+  "oracle": "HiGHS 1.15.1",
+  "oracle_status": "HighsModelStatus.kOptimal",
+  "oracle_objective": -2899.2527904230546,
+  "absolute_objective_difference": 4.547473508864641e-13,
+  "scope": "Same generated MPS checked by two solvers; not independent plant-model validation or engineering approval.",
+  "solver_binary_sha256": "f950a8535384a5ec41368936cba627b34323ee8003adeecd6424ac40bc8b0a58"
+}

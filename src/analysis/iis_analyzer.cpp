@@ -1,105 +1,70 @@
 #include "markov_cero/analysis/iis_analyzer.hpp"
-
 #include "markov_cero/api/solve.hpp"
-#include "markov_cero/transform/sparse_canonical_model.hpp"
-
-#include <chrono>
+#include <algorithm>
+#include <cmath>
 #include <sstream>
-
 namespace markov_cero::analysis {
-
-namespace {
-
-bool is_model_infeasible(const model::Model& m, std::size_t& lps_count) {
-    ++lps_count;
-    api::SolveOptions options;
-    options.engine = "simplex";
-    options.enable_presolve = false;
-    options.enable_scale = true;
-    options.lp_options.iteration_limit = 20000;
-    
-    const auto res = api::solve_model(m, options);
-    return res.status == lp::reference::SolveStatus::infeasible;
-}
-
-} // namespace
-
-IisResult compute_iis(const model::Model& model) {
-    const auto start_time = std::chrono::steady_clock::now();
+IisResult compute_iis(const model::Model& model, const IisOptions& settings) {
+    using Clock = std::chrono::steady_clock;
+    const auto started = Clock::now();
     IisResult result;
-    result.is_infeasible = false;
-
-    // 1. Initial feasibility check
-    if (!is_model_infeasible(model, result.lps_solved)) {
-        result.diagnostic_summary = "Model is feasible (no IIS exists).";
-        const auto elapsed = std::chrono::steady_clock::now() - start_time;
-        result.analysis_time_ms = std::chrono::duration<double, std::milli>(elapsed).count();
+    auto finish = [&](const std::string& message) {
+        result.diagnostic_summary = message;
+        result.analysis_time_ms = std::chrono::duration<double, std::milli>(Clock::now()-started).count();
         return result;
-    }
-
+    };
+    if (!std::isfinite(settings.time_limit_seconds) || settings.time_limit_seconds <= 0 || settings.time_limit_seconds > 1e8)
+        return finish("Invalid conflict-analysis time budget.");
+    if (model.has_quadratic_objective || model.has_nlobj_section || model.nlp_callbacks ||
+        std::any_of(model.variable_type.begin(), model.variable_type.end(),
+                    [](auto type) { return type != model::VariableType::continuous; }))
+        return finish("Unsupported: conflict analysis accepts continuous linear models only.");
+    auto deadline = started + std::chrono::duration_cast<Clock::duration>(std::chrono::duration<double>(settings.time_limit_seconds));
+    if (settings.deadline && *settings.deadline < deadline) deadline = *settings.deadline;
+    auto check = [&](const model::Model& candidate) {
+        ++result.lps_solved;
+        api::SolveOptions options;
+        options.engine = "primal";
+        options.enable_presolve = false;
+        options.lp_options.iteration_limit = 20000;
+        options.lp_options.deadline = deadline;
+        return api::solve_model(candidate, options);
+    };
+    const auto initial = check(model);
+    if (initial.status != lp::reference::SolveStatus::infeasible || !initial.canonical_verified)
+        return finish(initial.verified ? "Model has a certified feasible solution; no conflict exists."
+                                       : "Inconclusive: initial infeasibility was not certified.");
     result.is_infeasible = true;
-    const std::size_t m = model.matrix.row_count;
-    model::Model current_model = model;
-
-    // Active constraints in the candidate set S
-    std::vector<bool> in_iis(m, true);
-
-    // 2. Chinneck-Dravnieks Deletion Filter
-    for (std::size_t i = 0; i < m; ++i) {
-        // Temporarily relax constraint i to (-inf, +inf)
-        const auto saved_lower = current_model.row_lower[i];
-        const auto saved_upper = current_model.row_upper[i];
-        current_model.row_lower[i] = model::Bound::negative_infinity();
-        current_model.row_upper[i] = model::Bound::positive_infinity();
-
-        // Check if model without constraint i is still infeasible
-        if (is_model_infeasible(current_model, result.lps_solved)) {
-            // Still infeasible: constraint i is redundant to the infeasibility
-            in_iis[i] = false;
-            // keep it relaxed in current_model
-        } else {
-            // Feasible: constraint i is essential to the conflict
-            in_iis[i] = true;
-            // restore constraint i
-            current_model.row_lower[i] = saved_lower;
-            current_model.row_upper[i] = saved_upper;
+    result.complete = true;
+    auto current = model;
+    std::vector<bool> keep(model.matrix.row_count, true);
+    for (std::size_t i=0; i<keep.size(); ++i) {
+        if (Clock::now() >= deadline) { result.complete = false; break; }
+        const auto lower = current.row_lower[i], upper = current.row_upper[i];
+        current.row_lower[i] = model::Bound::negative_infinity();
+        current.row_upper[i] = model::Bound::positive_infinity();
+        const auto trial = check(current);
+        if (trial.status == lp::reference::SolveStatus::infeasible && trial.canonical_verified) keep[i] = false;
+        else {
+            current.row_lower[i] = lower; current.row_upper[i] = upper;
+            // Unknown trials do not establish that a row is essential.
+            if (!trial.original_verified) result.complete = false;
         }
     }
-
-    // 3. Populate IIS Result
-    std::ostringstream oss;
-    oss << "Irreducible Infeasible Subsystem contains " ;
-    std::size_t count = 0;
-
-    for (std::size_t i = 0; i < m; ++i) {
-        if (in_iis[i]) {
-            ++count;
-            IisConstraint c;
-            c.row_index = i;
-            c.row_name = (i < model.row_name.size()) ? model.row_name[i] : ("row_" + std::to_string(i));
-            c.lower_bound = model.row_lower[i].is_finite() ? model.row_lower[i].value : -1e30;
-            c.upper_bound = model.row_upper[i].is_finite() ? model.row_upper[i].value : 1e30;
-            
-            std::ostringstream desc;
-            desc << c.row_name << ": ";
-            if (model.row_lower[i].is_finite()) desc << model.row_lower[i].value << " <= ";
-            desc << "expr";
-            if (model.row_upper[i].is_finite()) desc << " <= " << model.row_upper[i].value;
-            c.description = desc.str();
-
-            result.irreducible_subsystem.push_back(std::move(c));
-        }
+    std::ostringstream text;
+    text << (result.complete ? "Row-irreducible" : "Incomplete")
+         << " certified infeasible subsystem, relative to unchanged variable bounds:\n";
+    for (std::size_t i=0; i<keep.size(); ++i) {
+        if (!keep[i]) continue;
+        IisConstraint row;
+        row.row_index = i; row.row_name = model.row_name[i];
+        row.lower_bound = model.row_lower[i].is_finite() ? model.row_lower[i].value : -INFINITY;
+        row.upper_bound = model.row_upper[i].is_finite() ? model.row_upper[i].value : INFINITY;
+        std::ostringstream description;
+        description << row.row_name << ": " << row.lower_bound << " <= activity <= " << row.upper_bound;
+        row.description = description.str(); text << "  " << row.description << '\n';
+        result.irreducible_subsystem.push_back(std::move(row));
     }
-
-    oss << count << " mutually conflicting constraint(s):\n";
-    for (const auto& c : result.irreducible_subsystem) {
-        oss << "  - [" << c.row_name << "] " << c.description << "\n";
-    }
-    result.diagnostic_summary = oss.str();
-
-    const auto elapsed = std::chrono::steady_clock::now() - start_time;
-    result.analysis_time_ms = std::chrono::duration<double, std::milli>(elapsed).count();
-    return result;
+    return finish(text.str());
 }
-
 } // namespace markov_cero::analysis

@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-28",
+  "configuration": "Debug CPU warnings-as-errors",
+  "ctest": {
+    "total": 76,
+    "passed": 71,
+    "failed": [
+      "cli_case_multiperiod",
+      "domain_refinery_scheduling_large",
+      "domain_production_planning_large",
+      "domain_power_dispatch_dc_opf",
+      "domain_supply_chain_large"
+    ],
+    "disabled": 0
+  },
+  "python_binding_tests": {
+    "passed": 16,
+    "failed": 0,
+    "installation": "wheel installed into isolated /tmp target"
+  },
+  "cmake_external_consumer": "configured and built against installed prefix",
+  "sovereignty_guard": "passed against built executable",
+  "cuda_workflow": "changed but not executed on hosted CI",
+  "readiness": "Incomplete; no 90% defect-closure claim",
+  "remaining_gates": [
+    "Node LP certification and large-case convergence",
+    "MIP/OA independently replayable proof ledger",
+    "Sparse solver memory path and node model copies",
+    "Complete <=300-line modularization",
+    "Dataset manifest/cache and repository slimming",
+    "Release packaging provenance and supply-chain gates",
+    "Engineer-approved operating model and shadow workflow"
+  ]
+}

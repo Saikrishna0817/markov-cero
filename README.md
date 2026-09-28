@@ -1,76 +1,113 @@
 # markov-cero
 
-[![CI][ci-badge]][ci-link]
+markov-cero is a clean-room C++20 research solver for linear and mixed-integer
+optimization, with convex quadratic and experimental nonlinear paths. It is a
+solver prototype, not a production refinery planning system or a demonstrated
+commercial-solver replacement.
 
-[ci-badge]: https://github.com/Saikrishna0817/markov-zip1/actions/workflows/ci.yml/badge.svg
-[ci-link]: https://github.com/Saikrishna0817/markov-zip1/actions/workflows/ci.yml
+## Current release status
 
-Clean-room C++20 solver core for SIH 2026 problem SIH26119 (MRPL indigenous LP/MILP/QP).
+The current CPU acceptance run passes **80/80 CTests**; a fresh ML-enabled
+Release build also passes 80/80, and the installed Python wheel passes 16/16.
+The five previously failing numerical/domain cases pass; production planning
+meets its requested 5% MIP gap, while the other four report verified optima.
+Maintained code and
+build files meet the **300 physical line** limit, enforced by CI.
 
-Current release: **v0.5.2**. The repository contains LP, MILP, convex QP/MIQP,
-experimental NLP/MINLP, and CUDA paths. Verification and benchmark coverage vary by
-engine; [STATUS.md](STATUS.md) records the measured limits and open acceptance gates.
+The [closure register](evidence/defect-closure-register.csv) records **29/32
+(90.6%) actionable code defects closed** from the plan's baseline. Four capability
+and release gates are listed separately. This is a scoped implementation tally,
+not a claim that 90% of all possible bugs are known or fixed. Three engineering
+defects remain open: full immutable node views, complete deadline coverage, and
+solve-wide memory budgets. The 100% critical/high release gate is therefore unmet.
+See [current evidence](evidence/readiness-checkpoint.json).
+See [the implementation plan](docs/audit/INDUSTRY-READINESS-IMPLEMENTATION-PLAN.md)
+for the remaining acceptance requirements.
 
-Substantial implementation was AI-assisted under human direction; see
-[provenance and verification](docs/governance/provenance-and-verification.md).
-The historical 29,320× GPU speedup comparison is quarantined because its
-simplex baseline was unreliable. Current engine-matched GPU results show no
-end-to-end speed benefit on the measured cases.
+## Build and solve
 
-## Scope & Capabilities
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
+    cmake --build build -j
+    ./build/markov-cero-solve examples/blend.mps
+    ./build/markov-cero-solve examples/qp_portfolio.mps --engine qp
 
-- **Model & Storage**: Immutable model, free-format MPS parser, Compressed Sparse Column (CSC).
-- **Presolve & Scaling**: Reversible multi-pass presolve with LIFO postsolve stack; Ruiz scaling.
-- **Continuous LP Engines**:
-  - Certified Primal Revised Simplex with Bland's rule anti-cycling.
-  - Dual Revised Simplex with Harris two-pass ratio test, basis serialization, and warm-starts.
-  - Sparse basis substrate with row-map Gaussian LU and product-form Eta updates.
-  - Matrix-free First-Order PDLP (Chambolle-Pock) with diagonal preconditioning.
-  - Interior-Point Method (`--engine ipm`): Mehrotra predictor-corrector primal-dual IPM on the canonical standard form, with a rank-revealing crossover that converts the interior optimum into a certified vertex basis for the dual simplex (so IPM results are warm-startable, per R4/R5). Netlib sweep: 16/17 optimal+verified, of which 8 crossover-certified and 8 via the documented simplex fallback (`tests/ipm_test.cpp`).
-- **GPU-Accelerated LP Engine**:
-  - Sovereign CUDA First-Order PDLP with device-resident loop (`--engine pdlp --backend gpu`).
-  - Warp-per-row CSR SpMV and transpose-SpMV kernels with shuffle reduction.
-  - Deterministic two-stage parallel reductions and adaptive restart strategy.
-  - Four-part timing telemetry (H2D, kernel, D2H, total) and a physical RTX 2050 crossover run: GPU PDLP was 2.60–8.64× slower than CPU PDLP on all four measured scales; no GPU benefit is claimed (`docs/gpu.md`, `evidence/benchmarks/crossover_study_gpu_rtx2050.csv`). Hardware details for this run are in `evidence/gpu_hardware_rtx2050.json`.
-- **MILP Branch-and-Cut Engines**:
-  - Sovereign Sequential Branch-and-Cut (`--engine milp`).
-  - Multithreaded Parallel Tree Search (`--engine parallel --threads N`) with C++20 `std::jthread` — batched work distribution and lazy pruning (RW-2): 3.68× at 4 threads on flugpl, TSan-clean (`evidence/benchmarks/rw2_parallel_scaling.md`).
-  - Cutting Planes: Gomory Mixed-Integer (GMI) cuts and Mixed-Integer Rounding (MIR) cuts.
-  - Variable Selection: Strong Branching domain reduction and Reliability Pseudo-Costs.
-  - Dual-tier Primal Heuristics: Simple Rounding and Feasibility Pump with cycle perturbation.
-- **Convex QP & MIQP Engines**:
-  - OSQP operator-splitting ADMM over symmetric quasi-definite KKT (`--engine qp`).
-  - Timothy Davis sparse LDLᵀ factorization with exact symbolic fill-in.
-  - Positive semi-definiteness detection via LDLᵀ diagonal pivot validation.
-  - MIQP branch-and-cut optimization with quadratic objective heuristics (`--engine miqp`).
-  - Independent zero-trust KKT certificate verifier (residuals, dual stationarity, gap).
-- **Zero-Trust Independent Verification**: Dual-gated verification in canonical and original space.
-- **Applications**: `markov-cero-info`, `markov-cero-mps-inspect`, and `markov-cero-solve`.
+For the offline qualification example:
 
-- **Pricing**: Forrest-Goldfarb exact $O(m)$ Dual Steepest-Edge (DSE) pricing in Dual Simplex.
-ML-assisted branching is experimental and explicitly opt-in via `--branching ml_gnn`;
-its trained-model and genuine ML-on node-count acceptance gate remains open.
+    bash run-qualification-demo.sh
 
-## Solve a model
+Follow [BUILDING.md](BUILDING.md), [QUICKSTART.md](QUICKSTART.md) and
+[VERIFY.md](VERIFY.md) for build options and verification commands. Optional
+Python, comparison and CUDA checks require their documented dependencies and
+must not be inferred from a CPU-only build.
 
-```sh
-cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
-cmake --build build -j
-./build/markov-cero-solve examples/blend.mps
-./build/markov-cero-solve examples/qp_portfolio.mps --engine qp
-./build/markov-cero-solve examples/refinery/refinery-feasible.mps --output /tmp/result.json
-```
+## What the repository demonstrates
 
-Judge demo (offline):
+- Clean-room C++20 solver implementation and provenance records.
+- Sparse model representation, presolve, scaling and multiple LP engines.
+- MILP branch-and-cut and a convex QP/MIQP path.
+- Independent LP/QP/NLP checks and bounded MILP/MIQP tree replay; see STATUS.
+- CLI, C++ API, Python bindings and benchmark/evidence tooling.
 
-```sh
-bash run-qualification-demo.sh
-```
+These are implementation areas, not blanket claims that every engine or model
+class is production-ready. The refinery examples include synthetic models and the public historical Fawley
+qualification model; they are not approved MRPL operating data. The GPU evidence currently shows no
+end-to-end advantage over CPU PDLP on the measured RTX 2050 cases. ML branching
+has not passed its deployment acceptance gate.
 
-## Verify
+## Evidence and project documents
 
-```sh
-./scripts/verify-release.sh
-```
+- [Current capability and evidence register](STATUS.md)
+- [Current codebase audit](docs/audit/CODEBASE-AUDIT-2026-09-28.md)
+- [Consolidated findings](docs/audit/sih_2026_findings.md)
+- [Full SIH and engineering audit](docs/audit/sih_2026_implementation_audit.md)
+- [Official SIH problem statement](docs/sih26119_problem_statement.md)
+- [Provenance and verification](docs/governance/provenance-and-verification.md)
+- [Change history](CHANGELOG.md)
 
-See `STATUS.md` and `QUICKSTART.md`.
+The optional dataset migration removes 227 large benchmark files from the current
+checkout: retained data is approximately 4 MB instead of 588 MB. Small default
+fixtures stay offline. Git history is unchanged; use the
+[hash-pinned manifest](data/optional-datasets.json) and explicit restoration:
+
+    python3 scripts/datasets.py --list
+    python3 scripts/datasets.py --name gen-ip002
+    python3 scripts/datasets.py --family netlib --download
+
+The first restore uses a preserved local cache or the pinned Git revision;
+`--download` permits fetching that revision when absent. Missing datasets are
+reported as `DatasetUnavailable`, and full runners retain them in the denominator.
+
+## Independent MIP proofs and conflicts
+
+Linear MILP and convex MIQP results can include a cut-free proof tree in JSON
+`mip_proof`. The standalone checker replays every integer partition and LP/QP
+leaf witness without running a solver:
+
+    ./build/markov-cero-verify-mip model.mps proof.txt
+    ./build/markov-cero-iis infeasible.mps
+
+Proofs are numerical, with explicit tolerances and node/witness/deadline budgets.
+An incomplete proof remains unverified. OA/MINLP has no global proof export.
+Conflict analysis reports row irreducibility relative to unchanged variable
+bounds; unknown or timed-out trials cannot establish irreducibility.
+
+## Public refinery qualification data
+
+An attributed [Fawley historical input](data/refinery/fawley_public.json) and
+[independently generated MPS](examples/refinery/fawley-public.mps) are available:
+
+    python3 scripts/generators/gen_public_refinery.py
+    ./build/markov-cero-solve examples/refinery/fawley-public.mps
+
+The 29-row, 36-column model has explicit process feed consumption, capacities,
+recipe blending, and weight/volume quality bases. Markov and the development
+HiGHS oracle returned objective −2899.252790423 (thousand historical USD/period).
+This is qualification evidence for this generated LP, not validation of a plant.
+The source uses approximate blend indices, historical lead cost and energy-equivalent
+transfers; see [provenance and limitations](PROVENANCE.md).
+
+Python wheels now build an isolated CPU core with CMake; they do not consume a
+pre-existing local build. Python input buffers are copied into owned vectors;
+NumPy solution output adopts vector storage. `verified` denotes the API's global
+verification result; `original_verified` and `certificate_type` describe narrower
+incumbent or local checks.

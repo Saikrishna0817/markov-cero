@@ -17,6 +17,7 @@ struct MpsLimits final {
     std::size_t maximum_columns{1'000'000U};
     std::size_t maximum_nonzeros{20'000'000U};
     std::size_t maximum_name_bytes{255U};
+    std::size_t maximum_line_bytes{64U * 1024U};
 };
 
 class MpsError final : public std::runtime_error {

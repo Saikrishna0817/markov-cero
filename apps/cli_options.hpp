@@ -1,4 +1,6 @@
 #pragma once
+#include "cli_usage.hpp"
+#include "cli_numbers.hpp"
 
 #include "markov_cero/lp/reference/revised_simplex.hpp"
 #include "markov_cero/milp/milp_solver.hpp"
@@ -37,38 +39,7 @@ struct CliOptions {
     bool error = false;
     int exit_code = 0;
 
-    static void usage(std::ostream& out) {
-        out << "usage: markov-cero-solve MODEL.mps [options]\n"
-            << "options:\n"
-            << "  --output result.json     Write output JSON to file\n"
-            << "  --engine primal|dual|ipm|pdlp|milp|parallel|qp|miqp|sqp|outer_approx|auto "
-            << "Select solver engine (default: auto)\n"
-            << "  --threads N              Worker threads for parallel tree search (default: 4)\n"
-            << "  --branching most_fractional|pseudo_cost|strong_branching|reliability|ml_gnn "
-               "Branching variable selection rule (default: pseudo_cost; ml_gnn needs "
-               "MARKOV_CERO_ENABLE_ML + model file, else falls back to pseudo_cost)\n"
-            << "  --iteration-limit N      Maximum simplex iterations\n"
-            << "  --max-nodes N            Maximum branch-and-cut search nodes (default: 50000)\n"
-            << "  --node-selection best-bound|depth-first|dive  Node selection policy "
-               "(default: best-bound)\n"
-            << "  --time-limit SEC         Maximum solve wall-clock time in seconds (default: 60.0)\n"
-            << "  --mip-gap TOL            Relative MIP gap tolerance (default: 1e-4)\n"
-            << "  --cuts, --no-cuts        Enable or disable Gomory & MIR mixed-integer cuts "
-               "(default: enabled)\n"
-            << "  --heuristics, --no-heuristics Enable or disable primal heuristics (default: "
-               "enabled)\n"
-            << "  --warm-start FILE        Load warm-start basis from file (dual engine)\n"
-            << "  --save-basis FILE        Save optimal basis to file\n"
-            << "  --presolve, --no-presolve Enable or disable presolve reductions (default: "
-               "enabled)\n"
-            << "  --scale, --no-scale       Enable or disable Ruiz matrix scaling (default: "
-               "enabled)\n"
-            << "  --max-presolve-passes N   Maximum presolve passes (default: 5)\n"
-            << "  --ruiz-iterations N       Maximum Ruiz equilibration iterations (default: 10)\n"
-            << "  --tolerance TOL          Relative KKT tolerance for PDLP (default: 1e-4)\n"
-            << "  --backend cpu|gpu        PDLP execution backend (default: cpu)\n"
-            << "  --help, -h               Show this help\n";
-    }
+    static void usage(std::ostream& out) { cli_usage(out); }
 
     static CliOptions parse(int argc, char** argv) {
         CliOptions parsed;
@@ -109,8 +80,12 @@ struct CliOptions {
                     usage(std::cerr);
                     parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
-                parsed.num_threads = std::strtoul(argv[++i], nullptr, 10);
-                if (parsed.num_threads == 0) parsed.num_threads = 1;
+                if (!parse_size(argv[++i], parsed.num_threads)) {
+                    parsed.error = true; parsed.exit_code = 8; return parsed;
+                }
+                if (parsed.num_threads == 0 || parsed.num_threads > 256) {
+                    parsed.error = true; parsed.exit_code = 8; return parsed;
+                }
                 parsed.threads_explicit = true;
                 continue;
             }
@@ -167,7 +142,9 @@ struct CliOptions {
                     usage(std::cerr);
                     parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
-                parsed.milp_options.max_nodes = std::strtoul(argv[++i], nullptr, 10);
+                if (!parse_size(argv[++i], parsed.milp_options.max_nodes)) {
+                    parsed.error = true; parsed.exit_code = 8; return parsed;
+                }
                 continue;
             }
             if (arg == "--time-limit") {
@@ -175,16 +152,10 @@ struct CliOptions {
                     usage(std::cerr);
                     parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
-                char* end = nullptr;
-                errno = 0;
-                parsed.time_limit_seconds = std::strtod(argv[++i], &end);
-                if (errno != 0 || end == nullptr || *end != '\0' ||
-                    !std::isfinite(parsed.time_limit_seconds) ||
-                    parsed.time_limit_seconds <= 0.0) {
-                    std::cerr << "invalid time limit: expected a positive finite number\n";
-                    parsed.error = true;
-                    parsed.exit_code = 8;
-                    return parsed;
+                if (!parse_nonnegative(argv[++i], parsed.time_limit_seconds) ||
+                    parsed.time_limit_seconds <= 0 || parsed.time_limit_seconds > 1e8) {
+                    std::cerr << "invalid time limit: expected 0 < seconds <= 1e8\n";
+                    parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
                 parsed.milp_options.time_limit_seconds = parsed.time_limit_seconds;
                 parsed.options.time_limit_seconds = parsed.time_limit_seconds;
@@ -195,7 +166,9 @@ struct CliOptions {
                     usage(std::cerr);
                     parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
-                parsed.milp_options.relative_gap_tolerance = std::strtod(argv[++i], nullptr);
+                if (!parse_nonnegative(argv[++i], parsed.milp_options.relative_gap_tolerance)) {
+                    parsed.error = true; parsed.exit_code = 8; return parsed;
+                }
                 continue;
             }
             if (arg == "--cuts") {
@@ -251,7 +224,9 @@ struct CliOptions {
                     usage(std::cerr);
                     parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
-                parsed.max_presolve_passes = std::strtoul(argv[++i], nullptr, 10);
+                if (!parse_size(argv[++i], parsed.max_presolve_passes)) {
+                    parsed.error = true; parsed.exit_code = 8; return parsed;
+                }
                 continue;
             }
             if (arg == "--ruiz-iterations") {
@@ -259,7 +234,9 @@ struct CliOptions {
                     usage(std::cerr);
                     parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
-                parsed.ruiz_iterations = std::strtoul(argv[++i], nullptr, 10);
+                if (!parse_size(argv[++i], parsed.ruiz_iterations)) {
+                    parsed.error = true; parsed.exit_code = 8; return parsed;
+                }
                 continue;
             }
             if (arg == "--tolerance") {
@@ -267,7 +244,9 @@ struct CliOptions {
                     usage(std::cerr);
                     parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
-                parsed.pdlp_tolerance = std::strtod(argv[++i], nullptr);
+                if (!parse_nonnegative(argv[++i], parsed.pdlp_tolerance)) {
+                    parsed.error = true; parsed.exit_code = 8; return parsed;
+                }
                 if (parsed.pdlp_tolerance <= 0.0) {
                     std::cerr << "tolerance must be positive: " << parsed.pdlp_tolerance << "\n";
                     parsed.error = true; parsed.exit_code = 8; return parsed;
@@ -291,15 +270,10 @@ struct CliOptions {
                     usage(std::cerr);
                     parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
-                char* endptr = nullptr;
-                errno = 0;
-                const unsigned long long val = std::strtoull(argv[++i], &endptr, 10);
-                if (errno == ERANGE || endptr == argv[i] || *endptr != '\0') {
-                    std::cerr << "invalid iteration limit: " << argv[i] << "\n";
+                if (!parse_size(argv[++i], parsed.options.iteration_limit)) {
                     parsed.error = true; parsed.exit_code = 8; return parsed;
                 }
-                parsed.options.iteration_limit = static_cast<std::size_t>(val);
-                parsed.milp_options.max_iterations = static_cast<std::size_t>(val);
+                parsed.milp_options.max_iterations = parsed.options.iteration_limit;
                 continue;
             }
             if (!arg.empty() && arg[0] == '-') {

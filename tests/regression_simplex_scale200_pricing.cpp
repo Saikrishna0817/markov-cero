@@ -4,6 +4,7 @@
 #include "markov_cero/io/mps.hpp"
 #include "markov_cero/lp/reference/revised_simplex.hpp"
 #include "markov_cero/transform/canonicalize.hpp"
+#include "markov_cero/verify/reference_lp_verifier.hpp"
 
 #include <chrono>
 #include <cstdlib>
@@ -12,28 +13,8 @@
 #include <iostream>
 #include <string>
 
-namespace fs = std::filesystem;
-
-static std::string find_mps() {
-    const char* env = std::getenv("MARKOV_CERO_SCALE200_MPS");
-    if (env && fs::exists(env)) return env;
-    const char* candidates[] = {
-        "data/scale_study/scale_200.mps",
-        "tests/fixtures/scale_200.mps",
-        "/tmp/scale_mps/scale_200.mps",
-    };
-    for (const char* c : candidates) {
-        if (fs::exists(c)) return c;
-    }
-    return {};
-}
-
 int main() {
-    const std::string path = find_mps();
-    if (path.empty()) {
-        std::cerr << "SKIP: scale_200.mps not found (set MARKOV_CERO_SCALE200_MPS)\n";
-        return 0;
-    }
+    const std::string path = "tests/fixtures/scale_200.mps";
     std::ifstream in(path);
     if (!in) {
         std::cerr << "FAIL: cannot open " << path << "\n";
@@ -56,6 +37,11 @@ int main() {
         std::cerr << "FAIL: expected optimal, got "
                   << markov_cero::lp::reference::to_string(result.status)
                   << " msg=" << result.message << "\n";
+        return 1;
+    }
+    const auto certificate = markov_cero::verify::verify_reference_result(canon, result);
+    if (!certificate.accepted) {
+        std::cerr << "FAIL: optimum certificate rejected: " << certificate.message << "\n";
         return 1;
     }
     // Guard: previously multi-second on this size due to pricing allocations.

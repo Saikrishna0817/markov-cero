@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="Linux-c++"
+	tests="80"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname="SaiKrishna"
+	time="22"
+	timestamp="2026-09-28T16:41:10"
+	>
+	<testcase name="classifier" classname="classifier" time="0.00183943" status="run">
+		<properties/>
+		<system-out>classifier tests passed
+</system-out>
+	</testcase>
+	<testcase name="ml_branching" classname="ml_branching" time="0.00263223" status="run">
+		<properties/>
+		<system-out>ml branching tests passed
+</system-out>
+	</testcase>
+	<testcase name="nlp_sqp" classname="nlp_sqp" time="0.00193582" status="run">
+		<properties/>
+		<system-out>nlp sqp tests passed
+</system-out>
+	</testcase>
+	<testcase name="nlp_rosenbrock" classname="nlp_rosenbrock" time="0.00240158" status="run">
+		<properties/>
+		<system-out>nlp rosenbrock tests passed
+</system-out>
+	</testcase>
+	<testcase name="nlp_constrained" classname="nlp_constrained" time="0.00165763" status="run">
+		<properties/>
+		<system-out>nlp constrained tests passed
+</system-out>
+	</testcase>
+	<testcase name="minlp_basic" classname="minlp_basic" time="0.00737294" status="run">
+		<properties/>
+		<system-out>minlp basic tests passed
+</system-out>
+	</testcase>
+	<testcase name="nlobj_parser" classname="nlobj_parser" time="0.00169833" status="run">
+		<properties/>
+		<system-out>nlobj parser tests passed
+</system-out>
+	</testcase>
+	<testcase name="build_info" classname="build_info" time="0.00180203" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="model_verifier" classname="model_verifier" time="0.0019948" status="run">
+		<properties/>
+		<system-out>model verifier tests passed
+</system-out>
+	</testcase>
+	<testcase name="mps_parser" classname="mps_parser" time="0.00208871" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="lp_parser" classname="lp_parser" time="0.00247477" status="run">
+		<properties/>
+		<system-out>Running lp_parser_test...
+All lp_parser tests passed successfully!
+</system-out>
+	</testcase>
+	<testcase name="ipm_large" classname="ipm_large" time="0.0225736" status="run">
+		<properties/>
+		<system-out>[ipm_large_test] PASS: sc205 optimal obj=-52.20206121 verified=1 rows=205 cols=203
+</system-out>
+	</testcase>
+	<testcase name="pdlp_crossover" classname="pdlp_crossover" time="0.00723133" status="run">
+		<properties/>
+		<system-out>[pdlp_crossover_test] PASS: sc50a obj=-64.57503987 (no_cross) vs -64.57507706 (cross), diff=3.72e-05
+[pdlp_crossover_test] blend: status=PDLP primal feasible; optimality uncertified: dual has no finite variable-box infimum crossover_note=none
+</system-out>
+	</testcase>
+	<testcase name="qp_adaptive_rho" classname="qp_adaptive_rho" time="0.00233229" status="run">
+		<properties/>
+		<system-out>[qp_adaptive_rho_test] PASS: obj=1.679996 verified=1 iters=235 prim_res=1.65e-06 dual_res=1.37e-06
+</system-out>
+	</testcase>
+	<testcase name="numerical_diagnostic" classname="numerical_diagnostic" time="0.00163995" status="run">
+		<properties/>
+		<system-out>[numerical_diagnostic_test] T1 PASS: blend optimal, failure_site='none'
+[numerical_diagnostic_test] T2 PASS: PDLP prim_res=3.06e-05 dual_res=8.51e-05
+[numerical_diagnostic_test] T2b PASS: primal/dual/ipm condition estimates are finite and &gt;= 1
+[numerical_diagnostic_test] T3 PASS: infeasible LP status='variable metadata dimension mismatch' failure_site='input_validation'
+[numerical_diagnostic_test] ALL TESTS PASSED
+</system-out>
+	</testcase>
+	<testcase name="mps_fuzz_smoke" classname="mps_fuzz_smoke" time="0.0249254" status="run">
+		<properties/>
+		<system-out>deterministic MPS fuzz smoke passed
+</system-out>
+	</testcase>
+	<testcase name="model_properties" classname="model_properties" time="0.00236602" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="dense_lu" classname="dense_lu" time="0.00237646" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="primal_simplex" classname="primal_simplex" time="0.00245679" status="run">
+		<properties/>
+		<system-out>primal revised simplex tests passed
+</system-out>
+	</testcase>
+	<testcase name="primal_simplex_properties" classname="primal_simplex_properties" time="0.00577379" status="run">
+		<properties/>
+		<system-out>primal simplex randomized property tests passed
+</system-out>
+	</testcase>
+	<testcase name="dual_simplex" classname="dual_simplex" time="0.00247317" status="run">
+		<properties/>
+		<system-out>dual simplex tests passed
+</system-out>
+	</testcase>
+	<testcase name="warm_start_properties" classname="warm_start_properties" time="0.013002" status="run">
+		<properties/>
+		<system-out>randomized warm-start tests passed
+</system-out>
+	</testcase>
+	<testcase name="sparse_basis" classname="sparse_basis" time="0.0147976" status="run">
+		<properties/>
+		<system-out>[+] R6 fill reduction: 12066 -&gt; 8928 nnz (26%)
+sparse basis tests passed
+</system-out>
+	</testcase>
+	<testcase name="sparse_update_properties" classname="sparse_update_properties" time="0.0427619" status="run">
+		<properties/>
+		<system-out>randomized sparse update properties passed: 2400 updates
+</system-out>
+	</testcase>
+	<testcase name="audit_regressions" classname="audit_regressions" time="0.00215739" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="regression_backend_actually_used" classname="regression_backend_actually_used" time="0.00128568" status="run">
+		<properties/>
+		<system-out>PASS: cpu=cpu gpu_request=cpu_fallback
+</system-out>
+	</testcase>
+	<testcase name="regression_simplex_scale200_pricing" classname="regression_simplex_scale200_pricing" time="0.17944" status="run">
+		<properties/>
+		<system-out>PASS: scale_200 optimal in 174.793 ms iterations=1567
+</system-out>
+	</testcase>
+	<testcase name="sparse_canonicalize" classname="sparse_canonicalize" time="0.00160904" status="run">
+		<properties/>
+		<system-out>sparse canonicalize tests passed
+</system-out>
+	</testcase>
+	<testcase name="presolve" classname="presolve" time="0.00208717" status="run">
+		<properties/>
+		<system-out>presolve tests passed
+</system-out>
+	</testcase>
+	<testcase name="ruiz_scaling" classname="ruiz_scaling" time="0.00166979" status="run">
+		<properties/>
+		<system-out>ruiz scaling tests passed
+</system-out>
+	</testcase>
+	<testcase name="milp" classname="milp" time="0.0117391" status="run">
+		<properties/>
+		<system-out>[+] test_knapsack_01 passed
+[+] test_sparse_pdlp_root_relaxation_above_dense_row_limit passed
+[+] test_refinery_discrete_dispatch passed
+[+] test_infeasible_milp passed
+[+] test_node_selection_policies passed: obj=-62, best_bound_nodes=13
+[+] test_pseudo_cost_branching passed: nodes=3 obj=-15
+All MILP unit tests PASSED successfully!
+</system-out>
+	</testcase>
+	<testcase name="milp_heuristics" classname="milp_heuristics" time="0.00170438" status="run">
+		<properties/>
+		<system-out>[+] test_simple_rounding passed
+[+] test_feasibility_pump passed
+[+] test_local_swap_repair passed
+[+] test_coefficient_diving passed
+All heuristics tests PASSED successfully!
+</system-out>
+	</testcase>
+	<testcase name="milp_cuts" classname="milp_cuts" time="0.0014625" status="run">
+		<properties/>
+		<system-out>[+] test_gomory_cut_generation passed (1 cuts generated)
+[+] test_cover_cut_generation passed (1 cover cuts generated)
+All cuts tests PASSED successfully!
+</system-out>
+	</testcase>
+	<testcase name="strong_branching" classname="strong_branching" time="0.00266843" status="run">
+		<properties/>
+		<system-out>[+] test_mir_mathematical_function passed
+[+] test_cut_efficacy_and_filtering passed
+[+] test_mir_cuts_tighten_relaxation_and_preserve_integers passed: initial relaxation obj=-24.3333, with MIR cuts obj=-24
+[+] test_strong_branching_and_domain_reduction passed (best_var=0, score=1.6e+07, domain reductions=1)
+[+] test_zero_trust_primal_verifier_integration passed
+
+========================================
+All Phase 4 Strong Branching &amp; MIR tests PASSED!
+========================================
+</system-out>
+	</testcase>
+	<testcase name="pdlp" classname="pdlp" time="0.168816" status="run">
+		<properties/>
+		<system-out>[+] test_blend_lp PASSED: obj=-6.99997 (ref=-7.0), iters=120, primal_infeas=2.08808e-05
+[+] test_equality_lp PASSED: obj=5.00004 (ref=5.0), iters=120
+[+] test_pdlp_crossover kb2 PASSED: obj=-1749.9
+[+] test_pdlp_crossover lotfi PASSED: obj=-25.2647
+[+] test_pdlp_crossover beaconfd PASSED: obj=33592.5
+All PDLP unit tests PASSED successfully!
+</system-out>
+	</testcase>
+	<testcase name="ipm" classname="ipm" time="0.00256741" status="run">
+		<properties/>
+		<system-out>[+] test_vertex_lp PASSED: obj=-7, iters=7, crossover=1
+[+] test_equality_row_basis PASSED: obj=5, crossover=1
+[+] test_crossover_basis_warm_start PASSED: obj=-12.6667, warm=1
+[+] test_crossover_disabled PASSED: obj=-4
+All IPM unit tests PASSED successfully!
+</system-out>
+	</testcase>
+	<testcase name="parallel_tree_search" classname="parallel_tree_search" time="0.0042795" status="run">
+		<properties/>
+		<system-out>[+] test_thread_safe_queue_unit passed (batch API)
+[+] test_queue_lazy_prune_batch passed
+[+] test_queue_batch_interleave_order passed
+[+] test_incumbent_manager_unit passed
+[+] test_knapsack_multi_threads passed (1, 2, 4 threads verified)
+[+] test_refinery_dispatch_multi_threads passed (1, 2, 4 threads verified)
+[+] test_thread_safety_repeated_runs passed (40 stress runs completed without race or deadlock)
+[+] test_infeasible_parallel passed
+
+=======================================================
+All Parallel Tree Search Tests PASSED Successfully!
+=======================================================
+</system-out>
+	</testcase>
+	<testcase name="gpu_buffer" classname="gpu_buffer" time="0.0024369" status="run">
+		<properties/>
+		<system-out>=== Markov-Cero GPU Buffer &amp; CSR Tests (T-5.02) ===
+test_buffer_lifecycle: PASS
+test_buffer_roundtrip_double: PASS
+test_buffer_roundtrip_size_t: PASS
+test_buffer_bounds_checking: PASS
+test_csr_construction_roundtrip: PASS
+test_model_sparse_matrix_roundtrip: PASS
+test_refinery_mps_roundtrip: PASS (7x2, 12 nonzeros)
+test_device_query: available=false, count=0, device_name='CPU Fallback (No CUDA)'
+test_device_query: PASS
+All GPU buffer &amp; CSR tests passed successfully.
+</system-out>
+	</testcase>
+	<testcase name="equivalence" classname="equivalence" time="0.0222055" status="run">
+		<properties/>
+		<system-out>=== Markov-Cero Kernel Equivalence Tests (T-5.03 - T-5.05) ===
+test_synthetic_spmv: PASS
+test_synthetic_spmv_transpose: PASS
+test_axpy_equivalence: PASS
+test_scale_equivalence: PASS
+test_project_bounds_equivalence: PASS
+--- Testing SpMV &amp; Transpose SpMV on Netlib Matrix Corpus ---
+  afiro        (   27 x    32, nnz=    83) fwd_diff=0.00e+00 trans_diff=0.00e+00 [PASS]
+  adlittle     (   56 x    97, nnz=   383) fwd_diff=0.00e+00 trans_diff=0.00e+00 [PASS]
+  beaconfd     (  173 x   262, nnz=  3375) fwd_diff=0.00e+00 trans_diff=0.00e+00 [PASS]
+  blend        (   74 x    83, nnz=   491) fwd_diff=0.00e+00 trans_diff=0.00e+00 [PASS]
+  kb2          (   43 x    41, nnz=   286) fwd_diff=0.00e+00 trans_diff=0.00e+00 [PASS]
+  lotfi        (  153 x   308, nnz=  1078) fwd_diff=0.00e+00 trans_diff=0.00e+00 [PASS]
+  recipe       (   91 x   180, nnz=   663) fwd_diff=0.00e+00 trans_diff=0.00e+00 [PASS]
+  sc105        (  105 x   103, nnz=   280) fwd_diff=0.00e+00 trans_diff=0.00e+00 [PASS]
+  sc205        (  205 x   203, nnz=   ...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="gpu_reduction" classname="gpu_reduction" time="0.0226302" status="run">
+		<properties/>
+		<system-out>=== Markov-Cero Deterministic Reduction Tests (T-5.06) ===
+test_empty_and_unit: PASS
+test_reductions_equivalence: PASS
+test_determinism: PASS (10 repeated runs)
+test_mathematical_properties: PASS
+=== All Reduction Tests Passed Successfully ===
+</system-out>
+	</testcase>
+	<testcase name="gpu_pdhg_step" classname="gpu_pdhg_step" time="0.00288182" status="run">
+		<properties/>
+		<system-out>=== Markov-Cero Fused PDHG Step Tests (T-5.07) ===
+test_synthetic_single_step: PASS (diff_x=0.00e+00)
+test_netlib_multi_step (afiro     , steps=50): PASS (diff_x=0.00e+00 diff_y=0.00e+00)
+test_netlib_multi_step (blend     , steps=50): PASS (diff_x=0.00e+00 diff_y=0.00e+00)
+test_netlib_multi_step (adlittle  , steps=50): PASS (diff_x=0.00e+00 diff_y=0.00e+00)
+test_zero_transfers_invariant: PASS (all device pointers stable)
+=== All Fused PDHG Step Tests Passed Successfully ===
+</system-out>
+	</testcase>
+	<testcase name="gpu_pdhg_restart" classname="gpu_pdhg_restart" time="0.027046" status="run">
+		<properties/>
+		<system-out>=== Markov-Cero Adaptive Restart Tests (T-5.08) ===
+
+--- 1. Testing CPU Backend ---
+  BLEND        [CPU] adaptive: 120   iters (optimal) vs no-restart: 10000 iters (limit)
+  EQUALITY     [CPU] adaptive: 120   iters (optimal) vs no-restart: 10000 iters (limit)
+  REFINERY     [CPU] adaptive: 360   iters (optimal) vs no-restart: 10000 iters (limit)
+  AFIRO        [CPU] adaptive: 1480  iters (optimal) vs no-restart: 15000 iters (limit)
+
+--- 2. Testing GPU Pipeline Backend ---
+  BLEND        [GPU] adaptive: 120   iters (optimal) vs no-restart: 10000 iters (limit)
+  EQUALITY     [GPU] adaptive: 120   iters (optimal) vs no-restart: 10000 iters (limit)
+  REFINERY     [GPU] adaptive: 280   iters (optimal) vs no-restart: 10000 iters (limit)
+  AFIRO        [GPU] adaptive: 1520  iters (optimal) vs no-restart: 15000 iters (limit)
+
+=== All Adaptive Restart Tests Passed (Measurable Reductions Verified) ===
+</system-out>
+	</testcase>
+	<testcase name="gpu_pdhg_adaptive" classname="gpu_pdhg_adaptive" time="0.166404" status="run">
+		<properties/>
+		<system-out>=== Markov-Cero Adaptive PDHG Step &amp; Primal Weight Tests (T-5.09) ===
+
+--- 1. Testing CPU Backend Convergence (Without Manual Tuning) ---
+  [CPU] AFIRO      status: optimal iters: 1480   obj: -464.7531 (expected: -464.7531)
+  [CPU] BLEND      status: optimal iters: 3760   obj: -30.8119 (expected: -30.8121)
+  [CPU] SC50A      status: optimal iters: 4600   obj: -64.5750 (expected: -64.5751)
+  [CPU] SC50B      status: optimal iters: 3640   obj: -69.9999 (expected: -70.0000)
+  [CPU] ADLITTLE   status: optimal iters: 6080   obj: 225498.8880 (expected: 225494.9632)
+  [CPU] SCSD1      status: optimal iters: 3320   obj: 8.6671 (expected: 8.6667)
+
+--- 2. Testing GPU Pipeline Backend Convergence ---
+  [GPU] AFIRO      status: optimal iters: 1520   obj: -464.7531 (expected: -464.7531)
+  [GPU] BLEND      status: optimal iters: 4400   obj: -30.8120 (expected: -30.8121)
+  [GPU] SC50A      status: optimal iters: 3880   obj: -64.5749 (expected: -64.5751)
+  [GPU] SC50B      status: optimal iters: 3320   obj: -69.9999 (expecte...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="gpu_pdhg_kkt" classname="gpu_pdhg_kkt" time="0.0468325" status="run">
+		<properties/>
+		<system-out>=== Markov-Cero Relative KKT Termination Tests (T-5.10 / D-GPU-09) ===
+Tolerances tested: 1e-4 (fast), 1e-6 (medium), 1e-8 (high precision)
+
+--- 1. CPU Backend Multi-Tolerance Verification ---
+  [CPU] AFIRO    tol=0.0001   iters=1480   prim_inf=8.90e-06    dual_inf=1.16e-06    gap=8.30e-06    obj=-464.753124
+  [CPU] AFIRO    tol=0.000001 iters=1560   prim_inf=2.76e-08    dual_inf=6.22e-08    gap=3.91e-07    obj=-464.753143
+  [CPU] AFIRO    tol=0.000000 iters=1640   prim_inf=1.96e-09    dual_inf=1.24e-09    gap=6.05e-09    obj=-464.753143
+  [CPU] BLEND    tol=0.000100 iters=3760   prim_inf=8.91e-05    dual_inf=1.48e-05    gap=3.11e-05    obj=-30.811879
+  [CPU] BLEND    tol=0.000001 iters=4720   prim_inf=4.55e-07    dual_inf=8.42e-07    gap=7.91e-07    obj=-30.812149
+  [CPU] BLEND    tol=0.000000 iters=6160   prim_inf=7.23e-09    dual_inf=7.17e-09    gap=9.73e-09    obj=-30.812150
+
+--- 2. GPU Pipeline Backend Multi-Tolerance Verification ---
+  [GPU] AFIRO    tol=0.000100 iters=1520   prim_inf=7.31e-06    dual_i...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="gpu_pdhg_timing" classname="gpu_pdhg_timing" time="0.0176672" status="run">
+		<properties/>
+		<system-out>=== Markov-Cero Four-Part Timing Tests (T-5.11 / D-GPU-08) ===
+
+--- Testing GPU Backend Four-Part Timing Breakdown ---
+  [GPU AFIRO   ] H2D: 0.008 ms  Kernel: 0.823 ms  D2H: 0.001 ms  Total: 0.868 ms  Iters: 1520
+  [GPU BLEND   ] H2D: 0.008 ms  Kernel: 6.602 ms  D2H: 0.003 ms  Total: 6.813 ms  Iters: 4400
+  [GPU SC50A   ] H2D: 0.004 ms  Kernel: 2.951 ms  D2H: 0.002 ms  Total: 3.038 ms  Iters: 3880
+
+--- Testing CPU Backend Timing Telemetry ---
+  [CPU AFIRO   ] H2D: 0.000 ms  Kernel: 0.368 ms  D2H: 0.000 ms  Total: 0.368 ms  Iters: 1480
+  [CPU BLEND   ] H2D: 0.000 ms  Kernel: 3.240 ms  D2H: 0.000 ms  Total: 3.240 ms  Iters: 3760
+
+=== All Four-Part Timing Tests Passed ===
+</system-out>
+	</testcase>
+	<testcase name="gpu_admm" classname="gpu_admm" time="0.00211539" status="run">
+		<properties/>
+		<system-out>no CUDA device; device-path assertions skipped (CPU fallback)
+gpu admm step tests passed
+</system-out>
+	</testcase>
+	<testcase name="gpu_fallback" classname="gpu_fallback" time="0.00196575" status="run">
+		<properties/>
+		<system-out>gpu fallback tests passed
+</system-out>
+	</testcase>
+	<testcase name="gpu_qp" classname="gpu_qp" time="0.220913" status="run">
+		<properties/>
+		<system-out>[+] large QP activation passed: P.nnz=110241 gpu_path_active=false gpu_objective=-906.55280730357083 cpu_objective=-906.55280730357083 gpu_iterations=21 cpu_iterations=21 gpu_kkt_verified=true
+[+] gpu_qp_test PASSED: obj=1.6799959862851308 rho_updates=3
+</system-out>
+	</testcase>
+	<testcase name="qp" classname="qp" time="0.00682984" status="run">
+		<properties/>
+		<system-out>[Test] 1. KktSolver LDL^T factorization and solve
+[Test] 2. Unconstrained Convex QP
+[Test] 3. Constrained Convex QP (Equality &amp; Inequality)
+[Test] 4. Non-Convex QP Rejection
+[Test] 4a. Sparse convexity classification and large dimensions
+[Test] 5. Primal Infeasible QP
+[Test] 6. Maros-Meszaros Style Benchmark Form (HUEBNER style)
+[Test] 7. Mixed-Integer Quadratic Program (MIQP)
+[Test] 8. Adaptive Rho Update and Refactorization Counter
+[Pass] All QP tests passed successfully!
+</system-out>
+	</testcase>
+	<testcase name="json_records" classname="json_records" time="0.0357357" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="sovereignty_guard" classname="sovereignty_guard" time="0.0886545" status="run">
+		<properties/>
+		<system-out>Sovereignty verification passed: zero external solver dependencies (inspected 1 binaries).
+</system-out>
+	</testcase>
+	<testcase name="cli_blend_optimal" classname="cli_blend_optimal" time="0.00202439" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"primal","problem_class":"LP","status":"Optimal","rows":2,"cols":2,"nonzeros":4,"certificate_type":"canonical_lp_witness","variable_names":["A","B"],"row_names":["TOTAL","SULFUR"],"row_activities":[100,2],"row_lower_slacks":[0,null],"row_upper_slacks":[0,0],"row_duals":[45,-500.00000000000006],"reduced_costs":[8.8817841970012523e-16,1.7763568394002505e-15],"verified":true,"message":"reference primal revised simplex optimum","objective":3500,"primal":[49.999999999999993,50.000000000000007],"canonical_verified":true,"original_verified":true,"original_message":"original primal verified","used_warm_start":false,"used_cold_fallback":false,"maximum_primal_violation":0,"maximum_variable_violation":0,"maximum_integrality_violation":0,"maximum_canonical_primal_violation":0,"maximum_canonical_dual_violation":0,"runtime_ms":0.14816699999999999,"nodes_explored":1,"lp_iterations":2,"best_bound":3500,"relative_gap":0,"cuts_generated":0,"heuristics_found":0,"phase_one_iterations"...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="cli_qp_portfolio" classname="cli_qp_portfolio" time="0.00234719" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"qp","problem_class":"QP","status":"Optimal","rows":2,"cols":2,"nonzeros":4,"certificate_type":"convex_qp_kkt","variable_names":["X1","X2"],"row_names":["BUDGET","RETURN"],"row_activities":[1.0000016451272367,0.11999985664431451],"row_lower_slacks":[1.6451272366602154e-06,-1.4335568548906608e-07],"row_upper_slacks":[-1.6451272366602154e-06,null],"row_duals":[0.0001653053998204243,27.998589691067284],"reduced_costs":[-0,-0],"verified":true,"message":"QP solved to optimality","objective":1.6799959862851308,"primal":[0.60000780249541941,0.39999384263181714],"canonical_verified":true,"original_verified":true,"original_message":"QP KKT certificate verified","used_warm_start":false,"used_cold_fallback":false,"maximum_primal_violation":0,"maximum_variable_violation":0,"maximum_integrality_violation":0,"maximum_canonical_primal_violation":0,"maximum_canonical_dual_violation":0,"runtime_ms":0.21229400000000001,"nodes_explored":1,"lp_iterations":235,"best_bound":null,"relati...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="cli_refinery_feasible" classname="cli_refinery_feasible" time="0.00170383" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"primal","problem_class":"LP","status":"Optimal","rows":7,"cols":2,"nonzeros":12,"certificate_type":"canonical_lp_witness","variable_names":["A","B"],"row_names":["CDU","AVAIL_A","AVAIL_B","PETROL","DIESEL","ATF","SULFUR"],"row_activities":[59.523809523809533,38.095238095238095,21.428571428571434,22,24.761904761904763,8,1.0571428571428574],"row_lower_slacks":[null,null,null,0,0.76190476190476275,0,null],"row_upper_slacks":[40.476190476190467,31.904761904761905,58.571428571428569,null,null,null,0.94285714285714262],"row_duals":[0,0,0,100.00000000000001,0,49.99999999999995,0],"reduced_costs":[-8.8817841970012523e-16,8.8817841970012523e-16],"verified":true,"message":"reference primal revised simplex optimum","objective":2600,"primal":[38.095238095238095,21.428571428571434],"canonical_verified":true,"original_verified":true,"original_message":"original primal verified","used_warm_start":false,"used_cold_fallback":false,"maximum_primal_violation":0,"maximum_variable_vio...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="cli_refinery_infeasible" classname="cli_refinery_infeasible" time="0.00188886" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"primal","problem_class":"LP","status":"Infeasible","rows":7,"cols":2,"nonzeros":12,"certificate_type":"canonical_lp_witness","variable_names":["A","B"],"row_names":["CDU","AVAIL_A","AVAIL_B","PETROL","DIESEL","ATF","SULFUR"],"row_activities":[],"row_lower_slacks":[],"row_upper_slacks":[],"row_duals":[],"reduced_costs":[],"verified":true,"message":"validated phase I Farkas candidate","objective":0,"primal":[],"canonical_verified":true,"original_verified":false,"original_message":"original primal not applicable","used_warm_start":false,"used_cold_fallback":false,"maximum_primal_violation":0,"maximum_variable_violation":0,"maximum_integrality_violation":0,"maximum_canonical_primal_violation":0,"maximum_canonical_dual_violation":0,"runtime_ms":0.19830600000000001,"nodes_explored":0,"lp_iterations":9,"best_bound":null,"relative_gap":null,"cuts_generated":0,"heuristics_found":0,"phase_one_iterations":9,"phase_two_iterations":0,"pdlp_tolerance":0.0001,"relative_primal_re...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="cli_refinery_malformed" classname="cli_refinery_malformed" time="0.00224736" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"auto","problem_class":"LP","status":"InvalidModel","rows":0,"cols":0,"nonzeros":0,"certificate_type":"none","variable_names":[],"row_names":[],"row_activities":[],"row_lower_slacks":[],"row_upper_slacks":[],"row_duals":[],"reduced_costs":[],"verified":false,"message":"MPS line 3: unsupported row type","objective":0,"primal":[],"canonical_verified":false,"original_verified":false,"original_message":"","used_warm_start":false,"used_cold_fallback":false,"maximum_primal_violation":0,"maximum_variable_violation":0,"maximum_integrality_violation":0,"maximum_canonical_primal_violation":0,"maximum_canonical_dual_violation":0,"runtime_ms":0.087899000000000005,"nodes_explored":0,"lp_iterations":0,"best_bound":null,"relative_gap":null,"cuts_generated":0,"heuristics_found":0,"phase_one_iterations":0,"phase_two_iterations":0,"pdlp_tolerance":0.0001,"relative_primal_residual":0,"relative_dual_residual":0,"relative_duality_gap":0,"backend":"cpu","h2d_ms":0,"kernel_ms":0,"d2h_ms"...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="cli_refinery_limited" classname="cli_refinery_limited" time="0.00196634" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"auto","problem_class":"LP","status":"InvalidModel","rows":0,"cols":0,"nonzeros":0,"certificate_type":"none","variable_names":[],"row_names":[],"row_activities":[],"row_lower_slacks":[],"row_upper_slacks":[],"row_duals":[],"reduced_costs":[],"verified":false,"message":"MPS line 7: COLUMNS record requires one or two row/value pairs","objective":0,"primal":[],"canonical_verified":false,"original_verified":false,"original_message":"","used_warm_start":false,"used_cold_fallback":false,"maximum_primal_violation":0,"maximum_variable_violation":0,"maximum_integrality_violation":0,"maximum_canonical_primal_violation":0,"maximum_canonical_dual_violation":0,"runtime_ms":0.062231000000000002,"nodes_explored":0,"lp_iterations":0,"best_bound":null,"relative_gap":null,"cuts_generated":0,"heuristics_found":0,"phase_one_iterations":0,"phase_two_iterations":0,"pdlp_tolerance":0.0001,"relative_primal_residual":0,"relative_dual_residual":0,"relative_duality_gap":0,"backend":"cpu","h2...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="cli_case_crude_oil" classname="cli_case_crude_oil" time="0.00156095" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"qp","problem_class":"QP","status":"Optimal","rows":4,"cols":4,"nonzeros":16,"certificate_type":"convex_qp_kkt","variable_names":["X1","X2","X3","X4"],"row_names":["REGULAR","PREMIUM","OCTANE","SULFUR"],"row_activities":[40.000000443379001,36.040690158795385,461.81403731905027,-1.0215768116005747e-06],"row_lower_slacks":[4.4337900106938832e-07,6.0406901587953854,461.81403731905027,null],"row_upper_slacks":[null,null,null,1.0215768116005747e-06],"row_duals":[300.82082286552043,-0,-0,-75.328328879372506],"reduced_costs":[-0,25.499999090506819,-0,-0],"verified":true,"message":"QP solved to optimality","objective":9847.0188547737434,"primal":[47.73100374385114,-8.9647897379729322e-10,62.910414106927888,20.344747139394709],"canonical_verified":true,"original_verified":true,"original_message":"QP KKT certificate verified","used_warm_start":false,"used_cold_fallback":false,"maximum_primal_violation":0,"maximum_variable_violation":0,"maximum_integrality_violation":0,"maxim...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="cli_case_multiperiod" classname="cli_case_multiperiod" time="0.00486138" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"milp","problem_class":"MILP","status":"Optimal","rows":6,"cols":9,"nonzeros":14,"certificate_type":"independent_mip_tree","variable_names":["Y1","Y2","Y3","P1","P2","P3","I1","I2","I3"],"row_names":["BAL1","BAL2","BAL3","CAP1","CAP2","CAP3"],"row_activities":[50,80,60,-100,-70,-90],"row_lower_slacks":[0,0,0,null,null,null],"row_upper_slacks":[0,0,0,100,70,90],"row_duals":[],"reduced_costs":[],"verified":true,"message":"branch-and-cut tree conclusion within numerical tolerances","objective":5300,"primal":[1,1,1,50,80,60,0,0,0],"canonical_verified":true,"original_verified":true,"original_message":"original primal verified","used_warm_start":false,"used_cold_fallback":false,"maximum_primal_violation":0,"maximum_variable_violation":0,"maximum_integrality_violation":0,"maximum_canonical_primal_violation":0,"maximum_canonical_dual_violation":0,"runtime_ms":3.0343650000000002,"nodes_explored":5,"lp_iterations":103,"best_bound":5300,"relative_gap":0,"cuts_generated":3,"he...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="cli_case_supply_chain" classname="cli_case_supply_chain" time="0.00406385" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"milp","problem_class":"MILP","status":"Optimal","rows":5,"cols":8,"nonzeros":14,"certificate_type":"independent_mip_tree","variable_names":["O1","O2","S11","S12","S13","S21","S22","S23"],"row_names":["DEM1","DEM2","DEM3","CAP1","CAP2"],"row_activities":[60,70,80,-90,-50],"row_lower_slacks":[0,0,0,null,null],"row_upper_slacks":[null,null,null,90,50],"row_duals":[],"reduced_costs":[],"verified":true,"message":"branch-and-cut tree conclusion within numerical tolerances","objective":3770,"primal":[1,1,60,0,0,0,70,80],"canonical_verified":true,"original_verified":true,"original_message":"original primal verified","used_warm_start":false,"used_cold_fallback":false,"maximum_primal_violation":0,"maximum_variable_violation":0,"maximum_integrality_violation":0,"maximum_canonical_primal_violation":0,"maximum_canonical_dual_violation":0,"runtime_ms":1.7110749999999999,"nodes_explored":5,"lp_iterations":70,"best_bound":3770,"relative_gap":0,"cuts_generated":2,"heuristics_found...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="domain_refinery_scheduling_large" classname="domain_refinery_scheduling_large" time="2.29092" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"milp","problem_class":"MILP","status":"Optimal","rows":343,"cols":511,"nonzeros":2340,"certificate_type":"independent_mip_tree","variable_names":["YB_ARAB_0_0","YB_ARAB_0_1","YB_ARAB_0_2","YB_ARAB_0_3","YB_ARAB_0_4","YB_ARAB_0_5","YB_ARAB_0_6","YB_ARAB_1_0","YB_ARAB_1_1","YB_ARAB_1_2","YB_ARAB_1_3","YB_ARAB_1_4","YB_ARAB_1_5","YB_ARAB_1_6","YB_BASR_2_0","YB_BASR_2_1","YB_BASR_2_2","YB_BASR_2_3","YB_BASR_2_4","YB_BASR_2_5","YB_BASR_2_6","YB_MAYA_3_0","YB_MAYA_3_1","YB_MAYA_3_2","YB_MAYA_3_3","YB_MAYA_3_4","YB_MAYA_3_5","YB_MAYA_3_6","YB_BONN_0_0","YB_BONN_0_1","YB_BONN_0_2","YB_BONN_0_3","YB_BONN_0_4","YB_BONN_0_5","YB_BONN_0_6","YB_MUMB_1_0","YB_MUMB_1_1","YB_MUMB_1_2","YB_MUMB_1_3","YB_MUMB_1_4","YB_MUMB_1_5","YB_MUMB_1_6","YB_KUWA_2_0","YB_KUWA_2_1","YB_KUWA_2_2","YB_KUWA_2_3","YB_KUWA_2_4","YB_KUWA_2_5","YB_KUWA_2_6","YB_MURB_3_0","YB_MURB_3_1","YB_MURB_3_2","YB_MURB_3_3","YB_MURB_3_4","YB_MURB_3_5","YB_MURB_3_6","YB_SOKO_0_0","YB_SOKO_0_1","YB_SOKO_0_2","YB_SO...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="domain_crude_blending_large" classname="domain_crude_blending_large" time="0.00704282" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"qp","problem_class":"QP","status":"Optimal","rows":140,"cols":120,"nonzeros":780,"certificate_type":"convex_qp_kkt","variable_names":["X000","X001","X002","X003","X004","X005","X006","X007","X008","X009","X010","X011","X012","X013","X014","X015","X016","X017","X018","X019","X020","X021","X022","X023","X024","X025","X026","X027","X028","X029","X030","X031","X032","X033","X034","X035","X036","X037","X038","X039","X040","X041","X042","X043","X044","X045","X046","X047","X048","X049","X050","X051","X052","X053","X054","X055","X056","X057","X058","X059","X060","X061","X062","X063","X064","X065","X066","X067","X068","X069","X070","X071","X072","X073","X074","X075","X076","X077","X078","X079","X080","X081","X082","X083","X084","X085","X086","X087","X088","X089","X090","X091","X092","X093","X094","X095","X096","X097","X098","X099","X100","X101","X102","X103","X104","X105","X106","X107","X108","X109","X110","X111","X112","X113","X114","X115","X116","X117","X118","X119"],"ro...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="domain_process_network_large" classname="domain_process_network_large" time="1.01441" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"milp","problem_class":"MILP","status":"Optimal","rows":420,"cols":336,"nonzeros":1176,"certificate_type":"independent_mip_tree","variable_names":["Y_CDU_L_0","Y_CDU_B_0","Y_CDU_H_0","Y_VDU_L_0","Y_VDU_B_0","Y_VDU_H_0","Y_CCR_L_0","Y_CCR_B_0","Y_CCR_H_0","Y_FCC_L_0","Y_FCC_B_0","Y_FCC_H_0","Y_DHD_L_0","Y_DHD_B_0","Y_DHD_H_0","Y_HCU_L_0","Y_HCU_B_0","Y_HCU_H_0","Y_HGU_L_0","Y_HGU_B_0","Y_HGU_H_0","Y_SRU_L_0","Y_SRU_B_0","Y_SRU_H_0","Y_CDU_L_1","Y_CDU_B_1","Y_CDU_H_1","Y_VDU_L_1","Y_VDU_B_1","Y_VDU_H_1","Y_CCR_L_1","Y_CCR_B_1","Y_CCR_H_1","Y_FCC_L_1","Y_FCC_B_1","Y_FCC_H_1","Y_DHD_L_1","Y_DHD_B_1","Y_DHD_H_1","Y_HCU_L_1","Y_HCU_B_1","Y_HCU_H_1","Y_HGU_L_1","Y_HGU_B_1","Y_HGU_H_1","Y_SRU_L_1","Y_SRU_B_1","Y_SRU_H_1","Y_CDU_L_2","Y_CDU_B_2","Y_CDU_H_2","Y_VDU_L_2","Y_VDU_B_2","Y_VDU_H_2","Y_CCR_L_2","Y_CCR_B_2","Y_CCR_H_2","Y_FCC_L_2","Y_FCC_B_2","Y_FCC_H_2","Y_DHD_L_2","Y_DHD_B_2","Y_DHD_H_2","Y_HCU_L_2","Y_HCU_B_2","Y_HCU_H_2","Y_HGU_L_2","Y_HGU_B_2","Y_HGU_H_2","Y_S...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="domain_production_planning_large" classname="domain_production_planning_large" time="7.70196" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"milp","problem_class":"MILP","status":"GapSatisfied","rows":120,"cols":168,"nonzeros":474,"certificate_type":"incumbent_feasibility; solver_trusted_tree","variable_names":["Y00_0_00","Y01_0_00","Y02_0_00","Y03_0_00","Y04_0_00","Y05_0_00","Y00_1_00","Y01_1_00","Y02_1_00","Y03_1_00","Y04_1_00","Y05_1_00","Y00_2_00","Y01_2_00","Y02_2_00","Y03_2_00","Y04_2_00","Y05_2_00","Y00_0_01","Y01_0_01","Y02_0_01","Y03_0_01","Y04_0_01","Y05_0_01","Y00_1_01","Y01_1_01","Y02_1_01","Y03_1_01","Y04_1_01","Y05_1_01","Y00_2_01","Y01_2_01","Y02_2_01","Y03_2_01","Y04_2_01","Y05_2_01","Y00_0_02","Y01_0_02","Y02_0_02","Y03_0_02","Y04_0_02","Y05_0_02","Y00_1_02","Y01_1_02","Y02_1_02","Y03_1_02","Y04_1_02","Y05_1_02","Y00_2_02","Y01_2_02","Y02_2_02","Y03_2_02","Y04_2_02","Y05_2_02","Y00_0_03","Y01_0_03","Y02_0_03","Y03_0_03","Y04_0_03","Y05_0_03","Y00_1_03","Y01_1_03","Y02_1_03","Y03_1_03","Y04_1_03","Y05_1_03","Y00_2_03","Y01_2_03","Y02_2_03","Y03_2_03","Y04_2_03","Y05_2_03","X00_0_00","X0...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="domain_power_dispatch_dc_opf" classname="domain_power_dispatch_dc_opf" time="0.218109" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"qp","problem_class":"QP","status":"Optimal","rows":491,"cols":172,"nonzeros":917,"certificate_type":"convex_qp_kkt","variable_names":["PG00","PG01","PG02","PG03","PG04","PG05","PG06","PG07","PG08","PG09","PG10","PG11","PG12","PG13","PG14","PG15","PG16","PG17","PG18","PG19","PG20","PG21","PG22","PG23","PG24","PG25","PG26","PG27","PG28","PG29","PG30","PG31","PG32","PG33","PG34","PG35","PG36","PG37","PG38","PG39","PG40","PG41","PG42","PG43","PG44","PG45","PG46","PG47","PG48","PG49","PG50","PG51","PG52","PG53","TH001","TH002","TH003","TH004","TH005","TH006","TH007","TH008","TH009","TH010","TH011","TH012","TH013","TH014","TH015","TH016","TH017","TH018","TH019","TH020","TH021","TH022","TH023","TH024","TH025","TH026","TH027","TH028","TH029","TH030","TH031","TH032","TH033","TH034","TH035","TH036","TH037","TH038","TH039","TH040","TH041","TH042","TH043","TH044","TH045","TH046","TH047","TH048","TH049","TH050","TH051","TH052","TH053","TH054","TH055","TH056","TH057","TH058","T...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="domain_supply_chain_large" classname="domain_supply_chain_large" time="9.81697" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"milp","problem_class":"MILP","status":"Optimal","rows":87,"cols":440,"nonzeros":952,"certificate_type":"independent_mip_tree","variable_names":["Y_D00","Y_D01","Y_D02","Y_D03","Y_D04","Y_D05","Y_D06","Y_D07","S0_00_MS","S0_00_HSD","S0_00_ATF","S0_01_MS","S0_01_HSD","S0_01_ATF","S0_02_MS","S0_02_HSD","S0_02_ATF","S0_03_MS","S0_03_HSD","S0_03_ATF","S0_04_MS","S0_04_HSD","S0_04_ATF","S0_05_MS","S0_05_HSD","S0_05_ATF","S0_06_MS","S0_06_HSD","S0_06_ATF","S0_07_MS","S0_07_HSD","S0_07_ATF","S1_00_MS","S1_00_HSD","S1_00_ATF","S1_01_MS","S1_01_HSD","S1_01_ATF","S1_02_MS","S1_02_HSD","S1_02_ATF","S1_03_MS","S1_03_HSD","S1_03_ATF","S1_04_MS","S1_04_HSD","S1_04_ATF","S1_05_MS","S1_05_HSD","S1_05_ATF","S1_06_MS","S1_06_HSD","S1_06_ATF","S1_07_MS","S1_07_HSD","S1_07_ATF","S2_00_MS","S2_00_HSD","S2_00_ATF","S2_01_MS","S2_01_HSD","S2_01_ATF","S2_02_MS","S2_02_HSD","S2_02_ATF","S2_03_MS","S2_03_HSD","S2_03_ATF","S2_04_MS","S2_04_HSD","S2_04_ATF","S2_05_MS","S2_05_HSD","S2_05_ATF",...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="api_demo" classname="api_demo" time="0.00243515" status="run">
+		<properties/>
+		<system-out>=== markov-cero Library API Demonstration ===
+
+[1] Solving examples/blend.mps via API...
+    Status:   Optimal
+    Verified: YES
+    Obj:      3500.000000
+
+[2] Solving examples/cases/crude_oil_blending.mps via API...
+    Status:   Optimal
+    Verified: YES
+    Obj:      9847.018855
+
+[3] Building and solving in-memory model via API...
+    Status:   Optimal
+    Verified: YES
+    Obj:      -14.000000 (expected -14.0)
+    x1 = 4.000000, x2 = 2.000000
+
+All API demonstrations completed successfully.
+</system-out>
+	</testcase>
+	<testcase name="api_test" classname="api_test" time="0.00235901" status="run">
+		<properties/>
+		<system-out>[+] test_api_solve_model_continuous passed
+[+] test_api_solve_file passed: obj=3500
+[+] test_api_numerical_diagnostic passed
+[+] test_api_expired_deadline passed
+[+] test_api_nlp_callbacks_path_a passed: x=(1.25, 1.75) obj=0.125
+All API unit tests PASSED successfully!
+</system-out>
+	</testcase>
+	<testcase name="refinery_domain_and_iis" classname="refinery_domain_and_iis" time="0.00639508" status="run">
+		<properties/>
+		<system-out>[+] test_synthetic_planning passed: Daily Net Margin = $-84.276k / day
+[+] test_refinery_iis_analysis passed: found 4 conflicting constraints in IIS:
+Row-irreducible certified infeasible subsystem, relative to unchanged variable bounds:
+  BAL_KEROSENE: 0 &lt;= activity &lt;= inf
+  DHDT_CAPACITY_MAX: -inf &lt;= activity &lt;= 5
+  BAL_DHDT_YIELD: 0 &lt;= activity &lt;= 0
+  BAL_VOL_HSD: 0 &lt;= activity &lt;= 0
+
+[+] test_haverly_pooling_slp passed: converged in 20 SLP iterations, profit = $100, final pool quality = 3%
+All Refinery &amp; IIS analysis tests PASSED successfully!
+</system-out>
+	</testcase>
+	<testcase name="e2e_tier1_m1_features" classname="e2e_tier1_m1_features" time="0.00278512" status="run">
+		<properties/>
+		<system-out>=======================================================
+ running E2E Test Suite (25 tests registered)
+=======================================================
+  RUN      T1_F01_01_NormalEqFactorizeSolve: Factorize and solve symmetric normal equations system ADA^T dy = rhs ... OK (0.02 ms)
+  RUN      T1_F01_02_NormalEqFillReducingOrdering: Verify minimum-degree fill-reducing ordering on tridiagonal normal equations ... OK (0.01 ms)
+  RUN      T1_F01_03_SparseLuTransposeSolve: Verify transpose solve (BTRAN) on normal equations factorizer ... OK (0.00 ms)
+  RUN      T1_F01_04_CanonicalIpmOptimal: Solve standard 2-variable LP via IPM to certified optimality ... OK (0.22 ms)
+  RUN      T1_F01_05_IpmCrossoverBasisCertification: Verify IPM crossover returns certified vertex basis matching canonical rows ... OK (0.06 ms)
+  RUN      T1_F02_01_PdlpSolveBlendNominal: PDLP first-order solver converges on blend LP model ... OK (0.03 ms)
+  RUN      T1_F02_02_PdlpToleranceHandling: Verify set_tolerance sets primal, dual, and...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="e2e_tier2_m1_boundaries" classname="e2e_tier2_m1_boundaries" time="0.00227124" status="run">
+		<properties/>
+		<system-out>=======================================================
+ running E2E Test Suite (25 tests registered)
+=======================================================
+  RUN      T2_F01_01_NormalEqExtremeDiagonalScaling: Normal equations with extreme barrier iterate weights (1e8 and 1e-8) ... OK (0.03 ms)
+  RUN      T2_F01_02_Trivial1x1NormalEquations: Trivial 1x1 normal equations system solve ... OK (0.00 ms)
+  RUN      T2_F01_03_SingularMatrixRejection: Singular matrix in SparseLu factorize throws runtime_error without crash ... OK (0.04 ms)
+  RUN      T2_F01_04_UnsortedCscValidation: SparseCsc validation rejects unsorted or corrupt row indices ... OK (0.01 ms)
+  RUN      T2_F01_05_NonFiniteMatrixRejection: SparseCsc validation rejects NaN and Infinity entries ... OK (0.03 ms)
+  RUN      T2_F02_01_PdlpIterationLimitExit: PDLP with iteration_limit=5 exits cleanly with iteration_limit status ... OK (0.03 ms)
+  RUN      T2_F02_02_PdlpZeroObjectiveFeasibility: PDLP solve on pure feasibility problem (zero objective c = 0)...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="e2e_tier3_m1_combinations" classname="e2e_tier3_m1_combinations" time="0.00179576" status="run">
+		<properties/>
+		<system-out>=======================================================
+ running E2E Test Suite (4 tests registered)
+=======================================================
+  RUN      T3_PAIR_01_SparseLuWithIterativeRefinement: Pairwise F01 + F06: SparseLU normal equations with always-on iterative refinement ... OK (0.02 ms)
+  RUN      T3_PAIR_03_PdlpWithZeroTrustPrimalVerification: Pairwise F02/03 + F07: PDLP first-order solve verified by zero-trust primal verifier ... OK (0.04 ms)
+  RUN      T3_PAIR_05_AdmmAdaptiveRhoWithQpVerifier: Pairwise F04/05 + F07: ADMM adaptive rho QP solve certified by KKT verifier ... OK (0.03 ms)
+  RUN      T3_PAIR_06_RuizScalingWithPresolveAndSolve: Integration: Ruiz scaling combined with presolve and solve_model ... OK (0.08 ms)
+=======================================================
+ RESULTS: 4 passed, 0 failed, 0 skipped in 0.000 s
+=======================================================
+</system-out>
+	</testcase>
+	<testcase name="e2e_tier4_m1_scenarios" classname="e2e_tier4_m1_scenarios" time="0.0024537" status="run">
+		<properties/>
+		<system-out>=======================================================
+ running E2E Test Suite (3 tests registered)
+=======================================================
+  RUN      T4_APP_01_CrudeOilBlendingNominal: Domain Scenario 1: Crude oil blending with octane and sulfur quality constraints ... OK (0.21 ms)
+  RUN      T4_APP_02_MarkowitzPortfolioAllocation: Domain Scenario 2: Mean-variance quadratic portfolio optimization ... OK (0.14 ms)
+  RUN      T4_APP_03_MultiPeriodSupplyChainLogistics: Domain Scenario 3: Multi-period inventory flow with storage and production limits ... OK (0.15 ms)
+=======================================================
+ RESULTS: 3 passed, 0 failed, 0 skipped in 0.001 s
+=======================================================
+</system-out>
+	</testcase>
+	<testcase name="e2e_runner_harness" classname="e2e_runner_harness" time="0.0618431" status="run">
+		<properties/>
+		<system-out>=================================================================
+ markov-cero Sovereign E2E Test Runner
+ Filters: Tier=all, Milestone=all, Feature=all
+ Binaries: 4 executables detected
+=================================================================
+
+&gt;&gt; Executing suite: e2e_tier1_m1_features
+=======================================================
+ running E2E Test Suite (25 tests registered)
+=======================================================
+  RUN      T1_F01_01_NormalEqFactorizeSolve: Factorize and solve symmetric normal equations system ADA^T dy = rhs ... OK (0.02 ms)
+  RUN      T1_F01_02_NormalEqFillReducingOrdering: Verify minimum-degree fill-reducing ordering on tridiagonal normal equations ... OK (0.01 ms)
+  RUN      T1_F01_03_SparseLuTransposeSolve: Verify transpose solve (BTRAN) on normal equations factorizer ... OK (0.00 ms)
+  RUN      T1_F01_04_CanonicalIpmOptimal: Solve standard 2-variable LP via IPM to certified optimality ... OK (0.17 ms)
+  RUN      T1_F01_05_IpmCrossoverBasisCertification...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="readiness_correctness" classname="readiness_correctness" time="0.00199018" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="cli_public_fawley" classname="cli_public_fawley" time="0.00467688" status="run">
+		<properties/>
+		<system-out>{"version":"0.5.2","milestone":"M5","engine":"primal","problem_class":"LP","status":"Optimal","rows":29,"cols":36,"nonzeros":130,"certificate_type":"canonical_lp_witness","variable_names":["BUY_arabian-l","BUY_arabian-h","BUY_brega","IMPORT_fuel-imp","PROCESS_d-arab-l","PROCESS_d-arab-h","PROCESS_d-brega","PROCESS_reform","PROCESS_ho-low-s","PROCESS_ho-high-s","PROCESS_vd-low-s","PROCESS_vd-high-s","TRANSFER_tr-1","TRANSFER_tr-2","SALE_motor-gas","SALE_jet-fuel","SALE_heat-oil","SALE_fuel-oil","RECIPE_heat-oil_0","RECIPE_heat-oil_1","RECIPE_jet-fuel_0","RECIPE_jet-fuel_1","RECIPE_jet-fuel_2","BLEND_lv-naphtha_motor-gas","BLEND_butane_motor-gas","BLEND_reformate_motor-gas","BLEND_cc-naph-l_motor-gas","BLEND_cc-naph-h_motor-gas","BLEND_v-heat-oil_fuel-oil","BLEND_vacuum-dst_fuel-oil","BLEND_res-arab-l_fuel-oil","BLEND_res-arab-h_fuel-oil","BLEND_res-brega_fuel-oil","BLEND_cc-dist_fuel-oil","BLEND_fuel-equiv_fuel-oil","BLEND_fuel-imp_fuel-oil"],"row_names":["BAL_arabian-h","BAL_arabian-l","BAL_brega","BAL_butane...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="mip_proof" classname="mip_proof" time="0.00203474" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="source_limits" classname="source_limits" time="0.0342077" status="run">
+		<properties/>
+		<system-out>Checked 417 maintained files; maximum 300 lines; 0 violations
+</system-out>
+	</testcase>
+	<testcase name="readiness_edge_cases" classname="readiness_edge_cases" time="0.00174387" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="repository_tools" classname="repository_tools" time="0.0587572" status="run">
+		<properties/>
+		<system-out>Offline cache integrity, path validation and CLI proof replay passed
+</system-out>
+	</testcase>
+</testsuite>

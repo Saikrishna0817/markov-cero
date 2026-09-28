@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 
 #include "markov_cero/milp/branch_selector.hpp"
 
@@ -38,7 +39,7 @@ class OnnxBranchingScorer final : public IBranchingScorer {
 
   private:
     struct Impl;
-    Impl* impl_;
+    std::unique_ptr<Impl> impl_;
     bool loaded_{false};
 };
 

@@ -7,8 +7,24 @@ cases passed; **hardware verified** requires a recorded device and binary proven
 Historical GPU speedup figures against an unreliable simplex baseline, including
 29,320×, are quarantined. The current RTX 2050 measurements below compare GPU and
 CPU PDLP and show no end-to-end GPU benefit on their measured cases.
-The imported `scale_200` primal-pricing regression is disabled in CTest: the
-locally generated fixture currently ends in witness-verification `NumericalFailure`.
+The `scale_200` regression is enabled with a checked-in fixture and independently
+verified optimum. The LO/LI/INTORG parser interaction is fixed; old benchmark
+results still require regeneration. LP/QP verification now checks actual witness
+conditions, local NLP results use `LocalOptimal`, and feasible PDLP points without
+a finite dual bound use `Feasible`. Linear MILP/convex MIQP can export independently replayable numerical trees.
+A failed or exhausted proof budget keeps the tree conclusion unverified; OA
+bounds remain solver-trusted.
+
+The public Fawley example is historical qualification data, not approved plant data.
+The legacy refinery demonstration uses synthetic labels, connects FCC feed, and
+rejects quality constraints its formulation cannot enforce. The five former numerical/domain failures now pass. Debug CPU and a fresh
+ML-enabled Release build each pass 80/80 CTests; the installed wheel passes 16/16.
+All maintained code/build files meet the 300-line limit. See
+[evidence](evidence/readiness-checkpoint.json) and the
+[closure register](evidence/defect-closure-register.csv): 29/32 actionable code
+defects closed (90.6%), with 3 open engineering defects and 4 separately listed
+capability/release gates. This does not satisfy the 100% critical/high release gate.
+See the [implementation plan](docs/audit/INDUSTRY-READINESS-IMPLEMENTATION-PLAN.md).
 
 ---
 
@@ -16,7 +32,7 @@ locally generated fixture currently ends in witness-verification `NumericalFailu
 
 | Capability | Status | Implementation / Evidence |
 |---|---|---|
-| Free-format MPS parser | Implemented | `src/io/mps.cpp`, fuzz targets, edge tests |
+| Free-format MPS parser | Implemented; LO/LI regression corrected | `src/io/mps.cpp`, fuzz targets, edge tests; benchmark regeneration pending |
 | Immutable model (CSC) | Implemented | `src/model/model.cpp` |
 | Sparse canonical model | Implemented | `src/transform/sparse_canonicalize.cpp` |
 | Primal revised simplex | Implemented | `src/lp/reference/revised_simplex.cpp`, Netlib pass |
@@ -24,7 +40,7 @@ locally generated fixture currently ends in witness-verification `NumericalFailu
 | Sparse basis LU + Eta updates | Implemented | `src/linalg/sparse_basis.cpp`, property tests |
 | Matrix-free PDLP (CPU) | Implemented | `src/lp/first_order/pdlp.cpp`, `tests/pdlp_test.cpp` |
 | Sovereign MILP Branch-and-Cut | Implemented | `src/milp/milp_solver.cpp`, 3/3 MIPLIB pass |
-| Parallel tree search | Implemented; **RW-2 rework landed: 3.68× at 4 threads on flugpl (was 0.56×), TSan-clean** — tiny instances remain serial-dominated (granularity floor) | `src/milp/parallel_tree_search.cpp`, C++20 jthread, `evidence/benchmarks/rw2_parallel_scaling.md` |
+| Parallel tree search | Implemented; historical flugpl scaling evidence only; current broad scaling and TSan revalidation remain open | `src/milp/parallel_tree_search.cpp`, C++20 jthread, `evidence/benchmarks/rw2_parallel_scaling.md` |
 | Gomory Mixed-Integer (GMI) cuts | Implemented | `src/milp/gomory.cpp` with slack substitution |
 | Mixed-Integer Rounding (MIR) cuts | Implemented | `src/milp/mir.cpp`, cosine filtering |
 | Strong branching | Implemented | `src/milp/strong_branching.cpp`, pseudo-costs |
@@ -41,7 +57,7 @@ locally generated fixture currently ends in witness-verification `NumericalFailu
 | Convexity Verification | Implemented | `src/qp/model.cpp`, LDLᵀ diagonal pivot check |
 | Independent QP Verifier | Implemented | `src/qp/verifier.cpp`, KKT residuals & gap |
 | MIQP Branch-and-Cut | Implemented | `src/milp/node_lp.cpp`, `src/milp/heuristics.cpp` |
-| MILP relaxation capacity | Partial. Dense simplex handles ordinary roots; an oversized linear minimization root can use sparse PDLP (10k iteration cap) only when PDLP supplies a finite dual bound. `CMS750_4` reached the cap without one. `supply_chain_large` took 103.6 s for one root and returned `ResourceLimit` despite a 60 s limit; the MILP deadline check occurs after root LP/cut processing and does not bound that work. Maximize objective and bound signs are normalized at the B&B boundary. | `src/milp/node_lp.cpp`, `src/milp/milp_solver.cpp`; root deadline enforcement and large-case completion remain open |
+| MILP relaxation capacity | Sparse revised simplex handles ordinary node relaxations; oversized nodes use bounded PDLP and require a finite dual bound. The five former domain failures now pass, including supply_chain_large in about 10 seconds in the recorded Release run. Full deadline and allocation coverage remains open (IR-20/21). | `src/milp/node_lp.cpp`, `evidence/readiness-domain-results.json` |
 | MPS QUADOBJ & QMATRIX | Implemented | `src/io/mps.cpp`, `tests/mps_parser_test.cpp` |
 | Problem classifier (W6) | Implemented | `src/model/classifier.cpp`, locked decision tree, `tests/classifier_test.cpp`, `docs/engine_selection.md` |
 | GPU-assisted QP path (W3) | >100k-NNZ path, GPU-vs-CPU objective agreement, KKT verification, and device matrix-vector test passed on RTX 2050. Only residual P·x is on GPU; KKT factorization and ADMM x-update remain CPU-side, so the planned GPU x-update is incomplete. | `gpu/src/admm_matvec.cpp`, `gpu/kernels/admm_step.cu`, `tests/gpu_qp_test.cpp`, `gpu/tests/admm_gpu_test.cpp`, `src/qp/admm_solver.cpp` |
@@ -49,7 +65,7 @@ locally generated fixture currently ends in witness-verification `NumericalFailu
 | MINLP via Outer Approximation (W1/D-03) | Quadratic MPS subset only; combined QUADOBJ/NLOBJ objective and Hessian scaling verified; structural convexity screen; linear MPS equality rows represented as paired inequalities and tested end-to-end; arbitrary callback equalities and callback MINLPs rejected because their convexity cannot be certified; candidate feasibility rechecked at 1e-6; maximize objective and bound converted to original sense; `Optimal` requires finite global bound and <=1e-3 gap | `src/minlp/minlp_solver.cpp`, `src/io/nlobj_parser.cpp`, `src/api/api.cpp`, `src/nlp/nlp_verifier.cpp`; `tests/minlp_basic_test.cpp` |
 | MPS NLOBJ/NLCON extension (W1/D-12/D-20) | Implemented | Quadratic objective terms and named polynomial inequalities with analytic gradients; `src/io/nlobj_parser.cpp`, `docs/nlobj_format.md`, `tests/nlobj_parser_test.cpp` |
 | pybind11 Python bindings (W7/D-11) | Implemented | `python/src/bindings.cpp`, `setup.py`, `python/tests/test_bindings.py` (pytest gate in CTest `python_bindings`) |
-| ML-assisted branching (W2/D-04/D-05/D-18) | **In progress; acceptance open.** Solver logging emits MCONLOG3 bipartite records. An 80-instance collection attempt yielded 8 populated strong-branching logs; 31 instances timed out and most remaining runs exited without labels. Exploratory training had no meaningful disjoint validation/test split. A narrow candidate ONNX experiment on MIPLIB `cvs16r128-89` scored >200 candidates and explored 4 vs pseudo-cost 6 nodes in two matched trials, but both timed out without incumbents. Candidate weights were held under `/tmp` and are now missing; the committed runtime artifact is still not standard ONNX. | `src/milp/ml_branching/`, `scripts/ml/`, `tests/ml_branching_test.cpp`; restore durable candidate weights, obtain robust disjoint instance data, validate the runtime artifact and score verified solve outcomes before promotion |
+| ML-assisted branching (W2/D-04/D-05/D-18) | **In progress; acceptance open.** Solver logging emits MCONLOG3 bipartite records. An 80-instance collection attempt yielded 8 populated strong-branching logs; 31 instances timed out and most remaining runs exited without labels. Exploratory training had no meaningful disjoint validation/test split. A narrow candidate ONNX experiment on MIPLIB `cvs16r128-89` scored >200 candidates and explored 4 vs pseudo-cost 6 nodes in two matched trials, but both timed out without incumbents. Candidate weights were held under `/tmp` and are now missing; the invalid bundled runtime artifact has been withdrawn; no model is promoted. | `src/milp/ml_branching/`, `scripts/ml/`, `tests/ml_branching_test.cpp`; restore durable candidate weights, obtain robust disjoint instance data, validate the runtime artifact and score verified solve outcomes before promotion |
 
 ---
 
@@ -106,12 +122,12 @@ clickable artifacts; "PARTIAL" rows name the exact missing piece.
 | R6 | Sparse techniques + efficient numerical LA | **MET** | sparse LU + eta, sparse-first canonicalization, LDLᵀ, RW-8 refinement |
 | R7 | Multi-core parallelization | **MET** | RW-2: 3.68× @ 4 threads (flugpl), TSan-clean; `evidence/benchmarks/rw2_parallel_scaling.md` |
 | R8 | GPU where measurable benefits | **PARTIAL** | Three physical RTX 2050 runs verified the four scales; GPU lost end-to-end on every run. Two added order-reversed runs are pinned to binary SHA-256 `93c96173cbb918c20658d238012bb0abb8c4f6b492e1c02a540e0a44a3037a5a`; this older binary was not rebuilt from current source. No benefit is demonstrated. (`evidence/benchmarks/gpu_host_access_check_20260928.csv`, `..._reverse_20260928.csv`) |
-| R9 | Numerical stability, scalability, convergence | **MET** | Harris + Ruiz + RW-8 refinement + dual-gated verification |
+| R9 | Numerical stability, scalability, convergence | **PARTIAL** | Harris, Ruiz and refinement are implemented; certificate tolerance consistency and the disabled `scale_200` numerical regression remain open. |
 | R10 | No existing solver library | **MET** | clean-room provenance, `sovereignty_guard`, empty `third_party/` |
-| R11 | Industrial scope (refinery, blending, …) | **MET** | 3 real-world industrial case studies (multi-period lot sizing MILP, supply chain logistics MILP, crude oil blending convex QP) in `examples/cases/`, documented in `examples/cases/README.md`, verified by CTest `cli_case_*` (100% pass) |
-| R12 | Scale: thousands→millions, sparse | **MET** | `data/scale_study/` suite tested up to 50,000 variables and 149,600 nonzeros (`scale_50000.mps` solved in 299 ms with PDLP); 3,620× memory compression documented in `evidence/scale_study.md` and `evidence/scale_study.csv` |
-| R13 | Robustness: degeneracy, ill-conditioning, hard MI | **MET** | Forrest-Goldfarb exact $O(m)$ dual steepest edge pricing in `src/lp/dual/dual_simplex.cpp`, Harris two-pass ratio test, Bland cycling prevention, Markowitz threshold pivoting; documented in `evidence/robustness_dossier.md` |
-| R14 | API or CLI sufficient | **MET** | CLI + C API (`src/api/`, `include/markov_cero/api/solve.h`), install target |
+| R11 | Industrial scope (refinery, blending, …) | **PARTIAL** | Industrial-themed cases and a synthetic refinery qualification example exist; the configured refinery model still requires feed/quality balance validation and an engineer-owned pilot before operational use. |
+| R12 | Scale: thousands→millions, sparse | **PARTIAL** | A 50,000-variable, 149,600-nonzero PDLP case is documented, while simplex and MILP node relaxations still have dense limits; million-scale general solve capability is not established. |
+| R13 | Robustness: degeneracy, ill-conditioning, hard MI | **PARTIAL** | Pricing, Harris, Bland fallback and a robustness dossier exist; the disabled `scale_200` regression, hard-instance failures and current MPS domain mismatch leave broad robustness unproven. |
+| R14 | API or CLI sufficient | **MET for CLI/C++ API** | CLI and C++ API (`src/api/`, `include/markov_cero/api/solve.hpp`) exist; no versioned C ABI is provided. |
 | R15 | MIPLIB / Netlib / Mittelmann benchmarks | **PARTIAL** | Final solver SHA-256 `beaed56a7534f8c8482819c1ad78aae69951c7b7ea98ef54d188bc43258e7cd1` completed all 255 checked-in local Netlib/MIPLIB/Mittelmann/QPLIB rows at a solver-side 15-second cap: verified optimal counts 51/98, 4/119, 4/20, 4/18; MIPLIB had four additional verified infeasibility certificates. Three rows exceeded the parent watchdog. Full upstream datasets and plan-level 300-second runs remain open. Results: `evidence/benchmarks/current_full_15s_20260928/` and `evidence/benchmarks/current_qplib_filllimit_20260928/`. |
 | R16 | Compare vs ≥1 established solver | **PARTIAL** | The current 23-case, 15-second, five-solver W9 run (`evidence/comparison/current_glpk_pinned_20260928/full_comparison_report.md`) has 115 rows: markov-cero 17/23 optimal, HiGHS 17/23, GLPK 14/23, CBC 13/23, SCIP 18/23; no pair of optimal objectives disagreed. A pinned-binary, two-repeat HiGHS comparison on 20 preregistered Netlib/MIPLIB cases passed verification/objective agreement 20/20 at both one and four markov-cero threads (`evidence/compare/current_final_threads1_20260928/`, `evidence/compare/current_final_threads4_20260928/`). Median geometric runtime ratios were 15.61x and 12.76x markov-cero/HiGHS. Timing boundaries still differ between subprocess and API calls. |
 | R17 | Demonstrate numerical robustness | **MET** | `evidence/robustness_dossier.md` dossier detailing condition estimation, Moler/ill-conditioned test matrices, extended-precision iterative refinement, and KKT residual guarantees |
@@ -143,7 +159,7 @@ Findings of `docs/audit/07-current-architecture.md` §C.4, with their dispositio
 ### Deferred Capabilities
 
 1. **Machine Learning-Assisted Branching**:
-   - **Status**: **In scope; acceptance remains open.** A candidate standard-ONNX scorer activates on MIPLIB `cvs16r128-89` and explored 4 vs 6 nodes in two matched capped runs, but both runs hit the time limit without an incumbent. The committed model artifact is not standard ONNX, and training/evaluation data remain too small for promotion.
+   - **Status**: **In scope; acceptance remains open.** A candidate standard-ONNX scorer activates on MIPLIB `cvs16r128-89` and explored 4 vs 6 nodes in two matched capped runs, but both runs hit the time limit without an incumbent. The invalid bundled model artifact has been withdrawn, and training/evaluation data remain too small for promotion.
    - **Roadmap**: Current SIH implementation plan W2; do not use the superseded ED-009 deferral note as current scope.
    - **Strategy**: Explicit `--branching ml_gnn` opt-in, self-collected strong-branching labels, and the >200 candidate activation gate. See `evidence/ml_models/cvs16r128-89_node_gate.json` and F-01/F-25 in the current audit.
 

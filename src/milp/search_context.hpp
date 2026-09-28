@@ -1,0 +1,114 @@
+#pragma once
+#include "markov_cero/milp/gap.hpp"
+#include "markov_cero/milp/milp_solver.hpp"
+
+#include "markov_cero/milp/branch_node.hpp"
+#include "markov_cero/milp/cuts.hpp"
+#include "markov_cero/milp/heuristics.hpp"
+#include "markov_cero/milp/node_lp.hpp"
+#include "markov_cero/milp/strong_branching.hpp"
+#ifdef MARKOV_CERO_ENABLE_ML
+#include "markov_cero/milp/ml_branching/onnx_scorer.hpp"
+#endif
+#include "markov_cero/qp/admm_solver.hpp"
+#include "markov_cero/qp/model.hpp"
+#include "markov_cero/transform/sparse_canonical_model.hpp"
+
+#include <algorithm>
+#include <cstdio>
+#include <cstdlib>
+#include <chrono>
+#include <cmath>
+#include <fstream>
+#include <limits>
+#include <memory>
+#include <queue>
+#include <string>
+
+namespace markov_cero::milp::detail {
+class NodeFrontier {
+  public:
+    explicit NodeFrontier(NodeSelection policy) : comparator_{policy} {}
+
+    void push(std::shared_ptr<BranchNode> node) {
+        if (!node) {
+            return;
+        }
+        heap_.push_back(std::move(node));
+        std::push_heap(heap_.begin(), heap_.end(), comparator_);
+    }
+
+    [[nodiscard]] bool empty() const { return heap_.empty(); }
+    [[nodiscard]] std::size_t size() const { return heap_.size(); }
+    [[nodiscard]] const std::shared_ptr<BranchNode>& top() const { return heap_.front(); }
+
+    void pop() {
+        std::pop_heap(heap_.begin(), heap_.end(), comparator_);
+        heap_.pop_back();
+    }
+
+    // Exact minimum lower bound over the whole frontier. Under best_bound
+    // ordering the heap front already is the minimum (O(1)); other policies
+    // scan (frontiers under depth_first/dive stay near the search path).
+    [[nodiscard]] double min_lower_bound() const {
+        if (heap_.empty()) {
+            return std::numeric_limits<double>::infinity();
+        }
+        if (comparator_.policy == NodeSelection::best_bound) {
+            return heap_.front()->lower_bound;
+        }
+        double bound = std::numeric_limits<double>::infinity();
+        for (const auto& node : heap_) {
+            if (node && node->lower_bound < bound) {
+                bound = node->lower_bound;
+            }
+        }
+        return bound;
+    }
+
+  private:
+    NodeComparator comparator_;
+    std::vector<std::shared_ptr<BranchNode>> heap_;
+};
+
+
+struct Search {
+const model::Model& model;
+const Options& input_options;
+Search(const model::Model& m, const Options& o): model(m), input_options(o) {}
+std::chrono::steady_clock::time_point start_time{};
+markov_cero::milp::Options options{};
+markov_cero::milp::Result result{};
+const markov_cero::milp::IBranchingScorer * branching_scorer{};
+std::unique_ptr<markov_cero::milp::IBranchingScorer> owned_scorer{};
+std::basic_ofstream<char> sb_log_stream{};
+std::basic_ofstream<char> * sb_log_file{};
+std::size_t next_node_id{};
+double best_upper_bound{};
+double best_lower_bound{};
+std::vector<double> best_primal{};
+std::vector<markov_cero::milp::VariablePseudoCost> pseudo_costs{};
+markov_cero::model::Model root_model{};
+markov_cero::milp::NodeLpResult root_lp{};
+std::optional<markov_cero::lp::dual::BasisState> current_basis{};
+std::vector<double> current_primal{};
+std::vector<double> current_row_dual{};
+double current_obj{};
+std::vector<markov_cero::milp::Cut> root_cut_list{};
+NodeFrontier queue {NodeSelection::best_bound};
+std::size_t unsolved_node_lps{};
+double min_unsolved_bound{};
+std::basic_string<char> stop_reason{};
+std::shared_ptr<BranchNode> node;
+NodeLpResult node_lp_res;
+model::Model node_model;
+Result run();
+Result finish();
+bool initialize();
+bool root_relaxation();
+bool root_branching();
+bool node_relaxation();
+bool separate_cuts();
+bool branch();
+};
+}

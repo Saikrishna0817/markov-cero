@@ -15,6 +15,8 @@
 namespace markov_cero::milp {
 
 struct Options {
+    std::string ml_model_path{"data/ml_models/branching_scorer.onnx"};
+    std::string strong_branching_log_path; // Optional caller-owned training destination.
     std::size_t max_nodes{50000};
     std::size_t max_iterations{500000};
     double time_limit_seconds{60.0};

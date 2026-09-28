@@ -1,0 +1,6 @@
+{
+  "status": "withdrawn_invalid_artifact",
+  "sha256": "37e64d99280526a4533a910abe8fb7db8ae64cdaf8fcf8a930c82bd8f7588c9e",
+  "bytes": 488,
+  "reason": "Private MCONNX01 blob is not a standard ONNX model. No trained model is promoted; runtime accepts an explicitly supplied standard model and reports fallback otherwise."
+}

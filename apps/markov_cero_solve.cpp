@@ -25,12 +25,24 @@ markov_cero::api::SolveOptions to_solve_options(const markov_cero::apps::CliOpti
     options.lp_options = cli.options;
     options.lp_options.time_limit_seconds = cli.time_limit_seconds;
     options.milp_options = cli.milp_options;
+    if (const auto* path = std::getenv("MARKOV_CERO_ML_MODEL")) options.milp_options.ml_model_path = path;
+    if (const auto* path = std::getenv("MARKOV_CERO_SB_LOG")) options.milp_options.strong_branching_log_path = path;
     return options;
 }
 
 markov_cero::apps::JsonOutputData to_json_data(const markov_cero::api::SolveResult& res,
                                               const markov_cero::api::SolveOptions& options) {
     markov_cero::apps::JsonOutputData data;
+    data.certificate_type = res.certificate_type;
+    data.mip_proof = res.mip_proof;
+    data.proof_message = res.proof_message;
+    data.variable_names = res.variable_names;
+    data.row_names = res.row_names;
+    data.row_activities = res.row_activities;
+    data.row_lower_slacks = res.row_lower_slacks;
+    data.row_upper_slacks = res.row_upper_slacks;
+    data.row_duals = res.row_duals;
+    data.reduced_costs = res.reduced_costs;
     data.resolved_engine = res.resolved_engine;
     data.result.status = res.status;
     data.result.message = res.message;

@@ -1,0 +1,240 @@
+#include "qp_test_fixtures.hpp"
+void qp_scenario_0() {
+        SparseSymmetricMatrix P;
+        P.dimension = 2;
+        P.column_offsets = {0, 1, 3};
+        P.row_indices = {0, 0, 1};
+        P.values = {4.0, 1.0, 2.0};
+
+        // A = [1 1] (1 x 2)
+        linalg::SparseCsc A;
+        A.rows = 1;
+        A.columns = 2;
+        A.column_offsets = {0, 1, 2};
+        A.row_indices = {0, 0};
+        A.values = {1.0, 1.0};
+
+        const double sigma = 1e-4;
+        const std::vector<double> rho = {1.0};
+
+        KktSolver kkt;
+        require(kkt.factorize(P, A, sigma, rho), "KKT factorization succeeded");
+        require(kkt.dimension() == 3, "KKT dimension is 3");
+
+        std::vector<double> sol_x, sol_nu;
+        kkt.solve({1.0, 2.0}, {3.0}, sol_x, sol_nu);
+        require(sol_x.size() == 2, "sol_x size");
+        require(sol_nu.size() == 1, "sol_nu size");
+        require(!kkt.factorize(P, A, sigma, rho,
+                               std::chrono::steady_clock::now() - std::chrono::seconds(1)) &&
+                    kkt.deadline_reached() && !kkt.is_factorized(),
+                "KKT factorization reports an expired deadline without a usable factor");
+    }
+void qp_scenario_1() {
+        const std::string mps =
+            "NAME UNCON\n"
+            "ROWS\n"
+            " N OBJ\n"
+            "COLUMNS\n"
+            " X1 OBJ -1\n"
+            " X2 OBJ -2\n"
+            "QUADOBJ\n"
+            " X1 X1 1\n"
+            " X2 X2 1\n"
+            "BOUNDS\n"
+            " FR B X1\n"
+            " FR B X2\n"
+            "ENDATA\n";
+
+        const auto model = io::parse_mps_string(mps);
+        const auto qp = make_quadratic_model(model);
+        require(check_convexity(qp.P), "model is convex");
+
+        QpOptions opts;
+        opts.absolute_tolerance = 1e-5;
+        opts.relative_tolerance = 1e-5;
+        const auto sol = solve_qp(qp, opts);
+        require(sol.status == QpStatus::optimal, "unconstrained QP optimal");
+        require(std::abs(sol.x[0] - 1.0) < 1e-3, "x1 near 1.0");
+        require(std::abs(sol.x[1] - 2.0) < 1e-3, "x2 near 2.0");
+        require(std::abs(sol.objective_value - (-2.5)) < 1e-3, "objective near -2.5");
+
+        const auto rep = verify_qp_solution(qp, sol);
+        require(rep.passed, "verifier passes on unconstrained QP");
+    }
+void qp_scenario_2() {
+        const std::string mps =
+            "NAME CONSTR\n"
+            "ROWS\n"
+            " N OBJ\n"
+            " G C1\n"
+            "COLUMNS\n"
+            " X1 OBJ 1 C1 1\n"
+            " X2 OBJ 2 C1 1\n"
+            "RHS\n"
+            " RHS1 C1 1\n"
+            "QUADOBJ\n"
+            " X1 X1 4\n"
+            " X1 X2 1\n"
+            " X2 X2 2\n"
+            "ENDATA\n";
+
+        const auto model = io::parse_mps_string(mps);
+        const auto qp = make_quadratic_model(model);
+        require(std::abs(qp.P.evaluate_energy({1.0, 1.0}) - 8.0) < 1e-12,
+                "QUADOBJ off-diagonal term is represented once in P");
+
+        QpOptions opts;
+        opts.absolute_tolerance = 1e-5;
+        opts.relative_tolerance = 1e-5;
+        const auto sol = solve_qp(qp, opts);
+        require(sol.status == QpStatus::optimal, "constrained QP optimal");
+        require(sol.x[0] + sol.x[1] >= 1.0 - 1e-4, "constraint satisfied");
+
+        const auto rep = verify_qp_solution(qp, sol);
+        require(rep.passed, "verifier passes on constrained QP");
+    }
+void qp_scenario_3() {
+        SparseSymmetricMatrix P;
+        P.dimension = 2;
+        P.column_offsets = {0, 1, 2};
+        P.row_indices = {0, 1};
+        P.values = {-1.0, 2.0};
+
+        require(!check_convexity(P), "non-convex detected by check_convexity");
+
+        QuadraticModel qp;
+        qp.P = P;
+        qp.q = {1.0, 1.0};
+        qp.A.rows = 0;
+        qp.A.columns = 2;
+        qp.A.column_offsets = {0, 0, 0};
+
+        const auto sol = solve_qp(qp);
+        require(sol.status == QpStatus::non_convex, "solver safely rejected non-convex QP");
+    }
+void qp_scenario_4() {
+        SparseSymmetricMatrix singular;
+        singular.dimension = 2;
+        singular.column_offsets = {0, 1, 3};
+        singular.row_indices = {0, 0, 1};
+        singular.values = {1.0, 1.0, 1.0};
+        require(assess_convexity(singular).status == ConvexityStatus::positive_semidefinite,
+                "rank-deficient PSD matrix is certified");
+
+        SparseSymmetricMatrix near_singular;
+        near_singular.dimension = 2;
+        near_singular.column_offsets = {0, 1, 3};
+        near_singular.row_indices = {0, 0, 1};
+        near_singular.values = {1e-14, 1.0, 1.0};
+        require(assess_convexity(near_singular).status == ConvexityStatus::non_convex,
+                "symmetric pivoting finds the negative direction despite a tiny leading diagonal");
+
+        const auto fill_limited = assess_convexity(singular, 1e-10, 2);
+        require(fill_limited.status == ConvexityStatus::indeterminate,
+                "fill-budget exhaustion is indeterminate, not non-convex");
+        QuadraticModel uncertifiable;
+        uncertifiable.P.dimension = 1;
+        uncertifiable.P.column_offsets = {0, 1};
+        uncertifiable.P.row_indices = {0};
+        uncertifiable.P.values = {std::numeric_limits<double>::quiet_NaN()};
+        uncertifiable.q = {0.0};
+        uncertifiable.A.rows = 0;
+        uncertifiable.A.columns = 1;
+        uncertifiable.A.column_offsets = {0, 0};
+        require(solve_qp(uncertifiable).status == QpStatus::unsupported,
+                "uncertifiable convexity is returned as unsupported, not non-convex");
+
+        const std::size_t n = 16002;
+        SparseSymmetricMatrix large_diagonal;
+        large_diagonal.dimension = n;
+        large_diagonal.column_offsets.reserve(n + 1);
+        large_diagonal.row_indices.reserve(n);
+        large_diagonal.values.reserve(n);
+        large_diagonal.column_offsets.push_back(0);
+        for (std::size_t j = 0; j < n; ++j) {
+            large_diagonal.row_indices.push_back(j);
+            large_diagonal.values.push_back(1.0);
+            large_diagonal.column_offsets.push_back(j + 1);
+        }
+        const auto large_report = assess_convexity(large_diagonal);
+        require(large_report.status == ConvexityStatus::positive_semidefinite,
+                "16k-variable sparse PSD matrix is certified without dense allocation");
+        require(large_report.factor_nonzeros == n,
+                "large sparse factorization remains linear in diagonal nnz");
+        large_diagonal.values.back() = -1.0;
+        require(assess_convexity(large_diagonal).status == ConvexityStatus::non_convex,
+                "large sparse matrix with negative diagonal is rejected as non-convex");
+    }
+void qp_scenario_5() {
+        const std::string mps =
+            "NAME INFEAS\n"
+            "ROWS\n"
+            " N OBJ\n"
+            " G C1\n"
+            " L C2\n"
+            "COLUMNS\n"
+            " X1 OBJ 1 C1 1\n"
+            " X1 C2 1\n"
+            " X2 OBJ 1 C1 1\n"
+            " X2 C2 1\n"
+            "RHS\n"
+            " RHS1 C1 5\n"
+            " RHS1 C2 2\n"
+            "QUADOBJ\n"
+            " X1 X1 2\n"
+            " X2 X2 2\n"
+            "ENDATA\n";
+
+        const auto model = io::parse_mps_string(mps);
+        const auto qp = make_quadratic_model(model);
+
+        const auto sol = solve_qp(qp);
+        require(sol.status == QpStatus::primal_infeasible, "detected primal infeasibility");
+    }
+void qp_scenario_6() {
+        const std::size_t N = 10;
+        model::Model m;
+        m.name = "MM_SYNTH";
+        m.objective_sense = model::ObjectiveSense::minimize;
+        m.matrix = model::SparseMatrixBuilder(1, N).build();
+        for (std::size_t j = 0; j < N; ++j) {
+            m.variable_name.push_back("x" + std::to_string(j));
+            m.objective.push_back(-static_cast<double>(j + 1));
+            m.variable_lower.push_back(model::Bound::finite(0.0));
+            m.variable_upper.push_back(model::Bound::positive_infinity());
+            m.variable_type.push_back(model::VariableType::continuous);
+        }
+        m.row_name = {"eq1"};
+        const double target_sum = static_cast<double>(N * (N + 1) / 2);
+        m.row_lower = {model::Bound::finite(target_sum)};
+        m.row_upper = {model::Bound::finite(target_sum)};
+
+        model::SparseMatrixBuilder ab(1, N);
+        for (std::size_t j = 0; j < N; ++j) {
+            ab.add(0, j, 1.0);
+        }
+        m.matrix = ab.build();
+
+        model::SparseMatrixBuilder qb(N, N);
+        for (std::size_t j = 0; j < N; ++j) {
+            qb.add(j, j, 1.0);
+        }
+        m.has_quadratic_objective = true;
+        m.quadratic_matrix = qb.build();
+        m.validate();
+
+        const auto qp = make_quadratic_model(m);
+        QpOptions opts;
+        opts.absolute_tolerance = 1e-5;
+        opts.relative_tolerance = 1e-5;
+        opts.max_iterations = 2000;
+        const auto sol = solve_qp(qp, opts);
+        require(sol.status == QpStatus::optimal, "MM benchmark optimal");
+        for (std::size_t j = 0; j < N; ++j) {
+            require(std::abs(sol.x[j] - static_cast<double>(j + 1)) < 1e-2,
+                    "MM benchmark variable matches analytic target");
+        }
+        const auto rep = verify_qp_solution(qp, sol);
+        require(rep.passed, "verifier passes on MM benchmark");
+    }

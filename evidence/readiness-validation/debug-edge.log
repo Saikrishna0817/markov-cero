@@ -1,0 +1,7 @@
+Test project /home/saikrishna/markov-initial-build/build_readiness
+    Start 79: readiness_edge_cases
+1/1 Test #79: readiness_edge_cases .............   Passed    0.00 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.01 sec

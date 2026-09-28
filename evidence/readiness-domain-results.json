@@ -1,0 +1,81 @@
+{
+  "configuration": "Fresh Release CPU, optional ML compiled; default non-ML search",
+  "binary_sha256": "638f13268d47d7d1185f9dc1495d11639d3723252c81268fec8cbcc1d3ae5030",
+  "results": [
+    {
+      "case": "multiperiod",
+      "model": "examples/cases/multiperiod_production.mps",
+      "input_sha256": "38355b33db2b7433dfd3fb0d64af90dda0d5223d70e583901663fb28aeac3d68",
+      "exit_code": 0,
+      "status": "Optimal",
+      "objective": 5300,
+      "runtime_ms": 2.659116,
+      "verified": true,
+      "original_verified": true,
+      "canonical_verified": true,
+      "certificate_type": "independent_mip_tree",
+      "proof_message": "cut-free integer partitions and every leaf witness independently replayed (numerical tolerances)",
+      "relative_gap": 0
+    },
+    {
+      "case": "refinery_scheduling_large",
+      "model": "data/cases/refinery_scheduling_large.mps",
+      "input_sha256": "fa5fd0a9529ecc5bd16cd38c75175b7daf0879facaa571afc58e82b582ce7bef",
+      "exit_code": 0,
+      "status": "Optimal",
+      "objective": -65416.90000000001,
+      "runtime_ms": 2159.041416,
+      "verified": true,
+      "original_verified": true,
+      "canonical_verified": true,
+      "certificate_type": "independent_mip_tree",
+      "proof_message": "cut-free integer partitions and every leaf witness independently replayed (numerical tolerances)",
+      "relative_gap": 0
+    },
+    {
+      "case": "production_planning_large",
+      "model": "data/cases/production_planning_large.mps",
+      "input_sha256": "6f919e51ead9fbee83be867012b9e1850a8e653aee3f8694faa20ae3d335f8f7",
+      "exit_code": 0,
+      "status": "GapSatisfied",
+      "objective": 93931.950045,
+      "runtime_ms": 7701.164859,
+      "verified": false,
+      "original_verified": true,
+      "canonical_verified": false,
+      "certificate_type": "incumbent_feasibility; solver_trusted_tree",
+      "proof_message": "proof verification deadline",
+      "relative_gap": 0.0493083388680192
+    },
+    {
+      "case": "power_dispatch_dc_opf",
+      "model": "data/cases/power_dispatch_dc_opf.qps",
+      "input_sha256": "bcb56882ef60d9173fc16db1f60e92f448420f46b4ea302a322d0177362fe3bd",
+      "exit_code": 0,
+      "status": "Optimal",
+      "objective": 144.77105258043972,
+      "runtime_ms": 207.548638,
+      "verified": true,
+      "original_verified": true,
+      "canonical_verified": true,
+      "certificate_type": "convex_qp_kkt",
+      "proof_message": "",
+      "relative_gap": null
+    },
+    {
+      "case": "supply_chain_large",
+      "model": "data/cases/supply_chain_large.mps",
+      "input_sha256": "5c38d15fc370a81f9b72a17fabda1b03d995f69d4b14b7884acfcf19ec0e6145",
+      "exit_code": 0,
+      "status": "Optimal",
+      "objective": 926342.1266,
+      "runtime_ms": 9951.720959,
+      "verified": true,
+      "original_verified": true,
+      "canonical_verified": true,
+      "certificate_type": "independent_mip_tree",
+      "proof_message": "cut-free integer partitions and every leaf witness independently replayed (numerical tolerances)",
+      "relative_gap": 0
+    }
+  ]
+}

@@ -25,4 +25,10 @@ struct QpVerificationReport {
     const QpSolution& solution,
     double tolerance = 1e-4);
 
+[[nodiscard]] bool verify_qp_infeasibility(const QuadraticModel&, const QpSolution&, double tolerance = 1e-6);
+[[nodiscard]] bool verify_qp_unbounded(const QuadraticModel&, const QpSolution&, double tolerance = 1e-6);
+
+// Requires a PSD objective and dimension-checked finite witness.
+[[nodiscard]] double supporting_lower_bound(const model::Model&, const QuadraticModel&, const QpSolution&);
+
 } // namespace markov_cero::qp

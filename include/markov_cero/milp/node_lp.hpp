@@ -36,4 +36,6 @@ struct NodeLpResult {
     const Options& options,
     const std::optional<lp::dual::BasisState>& warm_start);
 
+[[nodiscard]] NodeLpResult solve_node_qp(const model::Model& model, const Options& options);
+
 } // namespace markov_cero::milp
