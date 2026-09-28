@@ -1,0 +1,36 @@
+{
+  "date_utc": "2026-09-27",
+  "device": "NVIDIA GeForce RTX 2050",
+  "driver_version": "610.57.04",
+  "cuda_driver_api": "initialized successfully; one device visible",
+  "kernel_source": "gpu/kernels/vector_ops.cu",
+  "kernel": "markov_cero::gpu::detail::(anonymous namespace)::axpy_kernel",
+  "compile_route": "Clang 22.1.8 CUDA device-only PTX, target sm_75; CUDA 12.9 NVVM/libdevice and runtime headers",
+  "execution_route": "PTX loaded and launched through CUDA Driver API from cuda-python on the RTX 2050",
+  "input_x": [1.0, 2.0, 3.0, 4.0],
+  "input_y": [10.0, 20.0, 30.0, 40.0],
+  "alpha": 2.0,
+  "result": [12.0, 24.0, 36.0, 48.0],
+  "result_verified": true,
+  "additional_hardware_validation": {
+    "cuda_toolchain": "NVIDIA CUDA 12.9.86 installed locally under /tmp/markov-cuda-toolchain; system packages unchanged",
+    "solver_build": "CUDA-enabled markov-cero-solve compiled for sm_86 with MARKOV_CERO_ENABLE_CUDA=ON",
+    "all_major_build": "CMake all-major architecture build completed successfully",
+    "pdlp_scale_instances": ["scale_100k", "scale_500k", "scale_1m", "scale_5m"],
+    "pdlp_instances_verified": 4,
+    "pdlp_gpu_won_end_to_end": 0,
+    "gpu_ctest": "11/11 registered GPU tests passed on the physical RTX 2050",
+    "qp_gpu_activation_test": {
+      "status": "passed",
+      "P_nonzeros": 110241,
+      "gpu_path_active": true,
+      "gpu_objective": -906.55280758503363,
+      "cpu_objective": -906.55280758503363,
+      "gpu_iterations": 22,
+      "cpu_iterations": 22,
+      "independent_kkt_verified": true
+    },
+    "gpu_admm_matvec_test": "passed after fixing duplicated diagonal insertion in P + rho I construction"
+  },
+  "scope_limit": "This evidence covers the RTX 2050 sm_86 architecture only and does not establish cross-architecture CUDA portability or a GPU performance benefit."
+}

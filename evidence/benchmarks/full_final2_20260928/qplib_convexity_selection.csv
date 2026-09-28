@@ -1,0 +1,19 @@
+instance,included,reason
+QPLIB_0001,True,Q-coded objective passed dense PSD check (min eigenvalue 2)
+QPLIB_0002,True,Q-coded objective passed dense PSD check (min eigenvalue 2)
+QPLIB_0010,True,Q-coded objective passed dense PSD check (min eigenvalue 0.0474794)
+QPLIB_0025,True,Q-coded objective passed dense PSD check (min eigenvalue 0.02)
+QPLIB_8495,True,QPLIB DCL convex-objective class with supported constraints
+QPLIB_8515,True,QPLIB CCL convex-objective class with supported constraints
+QPLIB_8559,True,QPLIB CCL convex-objective class with supported constraints
+QPLIB_8567,True,QPLIB CCL convex-objective class with supported constraints
+QPLIB_8602,True,QPLIB DCL convex-objective class with supported constraints
+QPLIB_8616,True,QPLIB DCL convex-objective class with supported constraints
+QPLIB_8785,True,QPLIB DCL convex-objective class with supported constraints
+QPLIB_8790,True,QPLIB CCB convex-objective class with supported constraints
+QPLIB_8792,True,QPLIB CCB convex-objective class with supported constraints
+QPLIB_8845,True,QPLIB CCL convex-objective class with supported constraints
+QPLIB_8906,True,QPLIB CCL convex-objective class with supported constraints
+QPLIB_8938,True,QPLIB DCL convex-objective class with supported constraints
+QPLIB_8991,True,QPLIB CCB convex-objective class with supported constraints
+QPLIB_9002,True,QPLIB DCL convex-objective class with supported constraints

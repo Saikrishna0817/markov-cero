@@ -1,0 +1,17 @@
+solver,instance,status,objective,obj_error_vs_best,time_ms,ratio_vs_highs,ratio_vs_gurobi,pass
+markov-cero,markshare_5_0,TimeLimit,,,15078.7,,,False
+HiGHS,markshare_5_0,Feasible,202.0,,15039.1,,,False
+CBC,markshare_5_0,Feasible,3.0,,30055.6,,,False
+SCIP,markshare_5_0,Feasible,11.0,,15001.4,,,False
+markov-cero,bienst1,TimeLimit,,,35065.9,,,False
+HiGHS,bienst1,Feasible,69.5,,15057.8,,,False
+CBC,bienst1,Feasible,46.75,,15058.0,,,False
+SCIP,bienst1,Feasible,46.75,,15001.1,,,False
+markov-cero,neos5,TimeLimit,,,50040.0,,,False
+HiGHS,neos5,Feasible,20.0,,15025.4,,,False
+CBC,neos5,Feasible,15.0,,15041.5,,,False
+SCIP,neos5,Feasible,15.0,,15001.4,,,False
+markov-cero,ran14x18_1,TimeLimit,,,35040.9,,,False
+HiGHS,ran14x18_1,Feasible,4265.0,,15048.3,,,False
+CBC,ran14x18_1,Feasible,3964.0,,30061.4,,,False
+SCIP,ran14x18_1,Feasible,3848.0,,15001.6,,,False

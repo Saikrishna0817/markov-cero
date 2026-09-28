@@ -1,0 +1,7 @@
+solver,instance,status,verified,objective,time_ms,nodes,lp_iterations,cuts
+markov-cero,bienst1,Exit5,False,,68674.8,,,
+markov-cero,bienst2,Exit5,False,,69370.2,,,
+markov-cero,markshare_5_0,Exit5,False,,60055.3,,,
+markov-cero,mkc1,Exit7,False,,24.8,,,
+markov-cero,neos5,Exit5,False,,61045.8,,,
+markov-cero,ran14x18_1,Exit5,False,,61448.3,,,

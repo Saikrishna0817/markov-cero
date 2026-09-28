@@ -1,0 +1,5 @@
+solver,instance,status,verified,objective,time_ms,nodes,lp_iterations,cuts
+markov-cero,QPLIB_0001,Optimal,True,-3.499999999997684,5.2,1,25,0
+markov-cero,QPLIB_0002,Optimal,True,-2.1071484636495885,1.3,1,36,0
+markov-cero,QPLIB_0010,Optimal,True,-0.10215979726338958,7.5,1,26,0
+markov-cero,QPLIB_0025,Optimal,True,2681.001805706975,9.6,1,32,0

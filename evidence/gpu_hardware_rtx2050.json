@@ -1,0 +1,58 @@
+{
+  "timestamp_utc": "2026-09-27T22:17:10+00:00",
+  "gpus": [
+    {
+      "name": "NVIDIA GeForce RTX 2050",
+      "memory_total": "4096 MiB",
+      "driver_version": "610.57.04"
+    }
+  ],
+  "gpu_note": "",
+  "cpu": "12th Gen Intel(R) Core(TM) i5-12450HX",
+  "cpu_threads": 12,
+  "ram_gb": 11.4,
+  "os": "Omarchy",
+  "arch": "x86_64",
+  "nvcc": "/tmp/markov-cuda-toolchain/bin/nvcc",
+  "cuda_toolkit": "Cuda compilation tools, release 12.9, V12.9.86",
+  "solver_links_cuda": false,
+  "solver_has_cuda_fatbin": true,
+  "backend_note": "GPU present and solver contains CUDA support; `--backend gpu` can execute on the device",
+  "hardware_id": "hw-c567864265",
+  "run": {
+    "solver": "build_gpu_rt/markov-cero-solve",
+    "cwd": "/home/saikrishna/markov-initial-build",
+    "instances": [
+      "scale_100k",
+      "scale_500k",
+      "scale_1m",
+      "scale_5m"
+    ],
+    "tolerance": 0.0001,
+    "timeout_s": 180,
+    "max_simplex_rows": 1000,
+    "output_csv": "evidence/benchmarks/crossover_study_gpu_rtx2050.csv"
+  },
+  "results": [
+    {
+      "instance": "SCALE_100K",
+      "pass": true,
+      "failures": ""
+    },
+    {
+      "instance": "SCALE_500K",
+      "pass": true,
+      "failures": ""
+    },
+    {
+      "instance": "SCALE_1M",
+      "pass": true,
+      "failures": ""
+    },
+    {
+      "instance": "SCALE_5M",
+      "pass": true,
+      "failures": ""
+    }
+  ]
+}
