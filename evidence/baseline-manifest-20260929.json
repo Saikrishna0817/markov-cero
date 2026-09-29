@@ -13,9 +13,10 @@
     "tracked_file_set_sha256": "5d4cb2d64720bc1500ff1679c2907f31be40d9a153b64df08b58b69ccacbb511",
     "tracked_file_set_method": "git ls-files -z | xargs -0 sha256sum | sha256sum",
     "working_tree_delta_at_manifest_time": [
-      "pyproject.toml (license metadata: Proprietary -> Apache-2.0, owner decision D18)",
-      ".github/workflows/ci.yml (new python-bindings job: license coherence + wheel + pytest)",
-      "python/tests/test_proof_guarantee.py (proof-exhaustion status expectation aligned with blueprint section 5)"
+      "committed as 8629977: pyproject.toml (license metadata: Proprietary -> Apache-2.0, owner decision D18)",
+      "committed: .github/workflows/ci.yml (new python-bindings job: license coherence + wheel + pytest)",
+      "committed: python/tests/test_proof_guarantee.py (proof-exhaustion status expectation aligned with blueprint section 5)",
+      "committed: README.md, docs/project/STATUS.md, evidence/INDEX.md, CHANGELOG.md claim updates + this manifest"
     ],
     "delta_scope": "metadata and test-expectation only; no C++/CUDA source changed, so binaries equal the committed-revision build",
     "dependency_state": {
@@ -25,7 +26,10 @@
       "runtime_deps": "libstdc++/libc only; the Python extension has zero runtime dependencies (numpy optional)",
       "external_solver_linkage": "none \u2014 ctest sovereignty_guard passed: zero external solver libraries, headers or symbols",
       "optional_datasets": "227 large benchmark files absent by design (data/optional-datasets.json); no benchmark row produced here"
-    }
+    },
+    "baseline_commit": "862997738bf9a2a63cc88cf887a23a4a6bb53154",
+    "baseline_commit_subject": "base-01: freeze source, claims and release metadata",
+    "committed_after_test_note": "BASE-01 changes were committed after the recorded run. Verified with 'git diff --name-only aa6f35e <baseline_commit> -- src include apps gpu python/src cmake tests CMakeLists.txt' = 0 files, so every compiled input is byte-identical to the revision that produced the recorded binary hashes; only metadata, docs, evidence and one Python test expectation differ."
   },
   "environment": {
     "os": "Omarchy (Linux)",
