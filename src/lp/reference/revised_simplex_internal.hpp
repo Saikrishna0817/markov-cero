@@ -10,6 +10,7 @@
 #include <deque>
 #include <limits>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace markov_cero::lp::reference {
