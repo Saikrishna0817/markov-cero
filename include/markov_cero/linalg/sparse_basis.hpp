@@ -1,5 +1,7 @@
 #pragma once
+#include <chrono>
 #include <cstddef>
+#include <optional>
 #include <utility>
 #include <vector>
 namespace markov_cero::linalg {
@@ -33,17 +35,21 @@ class SparseLu final {
     static SparseLuSymbolicAnalysis analyze_sparsity(const SparseCsc& matrix, bool reduce_fill = true);
 
     /// Fast numeric factorization reusing precomputed symbolic analysis.
-    static SparseLu factorize_numeric(const SparseCsc& matrix,
-                                      const SparseLuSymbolicAnalysis& symbolic,
-                                      double singular_tolerance = 1e-14,
-                                      std::size_t maximum_factor_nonzeros = 4U * 1024U * 1024U);
+    /// Optional deadline is polled every 64 pivots (IR-20 cooperative stop).
+    static SparseLu factorize_numeric(
+        const SparseCsc& matrix, const SparseLuSymbolicAnalysis& symbolic,
+        double singular_tolerance = 1e-14,
+        std::size_t maximum_factor_nonzeros = 4U * 1024U * 1024U,
+        std::optional<std::chrono::steady_clock::time_point> deadline = std::nullopt);
 
     /// R6: `reduce_fill` enables the minimum-degree column ordering before
     /// elimination (position -> original column, stored in `column_order_` and
     /// inverted in the solves). Ordering changes fill cost, never the answer.
-    static SparseLu factorize(const SparseCsc& matrix, double singular_tolerance = 1e-14,
-                              std::size_t maximum_factor_nonzeros = 4U * 1024U * 1024U,
-                              bool reduce_fill = true);
+    /// Optional deadline is polled every 64 pivots (IR-20 cooperative stop).
+    static SparseLu factorize(
+        const SparseCsc& matrix, double singular_tolerance = 1e-14,
+        std::size_t maximum_factor_nonzeros = 4U * 1024U * 1024U, bool reduce_fill = true,
+        std::optional<std::chrono::steady_clock::time_point> deadline = std::nullopt);
     [[nodiscard]] std::vector<double> solve(const std::vector<double>& rhs) const;
     [[nodiscard]] std::vector<double> solve_refined(const SparseCsc& matrix,
                                                     const std::vector<double>& rhs,
@@ -82,6 +88,8 @@ struct SparseBasisOptions {
     std::size_t maximum_refinement_steps{2};
     // R6: fill-reducing minimum-degree column ordering in the base LU.
     bool fill_reducing_ordering{false};
+    /// IR-20: cooperative factorization deadline (nullopt = unlimited).
+    std::optional<std::chrono::steady_clock::time_point> deadline;
 };
 struct SparseBasisStatistics {
     std::size_t refactorizations{};
@@ -139,7 +147,7 @@ class SparseBasisFactorization final {
     std::vector<Eta> updates_;
     SparseBasisStatistics statistics_;
 };
-[[nodiscard]] double sparse_infinity_residual(const SparseCsc& matrix, const std::vector<double>& x,
+[[nodiscard]] double sparse_infinity_residual(const SparseCsc& matrix, the std::vector<double>& x,
                                               const std::vector<double>& rhs,
                                               bool transpose = false);
 // RW-8: cheap pivot-ratio condition proxy from the base LU (stale after eta
