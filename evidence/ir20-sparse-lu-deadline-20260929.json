@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-29",
+  "purpose": "IR-20 expansion: cooperative deadline polls inside SparseLu elimination and SparseBasisFactorization",
+  "change": {
+    "api": "SparseLu::factorize/factorize_numeric and SparseBasisOptions gain optional steady_clock deadline",
+    "poll": "every 64 pivots; throws runtime_error(\"deadline reached during sparse LU\")",
+    "wiring": "revised_simplex and dual_simplex sparse_options copy Options::deadline; resource_limit status on deadline message",
+    "tests": ["sparse_lu_deadline", "sparse_basis", "dual_simplex", "api_test (CWD=source root)"]
+  },
+  "remaining_open": [
+    "Root factorization kernels remain non-preemptible between poll points",
+    "KKT/PDLP/callback bodies already had stage-boundary checks; full hard real-time preemption is out of scope",
+    "IR-20 stays OPEN pending independent review of the expanded cooperative envelope"
+  ],
+  "commands": {
+    "build": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j --target sparse_lu_deadline_test sparse_basis_test dual_simplex_test api_test",
+    "test": "ctest --test-dir build -R 'sparse_lu_deadline|sparse_basis|dual_simplex' --output-on-failure"
+  }
+}
