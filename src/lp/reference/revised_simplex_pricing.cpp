@@ -35,6 +35,7 @@ linalg::SparseBasisOptions sparse_options(const Options& o) {
     so.maximum_factor_nonzeros = maximum_expanded_elements;
     so.maximum_updates = 16;
     so.eta_density_trigger = 0.9;
+    so.deadline = o.deadline;
     return so;
 }
 }
