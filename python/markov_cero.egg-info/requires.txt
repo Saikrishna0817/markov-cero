@@ -1,5 +1,0 @@
-
-[ml-training]
-torch>=2.9
-onnx>=1.16
-onnxruntime>=1.19

@@ -41,6 +41,7 @@ tests/fuzz/corpus/
 # Python
 __pycache__/
 *.pyc
+*.egg-info/
 
 # Editor
 *~
@@ -69,4 +70,13 @@ build_*/
 /data/qp/*.mps
 /data/qp/raw/*
 /data/qp/sol/*
+# Generated ML training logs (sidecar metadata is reviewed separately).
+/data/ml_training*/*/*.sb.bin
+
+# Local editor/session state and one-off build exports.
+**/.obsidian/workspace.json
+/:memory:.ses
+/markov-frontend.zip
+/build_wA_gpu_*.log
+/evidence_build_wA_camp_*.log
 *.refactor-backup
