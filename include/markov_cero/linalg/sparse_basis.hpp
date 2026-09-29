@@ -35,7 +35,6 @@ class SparseLu final {
     static SparseLuSymbolicAnalysis analyze_sparsity(const SparseCsc& matrix, bool reduce_fill = true);
 
     /// Fast numeric factorization reusing precomputed symbolic analysis.
-    /// Optional deadline is polled every 64 pivots (IR-20 cooperative stop).
     static SparseLu factorize_numeric(
         const SparseCsc& matrix, const SparseLuSymbolicAnalysis& symbolic,
         double singular_tolerance = 1e-14,
@@ -147,7 +146,7 @@ class SparseBasisFactorization final {
     std::vector<Eta> updates_;
     SparseBasisStatistics statistics_;
 };
-[[nodiscard]] double sparse_infinity_residual(const SparseCsc& matrix, the std::vector<double>& x,
+[[nodiscard]] double sparse_infinity_residual(const SparseCsc& matrix, const std::vector<double>& x,
                                               const std::vector<double>& rhs,
                                               bool transpose = false);
 // RW-8: cheap pivot-ratio condition proxy from the base LU (stale after eta
