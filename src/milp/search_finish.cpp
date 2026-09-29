@@ -3,6 +3,8 @@ namespace markov_cero::milp::detail {
 Result Search::finish() {
     const auto end_time = std::chrono::steady_clock::now();
     result.runtime_ms = std::chrono::duration<double, std::milli>(end_time - start_time).count();
+    result.search_ms = std::max(0.0, result.runtime_ms - result.lp_bound_ms - result.incumbent_ms);
+    result.max_queued_nodes = queue.peak_size();
 
     bool gap_closed = false;
     if (best_lower_bound > -std::numeric_limits<double>::infinity()) {

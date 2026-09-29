@@ -1,0 +1,158 @@
+{
+  "item": "proof guarantee phases 1 and 2",
+  "run_date": "2026-09-29",
+  "build": {
+    "directory": "build_item6",
+    "configuration": "Release; MARKOV_CERO_WARNINGS_AS_ERRORS=ON",
+    "parallelism": 4
+  },
+  "validation": {
+    "ctest_filter": "^(mip_proof|repository_tools)$",
+    "ctest_passed": 2,
+    "ctest_failed": 0,
+    "source_limits_checked_files": 460,
+    "source_limits_violations": 0,
+    "git_diff_check": "passed"
+  },
+  "method": {
+    "command": "build_item6/markov-cero-solve data/cases/<fixture> --mip-gap <gap> --proof-time-limit 45 --proof-max-nodes 10000 --proof-max-values 4000000",
+    "build_ms": "mip_proof_build_ms from solve CLI JSON",
+    "verify_ms": "mip_proof_verify_ms from solve CLI JSON",
+    "checked_nodes": "serialized proof node count; accepted replay visits every node and rejects unreachable nodes",
+    "proof_time_budget_seconds": 45,
+    "maximum_nodes": 10000,
+    "maximum_witness_values": 4000000
+  },
+  "larger_certificate_cases": [
+    {
+      "fixture": "data/cases/production_planning_large.mps",
+      "relative_gap": 0.05,
+      "solve_status": "GapSatisfied",
+      "cli_exit_code": 0,
+      "proof_format_version": 2,
+      "proof_status": "accepted",
+      "checked_nodes": 157,
+      "build_nodes_used": 157,
+      "build_witness_values_used": 110160,
+      "build_ms": 24008.258353,
+      "verify_ms": 15.917843,
+      "certificate_type": "independent_mip_tree",
+      "cli_verified": false,
+      "model_fingerprint_bound": false
+    },
+    {
+      "fixture": "data/cases/production_planning_large.mps",
+      "relative_gap": 0.06,
+      "solve_status": "GapSatisfied",
+      "cli_exit_code": 0,
+      "proof_format_version": 2,
+      "proof_status": "accepted",
+      "checked_nodes": 17,
+      "build_nodes_used": 17,
+      "build_witness_values_used": 12108,
+      "build_ms": 1667.165628,
+      "verify_ms": 1.175332,
+      "certificate_type": "independent_mip_tree",
+      "cli_verified": false,
+      "model_fingerprint_bound": false
+    }
+  ],
+  "additional_domain_cases": [
+    {
+      "fixture": "data/cases/supply_chain_large.mps",
+      "relative_gap": 0.05,
+      "checked_nodes": 1,
+      "build_ms": 1579.802156,
+      "verify_ms": 0.709832
+    },
+    {
+      "fixture": "data/cases/refinery_scheduling_large.mps",
+      "relative_gap": 0.05,
+      "checked_nodes": 1,
+      "build_ms": 1414.390081,
+      "verify_ms": 0.794889
+    },
+    {
+      "fixture": "data/cases/process_network_large.mps",
+      "relative_gap": 0.05,
+      "checked_nodes": 1,
+      "build_ms": 524.0217,
+      "verify_ms": 0.500966
+    }
+  ],
+  "limitations": [
+    "Both certificates larger than the three-node unit-test tree use the production-planning fixture with different gap targets; the other surveyed domain fixtures yielded one-node proofs.",
+    "At phase 1, solve CLI proof model fingerprints were unbound; phase 2 now binds them.",
+    "At phase 1, GapSatisfied used the independent_mip_tree label; phase 2 now labels the accepted relative-gap proof independent_mip_gap.",
+    "The solve CLI has one proof-time option shared by build and replay; separate build and replay elapsed times are recorded above.",
+    "A tighter 0.01 production-planning run exited NumericalFailure after 60 seconds before building a proof."
+  ],
+  "phase_2": {
+    "run_date": "2026-09-29",
+    "scope": "SolveResult, JSON/CLI and Python assurance, proof-budget and fingerprint surfaces",
+    "proof_format_version_at_validation": 3,
+    "validation": {
+      "configure": "cmake -S . -B build_item6 -DCMAKE_BUILD_TYPE=Release -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON",
+      "build": "cmake --build build_item6 -j4",
+      "ctest_filter": "^(mip_proof|repository_tools|api_test)$",
+      "ctest_passed": 3,
+      "ctest_failed": 0,
+      "wheel": ".venv/bin/python -m pip wheel . -w /tmp/wheels6p2 --no-deps --no-build-isolation",
+      "wheel_artifact": "/tmp/wheels6p2/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+      "wheel_installed_into_venv": true,
+      "pytest": ".venv/bin/python -m pytest python/tests -q",
+      "pytest_passed": 22,
+      "pytest_failed": 0,
+      "source_limits_checked_files": 463,
+      "source_limits_violations": 0,
+      "git_diff_check": "passed"
+    },
+    "cli_gap_case": {
+      "fixture": "data/cases/production_planning_large.mps",
+      "relative_gap": 0.06,
+      "cli_exit_code": 0,
+      "solve_status": "GapSatisfied",
+      "verified": false,
+      "canonical_verified": true,
+      "certificate_type": "independent_mip_gap",
+      "guarantee_tier": "independent_tree",
+      "proof_status": "accepted",
+      "proof_budget_exhausted": false,
+      "proof_nodes_used": 17,
+      "proof_checked_nodes": 17,
+      "proof_witness_values_used": 12108,
+      "proof_budget_time_ms": 1500.627277,
+      "build_ms": 1500.629052,
+      "verify_ms": 1.073964,
+      "model_fingerprint": "9041716384471748056",
+      "proof_model_fingerprint": "9041716384471748056",
+      "proof_format_version": 3,
+      "interpretation": "Accepted proof independently checks the requested relative gap. Top-level verified remains false because exact optimality is not established."
+    },
+    "cli_exhaustion_case": {
+      "fixture": "one-integer-variable MPS from repository_tools proof case",
+      "proof_max_nodes": 1,
+      "cli_exit_code": 0,
+      "solve_status": "Optimal",
+      "verified": false,
+      "original_verified": true,
+      "canonical_verified": false,
+      "certificate_type": "incumbent_feasibility",
+      "guarantee_tier": "unverified",
+      "proof_status": "exhausted",
+      "proof_budget_exhausted": true,
+      "proof_budget_kind": "node_limit",
+      "proof_nodes_used": 1,
+      "proof_checked_nodes": 0,
+      "proof_witness_values_used": 5,
+      "model_fingerprint": "13344531281908914164",
+      "proof_model_fingerprint": "13344531281908914164",
+      "interpretation": "Optimal is the solver status; only incumbent feasibility has an independent certificate, so verified is false."
+    },
+    "limitations": [
+      "Proof replay verifies numerical relaxation witnesses to stated tolerances; it does not establish symbolic exactness.",
+      "Proof time limit remains one shared deadline for build and replay, with separate elapsed timings exposed.",
+      "An accepted GapSatisfied proof certifies the requested relative bound rather than exact global optimality."
+    ]
+  }
+}

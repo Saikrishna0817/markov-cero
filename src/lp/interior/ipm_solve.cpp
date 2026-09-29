@@ -8,12 +8,24 @@ Result solve(const transform::SparseCanonicalModel& model, const Options& option
     const std::size_t n = a_input.columns;
     model.validate();
 
-    if (m == 0 || n == 0) {
-        out.status = lp::reference::SolveStatus::optimal;
-        out.primal.assign(n, 0.0);
+    if (n == 0) {
+        const bool feasible = std::all_of(model.rhs.begin(), model.rhs.end(),
+                                          [](double rhs) { return rhs == 0.0; });
+        out.status = feasible ? lp::reference::SolveStatus::optimal
+                              : lp::reference::SolveStatus::infeasible;
         out.dual.assign(m, 0.0);
         out.objective = model.objective_offset;
-        out.message = "trivial model";
+        out.message = feasible ? "empty feasible model" : "inconsistent empty model";
+        return out;
+    }
+    if (m == 0) {
+        const bool unbounded = std::any_of(model.objective.begin(), model.objective.end(),
+                                            [](double cost) { return cost < 0.0; });
+        out.status = unbounded ? lp::reference::SolveStatus::unbounded
+                               : lp::reference::SolveStatus::optimal;
+        out.primal.assign(n, 0.0);
+        out.objective = model.objective_offset;
+        out.message = unbounded ? "unbounded empty-row model" : "empty-row optimum";
         return out;
     }
 

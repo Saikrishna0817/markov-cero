@@ -55,6 +55,39 @@ with `MARKOV_CERO_ENABLE_PYTHON_TESTS=ON` and set `Python3_EXECUTABLE` to the
 interpreter containing the installed package and pytest. An explicit CUDA build
 request fails configuration when no CUDA compiler is present.
 
+## Packaging qualification, upgrade and rollback
+
+Offline wheel build (no build isolation, no dependency downloads) and the
+fresh-venv acceptance run:
+
+```sh
+.venv/bin/python -m pip wheel . -w /tmp/opencode/wheels-pkg --no-deps --no-build-isolation
+python3 -m venv /tmp/venv-qual
+/tmp/venv-qual/bin/python -m pip install pytest numpy   # test-only tools
+/tmp/venv-qual/bin/python -m pip install --no-index --no-deps \
+  /tmp/opencode/wheels-pkg/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl
+cd /tmp && /tmp/venv-qual/bin/python -m pytest \
+  /path/to/markov-initial-build/python/tests -q
+```
+
+`pytest` and `numpy` are test-only and are not runtime dependencies of
+`markov-cero`; the recorded drill installed them with
+`--no-index --find-links <dir>` so the wheel itself stays offline. Without
+`numpy`, five tests skip.
+
+Install, upgrade, rollback and uninstall for both the wheel and the CMake
+prefix — with the drill transcripts and the exact commands that were executed —
+are in [support-rollback](docs/governance/support-rollback.md). Two builds share
+the version `0.5.2`, so an upgrade or rollback must use
+`pip install --force-reinstall` and must be identified by the wheel SHA-256, not
+by the version string. The supported platform matrix, the unassigned support
+contact and the still-open release gates (IR-33/G7) are recorded there too.
+
+Release verification is `./scripts/verify-release.sh`; its report is
+`evidence/local-verification-report.txt`. Local qualification results for this
+round are in
+[packaging-qualification-20260928](evidence/packaging-qualification-20260928.json).
+
 ## Small checkout and optional data
 
 The default build/test suite needs no benchmark download. To restore a selected

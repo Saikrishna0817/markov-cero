@@ -8,6 +8,11 @@ QpSolution solve_qp(const QuadraticModel& model, const QpOptions& options) {
     return solve_qp(model, options, false);
 }
 QpSolution solve_qp(const QuadraticModel& model, const QpOptions& options, bool gpu) {
+    AdmmQpSolver fresh_session;
+    return solve_qp(model, options, fresh_session, gpu);
+}
+QpSolution solve_qp(const QuadraticModel& model, const QpOptions& options,
+                    AdmmQpSolver& session, bool gpu) {
     const auto started = std::chrono::steady_clock::now();
     auto settings = options;
     if (std::isfinite(options.time_limit_seconds) && options.time_limit_seconds >= 0 && options.time_limit_seconds < 1e8) {
@@ -51,8 +56,12 @@ QpSolution solve_qp(const QuadraticModel& model, const QpOptions& options, bool 
         }
     }
     // Scaling is algebraic only; all returned witnesses use the caller's units.
-    AdmmQpSolver solver(settings); solver.set_gpu_backend(gpu);
-    auto result = solver.solve(scaled);
+    // The caller-owned session keeps the KKT symbolic pattern cache across
+    // repeated solves; a fresh session in the 3-arg overloads starts empty, so
+    // one-shot callers keep the previous per-solve behavior.
+    session.set_options(settings);
+    session.set_gpu_backend(gpu);
+    auto result = session.solve(scaled);
     for (std::size_t j = 0; j < result.x.size(); ++j) result.x[j] *= d[j];
     for (std::size_t j = 0; j < result.unbounded_ray.size(); ++j) result.unbounded_ray[j] *= d[j];
     for (std::size_t i = 0; i < result.y.size(); ++i) result.y[i] *= e[i];
@@ -75,6 +84,8 @@ QpSolution solve_qp(const QuadraticModel& model, const QpOptions& options, bool 
         for (std::size_t j=0; j<n; ++j)
             result.dual_residual = std::max(result.dual_residual, std::abs(px[j]+model.q[j]+aty[j]));
     }
+    // Equilibration changes units; certify the final caller-facing witness too.
+    detail_admm_solver::verify_accepted_result(model, result);
     result.solve_time_seconds = std::chrono::duration<double>(std::chrono::steady_clock::now()-started).count();
     return result;
 }

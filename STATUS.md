@@ -15,26 +15,111 @@ a finite dual bound use `Feasible`. Linear MILP/convex MIQP can export independe
 A failed or exhausted proof budget keeps the tree conclusion unverified; OA
 bounds remain solver-trusted.
 
-The 2026-09-28 W01 implementation adds persistent branch-bound deltas,
-copy-on-write local cuts, shared immutable warm-start bases, and parallel LP/QP
-bound overlays. The current full native run passes 81/81. This is partial
-node-view work: serial mutable-model copies, large-PDLP materialization,
-solve-wide memory limits, and full-solver frontier/RSS evidence remain open. A
-structure-only memory comparison is recorded in
+The 2026-09-28 W01 implementation (roadmap backlog item 4) closes IR-19: persistent
+branch-bound deltas, copy-on-write local cuts, shared immutable warm-start bases,
+parallel LP/QP bound overlays, and a bounded reference-materialisation comparator
+(`include/markov_cero/milp/reference_materialisation.hpp`) that replays recorded
+branching steps chronologically against production's delta-chain walk and refuses
+over-cap requests before allocating. The current full native run passes 89/89 in
+Release, ASan/UBSan and TSan; the wheel passes 20 pytest cases. Full-solver
+frontier evidence exists: `Result::max_queued_nodes` peaks at 47–531 on flugpl
+caps with queue record bytes in the tens of kilobytes while frontier and RSS
+growth track root/worker storage; queue bytes are byte-identical across a 61×
+root-matrix growth. Worker-class storage remains by design (serial node-model
+workspace, per-worker bound overlays, sparse-PDLP fallback), per-node cut
+application and persistent-structure caps remain open, and solve-wide memory
+limits stay open under IR-21; A transient ~1 GiB RSS anomaly (5/~35 runs) is
+recorded in [evidence](evidence/ir19-w01-memory-20260928.json). The earlier
+structure-only comparison remains in
 [evidence](evidence/node-frontier-memory-20260928.json). See the
 [competitive roadmap](docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md).
 
+The 2026-09-28 backlog-items-5–11 wave (roadmap §14) lands the solve-wide resource
+contract: one `SolveContext` per solve threads a deadline, an instrumented memory
+budget, worker accounting and a sticky stop reason through every engine, verifier
+stage and parallel worker; `--memory-limit-bytes` and solve-wide time limits are
+exposed in C++, CLI and Python with `stop_reason` on every result. MIP proofs now
+carry assurance tiers, consumed budgets, fingerprint binding and build/replay
+timings through C++, CLI JSON and Python; exhausted proof budgets leave the tree
+guarantee unverified. Benchmark comparators, instance manifests, family splits and
+timing constants are frozen in code and the pre-tuning baseline was regenerated
+under pinned hashes. Dual-simplex sessions reuse basis/factorization and QP reuses
+symbolic KKT analysis behind shape/fingerprint gates (measured, opt-in). MILP
+propagation evidence, serial bottleneck timings and format-3 audit proof
+annotations landed; the refinery demo gained a typed units schema, unit-checked
+feed/quality enforcement and named unit-labelled reports. Packaging was qualified
+offline (wheel/sdist/prefix/consumer, performed rollback drill, support and
+rollback docs). Gates stay honest: IR-20/21 remain OPEN (cooperative deadlines,
+charge-point-only memory metering), IR-33/G7 and IR-34/G34/G8 remain OPEN
+(external review, support ownership, engineer sign-off), and the 100%
+critical/high release gate is still unmet. Evidence:
+[resource envelope](evidence/resource-envelope-20260928.json),
+[proof guarantee](evidence/proof-guarantee-20260928.json),
+[baseline freeze](evidence/baseline-freeze-20260928.json),
+[repeated solve](evidence/repeated-solve-20260928.json),
+[MILP strengthening](evidence/milp-strengthening-20260928.json),
+[refinery schema](evidence/refinery-units-schema-20260928.json),
+[packaging](evidence/packaging-qualification-20260928.json),
+[index](evidence/backlog-5-12-20260928.json).
+
 W02 has a first queued-node cap in serial and parallel MILP, exposed through the
-C++ API, CLI and Python options. Exhaustion returns `ResourceLimit` and retains
-the minimum certified bound of omitted nodes; it cannot prove infeasibility or
+C++ API, CLI and Python options. Exhaustion returns `ResourceLimit` and retains the
+minimum certified bound of omitted nodes; it cannot prove infeasibility or
 optimality. Parallel branch bounds were corrected to propagate LP lower bounds,
 not primal relaxation objectives. This does not yet bound total bytes or cover
 parser/factor/proof allocations, allocation failures, device memory or worker
 isolation; W02 remains open.
 
-The public Fawley example is historical qualification data, not approved plant data.
-The legacy refinery demonstration uses synthetic labels, connects FCC feed, and
-rejects quality constraints its formulation cannot enforce. The five former numerical/domain failures now pass. Debug CPU and a fresh
+The 2026-09-28 shared-contract slice (roadmap backlog item 2) adds the
+`SolveContext` family (`StopReason`, `Deadline`, `MemoryBudget`,
+`SolveContext` in `include/markov_cero/core/`), `ModelSnapshot` with
+separable structural/numeric hashes and a stable model fingerprint, and
+`NodeView` with scoped cut IDs, bound-evidence provenance and budget-charged
+materialization. `SolveResult::model_fingerprint` binds every result to the
+validated model at the API boundary and is exposed to Python as
+`model_fingerprint`. New CTest gates `solve_context`,
+`model_snapshot` and `node_view` pass; the current Release run passes 85/85
+and a locally built wheel passes its 20 pytest cases. See
+[evidence](evidence/contracts-slice-20260928.json).
+These are contracts with tests, not yet consumed end to end: engines still
+receive the mutable `Model`, no solve-wide byte budget is exposed, and
+IR-19/20/21 stay open.
+
+The 2026-09-28 instrumentation slice (roadmap backlog item 3) adds
+`StageScope` (`include/markov_cero/core/instrumentation.hpp`), an RAII stage
+timer that emits exactly one trace event per stage with its counter, net
+charged bytes, observed duration, shared stop reason and worker index, plus
+`SolveContext::remaining_ms()` for live deadline slack. It defines the worker
+isolation boundary in `include/markov_cero/core/worker_context.hpp`: workers
+share one context, one memory budget and the solve-wide stop reason, while
+charge attribution, release rights and a worker-local stop reason stay private,
+so a worker can stop itself without stopping its siblings and can never
+under-count another worker's bytes. An allocation-failure harness
+(`tests/support/failing_new.hpp`, `tests/resource_failure_test.cpp`) replaces
+global `operator new`/`delete` in one test binary and fails the nth allocation
+of a call under test: `ModelSnapshot::capture` reports the failure and recovers,
+`NodeView::materialize` returns a new `MaterializationStatus::allocation_failed`
+(distinct from budget exhaustion) with its charge released and outputs
+untouched, and the API boundary maps every injected failure to `resource_limit`
+with failure site `allocation_failure` — zero exceptions escaping
+`solve_file`/`solve_model`, never an infeasible or unbounded status.
+`src/api/api.cpp` now catches `std::bad_alloc` (it previously fell through to
+`numerical_failure`). New CTest gates `worker_context` and `resource_failure`
+bring the suite to 87/87 in Release, under ASan/UBSan with warnings-as-errors
+and under TSan; the wheel passes 20 pytest cases. See
+[evidence](evidence/resource-instrumentation-20260928.json). Still open: no
+engine stage emits stage events, the API creates no `SolveContext` yet, the
+parallel search does not use `WorkerContext`, injection coverage stops at the
+exercised boundary points, and there is no worker-kill or peak-RSS evidence —
+IR-20/21 stay open.
+
+
+The synthetic refinery LP validates declared canonical units, accepts dimension-checked typed
+inputs, enforces gasoline RON and fuel-oil sulfur, checks FCC feed balance, and emits named
+unit-labelled reports including duals, slacks, quality margins and row-scoped IIS entries. Legacy
+raw double inputs assume canonical units. This is synthetic/public-data qualification, not a plant
+model. Refinery engineer approval (IR-34/G34) and shadow-trial agreement (G8) were NOT obtained;
+the industrial refinery gate remains OPEN. Debug CPU and a fresh
 ML-enabled Release build each pass 80/80 CTests; the installed wheel passes 16/16.
 All maintained code/build files meet the 300-line limit. See
 [evidence](evidence/readiness-checkpoint.json) and the
@@ -67,7 +152,12 @@ See the [implementation plan](docs/audit/INDUSTRY-READINESS-IMPLEMENTATION-PLAN.
 | Independent canonical verifier | Implemented | `src/verify/reference_lp_verifier.cpp` |
 | Original primal verifier | Implemented | `src/verify/primal_verifier.cpp` |
 | Solve CLI & JSON output | Implemented | `apps/markov_cero_solve.cpp` |
-| Refinery qualification demo | Implemented | `examples/refinery/`, `run-qualification-demo.sh` |
+| Refinery qualification demo | Implemented; unit schema + named reports added | `examples/refinery/`, `run-qualification-demo.sh`; engineer approval and shadow trial remain open (IR-34) |
+| Repeated LP/QP solves (item 8) | Session APIs implemented; engine wiring opt-in | Verified 100-step RHS/bounds benchmarks, cache invalidation tests, build_item8 CTest 89/89; `evidence/repeated-solve-20260928.json` |
+| Solve-wide resource contract (item 5) | Implemented; IR-20/21 remain OPEN (envelope, not closure) | `evidence/resource-envelope-20260928.json`; cooperative deadlines, charge-point-only memory metering |
+| MIP proof guarantees (item 6) | Implemented (tiers, budgets, fingerprint, timings) | `evidence/proof-guarantee-20260928.json`; exhausted budgets stay unverified |
+| Packaging qualification (item 11, code) | Implemented locally; IR-33/G7 OPEN | `evidence/packaging-qualification-20260928.json`, `docs/governance/support-rollback.md` |
+| Benchmark baseline freeze (item 7) | Implemented; regenerated pinned baseline | `evidence/baseline-freeze-20260928.json`, `evidence/comparison/baseline_frozen_20260928/` |
 | GPU PDLP acceleration | Two additional RTX 2050 host runs each verified all four scales in opposite instance orders. GPU was 2.3–8.3× slower end-to-end than CPU PDLP; no benefit is established. These runs use existing binary SHA-256 `93c96173cbb918c20658d238012bb0abb8c4f6b492e1c02a540e0a44a3037a5a`, not a rebuild of the current worktree; the host driver works, while the sandbox hides the device and the temporary CUDA toolkit is absent. | `gpu/`, `evidence/gpu_hardware_host_access_check_20260928.json`, `evidence/gpu_hardware_host_access_check_reverse_20260928.json` |
 | Convex QP (OSQP ADMM) | Implemented | `src/qp/admm_solver.cpp`, `src/qp/kkt.cpp`, `qp_test.cpp` |
 | Sparse LDLᵀ KKT Factorization | Implemented | `src/qp/kkt.cpp`, Davis (2005) Algorithm 849 |

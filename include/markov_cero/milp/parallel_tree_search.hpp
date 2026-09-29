@@ -9,6 +9,10 @@
 #include <chrono>
 #include <optional>
 
+namespace markov_cero::core {
+class SolveContext;
+}
+
 namespace markov_cero::milp {
 
 struct ParallelOptions {
@@ -33,6 +37,10 @@ struct ParallelOptions {
     BranchingStrategy branching_strategy{BranchingStrategy::pseudo_cost};
     /// R5 node-selection policy shared by all workers (best-bound by default).
     NodeSelection node_selection{NodeSelection::best_bound};
+    /// Solve-wide resource contract shared with every worker (item 5).
+    /// Null when the caller did not supply one; workers then never charge
+    /// memory and only honour `deadline`/`time_limit_seconds`.
+    core::SolveContext* context{nullptr};
 };
 
 using ParallelResult = Result;

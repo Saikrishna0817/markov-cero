@@ -1,0 +1,54 @@
+{
+  "title": "Refinery units, quality and named report schema: code qualification",
+  "date_recorded": "2026-09-29",
+  "scope": "Synthetic and historical public-data qualification only; no plant model or operating-data approval",
+  "model_inputs": {
+    "representation": "Legacy numeric fields use the declared canonical unit; refinery::set_input takes a Quantity, converts compatible units, and rejects dimension mismatches for every numeric planning field.",
+    "refinery": {"cdu_capacity_kbpd": "kbpd", "ccr_capacity_kbpd": "kbpd", "fcc_capacity_kbpd": "kbpd", "dhdt_capacity_kbpd": "kbpd"},
+    "crude": {"cost_per_barrel": "USD/bbl", "max_availability_kbpd": "kbpd", "api_gravity": "degAPI", "sulfur_wt_pct": "wt%", "lpg_yield": "vol_frac", "light_naphtha_yield": "vol_frac", "heavy_naphtha_yield": "vol_frac", "kerosene_yield": "vol_frac", "gas_oil_yield": "vol_frac", "residue_yield": "vol_frac"},
+    "product": {"min_demand_kbpd": "kbpd", "max_demand_kbpd": "kbpd", "price_per_barrel": "USD/bbl", "min_ron": "RON", "max_sulfur_ppm": "ppm mass fraction", "min_cetane": "cetane index", "max_rvp_psi": "psi"},
+    "limitation": "The retained public double fields cannot encode the caller's source unit; external values must enter through typed setters for dimension rejection. Raw doubles are interpreted in their declared canonical units."
+  },
+  "conversions": {
+    "volume_flow": "1 kbpd = 1000 bbl/d = 158.987294928 m3/d",
+    "mass": "1 kt = 1000 t",
+    "sulfur": "1 wt% = 10000 ppm on a mass basis; mg/L divided by density in kg/L gives mg/kg (ppm)",
+    "density_basis": "API gravity at 60 F -> approximate t/m3 using 141.5/(API+131.5) and 1 t/m3 reference-water density; no thermal correction. Volume-to-mass and USD/bbl-to-USD/t need a declared positive density",
+    "quality": "RON and cetane are separate dimensions; RVP psi converts to kPa",
+    "price": "USD/bbl converts to USD/m3; USD/t conversion requires stream density",
+    "mismatch_rejection": ["wt% to psi", "RON to cetane", "mass to volume flow", "USD/t to USD/bbl without density", "unknown unit", "typed FCC feed mass to volume flow"]
+  },
+  "model_schema": {
+    "variables": "All synthetic LP variables and active bounds are kbpd; objective coefficients and reduced costs are USD/bbl; objective is kUSD/d.",
+    "rows": "Capacity and balance rows are kbpd; gasoline octane deviation is kbpd.RON; fuel-oil sulfur excess is t/d. Each report row labels activity, slacks, coefficient and dual units.",
+    "sulfur_pool": "Fuel-oil residue blend only, using crude API density and sulfur wt% converted to mass fraction under a common residue-draw assumption; conditional named upper-bound row SPEC_FO_MAX_SULFUR_PPM.",
+    "unmodelled_specs": "Cetane, RVP, non-gasoline RON and non-fuel-oil sulfur requests are rejected rather than silently ignored (IR-14).",
+    "feed_balance": "FCC output is converted to gas-oil feed with the FCC capacity-row factor and compared to available gas oil through bbl/d, then reported in kbpd (IR-13 extension)."
+  },
+  "report_json_schema": {
+    "model": "string",
+    "status": "string",
+    "qualification": "string, synthetic/public-data and open-gate warning",
+    "objective": {"value": "number|null when no optimal objective", "unit": "kUSD/d"},
+    "rows": [{"name": "string", "unit": "row activity/slack unit", "coefficient_unit": "row unit per kbpd", "dual_unit": "kUSD/d per row unit", "activity": "number|null", "lower_slack": "number|null for infinite or unavailable", "upper_slack": "number|null for infinite or unavailable", "dual": "number|null when unavailable", "binding": "boolean"}],
+    "variables": [{"name": "string", "unit": "kbpd", "value": "number|null when unavailable", "objective_coefficient": "number", "objective_coefficient_unit": "USD/bbl"}],
+    "active_bounds": [{"name": "variable.side", "variable": "string", "unit": "kbpd", "side": "lower|upper", "value": "number", "reduced_cost": "number|null when unavailable", "reduced_cost_unit": "USD/bbl"}],
+    "quality_margins": [{"spec": "string", "unit": "RON|ppm|kbpd", "sense": "min|max", "limit": "number", "value": "number", "margin": "number, slack to limit in the spec unit", "satisfied": "boolean"}],
+    "iis": [{"name": "string", "scope": "row", "unit": "row unit", "detail": "string"}],
+    "iis_scope_note": "string; variable bounds are held fixed and bound-minimal IIS is unsupported",
+    "unmodelled_specs": ["string"]
+  },
+  "checks": {
+    "cmake": "cmake -S . -B build_item10 -DCMAKE_BUILD_TYPE=Release -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON: passed",
+    "build": "cmake --build build_item10 --parallel 4: passed",
+    "ctest": "ctest --test-dir build_item10 -j4 -R 'refinery|cli_refinery|cli_public_fawley|domain_' --output-on-failure: 12/12 passed",
+    "source_limits": "python3 scripts/check_source_limits.py: 0 violations, 300-line maximum",
+    "generator_regeneration": "All five owned refinery-related generators produced byte-identical output on repeat calls with fixed seeds or input data and emitted unit declarations."
+  },
+  "external_gates": {
+    "refinery_engineer_approval_IR_34_G34": "NOT obtained; OPEN",
+    "shadow_trial_agreement_G8": "NOT obtained; OPEN",
+    "plant_operational_qualification": "NOT obtained; OPEN"
+  },
+  "ownership_note": "Generated examples/refinery/fawley-public.mps and data/cases fixtures are outside this run's edit ownership. They require regeneration by their owner to carry the revised generator comments and public-input digest."
+}

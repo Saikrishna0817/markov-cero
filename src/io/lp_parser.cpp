@@ -111,6 +111,6 @@ model::Model parse_lp_file(const std::string& path, const LpLimits& limits) {
         content.append(chunk, count);
     }
     if (file.bad()) throw std::runtime_error("LP input read failed");
-    return parse_lp_string(content);
+    return parse_lp_string(content, limits);
 }
 }

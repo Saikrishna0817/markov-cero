@@ -1,0 +1,51 @@
+{
+  "item": 9,
+  "measured_on": "2026-09-29",
+  "configuration": {
+    "build": "build_item9",
+    "type": "Release",
+    "warnings_as_errors": true,
+    "instrumentation": "milp::Result wall-clock fields: lp_bound_ms, incumbent_ms, search_ms",
+    "command": "build_item9/measure_milp_bottlenecks data/miplib/flugpl.mps data/miplib/stein15.mps data/miplib/pk1.mps",
+    "options": "serial, strong branching disabled, 2000-node cap, 8-second cap, other defaults",
+    "repetitions": 1
+  },
+  "measurements": [
+    {"instance": "flugpl", "status": "resource_limit", "nodes": 2000, "lp_iterations": 92308, "cuts": 5, "heuristics": 0, "lp_bound_ms": 1504.200, "incumbent_ms": 6.784, "search_ms": 29.897, "runtime_ms": 1540.881},
+    {"instance": "stein15", "status": "optimal", "nodes": 169, "lp_iterations": 34320, "cuts": 249, "heuristics": 3, "lp_bound_ms": 1489.185, "incumbent_ms": 13.707, "search_ms": 42.401, "runtime_ms": 1545.293},
+    {"instance": "pk1", "status": "resource_limit", "nodes": 175, "lp_iterations": 124262, "cuts": 21, "heuristics": 1, "lp_bound_ms": 7978.598, "incumbent_ms": 14.655, "search_ms": 7.039, "runtime_ms": 8000.292}
+  ],
+  "interpretation": "LP relaxation and cut re-solve time dominates these three named runs (about 96-100% of measured runtime). No broad performance gain is claimed. The targeted change is conservative singleton-row bound propagation before node relaxation; its effect on these instances has not been isolated from noise or established as an improvement.",
+  "proof_obligations": {
+    "format_version": 3,
+    "kind": "optional audit annotations",
+    "cut_fields": "node, coefficients, rhs, observed lhs",
+    "propagation_fields": "node, source row, variable, source coefficient, source rhs, derived bound, source side",
+    "validation": "recording checks finite values, cut violation at the observed point, and singleton division; parsing has witness-value limits",
+    "assurance": "The replay checker ignores annotations and verifies the original-domain cut-free tree. Stripping annotations leaves acceptance unchanged. Notes do not certify global cut validity or source-row scope.",
+    "remaining": "Serial applied singleton and verified cut events are carried by milp::Result, and build_mip_proof accepts audit annotations. The forbidden API path still needs to pass those events into the builder; parallel workers need a synchronized collector. Independent cut-derivation checking also remains to be designed."
+  },
+  "parallel_cuts": {
+    "root": "A failed root cut LP now leaves the root model unchanged; exceptions and failed LP status are reported to stderr.",
+    "in_tree": "Worker-local helper and local-cut inheritance are implemented and tested concurrently, but process_node remains unhooked because that file is fenced for another agent.",
+    "thread_sanitizer": "parallel_tree_search passed with MARKOV_CERO_ENABLE_TSAN=ON in build_item9"
+  },
+  "engine_hook_followups": [
+    "src/milp/parallel_tree_search_solve_integer_parallel.cpp:14 add atomic total_in_tree_cuts; pass it at worker_loop call around 211-214; at 233 add its load to root_cuts_generated.",
+    "src/milp/parallel_tree_search.cpp:26-39 and 148-156 add total_in_tree_cuts to process_node and worker_loop parameters, then pass at 248-252.",
+    "src/milp/parallel_tree_search.cpp:55-58 replace solve_node_lp and separate iteration increment with solve_parallel_node_with_cuts(*node, root_model, options, warm_basis, node_lower, node_upper, explored_count, total_lp_iterations, total_in_tree_cuts); the helper accounts for all LP iterations.",
+    "src/milp/parallel_tree_search_internal.hpp:51-73 update declarations to match the fenced definitions when the WorkerContext agent releases them.",
+    "src/api/engine_milp.cpp:10-15 retain milp_res.obligations for certification; src/api/mip_certificate.cpp:70-73 pass those notes as the final build_mip_proof argument. Those API files are forbidden here."
+  ],
+  "checks": {
+    "focused": "7/7 including repository_tools",
+    "full": "89/89 passed in build_item9 after concurrent source-limit work completed",
+    "source_limits": "463 maintained files, maximum 300 lines, 0 violations",
+    "tsan_parallel": "1/1 passed"
+  },
+  "limitations": [
+    "Measurements are one run per instance and include no confidence interval.",
+    "Result timing fields are populated by serial MILP search; the parallel engine still needs worker-safe attribution hooks.",
+    "Parallel in-tree cut execution requires the fenced WorkerContext call-site changes described in the final report; its events also need an aggregate collector."
+  ]
+}

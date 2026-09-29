@@ -1,16 +1,27 @@
 #include "markov_cero/io/lp_parser.hpp"
 #include "markov_cero/api/solve.hpp"
+#include "markov_cero/qp/model.hpp"
 
 #include <cmath>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 static void require(bool condition, const std::string& message) {
     if (!condition) {
         throw std::runtime_error("Assertion failed: " + message);
     }
+}
+
+static double parsed_objective_at(const markov_cero::model::Model& model,
+                                  const std::vector<double>& x) {
+    const auto qp = markov_cero::qp::make_quadratic_model(model);
+    double value = model.objective_offset + 0.5 * qp.P.evaluate_energy(x);
+    for (std::size_t j = 0; j < x.size(); ++j) value += qp.q[j] * x[j];
+    return model.objective_sense == markov_cero::model::ObjectiveSense::maximize
+        ? 2.0 * model.objective_offset - value : value;
 }
 
 int main() {
@@ -142,6 +153,24 @@ int main() {
         const auto model = markov_cero::io::parse_lp_string(qp_text);
         require(model.has_quadratic_objective, "has quadratic objective");
         require(model.quadratic_matrix.column_count == 2, "2x2 quadratic matrix");
+        require(std::abs(parsed_objective_at(model, {1.0, 1.0}) - 5.0) < 1e-12,
+                "bracketed diagonal and cross terms are halved once");
+    }
+    {
+        const auto mixed = markov_cero::io::parse_lp_string(
+            "Maximize\n 2 x + [ 3 x^2 ] / 2 - [ x * y ]\n"
+            "Subject To\n c: x + y <= 2\nBounds\n x == 1\n y == 1\nEnd\n");
+        require(std::abs(parsed_objective_at(mixed, {1.0, 1.0}) - 2.5) < 1e-12,
+                "maximize objective retains one negative cross term");
+        const auto diagonal = markov_cero::io::parse_lp_string(
+            "Minimize\n [ x^2 ]\nSubject To\n c: x <= 3\nEnd\n");
+        require(std::abs(parsed_objective_at(diagonal, {2.0}) - 4.0) < 1e-12,
+                "bare diagonal is the full squared term");
+        const auto cross = markov_cero::io::parse_lp_string(
+            "Minimize\n [ x * y ]\nSubject To\n c: x + y <= 1\n"
+            "Bounds\n 0 <= x <= 1\n 0 <= y <= 1\nEnd\n");
+        require(std::abs(parsed_objective_at(cross, {0.5, 0.5}) - 0.25) < 1e-12,
+                "bare cross term has its full coefficient");
     }
 
     // 5. Error handling
@@ -206,6 +235,17 @@ int main() {
             file_limited = true;
         }
         require(file_limited, "file reader must enforce byte budget while reading");
+        limits = LpLimits{};
+        limits.maximum_tokens = 4;
+        file_limited = false;
+        try {
+            (void)markov_cero::io::parse_lp_file(limited_path, limits);
+        } catch (const std::length_error&) {
+            file_limited = true;
+        }
+        require(file_limited, "file reader must pass token budget to parser");
+        require(markov_cero::io::parse_lp_file(limited_path).row_name.size() == 2,
+                "default file parser limits still accept input");
 
         const std::string quadratic =
             "Minimize\n x + [ x^2 + y^2 ] / 2\nSubject To\n x + y <= 1\nEnd\n";

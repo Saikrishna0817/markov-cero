@@ -28,7 +28,10 @@ double check_relaxation(const model::Model& model, const lp::reference::Result& 
             return std::numeric_limits<double>::infinity();
         }
         const auto convexity = qp::assess_convexity(q.P, 1e-10, 5U*1024U*1024U, options.deadline);
-        if (convexity.deadline_reached || convexity.status != qp::ConvexityStatus::positive_semidefinite ||
+        if (convexity.deadline_reached)
+            throw budget_exhausted_error(MipProofBudgetKind::time_limit,
+                "proof exhausted " + budget_label(MipProofBudgetKind::time_limit));
+        if (convexity.status != qp::ConvexityStatus::positive_semidefinite ||
             !qp::verify_qp_solution(q, sol, options.tolerance).passed)
             throw std::invalid_argument("invalid convex QP KKT leaf");
         return qp::supporting_lower_bound(model, q, sol);

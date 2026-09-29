@@ -1,5 +1,6 @@
 #include "markov_cero/lp/reference/revised_simplex.hpp"
 #include "markov_cero/verify/reference_lp_verifier.hpp"
+#include "markov_cero/transform/sparse_canonical_model.hpp"
 #include <cmath>
 #include <iostream>
 #include <limits>
@@ -29,6 +30,25 @@ transform::CanonicalModel cm(std::size_t r, std::size_t c, std::vector<double> a
 }
 } // namespace
 int main() {
+    transform::SparseCanonicalModel tiny;
+    tiny.matrix = linalg::SparseCsc::from_columns(1, {{1e-13}});
+    tiny.rhs = {1e-13};
+    tiny.objective = {-1};
+    tiny.record.objective_sign = 1;
+    tiny.record.structural_variables = 1;
+    tiny.record.variables.resize(1);
+    tiny.record.variables[0].canonical_index = {0};
+    tiny.record.variables[0].multiplier = {1};
+    tiny.validate();
+    const auto tiny_result = lp::reference::solve(tiny);
+    req(tiny_result.status != lp::reference::SolveStatus::unbounded,
+        "tiny positive direction is not unbounded");
+    lp::reference::Result false_ray;
+    false_ray.status = lp::reference::SolveStatus::unbounded;
+    false_ray.primal = {1};
+    false_ray.ray = {1};
+    req(!verify::verify_sparse_result(tiny, false_ray).accepted,
+        "tiny nonzero recession residual rejected");
     auto optimal = cm(1, 2, {1, 1}, {1}, {-1, 0}, 5);
     auto ro = lp::reference::solve(optimal);
     req(ro.status == lp::reference::SolveStatus::optimal, "optimal status");

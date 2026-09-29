@@ -8,12 +8,16 @@
 #include "markov_cero/verify/reference_lp_verifier.hpp"
 
 #include <cstddef>
+#include <cstdint>
 #include <limits>
 #include <memory>
 #include <optional>
 #include "markov_cero/verify/mip_proof.hpp"
 #include <string>
 #include <vector>
+
+namespace markov_cero::lp::dual { class Session; }
+namespace markov_cero::qp { class AdmmQpSolver; }
 
 namespace markov_cero::api {
 
@@ -42,6 +46,18 @@ struct SolveOptions {
     std::optional<std::size_t> maximum_input_bytes;
     lp::reference::Options lp_options;
     milp::Options milp_options;
+    // Optional caller-owned repeated-solve state. Reuse each session sequentially;
+    // concurrent solves should each receive their own session instance.
+    lp::dual::Session* repeated_lp_session{nullptr};
+    qp::AdmmQpSolver* repeated_qp_session{nullptr};
+    // W02/IR-20: solve-wide wall clock measured from API entry, covering
+    // parsing, engine work, verification and proof stages. Must be > 0 and
+    // <= 1e8 seconds when set; unset keeps the engine-local limits only.
+    std::optional<double> total_time_limit_seconds;
+    // W02/IR-21: solve-wide budget for solver-owned bytes admitted at the
+    // instrumented charge points. Must be > 0 when set; unset disables the
+    // budget (charges are still accounted but never refused).
+    std::optional<std::size_t> memory_limit_bytes;
 };
 
 struct NumericalDiagnostic {
@@ -79,6 +95,12 @@ struct SolveResult {
     // triggered a failed dual-simplex crossover). Empty otherwise.
     std::string convergence_note;
 
+    // W02/IR-20: first cooperative stop recorded by the solve-wide
+    // SolveContext (deadline, cancellation, memory budget, quota). Empty when
+    // nothing stopped the solve; it never appears next to an unverified
+    // optimal/infeasible/unbounded status.
+    std::string stop_reason;
+
     // D-16: how often the ADMM penalty rho changed (each change triggers one
     // KKT re-factorization). 0 for every non-QP engine.
     std::size_t admm_rho_updates = 0;
@@ -86,6 +108,11 @@ struct SolveResult {
     std::size_t model_rows = 0;
     std::size_t model_cols = 0;
     std::size_t model_nnz = 0;
+    // W01/D16: stable identity of the validated model captured at the API
+    // boundary (mix of structural and numeric content hashes; 0 only when no
+    // model reached the boundary). Binds results and later proof artifacts to
+    // the exact model that produced them.
+    std::uint64_t model_fingerprint = 0;
 
     std::vector<double> primal;
     double objective = 0.0;
@@ -94,6 +121,19 @@ struct SolveResult {
 
     // Global verification is distinct from a checked incumbent or local KKT point.
     std::string certificate_type{"none"};
+    // Proof assurance is separate from verified: an accepted gap certificate
+    // bounds suboptimality but does not establish exact optimality.
+    std::string guarantee_tier{"unverified"};
+    std::string proof_status{"not_requested"};
+    std::string proof_budget_kind{"none"};
+    bool proof_budget_exhausted{false};
+    std::size_t proof_nodes_used{0};
+    std::size_t proof_checked_nodes{0};
+    std::size_t proof_witness_values_used{0};
+    std::size_t proof_checked_witness_values{0};
+    double proof_budget_time_ms{0.0};
+    std::uint32_t proof_format_version{0};
+    std::string proof_model_fingerprint;
     // Independent MIP certificate construction and replay cost, excluding the
     // primary solve. Zero when the proof path was not requested or not entered.
     double mip_proof_build_ms{0.0};

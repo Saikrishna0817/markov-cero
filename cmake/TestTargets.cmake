@@ -75,6 +75,9 @@ add_executable(parallel_tree_search_test tests/parallel_tree_search_test.cpp
   tests/parallel_tree_search_test_test_thread_safety_repeated_runs.cpp
   tests/parallel_tree_search_test_queue_capacity.cpp)
 target_link_libraries(parallel_tree_search_test PRIVATE markov_cero_core)
+add_executable(parallel_proof_events_test tests/parallel_proof_events_test.cpp)
+target_link_libraries(parallel_proof_events_test PRIVATE markov_cero_core)
+add_test(NAME parallel_proof_events COMMAND parallel_proof_events_test)
 add_executable(gpu_buffer_test gpu/tests/gpu_buffer_test.cpp gpu/tests/gpu_buffer_test_test_model_sparse_matrix_roundtrip.cpp)
 target_link_libraries(gpu_buffer_test PRIVATE markov_cero_core)
 add_executable(equivalence_test gpu/tests/equivalence_test.cpp gpu/tests/equivalence_test_test_project_bounds_equivalence.cpp)
@@ -106,6 +109,7 @@ add_executable(api_test tests/api_test.cpp)
 target_link_libraries(api_test PRIVATE markov_cero_core)
 add_executable(refinery_test tests/refinery_test.cpp)
 target_link_libraries(refinery_test PRIVATE markov_cero_core)
+target_compile_definitions(refinery_test PRIVATE MARKOV_CERO_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 add_executable(lp_parser_test tests/lp_parser_test.cpp)
 target_link_libraries(lp_parser_test PRIVATE markov_cero_core)
 # W5: Milestone 1 numerical accuracy tests
@@ -131,6 +135,24 @@ target_link_libraries(e2e_tier4_m1_scenarios PRIVATE markov_cero_core)
 target_include_directories(e2e_tier4_m1_scenarios PRIVATE tests/e2e)
 add_executable(node_frontier_memory_benchmark scripts/bench_node_frontier_memory.cpp)
 target_link_libraries(node_frontier_memory_benchmark PRIVATE markov_cero_core)
+add_executable(solve_frontier_memory_benchmark scripts/bench_solve_frontier_memory.cpp)
+target_link_libraries(solve_frontier_memory_benchmark PRIVATE markov_cero_core)
+# W02/W01 contracts: shared SolveContext, ModelSnapshot and NodeView.
+add_executable(solve_context_test tests/solve_context_test.cpp)
+target_link_libraries(solve_context_test PRIVATE markov_cero_core)
+add_executable(model_snapshot_test tests/model_snapshot_test.cpp)
+target_link_libraries(model_snapshot_test PRIVATE markov_cero_core)
+add_executable(node_view_test tests/node_view_test.cpp)
+target_link_libraries(node_view_test PRIVATE markov_cero_core)
+# W01/IR-19: bounded reference-materialisation comparator and identity tests.
+add_executable(reference_materialisation_test tests/reference_materialisation_test.cpp)
+target_link_libraries(reference_materialisation_test PRIVATE markov_cero_core)
+add_executable(node_view_reference_identity_test tests/node_view_reference_identity_test.cpp)
+target_link_libraries(node_view_reference_identity_test PRIVATE markov_cero_core)
+add_executable(worker_context_test tests/worker_context_test.cpp)
+target_link_libraries(worker_context_test PRIVATE markov_cero_core)
+add_executable(resource_failure_test tests/resource_failure_test.cpp)
+target_link_libraries(resource_failure_test PRIVATE markov_cero_core)
 # Test executables must keep assert() checks alive in EVERY build type:
 # Release/RelWithDebInfo define NDEBUG, which compiles assert() to a no-op and
 # silently disables the assert-based test files (CI's ASan/UBSan and TSan jobs

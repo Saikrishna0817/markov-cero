@@ -13,27 +13,54 @@ bool KktSolver::factorize(const SparseSymmetricMatrix& P,
         deadline_reached_ = true;
         return false;
     }
+    last_pattern_fingerprint_ =
+        detail_kkt::kkt_pattern_fingerprint(total_dim_, kkt_col_ptr_, kkt_row_ind_);
 
-    // Symbolic factorization
-    L_col_ptr_.assign(total_dim_ + 1, 0);
-    parent_.assign(total_dim_, std::numeric_limits<std::size_t>::max());
+    // Symbolic factorization. A repeat solve whose KKT pattern (shape plus
+    // exact row/column index structure) matches the cached one skips Davis's
+    // analysis entirely and reuses L_col_ptr_/parent_; every other case —
+    // first call, changed P/A pattern or dimension, cache disabled — runs the
+    // full symbolic exactly as before.
+    const bool reuse_symbolic = symbolic_cache_enabled_ && pattern_cache_valid_ &&
+        cached_n_ == n_ && cached_m_ == m_ &&
+        pattern_fingerprint_ == last_pattern_fingerprint_ &&
+        detail_kkt::same_kkt_pattern(cached_pattern_col_ptr_, cached_pattern_row_ind_,
+                                     kkt_col_ptr_, kkt_row_ind_);
     std::vector<std::size_t> lnz(total_dim_, 0);
     std::vector<std::size_t> flag(total_dim_, 0);
+    if (reuse_symbolic) {
+        ++symbolic_reuses_;
+    } else {
+        // A failed replacement analysis must not leave stale factors reusable.
+        pattern_cache_valid_ = false;
+        L_col_ptr_.assign(total_dim_ + 1, 0);
+        parent_.assign(total_dim_, std::numeric_limits<std::size_t>::max());
 
-    if (!ldl_symbolic(total_dim_, kkt_col_ptr_, kkt_row_ind_, L_col_ptr_, parent_, lnz,
-                      flag, nullptr, nullptr, deadline)) {
-        deadline_reached_ = true;
-        return false;
-    }
-    if (deadline && std::chrono::steady_clock::now() >= *deadline) {
-        deadline_reached_ = true;
-        return false;
+        if (!ldl_symbolic(total_dim_, kkt_col_ptr_, kkt_row_ind_, L_col_ptr_, parent_, lnz,
+                          flag, nullptr, nullptr, deadline)) {
+            deadline_reached_ = true;
+            return false;
+        }
+        if (deadline && std::chrono::steady_clock::now() >= *deadline) {
+            deadline_reached_ = true;
+            return false;
+        }
     }
 
     const std::size_t total_lnz = L_col_ptr_[total_dim_];
     if (total_lnz > kMaxKktFactorNonzeros) {
         fill_limit_reached_ = true;
         return false;
+    }
+    if (!reuse_symbolic) {
+        // Only a symbolic that produced a usable factor is cached.
+        cached_pattern_col_ptr_ = kkt_col_ptr_;
+        cached_pattern_row_ind_ = kkt_row_ind_;
+        cached_n_ = n_;
+        cached_m_ = m_;
+        pattern_fingerprint_ = last_pattern_fingerprint_;
+        pattern_cache_valid_ = true;
+        ++symbolic_factorizations_;
     }
     L_row_ind_.assign(total_lnz, 0);
     L_val_.assign(total_lnz, 0.0);
@@ -48,6 +75,8 @@ bool KktSolver::factorize(const SparseSymmetricMatrix& P,
     factorized_ = ldl_numeric(total_dim_, kkt_col_ptr_, kkt_row_ind_, kkt_val_, L_col_ptr_,
                               parent_, lnz, L_row_ind_, L_val_, D_, Y, Pattern, flag,
                               nullptr, nullptr, deadline, deadline_reached_);
+
+    if (!factorized_) pattern_cache_valid_ = false;
 
     return factorized_;
 }

@@ -1,5 +1,5 @@
 from .run_full_benchmark_config import (
-    Path, REPO, SUITES, argparse, csv, hashlib, sys, json
+    Path, REPO, SUITES, argparse, csv, hashlib, sys, json, suite_time_limit
 )
 from .run_full_benchmark_run_one import qplib_convexity_gate
 from .run_full_benchmark_run_one import run_one
@@ -8,7 +8,9 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--solver", default=str(REPO / "build_w5" / "markov-cero-solve"))
     ap.add_argument("--suites", nargs="+", default=list(SUITES))
-    ap.add_argument("--timeout", type=float, default=120.0)
+    ap.add_argument("--timeout", type=float, default=None,
+                    help="per-instance time cap in seconds (frozen default: the "
+                         "suite cap — LP/QP 60 s, MILP 300 s)")
     ap.add_argument("--threads", type=int, default=1,
                     help="solver threads per instance (default: 1)")
     ap.add_argument("--expected-solver-sha256", default="",
@@ -98,13 +100,15 @@ def main() -> int:
             for row in completed:
                 statuses[row["status"]] = statuses.get(row["status"], 0) + 1
             print(f"[{suite}] resuming after {len(completed)} verified-prefix rows", flush=True)
+        timeout = (args.timeout if args.timeout is not None
+                   else suite_time_limit(suite))
         with open(out_path, "a" if completed else "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=columns)
             if not completed:
                 writer.writeheader()
             for mps in instances[len(completed):]:
                 row = run_one(args.solver, mps, suite, spec["engine"],
-                              args.timeout, args.threads, executable_sha256)
+                              timeout, args.threads, executable_sha256)
                 writer.writerow(row)
                 f.flush()  # Keep long all-suite sweeps resumable and auditable.
                 statuses[row["status"]] = statuses.get(row["status"], 0) + 1

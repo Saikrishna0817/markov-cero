@@ -18,6 +18,8 @@ import os
 import random
 import sys
 
+from fixture_provenance import write_provenance
+
 
 def generate_power_dispatch_qps(
     num_buses: int = 118,
@@ -86,7 +88,11 @@ def generate_power_dispatch_qps(
         c2 = rng.uniform(0.02, 0.08)   # $0.02 - $0.08 / MWh^2
         gen_data.append((gname, b_id, p_min, p_max, c1, c2))
 
-    lines = ["NAME IEEE118_DC_OPF", "ROWS", " N COST"]
+    lines = ["* Units: PG, nodal demand and line limits p.u. on 100 MVA base; TH radians;",
+             "* branch susceptance p.u./radian. COST linear coefficients synthetic currency/p.u.;",
+             "* QUADOBJ coefficients synthetic currency/p.u.^2 (objective uses 1/2 x'Qx).",
+             "* Synthetic qualification data; not plant operating data; deterministic for a fixed seed.",
+             "NAME IEEE118_DC_OPF", "ROWS", " N COST"]
 
     # 1. Nodal active power balance: BAL_{b} (E)
     for b in range(1, num_buses + 1):
@@ -182,6 +188,9 @@ def main():
     content = generate_power_dispatch_qps(num_buses=args.buses, seed=args.seed)
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(content)
+    write_provenance(args.output, "gen_power_dispatch.py",
+                     {"buses": args.buses, "seed": args.seed},
+                     "Unit and qualification comments added; model rows, columns and coefficients unchanged.")
 
     print(f"[+] IEEE 118-Bus DC-OPF Convex QP model written to {args.output}")
     print(f"    File size: {os.path.getsize(args.output):,} bytes")

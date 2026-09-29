@@ -141,19 +141,29 @@ std::size_t select_leaving(const Work& w, const std::vector<double>& xb,
                            const std::vector<double>& d, const Options& o, double& theta) {
     std::size_t leaving_row = w.rows;
     theta = std::numeric_limits<double>::infinity();
-    const double pivot_thresh = o.pivot_tolerance;
-    for (std::size_t i = 0; i < w.rows; ++i) {
-        if (d[i] <= pivot_thresh) {
-            continue;
-        }
-        const double ratio = xb[i] / d[i];
-        if (!std::isfinite(ratio)) {
-            throw std::overflow_error("non-finite simplex ratio");
-        }
-        if (ratio < theta ||
-            (ratio == theta && (leaving_row == w.rows || w.basis[i] < w.basis[leaving_row]))) {
-            theta = ratio;
-            leaving_row = i;
+    // Choose a numerically stable pivot first, then check every tiny positive
+    // coefficient against that step. A tiny row can still limit the step or
+    // rule out an unbounded ray, even when it cannot form a stable basis.
+    for (int pass = 0; pass < 2; ++pass) {
+        const double stable_theta = theta;
+        const bool has_stable = leaving_row < w.rows;
+        for (std::size_t i = 0; i < w.rows; ++i) {
+            if (d[i] <= 0.0 || (d[i] > o.pivot_tolerance) != (pass == 0)) continue;
+            if (pass == 1 && has_stable &&
+                static_cast<long double>(xb[i]) -
+                    static_cast<long double>(d[i]) * stable_theta >=
+                    -o.feasibility_tolerance) continue;
+            const double ratio = xb[i] / d[i];
+            if (!std::isfinite(ratio)) {
+                if (has_stable) continue;
+                throw std::overflow_error("non-finite simplex ratio");
+            }
+            if (ratio < theta ||
+                (ratio == theta &&
+                 (leaving_row == w.rows || w.basis[i] < w.basis[leaving_row]))) {
+                theta = ratio;
+                leaving_row = i;
+            }
         }
     }
     return leaving_row;

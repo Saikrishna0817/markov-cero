@@ -1,0 +1,340 @@
+{
+  "item": "roadmap backlog item 8",
+  "date": "2026-09-29",
+  "build": "build_item8; Release; MARKOV_CERO_WARNINGS_AS_ERRORS=ON; --parallel 4",
+  "benchmark": {
+    "command": "python3 scripts/bench_repeated_solve.py --steps 12 --output build_item8/repeated_solve_after.json",
+    "driver": "scripts/bench_repeated_solve.py",
+    "model_sizes": {
+      "lp": "200 rows, 300 columns, 100 separable blocks",
+      "qp": "120 variables, 120 bounds rows, diagonal PSD P and identity A"
+    },
+    "pre_final_partial_implementation": {
+      "steps": 12,
+      "units": "ms",
+      "cases": {
+        "lp_rhs": {
+          "cold": {
+            "wall_ms": 150.711,
+            "iterations": 0,
+            "refactorizations": 0,
+            "cache_reuses": 0,
+            "verified_results": 12
+          },
+          "warm": {
+            "wall_ms": 38.2137,
+            "iterations": 0,
+            "refactorizations": 12,
+            "cache_reuses": 0,
+            "verified_results": 12
+          },
+          "session": {
+            "wall_ms": 30.2961,
+            "iterations": 0,
+            "refactorizations": 1,
+            "cache_reuses": 11,
+            "verified_results": 12
+          }
+        },
+        "lp_bounds": {
+          "cold": {
+            "wall_ms": 148.184,
+            "iterations": 0,
+            "refactorizations": 0,
+            "cache_reuses": 0,
+            "verified_results": 12
+          },
+          "warm": {
+            "wall_ms": 37.7898,
+            "iterations": 0,
+            "refactorizations": 12,
+            "cache_reuses": 0,
+            "verified_results": 12
+          },
+          "session": {
+            "wall_ms": 29.9195,
+            "iterations": 0,
+            "refactorizations": 1,
+            "cache_reuses": 11,
+            "verified_results": 12
+          }
+        },
+        "qp_rhs": {
+          "cold": {
+            "wall_ms": 1.17689,
+            "iterations": 252,
+            "refactorizations": 12,
+            "cache_reuses": 0,
+            "verified_results": 12
+          },
+          "session": {
+            "wall_ms": 1.09991,
+            "iterations": 252,
+            "refactorizations": 12,
+            "cache_reuses": 11,
+            "verified_results": 12
+          }
+        },
+        "qp_bounds": {
+          "cold": {
+            "wall_ms": 1.14665,
+            "iterations": 252,
+            "refactorizations": 12,
+            "cache_reuses": 0,
+            "verified_results": 12
+          },
+          "session": {
+            "wall_ms": 1.08121,
+            "iterations": 252,
+            "refactorizations": 12,
+            "cache_reuses": 11,
+            "verified_results": 12
+          }
+        }
+      }
+    },
+    "post_final": {
+      "steps": 12,
+      "units": "ms",
+      "cases": {
+        "lp_rhs": {
+          "cold": {
+            "wall_ms": 165.512,
+            "iterations": 3600,
+            "refactorizations": null,
+            "cache_reuses": 0,
+            "verified_results": 12
+          },
+          "warm": {
+            "wall_ms": 41.8304,
+            "iterations": 0,
+            "refactorizations": 12,
+            "cache_reuses": 0,
+            "verified_results": 12
+          },
+          "session": {
+            "wall_ms": 32.7556,
+            "iterations": 0,
+            "refactorizations": 1,
+            "cache_reuses": 11,
+            "verified_results": 12
+          }
+        },
+        "lp_bounds": {
+          "cold": {
+            "wall_ms": 158.348,
+            "iterations": 3600,
+            "refactorizations": null,
+            "cache_reuses": 0,
+            "verified_results": 12
+          },
+          "warm": {
+            "wall_ms": 40.2719,
+            "iterations": 0,
+            "refactorizations": 12,
+            "cache_reuses": 0,
+            "verified_results": 12
+          },
+          "session": {
+            "wall_ms": 32.3039,
+            "iterations": 0,
+            "refactorizations": 1,
+            "cache_reuses": 11,
+            "verified_results": 12
+          }
+        },
+        "qp_rhs": {
+          "cold": {
+            "wall_ms": 1.42847,
+            "iterations": 252,
+            "refactorizations": 12,
+            "cache_reuses": 0,
+            "verified_results": 12
+          },
+          "session": {
+            "wall_ms": 1.34076,
+            "iterations": 252,
+            "refactorizations": 12,
+            "cache_reuses": 11,
+            "verified_results": 12
+          }
+        },
+        "qp_bounds": {
+          "cold": {
+            "wall_ms": 1.45374,
+            "iterations": 252,
+            "refactorizations": 12,
+            "cache_reuses": 0,
+            "verified_results": 12
+          },
+          "session": {
+            "wall_ms": 1.39048,
+            "iterations": 252,
+            "refactorizations": 12,
+            "cache_reuses": 11,
+            "verified_results": 12
+          }
+        }
+      }
+    },
+    "post_final_100_steps": {
+      "steps": 100,
+      "units": "ms",
+      "cases": {
+        "lp_rhs": {
+          "cold": {
+            "wall_ms": 1182.22,
+            "iterations": 30000,
+            "refactorizations": null,
+            "cache_reuses": 0,
+            "verified_results": 100
+          },
+          "warm": {
+            "wall_ms": 300.45,
+            "iterations": 0,
+            "refactorizations": 100,
+            "cache_reuses": 0,
+            "verified_results": 100
+          },
+          "session": {
+            "wall_ms": 233.356,
+            "iterations": 0,
+            "refactorizations": 1,
+            "cache_reuses": 99,
+            "verified_results": 100
+          }
+        },
+        "lp_bounds": {
+          "cold": {
+            "wall_ms": 1205.4,
+            "iterations": 30000,
+            "refactorizations": null,
+            "cache_reuses": 0,
+            "verified_results": 100
+          },
+          "warm": {
+            "wall_ms": 307.894,
+            "iterations": 0,
+            "refactorizations": 100,
+            "cache_reuses": 0,
+            "verified_results": 100
+          },
+          "session": {
+            "wall_ms": 240.132,
+            "iterations": 0,
+            "refactorizations": 1,
+            "cache_reuses": 99,
+            "verified_results": 100
+          }
+        },
+        "qp_rhs": {
+          "cold": {
+            "wall_ms": 10.7815,
+            "iterations": 2100,
+            "refactorizations": 100,
+            "cache_reuses": 0,
+            "verified_results": 100
+          },
+          "session": {
+            "wall_ms": 10.3182,
+            "iterations": 2100,
+            "refactorizations": 100,
+            "cache_reuses": 99,
+            "verified_results": 100
+          }
+        },
+        "qp_bounds": {
+          "cold": {
+            "wall_ms": 10.7656,
+            "iterations": 2100,
+            "refactorizations": 100,
+            "cache_reuses": 0,
+            "verified_results": 100
+          },
+          "session": {
+            "wall_ms": 10.2569,
+            "iterations": 2100,
+            "refactorizations": 100,
+            "cache_reuses": 99,
+            "verified_results": 100
+          }
+        }
+      }
+    },
+    "pre_final_ratios": {
+      "lp_rhs": {
+        "cold_over_session": 4.975,
+        "warm_over_session": 1.261
+      },
+      "lp_bounds": {
+        "cold_over_session": 4.953,
+        "warm_over_session": 1.263
+      },
+      "qp_rhs": {
+        "cold_over_session": 1.07
+      },
+      "qp_bounds": {
+        "cold_over_session": 1.061
+      }
+    },
+    "post_final_ratios": {
+      "lp_rhs": {
+        "cold_over_session": 5.053,
+        "warm_over_session": 1.277
+      },
+      "lp_bounds": {
+        "cold_over_session": 4.902,
+        "warm_over_session": 1.247
+      },
+      "qp_rhs": {
+        "cold_over_session": 1.065
+      },
+      "qp_bounds": {
+        "cold_over_session": 1.045
+      }
+    },
+    "post_final_100_step_ratios": {
+      "lp_rhs": {
+        "cold_over_session": 5.066,
+        "warm_over_session": 1.288
+      },
+      "lp_bounds": {
+        "cold_over_session": 5.02,
+        "warm_over_session": 1.282
+      },
+      "qp_rhs": {
+        "cold_over_session": 1.045
+      },
+      "qp_bounds": {
+        "cold_over_session": 1.05
+      }
+    },
+    "interpretation": "The 100-step paired run is the steadier benefit estimate: LP session versus one-shot warm is about 22%; QP session versus cold is about 4-5%. The post-final QP path additionally verifies every accepted result, increasing absolute wall time. Cross-run absolute times are not a clean causal speed comparison because verification and host load changed.",
+    "counter_notes": "The initial 12-step driver reported zero for cold LP iterations and refactorizations because it read dual telemetry, which the reference cold oracle does not expose. The final driver reads phase-one plus phase-two iterations and records cold LP refactorizations as null. KKT refactorizations count the initial numeric factorization plus rho updates; the symbolic cache skips only analysis, so numeric counts remain 100."
+  },
+  "verification": {
+    "coverage": "All 1120 accepted benchmark results in the final 12- and 100-step runs were independently verified (112 steps x [LP 2 cases x 3 modes + QP 2 cases x 2 modes]). Solver accepting paths also set verified only after verify_reference_result or QP witness verification.",
+    "tests": [
+      "dual_simplex: matrix-change invalidation, infeasibility reset and cold restart",
+      "warm_start_properties: 300 repeated RHS/bound resolves, status/objective parity and independent verification each step",
+      "qp: eight repeats with parity, verifier checks, symbolic hit cadence, rho numeric change, pattern/shape/disabled-cache misses"
+    ],
+    "ctest": "89/89 passed with ctest --test-dir build_item8 -j4 --output-on-failure",
+    "source_limits": "python3 scripts/check_source_limits.py: 0 violations in 460 maintained files"
+  },
+  "kept": [
+    "LP basis/factor/session reuse: 99/100 factor hits and about 22% lower wall time versus one-shot warm on 200-row repeat sequences",
+    "QP shape/fingerprint/exact-pattern symbolic cache: 99/100 hits and 4-5% lower paired wall time on the 120-variable QP; no broad 20% roadmap performance promotion claim"
+  ],
+  "rejected_or_deferred": [
+    "Unconditional KKT reuse across shape/pattern changes: rejected; exact pattern and shape misses take the original symbolic path.",
+    "Skipping per-result verification to improve timing: rejected; all accepted witnesses are checked.",
+    "Numeric KKT factor reuse across solves: deferred; rho/sigma and scaled P/A values can change, and the measured symbolic-only gain does not justify a less conservative numeric cache."
+  ],
+  "limitations": [
+    "The LP is a generated 200-row separable model at a Netlib-like dimension, not an imported Netlib instance.",
+    "The QP is small and structurally simple; 4-5% paired speedup may vary with sparsity and platform.",
+    "Engine/API session lifecycle is not wired because src/api is outside ownership.",
+    "The roadmap held-out 20% latency promotion gate is met only by the measured LP warm-to-session case; neither this generated workload nor the QP result establishes a held-out release claim."
+  ]
+}

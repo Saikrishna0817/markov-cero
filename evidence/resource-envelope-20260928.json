@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-28",
+  "run_date": "2026-09-29",
+  "purpose": "Roadmap item 5: solve-wide cooperative resource contract and defensible IR-20/21 envelope",
+  "worktree": "Uncommitted shared working tree; results describe this state rather than HEAD.",
+  "commands": {
+    "configure": "cmake -S . -B build_item5 -DCMAKE_BUILD_TYPE=Release -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON",
+    "build": "cmake --build build_item5 --parallel 6",
+    "ctest": "ctest --test-dir build_item5 -j4 --output-on-failure",
+    "source_limits": "python3 scripts/check_source_limits.py",
+    "wheel": ".venv/bin/python -m pip wheel . -w /tmp/markov-resource-wheels-verified --no-deps --no-build-isolation",
+    "wheel_install": ".venv/bin/python -m pip install --force-reinstall --no-deps /tmp/markov-resource-wheels-verified/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+    "pytest": ".venv/bin/python -m pytest python/tests -q",
+    "worker_kill_demo": "bash scripts/worker_kill_demo.sh"
+  },
+  "results": {
+    "ctest": {"passed": 89, "total": 89},
+    "wheel_sha256": "1cecb2c11bb52da237146e4190b6f8ddbcd8e77ee4fab443e896173461542f3a",
+    "source_limits": {"maintained_files": 461, "maximum_lines": 300, "violations": 0},
+    "pytest": {"passed": 21, "total": 21},
+    "worker_kill_demo": "SIGKILL observed; no result file emitted by killed solve; rerun completed with ResourceLimit",
+    "allocation_injection": {"engines": ["primal", "milp", "parallel", "pdlp", "qp"], "attempts_per_engine": 48, "escaped_exceptions": 0, "assertions": "at least one allocation_failure resource_limit per engine; no infeasible or unbounded model claim on injected failure"}
+  },
+  "api_contract": {
+    "total_time_limit_seconds": "Optional solve-wide wall-clock limit measured from API entry; finite and in (0, 1e8]; earliest active deadline wins.",
+    "memory_limit_bytes": "Optional positive byte admission budget; no hard process RSS cap.",
+    "stop_reason": "First cooperative stop from the shared SolveContext; empty when no stop is recorded; unverified optimal, infeasible, and unbounded claims are downgraded to resource_limit.",
+    "exception_boundary": "std::bad_alloc and std::length_error map to resource_limit; worker exceptions stop the parallel queue and report resource_limit; no injected exception escapes solve_file or solve_model."
+  },
+  "envelope": [
+    {"stage": "API entry and dispatch", "deadline": "Before engine dispatch and after engine return", "budget": "One shared SolveContext owns charged bytes; model input itself is caller-owned."},
+    {"stage": "LP canonicalize, presolve, scaling, dense conversion, solve, postsolve, verify", "deadline": "Stage boundaries plus engine-local checks; sparse, reference, primal, and linear verifiers poll inside loops", "budget": "Working-model copy and dense conversion preflight estimates."},
+    {"stage": "QP model_build, solve, verify", "deadline": "Stage boundaries and QP engine deadline; verification checked at return", "budget": "No comprehensive QP kernel allocation metering."},
+    {"stage": "PDLP solve, verify", "deadline": "Stage boundary, engine deadline, and primal/linear verifier loops", "budget": "No PDLP inner-buffer accounting."},
+    {"stage": "MILP and parallel search, verify, certify", "deadline": "Stage boundaries, search-engine deadline, and primal verifier loops", "budget": "Parallel root-model copy and two BranchNode records per queue child push; dynamic node payloads omitted."},
+    {"stage": "NLP/MINLP model_build, solve, verify", "deadline": "Stage boundaries and engine deadlines; callback and verifier bodies are indivisible", "budget": "No callback or nonlinear-factor workspace accounting."},
+    {"stage": "MIP proof_build and proof_replay", "deadline": "Shared deadline intersects proof-local deadline; checked between stages", "budget": "Coarse proof-build reservation; proof internals are not individually metered."}
+  ],
+  "limitations": [
+    "Deadline checks are cooperative. Root relaxations, factorization kernels, callbacks, PDLP inner kernels, and individual verifier matrix kernels are not preemptible; runtime can overrun by one such operation.",
+    "The four owned verifiers check the optional deadline at iteration or node boundaries, generally every 1024 entries; a single factor or matrix kernel is indivisible.",
+    "memory_limit_bytes meters only instrumented charges, not every glibc or third-party allocation. It cannot promise an RSS ceiling or suppress host OOM.",
+    "The transient peak_rss_kib=1013492 (~990 MiB) observation in evidence/ir19-w01-memory-20260928.json remains unexplained and is bounded here only if it crosses an instrumented charge point.",
+    "SIGKILL discards in-memory state. Checkpointed incumbents are a follow-up, outside this item.",
+    "IR-20 and IR-21 remain OPEN pending independent review of this bounded envelope."
+  ]
+}

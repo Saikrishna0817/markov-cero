@@ -1,4 +1,5 @@
 #include "parallel_tree_search_test_internal.hpp"
+#include "../src/milp/parallel_tree_search_internal.hpp"
 namespace test_parallel_tree_search_test {
 using namespace detail_parallel_tree_search_test;
 namespace detail_parallel_tree_search_test {
@@ -222,6 +223,29 @@ void test_refinery_dispatch_multi_threads() {
 }
 using namespace test_parallel_tree_search_test;
 using namespace test_parallel_tree_search_test::detail_parallel_tree_search_test;
+void test_parallel_cut_helper_worker_isolation() {
+    using namespace markov_cero;
+    const auto model = build_knapsack_model();
+    milp::ParallelOptions options;
+    options.enable_heuristics = false;
+    std::atomic<std::size_t> iterations{0}, cuts{0};
+    std::atomic<bool> failed{false};
+    std::vector<std::thread> workers;
+    for (std::size_t worker = 0; worker < 4; ++worker) {
+        workers.emplace_back([&, worker] {
+            milp::BranchNode node;
+            node.id = worker + 1;
+            const auto result = milp::detail_parallel_tree_search::solve_parallel_node_with_cuts(
+                node, model, options, std::nullopt, model.variable_lower,
+                model.variable_upper, worker + 1, iterations, cuts);
+            if (result.status != lp::reference::SolveStatus::optimal ||
+                result.primal.size() != model.matrix.column_count) failed.store(true);
+        });
+    }
+    for (auto& worker : workers) worker.join();
+    if (failed || iterations.load() == 0)
+        throw std::runtime_error("worker-local cut helper failed parallel solve");
+}
 int main() {
     try {
         test_persistent_node_bounds();
@@ -233,6 +257,7 @@ int main() {
         test_knapsack_multi_threads();
         test_refinery_dispatch_multi_threads();
         test_thread_safety_repeated_runs();
+        test_parallel_cut_helper_worker_isolation();
         test_infeasible_parallel();
         std::cout << "\n=======================================================\n";
         std::cout << "All Parallel Tree Search Tests PASSED Successfully!\n";

@@ -23,6 +23,8 @@ markov_cero::api::SolveOptions to_solve_options(const markov_cero::apps::CliOpti
     options.pdlp_tolerance = cli.pdlp_tolerance;
     options.backend = cli.backend_name;
     options.maximum_input_bytes = cli.maximum_input_bytes;
+    options.memory_limit_bytes = cli.memory_limit_bytes;
+    options.total_time_limit_seconds = cli.time_limit_seconds;
     options.mip_proof_time_limit_seconds = cli.mip_proof_time_limit_seconds;
     options.mip_proof_max_nodes = cli.mip_proof_max_nodes;
     options.mip_proof_max_witness_values = cli.mip_proof_max_witness_values;
@@ -38,6 +40,18 @@ markov_cero::apps::JsonOutputData to_json_data(const markov_cero::api::SolveResu
                                               const markov_cero::api::SolveOptions& options) {
     markov_cero::apps::JsonOutputData data;
     data.certificate_type = res.certificate_type;
+    data.guarantee_tier = res.guarantee_tier;
+    data.proof_status = res.proof_status;
+    data.proof_budget_exhausted = res.proof_budget_exhausted;
+    data.proof_budget_kind = res.proof_budget_kind;
+    data.proof_nodes_used = res.proof_nodes_used;
+    data.proof_checked_nodes = res.proof_checked_nodes;
+    data.proof_witness_values_used = res.proof_witness_values_used;
+    data.proof_checked_witness_values = res.proof_checked_witness_values;
+    data.proof_budget_time_ms = res.proof_budget_time_ms;
+    data.proof_format_version = res.proof_format_version;
+    data.proof_model_fingerprint = res.proof_model_fingerprint;
+    data.model_fingerprint = res.model_fingerprint;
     data.mip_proof = res.mip_proof;
     data.proof_message = res.proof_message;
     data.mip_proof_build_ms = res.mip_proof_build_ms;
@@ -50,6 +64,7 @@ markov_cero::apps::JsonOutputData to_json_data(const markov_cero::api::SolveResu
     data.row_duals = res.row_duals;
     data.reduced_costs = res.reduced_costs;
     data.resolved_engine = res.resolved_engine;
+    data.stop_reason = res.stop_reason;
     data.result.status = res.status;
     data.result.message = res.message;
     data.result.primal = res.primal;
@@ -119,7 +134,7 @@ int main(int argc, char** argv) {
 
     auto out_data = to_json_data(res, options);
     out_data.output_path = cli.output_path;
-    markov_cero::apps::emit_json_output(out_data);
+    if (!markov_cero::apps::emit_json_output(out_data)) return 8;
 
     std::string timing_diag;
     if (res.resolved_engine == "pdlp") {
@@ -140,6 +155,18 @@ int main(int argc, char** argv) {
                       ? (" [tol=" + json_number(options.pdlp_tolerance) + "]" + timing_diag)
                       : "")
               << (res.verified ? " VERIFIED\n" : " NOT VERIFIED\n");
+    if (res.problem_class == "MILP" || res.problem_class == "MIQP") {
+        std::cerr << "proof: tier=" << res.guarantee_tier
+                  << " status=" << res.proof_status
+                  << " budget_exhausted=" << (res.proof_budget_exhausted ? "true" : "false")
+                  << " nodes=" << res.proof_nodes_used
+                  << " witness_values=" << res.proof_witness_values_used
+                  << " build_ms=" << json_number(res.mip_proof_build_ms)
+                  << " replay_ms=" << json_number(res.mip_proof_verify_ms) << "\n";
+        if (res.status == markov_cero::lp::reference::SolveStatus::gap_satisfied &&
+            res.proof_status == "accepted")
+            std::cerr << "accepted relative-gap bound; exact optimality remains unverified\n";
+    }
     // C-3: a numerical failure must always reach the console with residuals
     // and a suggested action, not just as a bare status word.
     if (res.status == markov_cero::lp::reference::SolveStatus::numerical_failure) {

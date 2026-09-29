@@ -233,4 +233,36 @@ std::size_t select_leaving_row(const transform::CanonicalModel& m,
 }
 }
 
+// Repeated-solve session: keeps the accepted basis plus its factorization and
+// exact steepest-edge weights across RHS-only / bound-only resolves. Anything
+// that cannot certify a fresh optimal basis (infeasible, iteration limit,
+// rejected verification, degenerate basis) drops both, so the next resolve is
+// a cold solve.
+Result Session::resolve(const transform::CanonicalModel& m, const Options& o) {
+    ++resolve_count_;
+    auto out = solve_verified(m, o, basis_, &cache_);
+    last_verified_ = out.verified;
+    if (out.verified) {
+        ++verified_count_;
+    }
+    if (out.factor_reused) {
+        ++factor_reuse_count_;
+    }
+    if (out.used_cold_fallback) {
+        ++cold_fallback_count_;
+    }
+    if (out.verified && out.solution.status == reference::SolveStatus::optimal &&
+        out.basis_state.basic_variables.size() == m.matrix.rows) {
+        basis_ = out.basis_state;
+    } else {
+        basis_.reset();
+        cache_.valid = false;
+    }
+    return out;
+}
+
+Session make_session(const Options& defaults) {
+    return Session{defaults};
+}
+
 }

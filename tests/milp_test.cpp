@@ -267,6 +267,8 @@ int main() {
         test_infeasible_milp();
         test_node_selection_policies();
         test_pseudo_cost_branching();
+        test_near_integer_root_rejected();
+        test_huge_parallel_incumbent();
         std::cout << "All MILP unit tests PASSED successfully!\n";
         return 0;
     } catch (const std::exception& e) {

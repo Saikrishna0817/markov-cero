@@ -236,6 +236,25 @@ void test_ipm_netlib() {
 
 int main() {
     try {
+        markov_cero::transform::SparseCanonicalModel no_rows;
+        no_rows.matrix = {0, 1, {0, 0}, {}, {}};
+        no_rows.objective = {-1};
+        no_rows.record.objective_sign = 1;
+        no_rows.record.structural_variables = 1;
+        no_rows.record.variables.resize(1);
+        no_rows.record.variables[0].canonical_index = {0};
+        no_rows.record.variables[0].multiplier = {1};
+        assert(markov_cero::lp::interior::solve(no_rows).status ==
+               markov_cero::lp::reference::SolveStatus::unbounded);
+        markov_cero::transform::SparseCanonicalModel no_columns;
+        no_columns.matrix = {1, 0, {0}, {}, {}};
+        no_columns.rhs = {1};
+        no_columns.record.objective_sign = 1;
+        assert(markov_cero::lp::interior::solve(no_columns).status ==
+               markov_cero::lp::reference::SolveStatus::infeasible);
+        no_columns.rhs = {0};
+        assert(markov_cero::lp::interior::solve(no_columns).status ==
+               markov_cero::lp::reference::SolveStatus::optimal);
         test_vertex_lp();
         test_equality_row_basis();
         test_crossover_basis_warm_start();

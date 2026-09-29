@@ -1,0 +1,11 @@
+{
+  "change": "Unit and qualification comments refreshed; model rows, columns and coefficients unchanged.",
+  "fixture": "crude_blending_large.qps",
+  "generator": "gen_crude_blending.py",
+  "generator_args": {
+    "components": 120,
+    "seed": 42
+  },
+  "model_sha256": "3068d0b63df2305a9f471d951b38aa1506474684058055b16dcca6910069fb7d",
+  "regeneration_date": "2026-09-29"
+}

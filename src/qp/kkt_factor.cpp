@@ -173,4 +173,39 @@ void ldl_ltsolve(std::size_t n,
 }
 }
 
+namespace detail_kkt {
+std::uint64_t kkt_pattern_fingerprint(std::size_t total_dim,
+                                      const std::vector<std::size_t>& col_ptr,
+                                      const std::vector<std::size_t>& row_ind) {
+    std::uint64_t h = 1469598103934665603ULL;
+    auto mix = [&h](std::uint64_t v) {
+        for (int i = 0; i < 8; ++i) {
+            h ^= (v >> (8 * i)) & 255U;
+            h *= 1099511628211ULL;
+        }
+    };
+    mix(total_dim);
+    mix(col_ptr.size());
+    mix(row_ind.size());
+    for (std::size_t value : col_ptr) {
+        mix(value);
+    }
+    for (std::size_t value : row_ind) {
+        mix(value);
+    }
+    return h;
+}
+}
+
+namespace detail_kkt {
+bool same_kkt_pattern(const std::vector<std::size_t>& lhs_col_ptr,
+                      const std::vector<std::size_t>& lhs_row_ind,
+                      const std::vector<std::size_t>& rhs_col_ptr,
+                      const std::vector<std::size_t>& rhs_row_ind) {
+    // Exact compare, not a hash compare: a reused symbolic factorization must
+    // be provably the analysis of this very pattern.
+    return lhs_col_ptr == rhs_col_ptr && lhs_row_ind == rhs_row_ind;
+}
+}
+
 }

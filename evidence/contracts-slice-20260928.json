@@ -1,0 +1,92 @@
+{
+  "date": "2026-09-28",
+  "purpose": "Industry roadmap backlog item 2: shared SolveContext / ModelSnapshot / NodeView contracts and failure semantics",
+  "scope": "Contract headers, model-identity wiring at the API boundary, and unit/property tests. Not a closure of IR-19/20/21, not a performance result, and not evidence that the contracts are consumed by the engines yet.",
+  "host": {
+    "os": "Linux",
+    "compiler": "g++ (GCC) 16.2.1 20260810",
+    "cmake": "4.4.3",
+    "python": "3.14.7 (.venv)",
+    "pybind11": "3.1.0 (.venv)"
+  },
+  "worktree": "uncommitted working tree; results identify this state, not HEAD",
+  "builds": [
+    {
+      "name": "release",
+      "command": "cmake -S . -B build_contracts -DCMAKE_BUILD_TYPE=Release && cmake --build build_contracts --parallel 12 && ctest --test-dir build_contracts --output-on-failure --timeout 180",
+      "tests_passed": 85,
+      "tests_total": 85,
+      "seconds": 23.07
+    },
+    {
+      "name": "asan_ubsan_warnings_as_errors",
+      "command": "cmake -S . -B build_asan_contracts -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMARKOV_CERO_ENABLE_ASAN_UBSAN=ON -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON && cmake --build build_asan_contracts --parallel 12 && ctest --test-dir build_asan_contracts --output-on-failure --timeout 300",
+      "tests_passed": 85,
+      "tests_total": 85,
+      "seconds": 124.36
+    },
+    {
+      "name": "tsan_warnings_as_errors",
+      "command": "cmake -S . -B build_tsan_contracts -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMARKOV_CERO_ENABLE_TSAN=ON -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON && cmake --build build_tsan_contracts --parallel 12 && ctest --test-dir build_tsan_contracts --output-on-failure --timeout 600",
+      "tests_passed": 85,
+      "tests_total": 85,
+      "seconds": 122.53
+    }
+  ],
+  "new_ctest_gates": ["solve_context", "model_snapshot", "node_view"],
+  "contract_coverage": {
+    "solve_context": "deadline intersection and expiry, sticky first stop reason (deadline beats later cancellation), cancellation-first stop, budget refusal recording memory_budget_exhausted, overflow-safe admission at SIZE_MAX, release floored at zero, sticky exhaustion across release, four-thread charge/release accounting, quotas/seed/capability carry-through, trace sink attach/detach",
+    "model_snapshot": "validating capture by copy and move, non-copyable snapshot type, deterministic equal-content fingerprints, structural hash stable under coefficient change, numeric hash stable under row rename and integrality change, signed zero distinct by documented design, callback presence structural, invalid models rejected on both capture paths, estimated solver-owned bytes grow with content",
+    "node_view": "root/child construction with shared parent identity, per-node bound delta and local cut recording without mutating the parent, sibling cut-scope isolation with root-first ordering, basis and bound-evidence inheritance with provenance restatement, 128 randomized 8-step chains compared against full reconstruction, budget-charged materialization with release, refusal/shape/alias/out-of-range preflight failures leaving outputs untouched",
+    "api_test": "SolveResult.model_fingerprint non-zero on file and model paths, stable across identical solves, distinct after a coefficient change",
+    "python_bindings": "model_fingerprint exposed in the result dict, stable across identical solves, distinct after a coefficient change"
+  },
+  "python": {
+    "wheel_sha256": "914136ac146af53e0a153c5a5ac010550f6f2ce05e586d40d3712b65822e941e",
+    "wheel_name": "markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+    "build_command": ".venv/bin/python -m pip wheel . -w /tmp/opencode/wheels --no-deps --no-build-isolation",
+    "test_command": ".venv/bin/python -m pytest python/tests -q",
+    "tests_passed": 20,
+    "tests_total": 20,
+    "note": "Wheel built from this worktree with the CMake core target; install used --force-reinstall --no-deps. This is one local host, not a supported-platform matrix."
+  },
+  "static_checks": {
+    "source_limits": "python3 scripts/check_source_limits.py -> 438 maintained files, maximum 300 lines, 0 violations",
+    "doc_links": "python3 scripts/check_docs.py -> 8 active documents checked, 0 broken local links"
+  },
+  "files_added": [
+    "include/markov_cero/core/stop_reason.hpp",
+    "include/markov_cero/core/deadline.hpp",
+    "include/markov_cero/core/memory_budget.hpp",
+    "include/markov_cero/core/solve_context.hpp",
+    "include/markov_cero/model/model_snapshot.hpp",
+    "include/markov_cero/milp/node_view.hpp",
+    "src/model/model_hash.cpp",
+    "src/model/model_snapshot.cpp",
+    "src/milp/node_view.cpp",
+    "tests/solve_context_test.cpp",
+    "tests/model_snapshot_test.cpp",
+    "tests/node_view_test.cpp"
+  ],
+  "files_modified": [
+    "cmake/CoreTargets.cmake",
+    "cmake/TestTargets.cmake",
+    "cmake/Tests.cmake",
+    "include/markov_cero/api/solve.hpp",
+    "include/markov_cero/milp/node_bounds.hpp",
+    "src/api/dispatch.cpp",
+    "python/src/results.cpp",
+    "python/tests/test_bindings.py",
+    "tests/api_test.cpp"
+  ],
+  "limitations": [
+    "SolveContext is a contract only: deadline, cancellation, budget, quotas and trace sink are not yet threaded through parsing, transforms, engines, proofs or serialization.",
+    "No solve-wide memory limit is exposed through SolveOptions, the CLI or Python; MemoryBudget semantics are exercised by unit tests, not by production allocation paths, so IR-21 stays open.",
+    "Engines still receive the mutable Model. ModelSnapshot::capture is not yet the API-boundary representation; only the zero-copy hash_model() path runs during a solve.",
+    "NodeView is not yet the search's node representation: the serial search still keeps a mutable node_model workspace and the sparse-PDLP fallback still materializes an effective model, so IR-19 stays open.",
+    "Deadline coverage is unchanged, so IR-20 stays open.",
+    "The model fingerprint is non-cryptographic, does not cover NLP callback bodies, and is not yet bound into proof artifacts.",
+    "No benchmark or performance measurement is part of this slice; passing tests is not a competitiveness claim.",
+    "Python results were exercised on one local interpreter (3.14) and one host; other interpreters and platforms remain untested here."
+  ]
+}

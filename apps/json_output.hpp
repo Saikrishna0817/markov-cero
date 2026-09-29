@@ -14,7 +14,6 @@
 #include <string>
 #include <string_view>
 #include <vector>
-
 namespace markov_cero::apps {
 
 inline int exit_code(markov_cero::lp::reference::SolveStatus status) {
@@ -100,9 +99,12 @@ inline std::string json_array(const std::vector<std::string>& values) {
     }
     return result + "]";
 }
-
 struct JsonOutputData {
     std::string certificate_type;
+    std::string guarantee_tier, proof_status, proof_budget_kind, proof_model_fingerprint;
+    bool proof_budget_exhausted = false; double proof_budget_time_ms = 0.0;
+    std::size_t proof_nodes_used = 0, proof_checked_nodes = 0, proof_witness_values_used = 0, proof_checked_witness_values = 0;
+    std::uint32_t proof_format_version = 0; std::uint64_t model_fingerprint = 0;
     std::shared_ptr<const markov_cero::verify::MipProof> mip_proof;
     std::string proof_message;
     double mip_proof_build_ms = 0.0;
@@ -116,6 +118,7 @@ struct JsonOutputData {
     std::vector<double> reduced_costs;
 
     std::string resolved_engine;
+    std::string stop_reason;
     markov_cero::lp::reference::Result result;
     std::size_t model_rows = 0;
     std::size_t model_cols = 0;
@@ -165,7 +168,7 @@ struct JsonOutputData {
     std::string ml_fallback_reason;
 };
 
-inline void emit_json_output(const JsonOutputData& data) {
+inline bool emit_json_output(const JsonOutputData& data) {
     std::ostringstream json;
     json << "{\"version\":\"" << json_escape(std::string(markov_cero::foundation::version()))
          << "\","
@@ -174,10 +177,16 @@ inline void emit_json_output(const JsonOutputData& data) {
          << "\"engine\":\"" << json_escape(data.resolved_engine) << "\","
          << "\"problem_class\":\"" << json_escape(data.problem_class) << "\","
          << "\"status\":\"" << markov_cero::lp::reference::to_string(data.result.status) << "\","
+         << "\"stop_reason\":\"" << json_escape(data.stop_reason) << "\","
          << "\"rows\":" << data.model_rows << ","
          << "\"cols\":" << data.model_cols << ","
          << "\"nonzeros\":" << data.model_nnz << ","
          << "\"certificate_type\":\"" << json_escape(data.certificate_type) << "\","
+         << "\"model_fingerprint\":" << data.model_fingerprint << ",\"guarantee_tier\":\"" << json_escape(data.guarantee_tier) << "\","
+         << "\"proof_status\":\"" << json_escape(data.proof_status) << "\",\"proof_budget_exhausted\":" << (data.proof_budget_exhausted ? "true" : "false") << ","
+         << "\"proof_budget_kind\":\"" << json_escape(data.proof_budget_kind) << "\",\"proof_nodes_used\":" << data.proof_nodes_used << ",\"proof_checked_nodes\":" << data.proof_checked_nodes << ","
+         << "\"proof_witness_values_used\":" << data.proof_witness_values_used << ",\"proof_checked_witness_values\":" << data.proof_checked_witness_values << ",\"proof_budget_time_ms\":" << json_number(data.proof_budget_time_ms) << ","
+         << "\"proof_format_version\":" << data.proof_format_version << ",\"proof_model_fingerprint\":\"" << json_escape(data.proof_model_fingerprint) << "\","
          << "\"variable_names\":" << json_array(data.variable_names) << ","
          << "\"row_names\":" << json_array(data.row_names) << ","
          << "\"row_activities\":" << json_array(data.row_activities) << ","
@@ -280,12 +289,12 @@ inline void emit_json_output(const JsonOutputData& data) {
     std::cout << payload;
     if (!data.output_path.empty()) {
         std::ofstream output(data.output_path);
-        if (output) {
-            output << payload;
-        } else {
+        if (!output || !(output << payload)) {
             std::cerr << "cannot write output\n";
+            return false;
         }
     }
+    return true;
 }
 
 } // namespace markov_cero::apps

@@ -1,3 +1,5 @@
+* Units: crude purchase/use/inventory synthetic volume units per period; sulfur row
+* uses a dimensionless fraction difference times volume; objective synthetic currency.
 NAME          LI_CRUDE_BLENDING
 ROWS
  N  objCOST

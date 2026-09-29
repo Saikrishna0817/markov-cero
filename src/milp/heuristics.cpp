@@ -37,7 +37,7 @@ bool check_integer_feasibility(const model::Model& model,
         }
         if (model.variable_type[j] != model::VariableType::continuous) {
             const double rounded = std::round(x);
-            if (std::abs(x - rounded) > integrality_tol) {
+            if (std::abs(x - rounded) > integrality_tol || x != rounded) {
                 return false;
             }
         }
@@ -62,6 +62,23 @@ bool check_integer_feasibility(const model::Model& model,
     }
 
     return true;
+}
+HeuristicResult rounded_integer_candidate(const model::Model& model,
+    const std::vector<double>& primal, double feasibility_tol, double integrality_tol) {
+    HeuristicResult result;
+    if (primal.size() != model.matrix.column_count) return result;
+    result.primal = primal;
+    for (std::size_t j = 0; j < primal.size(); ++j) {
+        if (model.variable_type[j] == model::VariableType::continuous) continue;
+        if (!std::isfinite(primal[j])) return result;
+        const double rounded = std::round(primal[j]);
+        if (std::abs(primal[j] - rounded) > integrality_tol) return result;
+        result.primal[j] = rounded;
+    }
+    result.found = check_integer_feasibility(model, result.primal, feasibility_tol,
+                                              integrality_tol);
+    if (result.found) result.objective = compute_objective(model, result.primal);
+    return result;
 }
 double compute_objective(const model::Model& model, const std::vector<double>& primal) {
     long double obj = model.objective_offset;

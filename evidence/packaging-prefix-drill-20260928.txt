@@ -1,0 +1,290 @@
+markov-cero prefix install/reinstall/remove drill
+UTC: 2026-09-28T19:38:52Z
+prefix: /tmp/opencode/install-pkg
+model: /home/saikrishna/markov-initial-build/examples/cases/multiperiod_production.mps
+
+=== P1 clean prefix install ===
++ cmake --install /home/saikrishna/markov-initial-build/build_item11 --prefix /tmp/opencode/install-pkg
+    -- Install configuration: "Release"
+    -- Installing: /tmp/opencode/install-pkg/lib/libmarkov_cero_core.a
+    -- Installing: /tmp/opencode/install-pkg/bin/markov-cero-iis
+    -- Installing: /tmp/opencode/install-pkg/bin/markov-cero-verify-mip
+    -- Installing: /tmp/opencode/install-pkg/bin/markov-cero-solve
+    -- Installing: /tmp/opencode/install-pkg/bin/markov-cero-info
+    -- Installing: /tmp/opencode/install-pkg/bin/markov-cero-mps-inspect
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/foundation
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/foundation/build_info.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/io
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/io/mps.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/io/lp_parser.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/io/nlobj_parser.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/linalg
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/linalg/dense_lu.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/linalg/sparse_basis.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/dual
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/dual/dual_simplex.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/first_order
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/first_order/pdlp.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/reference
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/reference/revised_simplex.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/interior
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/interior/ipm.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/strong_branching.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/shared_incumbent.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/cut_pool.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/gomory.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/mir.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/node_lp.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/cover.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/ml_branching
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/ml_branching/onnx_scorer.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/branch_node.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/branch_selector.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/cuts.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/heuristics.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/milp_solver.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/parallel_tree_search.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/work_queue.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/gap.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/node_bounds.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/node_cuts.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/node_view.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/reference_materialisation.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/model
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/model/classifier.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/model/model.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/model/model_snapshot.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/presolve
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/presolve/presolve.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/presolve/presolve_stack.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/scale
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/scale/ruiz_scaling.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/transform
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/transform/sparse_canonical_model.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/transform/canonicalize.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/verify
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/verify/primal_verifier.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/verify/reference_lp_verifier.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/verify/linear_certificate.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/verify/mip_proof.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/qp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/qp/model.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/qp/kkt.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/qp/verifier.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/qp/admm_solver.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/api
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/api/solve.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/exceptions.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/stop_reason.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/deadline.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/memory_budget.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/solve_context.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/instrumentation.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/worker_context.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/refinery
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/refinery/refinery_model.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/refinery/pooling_slp.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/refinery/refinery_units.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/analysis
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/analysis/iis_analyzer.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/nlp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/nlp/nlp_model.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/nlp/sqp_solver.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/nlp/lbfgs.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/nlp/nlp_verifier.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/minlp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/minlp/minlp_solver.hpp
+    -- Up-to-date: /tmp/opencode/install-pkg/include/markov_cero
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/admm_step.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/backend.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/buffer.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/csr.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/device.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/kernels.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/pdhg_step.hpp
+    -- Installing: /tmp/opencode/install-pkg/share/markov-cero/LICENSE
+    -- Installing: /tmp/opencode/install-pkg/share/markov-cero/NOTICE
+    -- Installing: /tmp/opencode/install-pkg/share/markov-cero/PROVENANCE.md
+    -- Installing: /tmp/opencode/install-pkg/lib/cmake/markov_cero/markov_ceroTargets.cmake
+    -- Installing: /tmp/opencode/install-pkg/lib/cmake/markov_cero/markov_ceroTargets-release.cmake
+    -- Installing: /tmp/opencode/install-pkg/lib/cmake/markov_cero/markov_ceroConfig.cmake
+    -- Installing: /tmp/opencode/install-pkg/lib/cmake/markov_cero/markov_ceroConfigVersion.cmake
+    [exit 0]
+installed files: 83
++ cmake -S /home/saikrishna/markov-initial-build/evidence/packaging-consumer -B /tmp/opencode/pkg11/consumer-build -DCMAKE_PREFIX_PATH=/tmp/opencode/install-pkg -DCMAKE_BUILD_TYPE=Release
+    -- The CXX compiler identification is GNU 16.2.1
+    -- Detecting CXX compiler ABI info
+    -- Detecting CXX compiler ABI info - done
+    -- Check for working CXX compiler: /usr/bin/c++ - skipped
+    -- Detecting CXX compile features
+    -- Detecting CXX compile features - done
+    -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+    -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+    -- Found Threads: TRUE
+    -- Configuring done (0.8s)
+    -- Generating done (0.0s)
+    -- Build files have been written to: /tmp/opencode/pkg11/consumer-build
+    [exit 0]
++ cmake --build /tmp/opencode/pkg11/consumer-build --parallel 4
+    [ 50%] Building CXX object CMakeFiles/installed-consumer.dir/consumer.cpp.o
+    [100%] Linking CXX executable installed-consumer
+    [100%] Built target installed-consumer
+    [exit 0]
++ (cd /tmp/opencode/pkg11/consumer-build && ./installed-consumer /home/saikrishna/markov-initial-build/examples/cases/multiperiod_production.mps)
+    status=Optimal verified=yes certificate=independent_mip_tree objective=5300 fingerprint=3743977559983760680
+    replay accepted=yes checked_nodes=7 message=cut-free integer partitions and every leaf witness independently replayed (numerical tolerances)
+    installed-consumer PASS
+    [exit 0]
+
+=== P2 remove prefix (expected consumer failure) ===
++ rm -rf /tmp/opencode/install-pkg
+    [exit 0]
++ cmake -S /home/saikrishna/markov-initial-build/evidence/packaging-consumer -B /tmp/opencode/pkg11/consumer-build -DCMAKE_PREFIX_PATH=/tmp/opencode/install-pkg (package removed)
+    [exit 1] expected non-zero
+    
+    
+    -- Configuring incomplete, errors occurred!
+
+=== P3 reinstall prefix ===
++ cmake --install /home/saikrishna/markov-initial-build/build_item11 --prefix /tmp/opencode/install-pkg
+    -- Install configuration: "Release"
+    -- Installing: /tmp/opencode/install-pkg/lib/libmarkov_cero_core.a
+    -- Installing: /tmp/opencode/install-pkg/bin/markov-cero-iis
+    -- Installing: /tmp/opencode/install-pkg/bin/markov-cero-verify-mip
+    -- Installing: /tmp/opencode/install-pkg/bin/markov-cero-solve
+    -- Installing: /tmp/opencode/install-pkg/bin/markov-cero-info
+    -- Installing: /tmp/opencode/install-pkg/bin/markov-cero-mps-inspect
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/foundation
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/foundation/build_info.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/io
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/io/mps.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/io/lp_parser.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/io/nlobj_parser.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/linalg
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/linalg/dense_lu.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/linalg/sparse_basis.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/dual
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/dual/dual_simplex.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/first_order
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/first_order/pdlp.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/reference
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/reference/revised_simplex.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/interior
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/lp/interior/ipm.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/strong_branching.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/shared_incumbent.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/cut_pool.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/gomory.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/mir.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/node_lp.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/cover.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/ml_branching
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/ml_branching/onnx_scorer.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/branch_node.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/branch_selector.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/cuts.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/heuristics.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/milp_solver.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/parallel_tree_search.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/work_queue.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/gap.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/node_bounds.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/node_cuts.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/node_view.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/milp/reference_materialisation.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/model
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/model/classifier.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/model/model.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/model/model_snapshot.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/presolve
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/presolve/presolve.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/presolve/presolve_stack.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/scale
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/scale/ruiz_scaling.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/transform
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/transform/sparse_canonical_model.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/transform/canonicalize.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/verify
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/verify/primal_verifier.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/verify/reference_lp_verifier.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/verify/linear_certificate.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/verify/mip_proof.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/qp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/qp/model.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/qp/kkt.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/qp/verifier.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/qp/admm_solver.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/api
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/api/solve.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/exceptions.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/stop_reason.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/deadline.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/memory_budget.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/solve_context.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/instrumentation.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/core/worker_context.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/refinery
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/refinery/refinery_model.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/refinery/pooling_slp.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/refinery/refinery_units.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/analysis
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/analysis/iis_analyzer.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/nlp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/nlp/nlp_model.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/nlp/sqp_solver.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/nlp/lbfgs.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/nlp/nlp_verifier.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/minlp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/minlp/minlp_solver.hpp
+    -- Up-to-date: /tmp/opencode/install-pkg/include/markov_cero
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/admm_step.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/backend.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/buffer.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/csr.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/device.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/kernels.hpp
+    -- Installing: /tmp/opencode/install-pkg/include/markov_cero/gpu/pdhg_step.hpp
+    -- Installing: /tmp/opencode/install-pkg/share/markov-cero/LICENSE
+    -- Installing: /tmp/opencode/install-pkg/share/markov-cero/NOTICE
+    -- Installing: /tmp/opencode/install-pkg/share/markov-cero/PROVENANCE.md
+    -- Installing: /tmp/opencode/install-pkg/lib/cmake/markov_cero/markov_ceroTargets.cmake
+    -- Installing: /tmp/opencode/install-pkg/lib/cmake/markov_cero/markov_ceroTargets-release.cmake
+    -- Installing: /tmp/opencode/install-pkg/lib/cmake/markov_cero/markov_ceroConfig.cmake
+    -- Installing: /tmp/opencode/install-pkg/lib/cmake/markov_cero/markov_ceroConfigVersion.cmake
+    [exit 0]
++ cmake -S /home/saikrishna/markov-initial-build/evidence/packaging-consumer -B /tmp/opencode/pkg11/consumer-build -DCMAKE_PREFIX_PATH=/tmp/opencode/install-pkg -DCMAKE_BUILD_TYPE=Release
+    -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+    -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+    -- Found Threads: TRUE
+    -- Configuring done (0.3s)
+    -- Generating done (0.0s)
+    -- Build files have been written to: /tmp/opencode/pkg11/consumer-build
+    [exit 0]
++ cmake --build /tmp/opencode/pkg11/consumer-build --parallel 4
+    [ 50%] Building CXX object CMakeFiles/installed-consumer.dir/consumer.cpp.o
+    [100%] Linking CXX executable installed-consumer
+    [100%] Built target installed-consumer
+    [exit 0]
++ (cd /tmp/opencode/pkg11/consumer-build && ./installed-consumer /home/saikrishna/markov-initial-build/examples/cases/multiperiod_production.mps)
+    status=Optimal verified=yes certificate=independent_mip_tree objective=5300 fingerprint=3743977559983760680
+    replay accepted=yes checked_nodes=7 message=cut-free integer partitions and every leaf witness independently replayed (numerical tolerances)
+    installed-consumer PASS
+    [exit 0]
++ installed CLI replay: markov-cero-verify-mip MODEL proof.txt
+    VERIFIED: cut-free integer partitions and every leaf witness independently replayed (numerical tolerances)
+    [exit 0]
+
+=== P4 remove prefix (final state) ===
++ rm -rf /tmp/opencode/install-pkg
+    [exit 0]
+prefix exists after removal: no

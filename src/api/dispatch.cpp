@@ -1,8 +1,10 @@
 #include "api_internal.hpp"
 
+#include "markov_cero/model/model_snapshot.hpp"
+
 namespace markov_cero::api::detail {
 void run_engine(const model::Model& model, const SolveOptions& input_options, SolveResult& out,
-                lp::reference::Result& result) {
+                lp::reference::Result& result, core::SolveContext& ctx) {
     auto options = input_options;
     if (options.engine == "simplex" || options.engine == "primal_simplex") { options.engine = "primal"; out.resolved_engine = "primal"; }
     const std::string engines[] = {"auto", "primal", "dual", "ipm", "pdlp", "qp", "milp", "miqp", "parallel", "sqp", "outer_approx"};
@@ -27,14 +29,23 @@ void run_engine(const model::Model& model, const SolveOptions& input_options, So
             std::chrono::duration<double>(options.milp_options.time_limit_seconds));
         if (!options.lp_options.deadline || end < *options.lp_options.deadline) options.lp_options.deadline = end;
         options.milp_options.deadline = options.lp_options.deadline;
+        // The solve-wide context only ever shortens: the per-engine MIP
+        // duration is part of the earliest options-derived instant (W02).
+        ctx.deadline().shorten_to(*options.lp_options.deadline);
     }
-    if (stop_after_deadline(options, out, result, "input parsing or before engine dispatch")) return;
+    if (stop_after_deadline(ctx, options, out, result, "input parsing or before engine dispatch"))
+        return;
     model.validate();
     out.variable_names = model.variable_name;
     out.row_names = model.row_name;
     out.model_rows = model.matrix.row_count;
     out.model_cols = model.matrix.column_count;
     out.model_nnz = model.matrix.value.size();
+    // W01/D16: bind this result to the validated model that produced it. The
+    // caller's Model is treated as read-only input here (its bytes stay
+    // caller-owned and outside any solver memory budget), so the boundary
+    // hashes it without copying; engines migrate to ModelSnapshot next.
+    out.model_fingerprint = model::hash_model(model).fingerprint();
 
     // W6: classify every model with the locked decision tree and record the
     // outcome in the result telemetry. Auto dispatch now flows through the
@@ -97,13 +108,20 @@ void run_engine(const model::Model& model, const SolveOptions& input_options, So
     }
 
     if (out.resolved_engine == "sqp" || out.resolved_engine == "outer_approx")
-        run_nonlinear(model, options, out, result);
-    else if (out.resolved_engine == "parallel") run_parallel(model, options, out, result);
-    else if (out.resolved_engine == "pdlp") run_pdlp(model, options, out, result);
-    else if (out.resolved_engine == "qp") run_qp(model, options, out, result);
+        run_nonlinear(model, options, out, result, ctx);
+    else if (out.resolved_engine == "parallel") run_parallel(model, options, out, result, ctx);
+    else if (out.resolved_engine == "pdlp") run_pdlp(model, options, out, result, ctx);
+    else if (out.resolved_engine == "qp") run_qp(model, options, out, result, ctx);
     else if (out.resolved_engine == "milp" || out.resolved_engine == "miqp")
-        run_milp(model, options, out, result);
-    else run_lp(model, options, out, result);
+        run_milp(model, options, out, result, ctx);
+    else run_lp(model, options, out, result, ctx);
+    if (ctx.deadline().expired()) {
+        (void)ctx.note_stop(core::StopReason::deadline_exceeded);
+        result.status = lp::reference::SolveStatus::resource_limit;
+        result.message = "solve-wide deadline reached before completion";
+        out.original_verified = false;
+        out.canonical_verified = false;
+    }
     if (out.original_primal.size() == model.matrix.column_count) {
         out.row_activities = model.matrix.multiply(out.original_primal);
         for (std::size_t i = 0; i < out.row_activities.size(); ++i) {

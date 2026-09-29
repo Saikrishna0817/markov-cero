@@ -12,6 +12,10 @@ py::dict to_python(api::SolveResult res) {
     out["engine"] = res.resolved_engine;
     out["problem_class"] = res.problem_class;
     out["classification_reason"] = res.classification_reason;
+    out["stop_reason"] = res.stop_reason;
+    // W01/D16: stable identity of the validated model that produced this
+    // result (mix of structural and numeric content hashes).
+    out["model_fingerprint"] = res.model_fingerprint;
     out["objective"] = res.original_objective != 0.0 || !res.original_primal.empty()
                            ? res.original_objective
                            : res.objective;
@@ -28,6 +32,17 @@ py::dict to_python(api::SolveResult res) {
     out["original_verified"] = res.original_verified;
     out["canonical_verified"] = res.canonical_verified;
     out["certificate_type"] = res.certificate_type;
+    out["guarantee_tier"] = res.guarantee_tier;
+    out["proof_status"] = res.proof_status;
+    out["proof_budget_exhausted"] = res.proof_budget_exhausted;
+    out["proof_budget_kind"] = res.proof_budget_kind;
+    out["proof_nodes_used"] = res.proof_nodes_used;
+    out["proof_checked_nodes"] = res.proof_checked_nodes;
+    out["proof_witness_values_used"] = res.proof_witness_values_used;
+    out["proof_checked_witness_values"] = res.proof_checked_witness_values;
+    out["proof_budget_time_ms"] = res.proof_budget_time_ms;
+    out["proof_format_version"] = res.proof_format_version;
+    out["proof_model_fingerprint"] = res.proof_model_fingerprint;
     out["proof_message"] = res.proof_message;
     out["mip_proof_build_ms"] = res.mip_proof_build_ms;
     out["mip_proof_verify_ms"] = res.mip_proof_verify_ms;
@@ -63,7 +78,8 @@ api::SolveOptions options_from_kwargs(const py::kwargs& kwargs) {
         if (key != "options" && key != "engine" && key != "threads" && key != "backend" &&
             key != "presolve" && key != "scale" && key != "proof_time_limit" &&
             key != "proof_max_nodes" && key != "proof_max_witness_values" &&
-            key != "max_queued_nodes" && key != "max_input_bytes")
+            key != "max_queued_nodes" && key != "max_input_bytes" &&
+            key != "time_limit" && key != "memory_limit_bytes")
             throw std::invalid_argument("unknown solve option: " + key);
     }
     if (kwargs.contains("engine")) {
@@ -100,6 +116,10 @@ api::SolveOptions options_from_kwargs(const py::kwargs& kwargs) {
             throw std::invalid_argument("max_input_bytes must be in 1..1073741824");
         options.maximum_input_bytes = count;
     }
+    if (kwargs.contains("time_limit"))
+        options.total_time_limit_seconds = py::cast<double>(kwargs["time_limit"]);
+    if (kwargs.contains("memory_limit_bytes"))
+        options.memory_limit_bytes = py::cast<std::size_t>(kwargs["memory_limit_bytes"]);
     return options;
 }
 

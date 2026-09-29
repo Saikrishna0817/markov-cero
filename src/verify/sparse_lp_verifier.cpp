@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <new>
+#include <stdexcept>
 #include <stdexcept>
 namespace markov_cero::verify {
 namespace {
@@ -35,6 +37,11 @@ double dual_allowed(double scale, double tol) {
     if (!std::isfinite(scale) || scale < 0) throw std::overflow_error("invalid dual scale");
     return tol * scale + roundoff_factor * std::max(1.0, scale);
 }
+double ray_allowed(double scale, double tol) {
+    // A recession equation has zero right-hand side: an absolute floor would
+    // certify a tiny but nonzero A*d as a ray.
+    return (tol + roundoff_factor) * scale;
+}
 std::vector<double> row_scales(const linalg::SparseCsc& a,
                                const std::vector<double>& x,
                                const std::vector<double>& rhs) {
@@ -54,10 +61,14 @@ double col_scale(const linalg::SparseCsc& a, std::size_t j,
 }
 } // namespace
 ReferenceVerification verify_sparse_result(const transform::SparseCanonicalModel& m,
-                                              const lp::reference::Result& r, double tol) {
+                                              const lp::reference::Result& r, double tol,
+                                              const core::Deadline& deadline) {
     ReferenceVerification v;
     try {
         m.validate();
+        const auto stopped = [&deadline](std::size_t index) {
+            return (index & 1023U) == 0U && deadline.expired();
+        };
         if (!std::isfinite(tol) || tol <= 0 || tol > 1e-4) {
             v.message = "invalid verification tolerance";
             return v;
@@ -72,6 +83,10 @@ ReferenceVerification verify_sparse_result(const transform::SparseCanonicalModel
             const auto primal_scale = row_scales(m.matrix, r.primal, m.rhs);
             bool pok = true;
             for (std::size_t i = 0; i < ax.size(); ++i) {
+                if (stopped(i)) {
+                    v.message = "verification stopped: deadline exceeded";
+                    return v;
+                }
                 double e = std::abs(ax[i] - m.rhs[i]);
                 v.maximum_primal_violation = std::max(v.maximum_primal_violation, e);
                 pok = pok && e <= allowed(primal_scale[i], tol);
@@ -84,6 +99,10 @@ ReferenceVerification verify_sparse_result(const transform::SparseCanonicalModel
             auto aty = m.multiply_transpose(r.dual);
             bool dok = true, cok = true;
             for (std::size_t j = 0; j < aty.size(); ++j) {
+                if (stopped(j)) {
+                    v.message = "verification stopped: deadline exceeded";
+                    return v;
+                }
                 const double c_scale = col_scale(m.matrix, j, r.dual, m.objective[j]);
                 double rc = m.objective[j] - aty[j], e = std::max(0.0, -rc);
                 v.maximum_dual_violation = std::max(v.maximum_dual_violation, e);
@@ -118,6 +137,10 @@ ReferenceVerification verify_sparse_result(const transform::SparseCanonicalModel
             auto aty = m.multiply_transpose(r.certificate);
             bool ok = true;
             for (std::size_t j = 0; j < aty.size(); ++j) {
+                if (stopped(j)) {
+                    v.message = "verification stopped: deadline exceeded";
+                    return v;
+                }
                 double e = std::max(0.0, aty[j]);
                 v.maximum_dual_violation = std::max(v.maximum_dual_violation, e);
                 ok = ok && e <= dual_allowed(col_scale(m.matrix, j, r.certificate), tol);
@@ -142,10 +165,14 @@ ReferenceVerification verify_sparse_result(const transform::SparseCanonicalModel
             const auto ray_scale = row_scales(m.matrix, r.ray, {});
             bool aok = true, rok = true;
             for (std::size_t i = 0; i < ax.size(); ++i) {
+                if (stopped(i)) {
+                    v.message = "verification stopped: deadline exceeded";
+                    return v;
+                }
                 double e = std::abs(ax[i] - m.rhs[i]);
                 v.maximum_primal_violation = std::max(v.maximum_primal_violation, e);
                 aok = aok && e <= allowed(primal_scale[i], tol);
-                rok = rok && std::abs(ad[i]) <= allowed(ray_scale[i], tol);
+                rok = rok && std::abs(ad[i]) <= ray_allowed(ray_scale[i], tol);
             }
             for (double x : r.primal) {
                 double e = std::max(0.0, -x);
@@ -168,6 +195,10 @@ ReferenceVerification verify_sparse_result(const transform::SparseCanonicalModel
         }
         v.message = "non-conclusive status";
         return v;
+    } catch (const std::bad_alloc&) {
+        throw;
+    } catch (const std::length_error&) {
+        throw;
     } catch (const std::exception& e) {
         v.message = std::string("verification failed: ") + e.what();
         return v;

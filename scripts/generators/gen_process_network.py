@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 markov-cero Industrial Case Generator: Chemical Process Network & Hydrogen Pinch (MILP)
-Ground truth model for a multi-unit refinery conversion complex:
+Synthetic qualification model for a multi-unit refinery conversion complex:
 CDU, VDU, CCR, FCC, DHDT, HCU, HGU, SRU across multiple operating shifts.
 Includes discrete unit mode selection, intermediate inter-unit routing,
 and high-pressure hydrogen network pinch balances.
@@ -11,6 +11,8 @@ import argparse
 import os
 import random
 import sys
+
+from fixture_provenance import write_provenance
 
 
 def generate_process_network_mps(
@@ -51,7 +53,11 @@ def generate_process_network_mps(
         "SRU": [0.0, 0.0, 0.0],
     }
 
-    lines = ["NAME PROCESS_NETWORK_LARGE", "ROWS", " N COST"]
+    lines = ["* Units: liquid F feeds and capacity RHS kbpd; HGU F and RHS MMSCFD; Y modes binary.",
+             "* COST coefficients are synthetic score per feed-unit and score per active mode; H2_BAL",
+             "* uses normalized hydrogen-proxy units, not a physical hydrogen balance.",
+             "* Synthetic qualification data; not plant operating data; deterministic for a fixed seed.",
+             "NAME PROCESS_NETWORK_LARGE", "ROWS", " N COST"]
 
     # Rows:
     # 1. Mode exclusivity: MODE_EXCL_{unit}_{t}  (E) sum(y) = 1
@@ -151,6 +157,9 @@ def main():
     mps_content = generate_process_network_mps(num_shifts=args.shifts, seed=args.seed)
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(mps_content)
+    write_provenance(args.output, "gen_process_network.py",
+                     {"shifts": args.shifts, "seed": args.seed},
+                     "Unit and qualification comments refreshed; model rows, columns and coefficients unchanged.")
 
     print(f"[+] Chemical process network MILP model written to {args.output}")
     print(f"    File size: {os.path.getsize(args.output):,} bytes")

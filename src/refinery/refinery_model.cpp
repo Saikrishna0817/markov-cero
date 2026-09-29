@@ -1,6 +1,9 @@
 #include "markov_cero/refinery/refinery_model.hpp"
+#include "markov_cero/refinery/refinery_units.hpp"
+
 #include <cmath>
 #include <stdexcept>
+#include <utility>
 
 namespace markov_cero::refinery {
 
@@ -8,16 +11,21 @@ model::Model build_refinery_lp(const RefineryPlanningConfig& cfg) {
     if (cfg.crudes.empty() || cfg.products.size() != 4)
         throw std::invalid_argument("synthetic refinery requires crudes and exactly four ordered products");
     auto nonnegative = [](double x) { return std::isfinite(x) && x >= 0; };
-    for (double capacity : {cfg.cdu_capacity_kbpd, cfg.ccr_capacity_kbpd,
-                            cfg.fcc_capacity_kbpd, cfg.dhdt_capacity_kbpd})
-        if (!nonnegative(capacity)) throw std::invalid_argument("invalid unit capacity");
+    for (const auto& [capacity, name] : {std::pair{cfg.cdu_capacity_kbpd, "CDU capacity"},
+                                         std::pair{cfg.ccr_capacity_kbpd, "CCR capacity"},
+                                         std::pair{cfg.fcc_capacity_kbpd, "FCC capacity"},
+                                         std::pair{cfg.dhdt_capacity_kbpd, "DHDT capacity"}})
+        require_finite_nonnegative(capacity, name, "kbpd");
     for (const auto& crude : cfg.crudes) {
-        if (!std::isfinite(crude.cost_per_barrel) || !nonnegative(crude.max_availability_kbpd))
-            throw std::invalid_argument("invalid crude price or availability");
+        if (!std::isfinite(crude.cost_per_barrel))
+            throw std::invalid_argument("invalid crude price [USD/bbl]");
+        require_finite_nonnegative(crude.max_availability_kbpd, "crude availability", "kbpd");
+        require_range(crude.api_gravity, -50.0, 80.0, "crude API gravity", "degAPI");
+        require_range(crude.sulfur_wt_pct, 0.0, 100.0, "crude sulfur", "wt%");
         double sum = 0;
         for (double yield : {crude.lpg_yield, crude.light_naphtha_yield, crude.heavy_naphtha_yield,
                              crude.kerosene_yield, crude.gas_oil_yield, crude.residue_yield}) {
-            if (!nonnegative(yield)) throw std::invalid_argument("invalid crude yield");
+            require_finite_nonnegative(yield, "crude yield", "volume fraction");
             sum += yield;
         }
         if (sum > 1.0 + 1e-9) throw std::invalid_argument("synthetic volume yields exceed unity");
@@ -26,8 +34,24 @@ model::Model build_refinery_lp(const RefineryPlanningConfig& cfg) {
         if (!nonnegative(product.min_demand_kbpd) || !nonnegative(product.max_demand_kbpd) ||
             product.min_demand_kbpd > product.max_demand_kbpd || !std::isfinite(product.price_per_barrel) ||
             !nonnegative(product.min_ron)) throw std::invalid_argument("invalid product demand, price or RON");
-        if (product.max_sulfur_ppm != 1e9 || product.min_cetane != 0 || product.max_rvp_psi != 100)
-            throw std::invalid_argument("synthetic model cannot enforce sulfur, cetane or RVP; supply a qualified process model");
+        require_range(product.min_ron, 0.0, 100.0, "research octane number", "RON");
+        require_range(product.max_sulfur_ppm, 0.0, kUnsetSulfurLimitPpm, "product sulfur limit", "ppm");
+        require_range(product.min_cetane, 0.0, 75.0, "cetane index", "cetane");
+        require_range(product.max_rvp_psi, 0.0, 100.0, "reid vapor pressure limit", "psi");
+        // Unit-validated, still unmodelled: rejected instead of silently
+        // ignored, preserving IR-14 semantics for genuinely absent specs.
+        if (product.min_cetane != 0.0 || product.max_rvp_psi != 100.0)
+            throw std::invalid_argument(
+                "cetane index and RVP are unit-validated but unmodelled; supply a qualified process model");
+    }
+    // Only two quality specs are modelled: the gasoline RON proxy (product 0)
+    // and the residue/fuel-oil sulfur pool (product 3). Other product quality
+    // inputs are rejected rather than accepted and ignored (IR-14).
+    for (std::size_t p = 0; p < cfg.products.size(); ++p) {
+        if (cfg.products[p].min_ron != 0.0 && p != 0)
+            throw std::invalid_argument("RON is only modelled for the gasoline pool (product 0)");
+        if (cfg.products[p].max_sulfur_ppm != kUnsetSulfurLimitPpm && p != 3)
+            throw std::invalid_argument("sulfur is only modelled for the residue/fuel-oil pool (product 3)");
     }
     model::Model model;
     model.name = cfg.refinery_name;
@@ -110,8 +134,11 @@ model::Model build_refinery_lp(const RefineryPlanningConfig& cfg) {
     model.variable_lower[col_Prod_FO] = model::Bound::finite(cfg.products[3].min_demand_kbpd);
     model.variable_upper[col_Prod_FO] = model::Bound::finite(cfg.products[3].max_demand_kbpd);
 
-    // Build constraints
-    model::SparseMatrixBuilder builder(15, total_cols);
+    // Build constraints. Row 13 (fuel-oil sulfur) is present only when a
+    // sulfur limit is actually requested.
+    const bool fuel_oil_sulfur = cfg.products[3].max_sulfur_ppm != kUnsetSulfurLimitPpm;
+    model::SparseMatrixBuilder builder(15 + (fuel_oil_sulfur ? std::size_t{1} : std::size_t{0}),
+                                       total_cols);
     std::size_t row_idx = 0;
 
     auto add_row = [&](const std::string& name, model::Bound lb, model::Bound ub) {
@@ -240,6 +267,25 @@ model::Model build_refinery_lp(const RefineryPlanningConfig& cfg) {
         const auto r = add_row("BAL_VOL_FO", model::Bound::finite(0.0), model::Bound::finite(0.0));
         builder.add(r, col_Residue_to_FO, 1.0);
         builder.add(r, col_Prod_FO, -1.0);
+    }
+
+    // 13. Fuel-oil sulfur limit [t/d of excess sulfur]: the residue pool blends
+    // the crudes under a declared common (proportional) residue-draw assumption,
+    // so sum_c yield_c * rho_c * V_per_kbpd * (S_c - S_limit) <= 0 is exactly the
+    // blend equation. Inputs are converted with the unit registry (wt% -> mass
+    // fraction, API -> t/m3, kbpd -> m3/d); unit-validated, still a synthetic
+    // qualification model, not plant-qualified quality tracking.
+    if (fuel_oil_sulfur) {
+        const double limit_fraction = sulfur_ppm_to_mass_fraction(cfg.products[3].max_sulfur_ppm);
+        const double volume_per_kbpd = kbpd_to_m3_per_day(1.0);
+        const auto r = add_row("SPEC_FO_MAX_SULFUR_PPM", model::Bound::negative_infinity(),
+                               model::Bound::finite(0.0));
+        for (std::size_t c = 0; c < num_crudes; ++c) {
+            const double density = api_gravity_to_density_t_per_m3(cfg.crudes[c].api_gravity);
+            builder.add(r, c, cfg.crudes[c].residue_yield * density * volume_per_kbpd *
+                                  (sulfur_wt_pct_to_mass_fraction(cfg.crudes[c].sulfur_wt_pct) -
+                                   limit_fraction));
+        }
     }
 
     model.matrix = builder.build();

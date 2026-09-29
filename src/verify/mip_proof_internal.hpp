@@ -1,13 +1,39 @@
 #pragma once
 #include "markov_cero/verify/mip_proof.hpp"
+#include "markov_cero/model/model_snapshot.hpp"
 #include "markov_cero/transform/sparse_canonical_model.hpp"
 #include "markov_cero/verify/reference_lp_verifier.hpp"
 #include "markov_cero/verify/primal_verifier.hpp"
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <string>
 
 namespace markov_cero::verify::mip_detail {
+struct budget_exhausted_error : std::runtime_error {
+    MipProofBudgetKind kind;
+    budget_exhausted_error(MipProofBudgetKind budget, const std::string& text)
+        : std::runtime_error(text), kind(budget) {}
+};
+struct unsupported_model_error : std::invalid_argument {
+    explicit unsupported_model_error(const std::string& text) : std::invalid_argument(text) {}
+};
+inline std::string budget_label(MipProofBudgetKind budget) {
+    switch (budget) {
+    case MipProofBudgetKind::time_limit: return "time budget (deadline)";
+    case MipProofBudgetKind::node_limit: return "node budget (maximum_nodes)";
+    case MipProofBudgetKind::witness_limit: return "witness budget (maximum_witness_values)";
+    default: return "none";
+    }
+}
+inline bool supported_for_proof(const model::Model& model) {
+    return !model.has_nlobj_section && model.nlcon_constraints.empty() &&
+        !model.nlp_callbacks.has_value();
+}
+inline std::string bound_fingerprint(const model::Model& model) {
+    return std::to_string(model::hash_model(model).fingerprint());
+}
+
 struct Domain {
     std::size_t node{};
     std::vector<model::Bound> lower, upper;

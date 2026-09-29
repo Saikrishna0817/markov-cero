@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 markov-cero Industrial Case Generator: Refinery Production Scheduling (MILP)
-Ground truth model for MRPL coastal refinery scheduling over a 30-day horizon.
+Synthetic refinery scheduling qualification case over a multi-day horizon.
 Includes discrete tanker arrivals, crude tank farm inventory, CDU throughputs,
 fractionation yields, and multi-period fuel supply commitments.
 """
@@ -11,6 +11,8 @@ import math
 import os
 import random
 import sys
+
+from fixture_provenance import write_provenance
 
 
 def generate_refinery_scheduling_mps(
@@ -54,7 +56,12 @@ def generate_refinery_scheduling_mps(
         "NAPH": 78.0, "KERO": 92.0, "GASOIL": 88.0, "VGO": 70.0, "RESID": 48.0
     }
 
-    lines = ["NAME REFINERY_SCHEDULING_LARGE", "ROWS", " N COST"]
+    lines = ["* Units: QU/CG/PR rate flows kbpd; INV tank stock kb; time step 1 day, so rate x step",
+             "* converts to kb in INV_BAL rows. Capacity/demand RHS kbpd; berth indicators counts.",
+             "* COST: rate coefficients USD/bbl -> kUSD/day; inventory 0.25 kUSD/kb/day; berth 150",
+             "* kUSD/day per active binary. Numeric objective is kUSD/day under these conventions.",
+             "* Synthetic qualification data; not plant operating data; deterministic for a fixed seed.",
+             "NAME REFINERY_SCHEDULING_LARGE", "ROWS", " N COST"]
 
     # 1. Tank inventory mass balances: INV_BAL_{tank}_{t}  (E)
     for k in range(num_tanks):
@@ -218,6 +225,9 @@ def main():
     mps_content = generate_refinery_scheduling_mps(days=args.days, seed=args.seed)
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(mps_content)
+    write_provenance(args.output, "gen_refinery_scheduling.py",
+                     {"days": args.days, "seed": args.seed},
+                     "Unit and qualification comments refreshed; model rows, columns and coefficients unchanged.")
 
     print(f"[+] Refinery scheduling MILP model written to {args.output}")
     print(f"    File size: {os.path.getsize(args.output):,} bytes")

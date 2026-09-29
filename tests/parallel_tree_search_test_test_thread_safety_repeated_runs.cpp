@@ -47,6 +47,7 @@ void test_persistent_node_bounds() {
     markov_cero::milp::ThreadSafeNodeQueue queue;
     markov_cero::milp::BranchNode parent_node;
     parent_node.id = 41;
+    parent_node.local_cuts.append({inherited});
     std::optional<markov_cero::lp::dual::BasisState> basis;
     basis.emplace();
     basis->rows = 2;
@@ -61,6 +62,8 @@ void test_persistent_node_bounds() {
     assert(children[0]->warm_basis && children[1]->warm_basis);
     assert(children[0]->warm_basis == children[1]->warm_basis);
     assert(children[0]->warm_basis->basic_variables == basis->basic_variables);
+    if (children[0]->local_cuts.size() != 1 || children[1]->local_cuts.size() != 1)
+        throw std::runtime_error("parallel children must inherit verified local cuts");
     queue.deactivate_worker();
 
     struct State { NodeBounds bounds; std::vector<Bound> lower, upper; };

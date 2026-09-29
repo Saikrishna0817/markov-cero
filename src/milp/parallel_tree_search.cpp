@@ -1,4 +1,5 @@
 #include "parallel_tree_search_internal.hpp"
+#include "markov_cero/core/worker_context.hpp"
 namespace markov_cero::milp {
 using namespace detail_parallel_tree_search;
 namespace detail_parallel_tree_search {
@@ -28,6 +29,7 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
                   std::atomic<std::size_t>& next_node_id,
                   std::atomic<std::size_t>& total_nodes_explored,
                   std::atomic<std::size_t>& total_lp_iterations,
+                  std::atomic<std::size_t>& total_cuts_generated,
                   std::atomic<std::size_t>& total_heuristics_found,
                   std::atomic<std::size_t>& unresolved_node_lps,
                   std::atomic<double>* worker_bounds,
@@ -35,7 +37,8 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
                   std::vector<model::Bound>& node_lower,
                   std::vector<model::Bound>& node_upper,
                   NodeBounds::MaterializationScratch& bounds_scratch,
-                  const std::function<void()>& clear_bound) {
+                  const std::function<void()>& clear_bound,
+                  ProofEventCollector& proof_events) {
     worker_bounds[thread_id].store(node->lower_bound, std::memory_order_relaxed);
 
     if (node->lower_bound >=
@@ -47,14 +50,24 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
 
     node->bounds.materialize(root_model.variable_lower, root_model.variable_upper,
                              node_lower, node_upper, bounds_scratch);
+    // Derive audit-only singleton implications from a private copy of the
+    // bounds. The search LP keeps its original domain and branching policy.
+    proof_events.record_propagations(thread_id, *node, root_model, node_lower, node_upper);
 
     const auto warm_basis = node->warm_basis
         ? std::optional<lp::dual::BasisState>(*node->warm_basis)
         : std::nullopt;
-    const auto node_lp_res = solve_node_lp(root_model, options, warm_basis,
-                                           node_lower, node_upper);
-    total_lp_iterations.fetch_add(node_lp_res.iterations, std::memory_order_relaxed);
-    total_nodes_explored.fetch_add(1, std::memory_order_relaxed);
+    const auto explored_count = total_nodes_explored.fetch_add(1, std::memory_order_relaxed) + 1;
+    const auto prior_cuts = node->local_cuts.size();
+    const auto node_lp_res = solve_parallel_node_with_cuts(
+        *node, root_model, options, warm_basis, node_lower, node_upper, explored_count,
+        total_lp_iterations, total_cuts_generated);
+    if (node->local_cuts.size() > prior_cuts) {
+        const auto& cuts = node->local_cuts.values();
+        std::vector<Cut> applied(cuts.begin() + prior_cuts, cuts.end());
+        proof_events.record_cuts(proof_events.workers[thread_id], node->id,
+                                 applied, node_lp_res.primal);
+    }
 
     if (node_lp_res.status == lp::reference::SolveStatus::infeasible) {
         clear_bound();
@@ -91,15 +104,29 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
 
     const auto fractional_vars = find_fractional_variables(
         node_lp_res.primal, root_model.variable_type, options.integrality_tolerance);
+    const bool near_integral = fractional_vars.empty();
 
-    if (fractional_vars.empty()) {
-        if (incumbent.update_if_better(node_lp_res.objective, node_lp_res.primal,
-                                       options.absolute_gap_tolerance)) {
-            queue.prune(incumbent.best_incumbent_objective.load(std::memory_order_relaxed) -
-                        options.absolute_gap_tolerance);
+    if (near_integral) {
+        const auto rounded = rounded_integer_candidate(root_model, node_lp_res.primal,
+            options.feasibility_tolerance, options.integrality_tolerance);
+        if (rounded.found) {
+            if (incumbent.update_if_better(rounded.objective, rounded.primal,
+                                           options.absolute_gap_tolerance)) {
+                queue.prune(incumbent.best_incumbent_objective.load(std::memory_order_relaxed) -
+                            options.absolute_gap_tolerance);
+            }
+            if (std::abs(node_lp_res.objective - rounded.objective) <=
+                options.absolute_gap_tolerance) {
+                clear_bound();
+                return;
+            }
         }
-        clear_bound();
-        return;
+        if (find_fractional_variables(node_lp_res.primal,
+                root_model.variable_type, 0.0).empty()) {
+            unresolved_node_lps.fetch_add(1, std::memory_order_relaxed);
+            clear_bound();
+            return;
+        }
     }
 
     if (options.enable_heuristics &&
@@ -122,16 +149,24 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
     }
     const std::size_t branch_var =
         select_branching_variable(node_lp_res.primal, root_model.variable_type, pc_snapshot,
-                                  options.branching_strategy, options.integrality_tolerance);
+                                  options.branching_strategy,
+                                  near_integral ? 0.0 : options.integrality_tolerance);
 
     if (branch_var >= root_model.matrix.column_count) {
         clear_bound();
         return;
     }
 
+    if (options.context && !options.context->charge_or_stop(2U * sizeof(BranchNode))) {
+        queue.request_stop();
+        clear_bound();
+        return;
+    }
     (void)queue.push_branch_children(*node, branch_var, node_lp_res.primal[branch_var],
                                node->lower_bound, node_lower, node_upper,
                                node_lp_res.basis, next_node_id);
+    if (queue.capacity_exhausted() && options.context)
+        (void)options.context->note_stop(core::StopReason::queue_capacity_exhausted);
     clear_bound();
 }
 }
@@ -141,13 +176,17 @@ void worker_loop(
     std::size_t thread_id, const model::Model& root_model, const ParallelOptions& options,
     ThreadSafeNodeQueue& queue, IncumbentManager& incumbent, std::atomic<std::size_t>& next_node_id,
     std::atomic<std::size_t>& total_nodes_explored, std::atomic<std::size_t>& total_lp_iterations,
+    std::atomic<std::size_t>& total_cuts_generated,
     std::atomic<std::size_t>& total_heuristics_found,
     std::atomic<std::size_t>& unresolved_node_lps,
     std::atomic<bool>& interrupted_search, std::atomic<double>* worker_bounds,
     std::size_t num_threads, SharedPseudoCosts& shared_pseudo_costs,
-    const std::chrono::steady_clock::time_point start_time, std::stop_token stop_token) {
+    const std::chrono::steady_clock::time_point start_time, std::stop_token stop_token,
+    ProofEventCollector& proof_events) {
 
 
+    std::optional<core::WorkerContext> worker;
+    if (options.context) worker.emplace(*options.context, thread_id);
     bool was_active = false;
     auto node_lower = root_model.variable_lower;
     auto node_upper = root_model.variable_upper;
@@ -158,12 +197,22 @@ void worker_loop(
     };
 
     while (!stop_token.stop_requested() && !queue.is_stopped()) {
+        if (worker && worker->poll() != core::StopReason::none) {
+            (void)worker->note_local_stop(worker->poll());
+            interrupted_search.store(true, std::memory_order_relaxed);
+            queue.request_stop();
+            break;
+        }
         const auto now = std::chrono::steady_clock::now();
         const auto time_spent = std::chrono::duration<double>(now - start_time).count();
-        if (time_spent > options.time_limit_seconds ||
-            (options.deadline && now >= *options.deadline) ||
-            total_nodes_explored.load(std::memory_order_relaxed) >= options.max_nodes) {
-            ;
+        const bool timed_out = time_spent > options.time_limit_seconds ||
+                               (options.deadline && now >= *options.deadline);
+        const bool node_quota = total_nodes_explored.load(std::memory_order_relaxed) >= options.max_nodes;
+        if (timed_out || node_quota) {
+            const auto reason = timed_out ? core::StopReason::deadline_exceeded
+                                          : core::StopReason::quota_exhausted;
+            if (worker) (void)worker->note_local_stop(reason);
+            if (options.context) (void)options.context->note_stop(reason);
             interrupted_search.store(true, std::memory_order_relaxed);
             queue.request_stop();
             break;
@@ -217,14 +266,20 @@ void worker_loop(
         }
 
         for (auto& node : batch) {
+            if (worker && worker->poll() != core::StopReason::none) {
+                (void)worker->note_local_stop(worker->poll());
+                queue.request_stop();
+                break;
+            }
             if (stop_token.stop_requested() || queue.is_stopped()) {
                 break;
             }
             process_node(std::move(node), thread_id, root_model, options, queue, incumbent,
                          next_node_id, total_nodes_explored, total_lp_iterations,
+                         total_cuts_generated,
                          total_heuristics_found, unresolved_node_lps,
                          worker_bounds, shared_pseudo_costs,
-                         node_lower, node_upper, bounds_scratch, clear_bound);
+                         node_lower, node_upper, bounds_scratch, clear_bound, proof_events);
         }
     }
 

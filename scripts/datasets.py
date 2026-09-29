@@ -58,6 +58,36 @@ def materialize(entry, download=False):
     return target
 
 
+def describe(entry):
+    """Report availability of an optional dataset without downloading it.
+
+    Used by the frozen instance manifest (backlog item 7): presence, the pinned
+    dataset digest, the local cache slot and the local file digest when the file
+    is already materialized. Never fetches anything.
+    """
+    relative = Path(entry['path'])
+    target = ROOT / relative
+    digest = str(entry.get('sha256', ''))
+    info = {
+        'path': entry['path'],
+        'family': entry.get('family', ''),
+        'bytes': entry.get('bytes', 0),
+        'dataset_sha256': digest,
+        'source_revision': entry.get('source_revision', ''),
+        'source_url': entry.get('source_url', ''),
+        'present': target.is_file(),
+        'cached': (ROOT / '.cache/dataset-store' / (digest + '.gz')).is_file()
+                  if digest else False,
+    }
+    if info['present']:
+        hasher = hashlib.sha256()
+        with target.open('rb') as stream:
+            for block in iter(lambda: stream.read(1 << 20), b''):
+                hasher.update(block)
+        info['local_sha256'] = hasher.hexdigest()
+    return info
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--family', choices=['netlib', 'miplib', 'mittelmann', 'qp'])

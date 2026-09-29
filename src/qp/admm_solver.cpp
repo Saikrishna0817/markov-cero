@@ -1,6 +1,42 @@
 #include "admm_solver_internal.hpp"
+#include "markov_cero/qp/verifier.hpp"
 namespace markov_cero::qp {
 using namespace detail_admm_solver;
+namespace detail_admm_solver {
+void verify_accepted_result(const QuadraticModel& model, QpSolution& sol) {
+    // The zero-variable public shorthand uses empty CSC offsets; normalize
+    // only the verifier's view, as the high-level solve path does for scaling.
+    QuadraticModel normalized;
+    const QuadraticModel* checked = &model;
+    if (model.num_variables() == 0 &&
+        (model.P.column_offsets.empty() || model.A.column_offsets.empty())) {
+        normalized = model;
+        if (normalized.P.column_offsets.empty()) normalized.P.column_offsets = {0};
+        if (normalized.A.column_offsets.empty()) normalized.A.column_offsets = {0};
+        checked = &normalized;
+    }
+    bool accepted = false;
+    switch (sol.status) {
+    case QpStatus::optimal:
+        accepted = verify_qp_solution(*checked, sol).passed;
+        break;
+    case QpStatus::primal_infeasible:
+        accepted = verify_qp_infeasibility(*checked, sol, 1e-4);
+        break;
+    case QpStatus::dual_infeasible:
+        accepted = verify_qp_unbounded(*checked, sol, 1e-4);
+        break;
+    default:
+        sol.verified = false;
+        return;
+    }
+    sol.verified = accepted;
+    if (!accepted) {
+        sol.status = QpStatus::numerical_error;
+        sol.message = "QP accepted witness rejected by independent verification";
+    }
+}
+}
 const char* to_string(QpStatus status) noexcept {
     switch (status) {
     case QpStatus::optimal:

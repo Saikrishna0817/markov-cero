@@ -13,6 +13,7 @@
 #include <limits>
 
 namespace markov_cero::qp {
+namespace detail_admm_solver { void verify_accepted_result(const QuadraticModel&, QpSolution&); }
 namespace detail_admm_solver {}
 namespace detail_admm_solver {
 constexpr std::size_t kGpuQpNnzThreshold = 100000;

@@ -1,0 +1,127 @@
+{
+  "date": "2026-09-28",
+  "purpose": "Industry roadmap backlog item 3: budget/deadline instrumentation, allocation-failure harnesses, and the worker isolation boundary",
+  "scope": "Contract headers, one test-binary allocation-failure injector, failure-semantics fixes at the API boundary and in node materialization, and unit/concurrency tests. Not engine consumption of the contracts, not a worker-kill demonstration, and not closure of IR-20/21.",
+  "host": {
+    "os": "Linux",
+    "compiler": "g++ (GCC) 16.2.1 20260810",
+    "cmake": "4.4.3",
+    "python": "3.14.7 (.venv)",
+    "pybind11": "3.1.0 (.venv)"
+  },
+  "worktree": "uncommitted working tree; results identify this state, not HEAD",
+  "builds": [
+    {
+      "name": "release",
+      "command": "cmake -S . -B build_contracts -DCMAKE_BUILD_TYPE=Release && cmake --build build_contracts --parallel 12 && ctest --test-dir build_contracts --output-on-failure --timeout 180",
+      "tests_passed": 87,
+      "tests_total": 87,
+      "seconds": 24.64
+    },
+    {
+      "name": "asan_ubsan_warnings_as_errors",
+      "command": "cmake -S . -B build_asan_contracts -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMARKOV_CERO_ENABLE_ASAN_UBSAN=ON -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON && cmake --build build_asan_contracts --parallel 12 && ctest --test-dir build_asan_contracts --output-on-failure --timeout 300",
+      "tests_passed": 87,
+      "tests_total": 87,
+      "seconds": 131.95,
+      "compiler_warnings": 0
+    },
+    {
+      "name": "tsan_warnings_as_errors",
+      "command": "cmake -S . -B build_tsan_contracts -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMARKOV_CERO_ENABLE_TSAN=ON -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON && cmake --build build_tsan_contracts --parallel 12 && ctest --test-dir build_tsan_contracts --output-on-failure --timeout 600",
+      "tests_passed": 87,
+      "tests_total": 87,
+      "seconds": 126.96,
+      "compiler_warnings": 0,
+      "thread_sanitizer_reports": 0
+    }
+  ],
+  "new_ctest_gates": ["worker_context", "resource_failure"],
+  "allocation_failure_harness": {
+    "implementation": "tests/support/failing_new.hpp replaces global operator new/delete in the resource_failure_test binary; arm(nth) makes exactly the nth subsequent allocation fail (std::bad_alloc, nullptr for nothrow forms) and counting continues past it so unwinding stays safe",
+    "gtest_free": "tests are plain main() programs using a throwing require() helper, consistent with the rest of the suite",
+    "ctest_gate": {
+      "model_allocation_points": 16,
+      "file_allocation_points": 8,
+      "assertions": [
+        "no exception escapes solve_file or solve_model",
+        "an injected failure is never reported as infeasible or unbounded",
+        "at least one injected failure is reported as resource_limit with failure_site allocation_failure",
+        "the harness reaches the target path (injection actually occurred)"
+      ]
+    },
+    "diagnostic_driver": {
+      "note": "A separate, non-CTest driver over the same harness, run from the repository root; recorded here as supporting evidence for the boundary claim.",
+      "model_allocation_points_injected": 200,
+      "model_mapped_to_resource_limit": 200,
+      "file_allocation_points_injected": 24,
+      "file_mapped_to_resource_limit": 24,
+      "escaped_exceptions": 0,
+      "infeasible_or_unbounded_reports": 0
+    },
+    "contract_paths": [
+      "ModelSnapshot::capture: throws std::bad_alloc on an injected failure, stays deterministic and fingerprint-stable after disarm",
+      "NodeView::materialize: returns MaterializationStatus::allocation_failed, charged_bytes 0, budget released, budget not marked exhausted, output contents untouched",
+      "budget refusal remains distinct: MaterializationStatus::budget_exhausted with sticky exhaustion"
+    ]
+  },
+  "failure_semantics_fixes": [
+    "src/api/api.cpp: guarded() catches std::bad_alloc before the generic std::exception handler (previously reported numerical_failure) and both solve_file and solve_model wrap their whole body so allocation failure cannot escape the API",
+    "include/markov_cero/milp/node_view.hpp + src/milp/node_view.cpp: new MaterializationStatus::allocation_failed separates host allocation failure from solve-budget exhaustion",
+    "include/markov_cero/milp/node_bounds.hpp: NodeBounds::materialize builds its delta path (its last allocation) before writing outputs, so an allocation failure cannot leave a half-written result"
+  ],
+  "instrumentation_contract": {
+    "stage_scope": "include/markov_cero/core/instrumentation.hpp: exactly one TraceEvent per stage scope (early return and unwinding included) with stage name, shared sticky stop reason, stage counter, net charged bytes during the stage, observed elapsed_ms and worker index",
+    "deadline": "SolveContext::remaining_ms() reports live slack (empty when untimed, 0 once expired); enforcement stays cooperative through poll()",
+    "trace_event": "TraceEvent.worker added (0 = solve-level) so parallel stages are distinguishable"
+  },
+  "worker_isolation_boundary": {
+    "definition": "include/markov_cero/core/worker_context.hpp",
+    "shared": ["absolute deadline", "cooperative cancellation", "one MemoryBudget", "sticky solve-wide stop reason", "capability policy", "seed", "thread/device quotas", "caller-owned trace sink"],
+    "private": ["charge attribution (charged_by_worker)", "release rights clamped to what the worker charged", "worker-local sticky stop reason"],
+    "failure_semantics": "a refused charge marks the shared budget exhausted and records the solve-wide memory_budget_exhausted stop, also stops the requesting worker; destruction returns held bytes; attribution overflow fails closed instead of wrapping",
+    "coverage": "tests/worker_context_test.cpp: local-stop isolation, attribution and clamped release, shared exhaustion stopping every worker, attribution overflow, worker-tagged events, and a four-thread concurrent charge/release run against one shared budget"
+  },
+  "python": {
+    "wheel_sha256": "f1981b7497325901c0d8c09c8279ff9e21be09bbb3755a877d185974a3efd2e2",
+    "wheel_name": "markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+    "build_command": ".venv/bin/python -m pip wheel . -w /tmp/opencode/wheels2 --no-deps --no-build-isolation",
+    "test_command": ".venv/bin/python -m pytest python/tests -q",
+    "tests_passed": 20,
+    "tests_total": 20,
+    "note": "The boundary classification change (bad_alloc -> resource_limit) is C++ only; the Python result dict is unchanged by this slice."
+  },
+  "static_checks": {
+    "source_limits": "python3 scripts/check_source_limits.py -> 443 maintained files, maximum 300 lines, 0 violations",
+    "doc_links": "python3 scripts/check_docs.py -> 8 active documents checked, 0 broken local links"
+  },
+  "files_added": [
+    "include/markov_cero/core/instrumentation.hpp",
+    "include/markov_cero/core/worker_context.hpp",
+    "tests/support/failing_new.hpp",
+    "tests/resource_failure_test.cpp",
+    "tests/worker_context_test.cpp"
+  ],
+  "files_modified": [
+    "cmake/TestTargets.cmake",
+    "cmake/Tests.cmake",
+    "include/markov_cero/core/solve_context.hpp",
+    "include/markov_cero/milp/node_bounds.hpp",
+    "include/markov_cero/milp/node_view.hpp",
+    "src/api/api.cpp",
+    "src/api/api_internal.hpp",
+    "src/milp/node_view.cpp",
+    "tests/solve_context_test.cpp"
+  ],
+  "limitations": [
+    "Instrumentation and the worker boundary are contracts with tests only: no engine stage constructs a StageScope, the API boundary does not create a SolveContext, SolveOptions still exposes no solve-wide time or memory limit, and the parallel tree search does not use WorkerContext. That consumption work is backlog item 5.",
+    "Allocation-failure coverage is bounded: the CTest gate injects at the first 16 model and 8 file allocation points, the diagnostic driver at 200 and 24. Other engines (QP, PDLP, MILP, parallel, NLP/MINLP), proof and verification stages, and allocations made on worker threads were not systematically covered.",
+    "Engine- and verifier-internal generic catch (const std::exception&) handlers can in principle reclassify a host allocation failure as a numerical or fallback outcome; none was observed at the injected points, which is not a proof that none exists on other paths.",
+    "The injector is a test-binary-only global operator new/delete replacement; production code has no allocation-failure simulation, no emergency reserve, and no allocation-failure recovery path beyond the boundary mapping.",
+    "GCC's dead-allocation elimination can remove naive allocation probes, so the harness self-check pins pointers through an asm barrier; future tests that probe allocations directly must do the same or they will silently test nothing.",
+    "No worker kill/recovery demonstration, no OS-level memory or time limits, no process isolation, and no peak-RSS measurement accompany the boundary definition (all remain W02 acceptance items).",
+    "No deadline or cancellation latency measurement is included; remaining_ms() reports slack but nothing yet enforces a deadline through the new context.",
+    "The TSan run covers the current suite only; it cannot exercise WorkerContext inside the parallel search because that wiring does not exist yet.",
+    "Python results were exercised on one local interpreter (3.14) and one host; other interpreters and platforms remain untested here."
+  ]
+}

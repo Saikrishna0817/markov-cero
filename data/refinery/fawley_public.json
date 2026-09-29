@@ -6,6 +6,7 @@
   "provenance": "Numeric facts transcribed from the public model; generator independently implemented. Not MRPL data or plant-approved operating data.",
   "flow_unit": "1000 tonnes per period",
   "objective_unit": "1000 historical USD per period",
+  "quality_unit_by_property": {"ron": "RON", "rvp": "psi", "pct-212f": "vol%", "sulfur": "wt%", "vbn": "illustrative viscosity blending index"},
   "limitations": ["Historical illustrative model, including lead-additive cost; not a current fuel specification.", "RON and viscosity blending rules are illustrative approximations in the source.", "fuel-equiv and transfers are energy-equivalent accounting quantities, not conserved physical mass."],
   "barrels_per_m3": 6.29,
   "lead_cost_per_m3": 3.12,

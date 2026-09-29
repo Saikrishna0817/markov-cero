@@ -26,6 +26,31 @@
 #include <string>
 
 namespace markov_cero::milp::detail {
+struct ScopedSearchTimer {
+    double& total;
+    std::chrono::steady_clock::time_point started{std::chrono::steady_clock::now()};
+    explicit ScopedSearchTimer(double& destination) : total(destination) {}
+    ~ScopedSearchTimer() {
+        total += std::chrono::duration<double, std::milli>(
+            std::chrono::steady_clock::now() - started).count();
+    }
+};
+inline void record_optimizer_cut_notes(Result& result, std::size_t node,
+    const std::vector<Cut>& cuts, const std::vector<double>& primal) {
+    for (const auto& cut : cuts) {
+        if (cut.coefficients.size() != primal.size()) continue;
+        double lhs = 0.0;
+        for (std::size_t j = 0; j < primal.size(); ++j)
+            lhs += cut.coefficients[j] * primal[j];
+        verify::MipObligation note;
+        note.kind = verify::MipObligationKind::cut;
+        note.node = node;
+        note.coefficients = cut.coefficients;
+        note.rhs = cut.rhs;
+        note.observed_lhs = lhs;
+        result.obligations.push_back(std::move(note));
+    }
+}
 class NodeFrontier {
   public:
     explicit NodeFrontier(NodeSelection policy) : comparator_{policy} {}
@@ -41,11 +66,14 @@ class NodeFrontier {
         }
         heap_.push_back(std::move(node));
         std::push_heap(heap_.begin(), heap_.end(), comparator_);
+        peak_size_ = std::max(peak_size_, heap_.size());
     }
 
     void set_maximum_size(std::size_t maximum_size) { maximum_size_ = maximum_size; }
     [[nodiscard]] bool capacity_exhausted() const { return capacity_exhausted_; }
     [[nodiscard]] double minimum_dropped_bound() const { return minimum_dropped_bound_; }
+    /// Peak live frontier size since construction (W01/IR-19 evidence).
+    [[nodiscard]] std::size_t peak_size() const { return peak_size_; }
 
     [[nodiscard]] bool empty() const { return heap_.empty(); }
     [[nodiscard]] std::size_t size() const { return heap_.size(); }
@@ -81,6 +109,7 @@ class NodeFrontier {
     std::size_t maximum_size_{std::numeric_limits<std::size_t>::max()};
     double minimum_dropped_bound_{std::numeric_limits<double>::infinity()};
     bool capacity_exhausted_{false};
+    std::size_t peak_size_{0};
 };
 
 

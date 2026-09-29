@@ -1,11 +1,18 @@
 #include "api_internal.hpp"
+#include "engine_stages.hpp"
 
 namespace markov_cero::api::detail {
-void run_lp(const model::Model& model, const SolveOptions& options, SolveResult& out, lp::reference::Result& result) {
+void run_lp(const model::Model& model, const SolveOptions& options, SolveResult& out,
+            lp::reference::Result& result, core::SolveContext& ctx) {
     std::optional<lp::dual::BasisState> basis_to_save;
-        const auto sparse_canonical =
-            transform::sparse_canonicalize(model, /*relax_integrality=*/true);
-        if (stop_after_deadline(options, out, result, "LP canonicalization")) return;
+        const auto sparse_canonical = [&] {
+            core::StageScope stage(ctx, "canonicalize");
+            return transform::sparse_canonicalize(model, /*relax_integrality=*/true);
+        }();
+        if (stop_after_deadline(ctx, options, out, result, "LP canonicalization")) return;
+        if (!charge_or_fail(ctx, canonical_model_bytes(sparse_canonical), "working_model", out,
+                            result))
+            return;
         auto working_model = sparse_canonical;
 
         bool presolve_applied = false, scaling_applied = false;
@@ -13,11 +20,12 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
         scale::RuizScalers scalers;
 
         if (options.enable_presolve) {
+            core::StageScope stage(ctx, "presolve");
             presolve::PresolveOptions popts;
             popts.max_passes = options.max_presolve_passes;
             popts.deadline = options.lp_options.deadline;
             presolve_res = presolve::presolve(sparse_canonical, popts);
-            if (stop_after_deadline(options, out, result, "LP presolve")) return;
+            if (stop_after_deadline(ctx, options, out, result, "LP presolve")) return;
             if (presolve_res.status == lp::reference::SolveStatus::infeasible ||
                 presolve_res.status == lp::reference::SolveStatus::unbounded) {
                 result.status = presolve_res.status;
@@ -31,11 +39,12 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
         if (result.status != lp::reference::SolveStatus::infeasible &&
             result.status != lp::reference::SolveStatus::unbounded && options.enable_scale &&
             working_model.matrix.rows > 0 && working_model.matrix.columns > 0) {
+            core::StageScope stage(ctx, "scaling");
             scale::RuizOptions ropts;
             ropts.max_iterations = options.ruiz_iterations;
             ropts.deadline = options.lp_options.deadline;
             scalers = scale::equilibrate(working_model, ropts);
-            if (stop_after_deadline(options, out, result, "LP scaling")) return;
+            if (stop_after_deadline(ctx, options, out, result, "LP scaling")) return;
             scaling_applied = true;
         }
 
@@ -47,13 +56,18 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                 result.dual.assign(working_model.matrix.rows, 0.0);
                 result.objective = 0.0;
             } else {
-                const auto canonical = working_model.to_dense();
-                if (stop_after_deadline(options, out, result, "dense canonical model conversion")) return;
+                transform::CanonicalModel canonical;
+                if (!charge_or_fail(ctx, dense_conversion_bytes(working_model),
+                                    "dense_convert", out, result)) return;
+                {
+                    core::StageScope stage(ctx, "dense_convert");
+                    canonical = working_model.to_dense();
+                }
+                if (stop_after_deadline(ctx, options, out, result,
+                                         "dense canonical model conversion"))
+                    return;
+                core::StageScope solve_stage(ctx, "solve");
                 if (out.resolved_engine == "ipm") {
-                    // AP-1 (PS R4): interior-point engine. Same canonical path,
-                    // presolve, scaling and dual-gated verification as the
-                    // simplex engines; crossover converts the interior optimum
-                    // into a certified vertex basis.
                     lp::interior::Options ipm_opts;
                     ipm_opts.iteration_limit = 100;
                     ipm_opts.deadline = options.lp_options.deadline;
@@ -62,15 +76,6 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                         ipm_opts.iteration_limit =
                             std::min<std::size_t>(options.lp_options.iteration_limit, 500);
                     }
-                    // Documented engine fallback policy, the same contract the
-                    // dual engine applies to an unusable warm start: an IPM
-                    // that cannot certify a solution (numerical failure, or an
-                    // uncertified status such as an iteration limit) falls back
-                    // to the reference primal simplex on the same canonical
-                    // model, with honest telemetry. IPM robustness/fallback is
-                    // exactly the Lustig-Marsten-Shanno (1992) concern; a
-                    // fallback keeps `--engine ipm` a solve-or-certify engine
-                    // instead of a source of uncertified answers.
                     bool ipm_certified = false;
                     std::string ipm_failure;
                     lp::interior::Result ipm_res;
@@ -78,6 +83,10 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                         ipm_res = lp::interior::solve(working_model, ipm_opts);
                         ipm_certified =
                             ipm_res.status == lp::reference::SolveStatus::optimal;
+                    } catch (const std::bad_alloc&) {
+                        throw;
+                    } catch (const std::length_error&) {
+                        throw;
                     } catch (const std::exception& e) {
                         ipm_failure = e.what();
                     }
@@ -105,6 +114,10 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                             try {
                                 basis_to_save =
                                     lp::dual::make_basis_state(canonical, result.basis);
+                            } catch (const std::bad_alloc&) {
+                                throw;
+                            } catch (const std::length_error&) {
+                                throw;
                             } catch (const std::exception&) {
                                 basis_to_save.reset();
                             }
@@ -131,7 +144,9 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                                           std::istreambuf_iterator<char>());
                         warm_basis = lp::dual::parse_basis(btext);
                     }
-                    const auto dual_res = lp::dual::solve(canonical, dual_opts, warm_basis);
+                    lp::dual::Session local_session;
+                    auto& session = options.repeated_lp_session ? *options.repeated_lp_session : local_session;
+                    const auto dual_res = warm_basis ? lp::dual::solve(canonical, dual_opts, warm_basis) : session.resolve(canonical, dual_opts);
                     result = dual_res.solution;
                     basis_to_save = dual_res.basis_state;
                     out.used_warm_start = dual_res.used_warm_start;
@@ -145,6 +160,10 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                         // the verified optimum it would be attached to.
                         try {
                             basis_to_save = lp::dual::make_basis_state(canonical, result.basis);
+                        } catch (const std::bad_alloc&) {
+                            throw;
+                        } catch (const std::length_error&) {
+                            throw;
                         } catch (const std::exception&) {
                             basis_to_save.reset();
                         }
@@ -178,26 +197,40 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                                 }
                                 out.used_cold_fallback = true;
                             }
+                        } catch (const std::bad_alloc&) {
+                            throw;
+                        } catch (const std::length_error&) {
+                            throw;
                         } catch (const std::exception&) {
                             // keep the simplex result; honest failure stands
                         }
                     }
                 }
+                solve_stage.set_count(out.lp_iterations != 0
+                                          ? out.lp_iterations
+                                          : result.phase_one_iterations +
+                                                result.phase_two_iterations);
             }
         }
 
-        if (scaling_applied && result.status == lp::reference::SolveStatus::optimal) {
-            scale::unscale_solution(scalers, result);
+        if (stop_after_deadline(ctx, options, out, result, "LP solve")) return;
+        {
+            core::StageScope stage(ctx, "postsolve");
+            if (scaling_applied && result.status == lp::reference::SolveStatus::optimal) {
+                scale::unscale_solution(scalers, result);
+            }
+
+            if (presolve_applied && result.status == lp::reference::SolveStatus::optimal) {
+                result = presolve::postsolve(presolve_res.stack, result, sparse_canonical);
+            }
         }
 
-        if (presolve_applied && result.status == lp::reference::SolveStatus::optimal) {
-            result = presolve::postsolve(presolve_res.stack, result, sparse_canonical);
-        }
-
+        if (stop_after_deadline(ctx, options, out, result, "LP postsolve")) return;
+        core::StageScope verify_stage(ctx, "verify");
         const double witness_tolerance = std::max({options.lp_options.feasibility_tolerance,
                                                    options.lp_options.dual_tolerance, 1e-8});
         out.canonical_report = verify::verify_sparse_result(sparse_canonical, result,
-                                                            witness_tolerance);
+                                                            witness_tolerance, ctx.deadline());
         out.canonical_verified = out.canonical_report.accepted;
         out.certificate_type = out.canonical_verified ? "canonical_lp_witness" : "none";
 
@@ -212,8 +245,16 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
              result.status == lp::reference::SolveStatus::infeasible ||
              result.status == lp::reference::SolveStatus::unbounded) &&
             !out.canonical_verified) {
-            result.status = lp::reference::SolveStatus::numerical_failure;
-            result.message = "canonical witness rejected: " + out.canonical_report.message;
+            // A witness the verifier did not finish checking (the solve-wide
+            // deadline expired mid-scan) is a resource stop, never a claim
+            // about the model and never a numerical failure.
+            const bool stopped_by_deadline = ctx.deadline().expired();
+            if (stopped_by_deadline) (void)ctx.note_stop(core::StopReason::deadline_exceeded);
+            result.status = stopped_by_deadline ? lp::reference::SolveStatus::resource_limit
+                                                : lp::reference::SolveStatus::numerical_failure;
+            result.message = stopped_by_deadline
+                                 ? "solve deadline reached before canonical verification completed"
+                                 : "canonical witness rejected: " + out.canonical_report.message;
         }
 
         if (result.status == lp::reference::SolveStatus::optimal) {
@@ -233,7 +274,8 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
             out.original_objective =
                 transform::reconstruct_objective(sparse_canonical, result.objective);
             verify::Candidate candidate{out.original_primal, out.original_objective};
-            out.primal_report = verify::verify_primal(model, candidate);
+            out.primal_report = verify::verify_primal(model, candidate, {}, {}, 1e-7,
+                                                     true, ctx.deadline());
             out.original_verified = out.primal_report.passed;
             out.original_message = out.original_verified ? "original primal verified"
                                                          : "original primal rejected";
@@ -253,7 +295,6 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
             out.original_message = "original primal not applicable";
         }
         out.lp_iterations = result.phase_one_iterations + result.phase_two_iterations;
-
 }
 
 } // namespace markov_cero::api::detail

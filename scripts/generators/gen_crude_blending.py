@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
 markov-cero Industrial Case Generator: Crude & Component Blending (Convex QP)
-Ground truth model for multi-component refinery crude/intermediate blending
-meeting strict BS-VI / Euro-VI product specifications at MRPL.
+Synthetic multi-component refinery crude/intermediate blending qualification case.
 Follows the canonical formulation of examples/cases/crude_oil_blending.mps scaled
 to industrial dimensions:
 - N component feedstocks/crudes (e.g., Arab Light, Maya, Bonny Light, Basrah, Murban, etc.)
@@ -16,6 +15,8 @@ import argparse
 import os
 import random
 import sys
+
+from fixture_provenance import write_provenance
 
 
 def generate_crude_blending_qps(
@@ -53,7 +54,11 @@ def generate_crude_blending_qps(
         ("FO_SULFUR", "L"),    # Sulfur upper bound for Marine Fuel
     ]
 
-    lines = ["NAME CRUDE_BLENDING_LARGE", "ROWS", " N COST"]
+    lines = ["* Units: X flows and product/availability RHS synthetic volume units (SVU); COST linear",
+             "* coefficients synthetic currency/SVU; QUADOBJ synthetic currency/SVU^2; quality rows",
+             "* SVU times normalized dimensionless deviation, not physical specification equations.",
+             "* Synthetic qualification data; not plant operating data; deterministic for a fixed seed.",
+             "NAME CRUDE_BLENDING_LARGE", "ROWS", " N COST"]
 
     # Product demand rows
     for p_name, _ in products:
@@ -166,6 +171,9 @@ def main():
     content = generate_crude_blending_qps(num_components=args.components, seed=args.seed)
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(content)
+    write_provenance(args.output, "gen_crude_blending.py",
+                     {"components": args.components, "seed": args.seed},
+                     "Unit and qualification comments refreshed; model rows, columns and coefficients unchanged.")
 
     print(f"[+] Industrial crude blending Convex QP model written to {args.output}")
     print(f"    File size: {os.path.getsize(args.output):,} bytes")

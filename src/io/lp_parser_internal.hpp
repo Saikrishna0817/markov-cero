@@ -80,7 +80,7 @@ private:
 
     void parse_objective() ;
 
-    void parse_quadratic_objective() ;
+    void parse_quadratic_objective(double sign = 1.0) ;
 
     void parse_constraints_header() ;
 

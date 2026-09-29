@@ -1,3 +1,5 @@
+* Units: generation, nodal demand and line flow MW; voltage angle radians;
+* objective synthetic currency with quadratic generation cost.
 NAME          CAPITANESCU_DC_OPF
 ROWS
  N  objCOST

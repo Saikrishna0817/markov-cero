@@ -38,6 +38,11 @@ struct QpOptions {
     bool adaptive_rho{true};
     std::size_t adaptive_rho_interval{25};
     bool verbose{false};
+    // Repeated-solve optimization: let the solver's KktSolver keep the symbolic
+    // pattern cache across solves of an unchanged KKT shape (see kkt.hpp).
+    // false restores a full symbolic factorization on every solve and is the
+    // A/B control for "cache miss == current behavior".
+    bool reuse_kkt_symbolic{true};
 };
 
 struct QpSolution {
@@ -60,12 +65,22 @@ struct QpSolution {
     // Telemetry for D-08: true when the GPU ADMM residual path was actually
     // active (backend requested + thresholds met + CUDA device present).
     bool gpu_path_active{false};
+    // Repeated-solve telemetry: how many KKT symbolic factorizations this solve
+    // skipped because the KKT pattern still matched the cached one.
+    std::size_t kkt_symbolic_reuse{0};
+    // Set only after the accepted witness passes the independent QP verifier.
+    bool verified{false};
 };
 
 class AdmmQpSolver {
 public:
     explicit AdmmQpSolver(QpOptions options = {}) : options_(options) {}
 
+    /// Repeated-solve session object: one instance reused across solves keeps
+    /// the KKT symbolic pattern cache (and its counters) alive, so a repeat of
+    /// an unchanged KKT shape skips symbolic factorization. Call solve()
+    /// sequentially on a single instance; use a fresh instance for parallel
+    /// solves.
     [[nodiscard]] QpSolution solve(const QuadraticModel& model);
 
     // W3/D-08: request the GPU-assisted residual path. Activation still
@@ -73,9 +88,20 @@ public:
     // an sm_50+ device); an unmet request falls back to CPU silently.
     void set_gpu_backend(bool enable) { gpu_requested_ = enable; }
 
+    // Per-solve options (deadline, limits, tolerance, cache toggle).
+    void set_options(const QpOptions& options) { options_ = options; }
+    [[nodiscard]] const QpOptions& options() const noexcept { return options_; }
+
+    // Repeated-solve telemetry of the KKT factor cache for this solver.
+    [[nodiscard]] std::size_t symbolic_factorizations() const noexcept {
+        return kkt_.symbolic_factorizations();
+    }
+    [[nodiscard]] std::size_t symbolic_reuses() const noexcept { return kkt_.symbolic_reuses(); }
+
 private:
     QpOptions options_;
     bool gpu_requested_{false};
+    KktSolver kkt_;
 };
 
 /// High-level function to solve a QuadraticModel using ADMM.
@@ -86,5 +112,11 @@ private:
 /// available; otherwise it silently matches solve_qp.
 [[nodiscard]] QpSolution solve_qp(const QuadraticModel& model, const QpOptions& options,
                                   bool gpu_backend_requested);
+
+/// Repeated-solve variant: equilibration and option deadlines still run per
+/// call, but the KKT factor cache lives in the caller-owned `session`, so
+/// repeated solves with an unchanged KKT pattern skip symbolic work.
+[[nodiscard]] QpSolution solve_qp(const QuadraticModel& model, const QpOptions& options,
+                                  AdmmQpSolver& session, bool gpu_backend_requested);
 
 } // namespace markov_cero::qp

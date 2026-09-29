@@ -31,6 +31,24 @@ class NodeBounds final {
 
     [[nodiscard]] std::size_t delta_count() const noexcept { return delta_count_; }
 
+    /// Delta-chain payload bytes: `sizeof(Delta)` per link this structure can
+    /// materialize. Links are shared with ancestors, so this is the chain's
+    /// full footprint viewed alone, not unique bytes when summed over a tree
+    /// (allocator metadata excluded).
+    [[nodiscard]] std::size_t retained_bytes() const noexcept {
+        return delta_count_ * sizeof(Delta);
+    }
+
+    /// True when every recorded delta addresses a variable below `count`.
+    /// Materialization preflights with this so a corrupt chain fails closed
+    /// before any output vector is written.
+    [[nodiscard]] bool indices_within(std::size_t count) const noexcept {
+        for (auto delta = tail_; delta; delta = delta->parent) {
+            if (delta->variable >= count) return false;
+        }
+        return true;
+    }
+
     [[nodiscard]] NodeBounds with_lower(std::size_t variable, model::Bound value) const {
         return append(variable, value, std::nullopt);
     }
@@ -60,12 +78,16 @@ class NodeBounds final {
             &lower_out == &upper_out) {
             throw std::invalid_argument("node bound materialization requires separate vectors");
         }
-        lower_out = root_lower;
-        upper_out = root_upper;
+        // Build the delta path before touching the outputs: `path.reserve` is
+        // the only allocation left in this function once the caller has
+        // pre-reserved the outputs (NodeView does), so a host allocation
+        // failure here leaves both output vectors exactly as they were.
         auto& path = scratch.path_;
         path.clear();
         if (path.capacity() < delta_count_) path.reserve(delta_count_);
         for (auto delta = tail_; delta; delta = delta->parent) path.push_back(delta.get());
+        lower_out = root_lower;
+        upper_out = root_upper;
         for (auto it = path.rbegin(); it != path.rend(); ++it) {
             const auto& delta = **it;
             if (delta.variable >= lower_out.size()) {

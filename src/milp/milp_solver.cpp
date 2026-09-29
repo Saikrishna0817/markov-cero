@@ -1,7 +1,10 @@
 #include "search_context.hpp"
 namespace markov_cero::milp::detail {
 Result Search::run() {
-if (!initialize() || !root_relaxation() || !root_branching()) return result;
+if (!initialize() || !root_relaxation() || !root_branching()) {
+    result.search_ms = std::max(0.0, result.runtime_ms - result.lp_bound_ms - result.incumbent_ms);
+    return result;
+}
     node_model = root_model;
     // 6. Tree Search Loop
     stop_reason = {};

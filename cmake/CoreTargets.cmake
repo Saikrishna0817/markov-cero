@@ -18,6 +18,8 @@ add_library(markov_cero_core STATIC
   src/foundation/build_info.cpp
   src/model/model.cpp
   src/model/classifier.cpp
+  src/model/model_snapshot.cpp
+  src/model/model_hash.cpp
   src/io/mps.cpp
   src/io/mps_records.cpp
   src/io/mps_extensions.cpp
@@ -75,10 +77,12 @@ add_library(markov_cero_core STATIC
   src/milp/search_finish.cpp
   src/milp/node_lp.cpp
   src/milp/node_qp.cpp
+  src/milp/node_view.cpp
+  src/milp/reference_materialisation.cpp
   src/milp/mir.cpp
   src/milp/cover.cpp
   src/milp/parallel_tree_search.cpp src/milp/parallel_tree_search_solve_integer_parallel.cpp
-  src/milp/parallel_tree_search_root_cuts.cpp src/milp/parallel_tree_search_solve_parallel.cpp
+  src/milp/parallel_tree_search_result.cpp src/milp/parallel_tree_search_root_cuts.cpp src/milp/parallel_tree_search_solve_parallel.cpp
   src/milp/shared_incumbent.cpp
   src/milp/strong_branching.cpp
   src/milp/work_queue.cpp

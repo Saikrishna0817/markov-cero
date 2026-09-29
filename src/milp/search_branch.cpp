@@ -7,19 +7,33 @@ bool Search::branch() {
         // Check integer feasibility of node solution
         const auto fractional_vars = find_fractional_variables(
             node_lp_res.primal, root_model.variable_type, options.integrality_tolerance);
+        const bool near_integral = fractional_vars.empty();
 
-        if (fractional_vars.empty()) {
-            // Integer feasible incumbent found!
-
-            if (node_lp_res.objective < best_upper_bound) {
-                best_upper_bound = node_lp_res.objective;
-                best_primal = node_lp_res.primal;
+        if (near_integral) {
+            const auto rounded = rounded_integer_candidate(node_model, node_lp_res.primal,
+                options.feasibility_tolerance, options.integrality_tolerance);
+            if (rounded.found) {
+                if (rounded.objective < best_upper_bound) {
+                    best_upper_bound = rounded.objective;
+                    best_primal = rounded.primal;
+                }
+                if (std::abs(node_lp_res.objective - rounded.objective) <=
+                    options.absolute_gap_tolerance) return false;
             }
-            return false;
+            // A tolerance-close value that cannot be rounded feasibly still
+            // needs an exact integer split.
+            if (find_fractional_variables(node_lp_res.primal,
+                    root_model.variable_type, 0.0).empty()) {
+                ++unsolved_node_lps;
+                min_unsolved_bound = std::min(min_unsolved_bound, node->lower_bound);
+                return false;
+            }
         }
+        const double branch_tolerance = near_integral ? 0.0 : options.integrality_tolerance;
 
         // Try quick simple rounding on fractional point
         if (options.enable_heuristics && result.nodes_explored % 5 == 0) {
+            ScopedSearchTimer timer(result.incumbent_ms);
             const auto hr =
                 simple_rounding(node_model, node_lp_res.primal, options.feasibility_tolerance,
                                 options.integrality_tolerance);
@@ -37,7 +51,7 @@ bool Search::branch() {
             node_lp_res.basis.has_value()) {
             try {
                 StrongBranchingOptions sb_opts;
-                sb_opts.integrality_tolerance = options.integrality_tolerance;
+                sb_opts.integrality_tolerance = branch_tolerance;
                 sb_opts.feasibility_tolerance = options.feasibility_tolerance;
                 sb_opts.deadline = options.deadline;
 #ifdef MARKOV_CERO_ENABLE_ML
@@ -99,7 +113,7 @@ bool Search::branch() {
 
                 branch_var = select_branching_variable(node_lp_res.primal, root_model.variable_type,
                                                        pseudo_costs, options.branching_strategy,
-                                                       options.integrality_tolerance,
+                                                       branch_tolerance,
                                                        &current_node_model,
                                                        branching_scorer,
                                                        result.ml_requested ? &result.ml_telemetry
@@ -109,7 +123,7 @@ bool Search::branch() {
         } else {
             branch_var = select_branching_variable(node_lp_res.primal, root_model.variable_type,
                                                    pseudo_costs, options.branching_strategy,
-                                                   options.integrality_tolerance,
+                                                   branch_tolerance,
                                                    &current_node_model,
                                                    branching_scorer,
                                                    result.ml_requested ? &result.ml_telemetry

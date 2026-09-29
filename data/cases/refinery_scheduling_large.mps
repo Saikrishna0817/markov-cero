@@ -1,3 +1,8 @@
+* Units: QU/CG/PR rate flows kbpd; INV tank stock kb; time step 1 day, so rate x step
+* converts to kb in INV_BAL rows. Capacity/demand RHS kbpd; berth indicators counts.
+* COST: rate coefficients USD/bbl -> kUSD/day; inventory 0.25 kUSD/kb/day; berth 150
+* kUSD/day per active binary. Numeric objective is kUSD/day under these conventions.
+* Synthetic qualification data; not plant operating data; deterministic for a fixed seed.
 NAME REFINERY_SCHEDULING_LARGE
 ROWS
  N COST

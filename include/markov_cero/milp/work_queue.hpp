@@ -75,6 +75,11 @@ class ThreadSafeNodeQueue {
     [[nodiscard]] bool capacity_exhausted() const;
     [[nodiscard]] std::size_t active_workers() const;
     [[nodiscard]] double min_lower_bound() const;
+    /// Peak live queue size since construction (W01/IR-19 evidence).
+    [[nodiscard]] std::size_t peak_size() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return peak_size_;
+    }
     void notify_all();
 
   private:
@@ -90,6 +95,7 @@ class ThreadSafeNodeQueue {
     bool stopped_{false};
     bool capacity_exhausted_{false};
     std::size_t prune_lazily_discarded_{0};
+    std::size_t peak_size_{0};
     std::atomic<bool> need_notify_{false};
 };
 

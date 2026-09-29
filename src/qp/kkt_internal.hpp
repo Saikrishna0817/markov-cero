@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <limits>
 #include <map>
 #include <stdexcept>
@@ -52,4 +53,11 @@ namespace detail_kkt { void ldl_ltsolve(std::size_t n,
                  const std::vector<std::size_t>& Lp,
                  const std::vector<std::size_t>& Li,
                  const std::vector<double>& Lx); }
+namespace detail_kkt { std::uint64_t kkt_pattern_fingerprint(std::size_t total_dim,
+                                const std::vector<std::size_t>& col_ptr,
+                                const std::vector<std::size_t>& row_ind); }
+namespace detail_kkt { bool same_kkt_pattern(const std::vector<std::size_t>& lhs_col_ptr,
+                   const std::vector<std::size_t>& lhs_row_ind,
+                   const std::vector<std::size_t>& rhs_col_ptr,
+                   const std::vector<std::size_t>& rhs_row_ind); }
 }

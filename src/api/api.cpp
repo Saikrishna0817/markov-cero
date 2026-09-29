@@ -2,20 +2,7 @@
 
 namespace markov_cero::api::detail {
 SolveOptions with_api_deadline(SolveOptions options, Clock::time_point started) {
-    auto deadline = options.lp_options.deadline;
-    const auto include = [&](std::optional<Clock::time_point> candidate) {
-        if (candidate && (!deadline || *candidate < *deadline)) deadline = candidate;
-    };
-    const auto add_limit = [&](double seconds) {
-        if (!std::isfinite(seconds) || seconds <= 0) return;
-        const auto remaining = Clock::time_point::max() - started;
-        if (seconds < std::chrono::duration<double>(remaining).count())
-            include(started + std::chrono::duration_cast<Clock::duration>(std::chrono::duration<double>(seconds)));
-    };
-    include(options.milp_options.deadline);
-    add_limit(options.lp_options.time_limit_seconds);
-    // The MIP duration applies only when an integer model is dispatched.
-    options.lp_options.deadline = deadline;
+    options.lp_options.deadline = earliest_deadline(options, started);
     return options;
 }
 
@@ -104,6 +91,9 @@ void guarded(SolveResult& out, lp::reference::Result& result, Body&& body) {
         out.error = e.what();
         out.diagnostic.failure_site = "memory_or_factor_limit";
         out.diagnostic.suggested_recovery = "increase_maximum_factor_nonzeros";
+    } catch (const std::bad_alloc&) {
+        // Host allocation failure is a resource outcome, not a numerical one.
+        fail_allocation(out, result);
     } catch (const std::exception& e) {
         result.status = lp::reference::SolveStatus::numerical_failure;
         result.message = e.what();
@@ -114,7 +104,30 @@ void guarded(SolveResult& out, lp::reference::Result& result, Body&& body) {
     sync_engine_result(out, result);
 }
 
-void finalize(SolveResult& out) {
+/// Reports the shared cooperative stop on the result, and enforces the W02
+/// invariant that a resource stop never accompanies an unverified optimal,
+/// infeasible or unbounded claim.
+void apply_resource_stop(SolveResult& out, core::SolveContext& ctx) {
+    const core::StopReason reason = ctx.stop_reason();
+    if (reason == core::StopReason::none) return;
+    out.stop_reason = core::to_string(reason);
+    if (reason == core::StopReason::memory_budget_exhausted) {
+        out.diagnostic.failure_site = "memory_budget";
+        out.diagnostic.suggested_recovery = "raise_memory_limit_bytes_or_reduce_the_model";
+    }
+    const bool unclaimed_success =
+        out.status == lp::reference::SolveStatus::optimal ||
+        out.status == lp::reference::SolveStatus::infeasible ||
+        out.status == lp::reference::SolveStatus::unbounded;
+    if (!unclaimed_success && reason != core::StopReason::memory_budget_exhausted) return;
+    out.status = lp::reference::SolveStatus::resource_limit;
+    out.message = "solve stopped (" + out.stop_reason +
+                  ") before the result could be verified";
+    out.error = out.message;
+    out.verified = false;
+}
+
+void finalize(SolveResult& out, core::SolveContext& ctx) {
     out.verified =
         (out.status == lp::reference::SolveStatus::optimal && out.original_verified &&
          out.canonical_verified) ||
@@ -142,6 +155,7 @@ void finalize(SolveResult& out) {
     // condition_estimate is engine-populated: 0.0 here means the resolved
     // engine performed no factorization (matrix-free PDLP / SQP), which is
     // reported as-is rather than replaced by a fake "perfectly conditioned".
+    apply_resource_stop(out, ctx);
 }
 
 
@@ -151,60 +165,118 @@ namespace markov_cero::api {
 using namespace detail;
 SolveResult solve_file(const std::string& path, const SolveOptions& options) {
     const auto started = Clock::now();
-    const auto timed_options = with_api_deadline(options, started);
     SolveResult out;
-    out.resolved_engine = options.engine;
-    if (options.maximum_input_bytes &&
-        (*options.maximum_input_bytes == 0 || *options.maximum_input_bytes > 1073741824ULL)) {
-        out.status = lp::reference::SolveStatus::invalid_options;
-        out.message = "maximum_input_bytes must be in 1..1073741824";
-        out.error = out.message;
-        out.diagnostic.failure_site = "input_resource_budget";
-        out.runtime_ms = elapsed_ms(started);
-        return out;
-    }
-    std::ifstream input(path);
-    if (!input) {
-        out.status = lp::reference::SolveStatus::invalid_model;
-        out.message = "cannot open input";
-        out.error = "cannot open input";
-        out.input_open_failed = true;
-        out.diagnostic.failure_site = "file_io";
-        out.diagnostic.suggested_recovery = "verify_file_exists_and_has_read_permissions";
-        out.runtime_ms = elapsed_ms(started);
-        return out;
-    }
     lp::reference::Result result;
-    guarded(out, result, [&] {
-        const bool is_lp = (path.size() >= 3 &&
-            (path.rfind(".lp") == path.size() - 3 || path.rfind(".LP") == path.size() - 3));
-        // R12 (thousands-to-millions of nonzeros): the default 16 MB parser
-        // byte limit rejects ~800k-nnz models outright, so file parsing runs
-        // with an explicitly raised limit. All other structural limits are
-        // unchanged.
-        io::MpsLimits limits;
-        limits.maximum_bytes = 256U * 1024U * 1024U;
-        if (options.maximum_input_bytes) limits.maximum_bytes = *options.maximum_input_bytes;
-        io::LpLimits lp_limits;
-        if (options.maximum_input_bytes)
-            lp_limits.maximum_bytes = *options.maximum_input_bytes;
-        const auto model = is_lp ? io::parse_lp_file(path, lp_limits)
-                                 : io::parse_mps(input, limits);
-        run_engine(model, timed_options, out, result);
-    });
-    finalize(out);
+    if (const char* error = resource_option_error(options)) {
+        out.status = lp::reference::SolveStatus::invalid_options;
+        out.message = error;
+        out.error = error;
+        out.diagnostic.failure_site = "invalid_resource_options";
+        out.diagnostic.suggested_recovery = "correct_total_time_limit_and_memory_limit_options";
+        out.runtime_ms = elapsed_ms(started);
+        return out;
+    }
+    // One solve-wide context per solve (W02): the deadline, byte budget, thread
+    // quota and stop reason every stage, engine and verifier shares.
+    core::SolveContext ctx{solve_context_config(options, started)};
+    try {
+        const auto timed_options = with_api_deadline(options, started);
+        out.resolved_engine = options.engine;
+        if (options.maximum_input_bytes &&
+            (*options.maximum_input_bytes == 0 || *options.maximum_input_bytes > 1073741824ULL)) {
+            out.status = lp::reference::SolveStatus::invalid_options;
+            out.message = "maximum_input_bytes must be in 1..1073741824";
+            out.error = out.message;
+            out.diagnostic.failure_site = "input_resource_budget";
+            out.runtime_ms = elapsed_ms(started);
+            return out;
+        }
+        std::ifstream input(path);
+        if (!input) {
+            out.status = lp::reference::SolveStatus::invalid_model;
+            out.message = "cannot open input";
+            out.error = "cannot open input";
+            out.input_open_failed = true;
+            out.diagnostic.failure_site = "file_io";
+            out.diagnostic.suggested_recovery = "verify_file_exists_and_has_read_permissions";
+            out.runtime_ms = elapsed_ms(started);
+            return out;
+        }
+        guarded(out, result, [&] {
+            const bool is_lp = (path.size() >= 3 &&
+                (path.rfind(".lp") == path.size() - 3 || path.rfind(".LP") == path.size() - 3));
+            // R12 (thousands-to-millions of nonzeros): the default 16 MB parser
+            // byte limit rejects ~800k-nnz models outright, so file parsing runs
+            // with an explicitly raised limit. All other structural limits are
+            // unchanged.
+            io::MpsLimits limits;
+            limits.maximum_bytes = 256U * 1024U * 1024U;
+            if (options.maximum_input_bytes) limits.maximum_bytes = *options.maximum_input_bytes;
+            io::LpLimits lp_limits;
+            if (options.maximum_input_bytes)
+                lp_limits.maximum_bytes = *options.maximum_input_bytes;
+            const auto model = is_lp ? io::parse_lp_file(path, lp_limits)
+                                     : io::parse_mps(input, limits);
+            run_engine(model, timed_options, out, result, ctx);
+        });
+        finalize(out, ctx);
+    } catch (const std::bad_alloc&) {
+        // Nothing from the API boundary may escape as std::bad_alloc: report
+        // the resource outcome instead (W02 allocation-failure harness).
+        fail_allocation(out, result);
+        finalize(out, ctx);
+    } catch (const std::exception& error) {
+        result.status = lp::reference::SolveStatus::resource_limit;
+        result.message = error.what();
+        sync_engine_result(out, result);
+        out.diagnostic.failure_site = "api_boundary_exception";
+        finalize(out, ctx);
+    } catch (...) {
+        result.status = lp::reference::SolveStatus::resource_limit;
+        result.message = "unknown exception at API boundary";
+        sync_engine_result(out, result);
+        out.diagnostic.failure_site = "api_boundary_exception";
+        finalize(out, ctx);
+    }
     out.runtime_ms = elapsed_ms(started);
     return out;
 }
 
 SolveResult solve_model(const model::Model& model, const SolveOptions& options) {
     const auto started = Clock::now();
-    const auto timed_options = with_api_deadline(options, started);
     SolveResult out;
-    out.resolved_engine = options.engine;
     lp::reference::Result result;
-    guarded(out, result, [&] { run_engine(model, timed_options, out, result); });
-    finalize(out);
+    if (const char* error = resource_option_error(options)) {
+        out.status = lp::reference::SolveStatus::invalid_options;
+        out.message = error;
+        out.error = error;
+        out.diagnostic.failure_site = "invalid_resource_options";
+        out.diagnostic.suggested_recovery = "correct_total_time_limit_and_memory_limit_options";
+        out.runtime_ms = elapsed_ms(started);
+        return out;
+    }
+    core::SolveContext ctx{solve_context_config(options, started)};
+    try {
+        const auto timed_options = with_api_deadline(options, started);
+        out.resolved_engine = options.engine;
+        guarded(out, result, [&] { run_engine(model, timed_options, out, result, ctx); });
+        finalize(out, ctx);
+    } catch (const std::bad_alloc&) {
+        fail_allocation(out, result);
+        finalize(out, ctx);
+    } catch (const std::exception& error) {
+        result.status = lp::reference::SolveStatus::resource_limit;
+        result.message = error.what();
+        sync_engine_result(out, result);
+        out.diagnostic.failure_site = "api_boundary_exception";
+        finalize(out, ctx);
+    } catch (...) {
+        result.status = lp::reference::SolveStatus::resource_limit;
+        result.message = "unknown exception at API boundary";
+        sync_engine_result(out, result);
+        out.diagnostic.failure_site = "api_boundary_exception";
+        finalize(out, ctx);
+    }
     out.runtime_ms = elapsed_ms(started);
     return out;
 }

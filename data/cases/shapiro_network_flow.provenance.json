@@ -1,12 +1,20 @@
 {
-  "paper": "J.F. Shapiro, 'Modeling the Supply Chain', Duxbury (2001), Chapter 4 network flow model.",
+  "change": "Unit comments added; parameterized literature model unchanged.",
+  "fixture": "shapiro_network_flow.mps",
+  "generator": "gen_literature_cases.py",
+  "generator_args": {
+    "case": "shapiro_network_flow"
+  },
+  "model_sha256": "318fd983e858d10932c6eba1c2143c24b7eea708a8233e11c474ec644cb54e7a",
   "modeled_structure": "Two-echelon min-cost network flow: plant supply caps, DC throughput caps, customer demands, two products.",
+  "paper": "J.F. Shapiro, 'Modeling the Supply Chain', Duxbury (2001), Chapter 4 network flow model.",
   "parameterization": {
-    "plants": 2,
-    "dcs": 3,
     "customers": 8,
+    "dcs": 3,
+    "plants": 2,
     "products": 2
   },
   "problem_class": "LP",
+  "regeneration_date": "2026-09-29",
   "source": "open literature (see paper citation); parameterized subset, not a copy of any dataset"
 }

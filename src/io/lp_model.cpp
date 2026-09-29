@@ -53,8 +53,12 @@ model::Model LpParser::build_model() {
         if (!quad_terms_.empty()) {
             model::SparseMatrixBuilder q_builder(variables_.size(), variables_.size());
             for (const auto& qt : quad_terms_) {
-                q_builder.add(qt.col1, qt.col2, qt.coeff);
-                if (qt.col1 != qt.col2) {
+                // The model evaluates 0.5*x^T*P*x. LP coefficients name full
+                // monomials, so diagonal and symmetric cross storage differ.
+                if (qt.col1 == qt.col2) {
+                    q_builder.add(qt.col1, qt.col2, 2.0 * qt.coeff);
+                } else {
+                    q_builder.add(qt.col1, qt.col2, qt.coeff);
                     q_builder.add(qt.col2, qt.col1, qt.coeff);
                 }
             }

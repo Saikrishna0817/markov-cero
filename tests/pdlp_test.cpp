@@ -191,6 +191,26 @@ void test_pdlp_crossover_netlib() {
 
 int main() {
     try {
+        markov_cero::model::Model maximum;
+        maximum.objective_sense = markov_cero::model::ObjectiveSense::maximize;
+        maximum.objective = {1};
+        markov_cero::model::SparseMatrixBuilder max_builder(1, 1);
+        max_builder.add(0, 0, 1);
+        maximum.matrix = max_builder.build();
+        maximum.row_lower = {markov_cero::model::Bound::negative_infinity()};
+        maximum.row_upper = {markov_cero::model::Bound::finite(1)};
+        maximum.row_name = {"CAP"};
+        maximum.variable_lower = {markov_cero::model::Bound::finite(0)};
+        maximum.variable_upper = {markov_cero::model::Bound::positive_infinity()};
+        maximum.variable_type = {markov_cero::model::VariableType::continuous};
+        maximum.variable_name = {"X"};
+        maximum.validate();
+        markov_cero::lp::first_order::PdlpOptions max_options;
+        max_options.max_iterations = 20000;
+        const auto max_result = markov_cero::lp::first_order::solve_pdlp(maximum, max_options);
+        assert(max_result.status == markov_cero::lp::first_order::PdlpStatus::optimal);
+        assert(std::abs(max_result.objective - 1) < 1e-3);
+        assert(max_result.duality_gap <= max_options.gap_tolerance);
         test_blend_lp();
         test_equality_lp();
         test_pdlp_crossover_netlib();

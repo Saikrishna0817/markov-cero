@@ -1,4 +1,5 @@
 #include "milp_test_internal.hpp"
+#include "markov_cero/milp/parallel_tree_search.hpp"
 namespace test_milp_test {
 using namespace detail_milp_test;
 void test_node_selection_policies() {
@@ -99,5 +100,56 @@ void test_pseudo_cost_branching() {
     const auto report = markov_cero::verify::verify_primal(model, candidate);
     assert(report.passed);
     std::cout << "[+] test_pseudo_cost_branching passed: nodes=" << result.nodes_explored << " obj=" << result.objective << "\n";
+}
+void test_near_integer_root_rejected() {
+    using namespace markov_cero;
+    model::Model m;
+    m.objective = {0};
+    model::SparseMatrixBuilder a(1, 1);
+    a.add(0, 0, 1);
+    m.matrix = a.build();
+    m.row_lower = {model::Bound::finite(1e-5)};
+    m.row_upper = m.row_lower;
+    m.row_name = {"EQ"};
+    m.variable_lower = {model::Bound::finite(0)};
+    m.variable_upper = {model::Bound::finite(1)};
+    m.variable_type = {model::VariableType::integer};
+    m.variable_name = {"X"};
+    m.validate();
+    milp::Options options;
+    options.feasibility_tolerance = 1e-7;
+    options.integrality_tolerance = 1e-4;
+    assert(milp::solve(m, options).status != lp::reference::SolveStatus::optimal);
+    milp::ParallelOptions parallel;
+    parallel.feasibility_tolerance = 1e-7;
+    parallel.integrality_tolerance = 1e-4;
+    parallel.num_threads = 1;
+    assert(milp::solve_parallel(m, parallel).status != lp::reference::SolveStatus::optimal);
+}
+void test_huge_parallel_incumbent() {
+    using namespace markov_cero;
+    model::Model m;
+    m.objective = {0};
+    m.objective_offset = 9e307;
+    model::SparseMatrixBuilder a(1, 1);
+    a.add(0, 0, 1);
+    m.matrix = a.build();
+    m.row_lower = {model::Bound::finite(0.5)};
+    m.row_upper = {model::Bound::positive_infinity()};
+    m.row_name = {"LOWER"};
+    m.variable_lower = {model::Bound::finite(0)};
+    m.variable_upper = {model::Bound::finite(1)};
+    m.variable_type = {model::VariableType::binary};
+    m.variable_name = {"X"};
+    m.validate();
+    milp::ParallelOptions options;
+    options.num_threads = 1;
+    options.enable_cuts = false;
+    options.enable_strong_branching = false;
+    options.enable_heuristics = true;
+    const auto result = milp::solve_parallel(m, options);
+    assert(result.status == lp::reference::SolveStatus::optimal);
+    assert(result.primal.size() == 1 && result.primal[0] == 1);
+    assert(result.objective == 9e307);
 }
 }

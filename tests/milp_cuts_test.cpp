@@ -1,11 +1,86 @@
 #include "markov_cero/lp/dual/dual_simplex.hpp"
 #include "markov_cero/milp/cuts.hpp"
+#include "markov_cero/milp/node_propagation.hpp"
+#include "markov_cero/milp/milp_solver.hpp"
 #include "markov_cero/transform/sparse_canonical_model.hpp"
 
 #include <cassert>
 #include <iostream>
+#include <stdexcept>
 
 namespace {
+void require(bool condition, const char* message) {
+    if (!condition) throw std::runtime_error(message);
+}
+
+void test_singleton_propagation_evidence() {
+    using namespace markov_cero;
+    model::Model model;
+    model::SparseMatrixBuilder builder(1, 1);
+    builder.add(0, 0, 2.0);
+    model.matrix = builder.build();
+    model.objective = {1.0};
+    model.row_lower = {model::Bound::finite(4.0)};
+    model.row_upper = {model::Bound::positive_infinity()};
+    model.variable_lower = {model::Bound::finite(0.0)};
+    model.variable_upper = {model::Bound::finite(5.0)};
+    model.variable_type = {model::VariableType::integer};
+    auto lower = model.variable_lower, upper = model.variable_upper;
+    milp::NodeBounds overlay;
+    const auto propagated = milp::propagate_singleton_rows(model, lower, upper, overlay);
+    require(propagated.tightened && lower[0].value == 2.0, "singleton row tightens domain");
+    require(propagated.evidence.source == milp::BoundEvidenceSource::propagated &&
+            propagated.evidence.value == 2.0, "propagated objective evidence");
+    milp::NodeView::Contribution contribution;
+    contribution.tightened_lower = {0, lower[0]};
+    contribution.lower_bound = propagated.evidence;
+    const auto view = milp::NodeView::root()->child(contribution);
+    milp::NodeBounds::MaterializationScratch scratch;
+    core::MemoryBudget budget;
+    std::vector<model::Bound> materialized_lower, materialized_upper;
+    const auto materialized = view->materialize(model.variable_lower, model.variable_upper,
+        materialized_lower, materialized_upper, scratch, budget);
+    require(materialized.ok() && materialized_lower[0].value == 2.0 &&
+            view->lower_bound_evidence().source == milp::BoundEvidenceSource::propagated,
+            "materialized node retains propagated evidence");
+    milp::NodeView::release(materialized, budget);
+}
+
+void test_serial_singleton_propagation_parity() {
+    using namespace markov_cero;
+    model::Model implied;
+    model::SparseMatrixBuilder builder(2, 3);
+    builder.add(0, 0, 2.0);
+    builder.add(1, 1, 3.0);
+    builder.add(1, 2, 3.0);
+    implied.matrix = builder.build();
+    implied.objective = {0.0, -1.0, -1.0};
+    implied.row_lower = {model::Bound::finite(2.0), model::Bound::negative_infinity()};
+    implied.row_upper = {model::Bound::positive_infinity(), model::Bound::finite(5.0)};
+    implied.variable_lower.assign(3, model::Bound::finite(0.0));
+    implied.variable_upper.assign(3, model::Bound::finite(1.0));
+    implied.variable_type.assign(3, model::VariableType::binary);
+    implied.row_name = {"FIX", "PACK"};
+    implied.variable_name = {"X0", "X1", "X2"};
+    implied.validate();
+    auto explicit_bound = implied;
+    explicit_bound.variable_lower[0] = model::Bound::finite(1.0);
+    milp::Options options;
+    options.enable_cuts = false;
+    options.enable_heuristics = false;
+    options.enable_strong_branching = false;
+    const auto propagated = milp::solve(implied, options);
+    const auto baseline = milp::solve(explicit_bound, options);
+    require(propagated.status == baseline.status &&
+            propagated.status == lp::reference::SolveStatus::optimal &&
+            std::abs(propagated.objective - baseline.objective) < 1e-8,
+            "singleton propagation preserves MILP status and objective");
+    bool emitted = false;
+    for (const auto& note : propagated.obligations)
+        emitted |= note.kind == verify::MipObligationKind::propagation &&
+                   note.source_row == 0 && note.variable == 0;
+    require(emitted, "node relaxation emits singleton propagation obligation");
+}
 
 void test_gomory_cut_generation() {
     markov_cero::model::Model model;
@@ -61,6 +136,16 @@ void test_gomory_cut_generation() {
     markov_cero::milp::add_cuts_to_model(augmented_model, cuts);
     assert(augmented_model.matrix.row_count == model.matrix.row_count + cuts.size());
     std::cout << "[+] test_gomory_cut_generation passed (" << cuts.size() << " cuts generated)\n";
+    markov_cero::milp::Options options;
+    options.enable_heuristics = false;
+    options.enable_strong_branching = false;
+    const auto solved = markov_cero::milp::solve(model, options);
+    require(solved.cuts_generated > 0, "solver applies a verified cut");
+    std::size_t cut_notes = 0;
+    for (const auto& note : solved.obligations)
+        cut_notes += note.kind == markov_cero::verify::MipObligationKind::cut;
+    require(cut_notes == solved.cuts_generated,
+            "every applied serial cut emits an audit obligation");
 }
 
 void test_cover_cut_generation() {
@@ -111,6 +196,8 @@ int main() {
     try {
         test_gomory_cut_generation();
         test_cover_cut_generation();
+        test_singleton_propagation_evidence();
+        test_serial_singleton_propagation_parity();
         std::cout << "All cuts tests PASSED successfully!\n";
         return 0;
     } catch (const std::exception& e) {

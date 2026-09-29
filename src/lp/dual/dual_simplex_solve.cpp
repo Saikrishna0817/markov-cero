@@ -1,9 +1,12 @@
 #include "dual_simplex_internal.hpp"
 namespace markov_cero::lp::dual {
 using namespace detail_dual_simplex;
-Result solve(const transform::CanonicalModel& m, const Options& o,
-             const std::optional<BasisState>& warm) {
+Result solve_impl(const transform::CanonicalModel& m, const Options& o,
+                  const std::optional<BasisState>& warm, FactorCache* cache) {
     Result out;
+    if (cache) {
+        cache->reused_last = false;
+    }
     try {
         m.validate();
     } catch (const std::exception& e) {
@@ -26,22 +29,62 @@ Result solve(const transform::CanonicalModel& m, const Options& o,
         }
         check_product(m.matrix.rows, m.matrix.rows);
         if (!warm) {
+            if (cache) {
+                cache->valid = false;
+            }
             return cold(m, o, "cold solve delegated to certified M3 oracle");
         }
         validate_basis_metadata(m, *warm);
-        auto basis = warm->basic_variables;
-        linalg::SparseBasisFactorization factor;
-        try {
-            factor = linalg::SparseBasisFactorization::factorize(sparse_basis_matrix(m, basis),
-                                                                 sparse_options(o));
-        } catch (const std::exception&) {
-            throw std::invalid_argument("warm basis is singular");
+        // Reuse is gated on the exact (model fingerprint, basis) pair the
+        // stored factorization was built for; anything else refactors.
+        const bool reusable = cache && cache->valid &&
+                              cache->model_fingerprint == warm->model_fingerprint &&
+                              cache->basic_variables == warm->basic_variables;
+        if (cache) {
+            cache->reused_last = reusable;
+            cache->model_fingerprint = warm->model_fingerprint;
+            cache->valid = false;
+            if (!reusable) {
+                cache->basic_variables = warm->basic_variables;
+                cache->dse_weights.clear();
+            }
         }
+        linalg::SparseBasisFactorization scratch_factor;
+        std::vector<std::size_t> scratch_basis;
+        std::vector<double> scratch_weights;
+        linalg::SparseBasisFactorization* factor_p;
+        std::vector<std::size_t>* basis_p;
+        std::vector<double>* weights_p;
+        if (cache) {
+            factor_p = &cache->factor;
+            basis_p = &cache->basic_variables;
+            weights_p = &cache->dse_weights;
+        } else {
+            scratch_basis = warm->basic_variables;
+            factor_p = &scratch_factor;
+            basis_p = &scratch_basis;
+            weights_p = &scratch_weights;
+        }
+        if (!reusable) {
+            try {
+                *factor_p = linalg::SparseBasisFactorization::factorize(
+                    sparse_basis_matrix(m, *basis_p), sparse_options(o));
+            } catch (const std::exception&) {
+                throw std::invalid_argument("warm basis is singular");
+            }
+        }
+        auto& factor = *factor_p;
+        auto& basis = *basis_p;
+        auto& dse_weights = *weights_p;
+        const std::size_t base_refactorizations =
+            reusable ? factor.statistics().refactorizations : 0;
         out.used_warm_start = true;
+        out.factor_reused = reusable;
         out.telemetry.reserve(std::min(o.iteration_limit, o.telemetry_limit));
-        out.refactorizations = factor.statistics().refactorizations;
-        std::vector<double> dse_weights;
-        if (o.pricing == PricingPolicy::steepest_edge) {
+        out.refactorizations = factor.statistics().refactorizations - base_refactorizations;
+        // Exact steepest-edge weights are a property of the stored
+        // factorization: a reuse inherits them, a fresh factor recomputes.
+        if (o.pricing == PricingPolicy::steepest_edge && dse_weights.size() != m.matrix.rows) {
             dse_weights = compute_exact_dse_weights(m, factor);
         }
         for (std::size_t step = 0; step < o.iteration_limit; ++step) {
@@ -85,10 +128,16 @@ Result solve(const transform::CanonicalModel& m, const Options& o,
             if (leaving == m.matrix.rows) {
                 auto certified = certified_optimal(m, basis, xb, y, o);
                 certified.used_warm_start = true;
+                certified.factor_reused = out.factor_reused;
                 certified.telemetry = std::move(out.telemetry);
                 certified.telemetry_truncated = out.telemetry_truncated;
                 certified.refactorizations = out.refactorizations;
                 certified.solution.condition_estimate = factor.current_condition_estimate();
+                if (cache && certified.solution.status == reference::SolveStatus::optimal) {
+                    // The stored factor and weights now describe the certified
+                    // optimal basis; keep them for the next resolve.
+                    cache->valid = true;
+                }
                 return certified;
             }
             std::vector<double> e(m.matrix.rows);
@@ -101,6 +150,7 @@ Result solve(const transform::CanonicalModel& m, const Options& o,
             if (entering == m.matrix.columns) {
                 auto certified = certified_farkas(m, pi, o);
                 certified.used_warm_start = true;
+                certified.factor_reused = out.factor_reused;
                 certified.telemetry = std::move(out.telemetry);
                 certified.telemetry_truncated = out.telemetry_truncated;
                 certified.refactorizations = out.refactorizations;
@@ -139,6 +189,7 @@ Result solve(const transform::CanonicalModel& m, const Options& o,
             }
             factor.replace_column(leaving, entering_column);
             basis[leaving] = entering;
+            if (o.pricing != PricingPolicy::steepest_edge) dse_weights.clear();
             if (factor.needs_refactorization()) {
                 factor.refactorize();
                 if (o.pricing == PricingPolicy::steepest_edge) {
@@ -147,7 +198,7 @@ Result solve(const transform::CanonicalModel& m, const Options& o,
             } else if (o.pricing == PricingPolicy::steepest_edge && (step + 1) % 500 == 0) {
                 dse_weights = compute_exact_dse_weights(m, factor);
             }
-            out.refactorizations = factor.statistics().refactorizations;
+            out.refactorizations = factor.statistics().refactorizations - base_refactorizations;
         }
         out.solution.status = reference::SolveStatus::iteration_limit;
         out.solution.message = "dual simplex iteration limit";
@@ -174,5 +225,15 @@ Result solve(const transform::CanonicalModel& m, const Options& o,
         out.solution.message = out.message = e.what();
         return out;
     }
+}
+
+Result solve_verified(const transform::CanonicalModel& m, const Options& o,
+                      const std::optional<BasisState>& warm, FactorCache* cache) {
+    return verify_accepted(m, o, solve_impl(m, o, warm, cache));
+}
+
+Result solve(const transform::CanonicalModel& m, const Options& o,
+             const std::optional<BasisState>& warm) {
+    return solve_verified(m, o, warm, nullptr);
 }
 }

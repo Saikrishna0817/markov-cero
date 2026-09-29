@@ -45,7 +45,8 @@ void Tolerance::validate() const {
 PrimalVerificationReport verify_primal(const model::Model& problem, const Candidate& candidate,
                                        const Tolerance& feasibility_tolerance,
                                        const Tolerance& objective_tolerance,
-                                       double integrality_tolerance, bool require_integrality) {
+                                       double integrality_tolerance, bool require_integrality,
+                                       const core::Deadline& deadline) {
     problem.validate();
     feasibility_tolerance.validate();
     objective_tolerance.validate();
@@ -57,7 +58,15 @@ PrimalVerificationReport verify_primal(const model::Model& problem, const Candid
     if (!std::isfinite(candidate.claimed_objective))
         throw std::invalid_argument("claimed objective must be finite");
     PrimalVerificationReport report;
+    const auto out_of_time = [&deadline](std::size_t index) {
+        return (index & 1023U) == 0U && deadline.expired();
+    };
     for (std::size_t j = 0; j < candidate.primal.size(); ++j) {
+        if (out_of_time(j)) {
+            report.violations.push_back({"deadline", j, 0.0, 0.0, 0.0, 0.0});
+            report.passed = false;
+            return report;
+        }
         const double x = candidate.primal[j];
         if (!std::isfinite(x))
             throw std::invalid_argument("candidate contains non-finite value");
@@ -80,6 +89,11 @@ PrimalVerificationReport verify_primal(const model::Model& problem, const Candid
     }
     const auto activity = problem.matrix.multiply(candidate.primal);
     for (std::size_t i = 0; i < activity.size(); ++i) {
+        if (out_of_time(i)) {
+            report.violations.push_back({"deadline", i, 0.0, 0.0, 0.0, 0.0});
+            report.passed = false;
+            return report;
+        }
         check_lower(activity[i], problem.row_lower[i], feasibility_tolerance, "row_lower", i,
                     report, report.maximum_row_violation);
         check_upper(activity[i], problem.row_upper[i], feasibility_tolerance, "row_upper", i,

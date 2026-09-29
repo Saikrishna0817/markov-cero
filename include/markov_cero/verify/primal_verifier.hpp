@@ -1,5 +1,6 @@
 #pragma once
 
+#include "markov_cero/core/deadline.hpp"
 #include "markov_cero/model/model.hpp"
 
 #include <cstddef>
@@ -43,6 +44,7 @@ struct PrimalVerificationReport final {
                                                      const Tolerance& feasibility_tolerance = {},
                                                      const Tolerance& objective_tolerance = {},
                                                      double integrality_tolerance = 1e-6,
-                                                     bool require_integrality = true);
+                                                     bool require_integrality = true,
+                                                     const core::Deadline& deadline = {});
 
 } // namespace markov_cero::verify

@@ -27,6 +27,7 @@ class IncumbentManager {
 
   private:
     double recorded_primal_obj_{std::numeric_limits<double>::infinity()};
+    bool has_value_{false}; // guarded by incumbent_mutex
 };
 
 using SharedIncumbent = IncumbentManager;

@@ -112,7 +112,7 @@ UnscaledResiduals compute_unscaled_residuals(
     }
     res.objective = primal_obj;
 
-    double dual_obj = model.objective_offset;
+    double dual_obj = obj_sign * model.objective_offset;
     for (std::size_t i = 0; i < m; ++i) {
         const double lo = (model.row_lower[i].kind == model::BoundKind::negative_infinity)
                               ? -1e300 : model.row_lower[i].value;
@@ -138,9 +138,10 @@ UnscaledResiduals compute_unscaled_residuals(
             dual_obj += g * hi;
         }
     }
-    res.duality_gap = std::abs(primal_obj - dual_obj) /
-                      (1.0 + std::abs(primal_obj) + std::abs(dual_obj));
-    res.dual_objective = dual_obj;
+    const double primal_min = obj_sign * primal_obj;
+    res.duality_gap = std::abs(primal_min - dual_obj) /
+                      (1.0 + std::abs(primal_min) + std::abs(dual_obj));
+    res.dual_objective = obj_sign * dual_obj;
     res.score = std::max({res.primal_infeas, res.dual_infeas, res.duality_gap});
     return res;
 }

@@ -1,3 +1,7 @@
+* Units: X flows and product/availability RHS synthetic volume units (SVU); COST linear
+* coefficients synthetic currency/SVU; QUADOBJ synthetic currency/SVU^2; quality rows
+* SVU times normalized dimensionless deviation, not physical specification equations.
+* Synthetic qualification data; not plant operating data; deterministic for a fixed seed.
 NAME CRUDE_BLENDING_LARGE
 ROWS
  N COST

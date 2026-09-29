@@ -2,12 +2,14 @@
 #include "markov_cero/milp/work_queue.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <limits>
 
 namespace markov_cero::milp {
 
 IncumbentManager::IncumbentManager(double initial_obj)
-    : best_incumbent_objective(initial_obj), recorded_primal_obj_(initial_obj) {}
+    : best_incumbent_objective(initial_obj), recorded_primal_obj_(initial_obj),
+      has_value_(std::isfinite(initial_obj)) {}
 
 bool IncumbentManager::update_if_better(double candidate_obj,
                                         const std::vector<double>& candidate_primal, double eps) {
@@ -20,6 +22,7 @@ bool IncumbentManager::update_if_better(double candidate_obj,
                 if (candidate_obj < recorded_primal_obj_) {
                     recorded_primal_obj_ = candidate_obj;
                     best_incumbent_primal = candidate_primal;
+                    has_value_ = true;
                 }
             }
             return true;
@@ -29,8 +32,8 @@ bool IncumbentManager::update_if_better(double candidate_obj,
 }
 
 bool IncumbentManager::has_incumbent() const {
-    return best_incumbent_objective.load(std::memory_order_relaxed) <
-           (std::numeric_limits<double>::infinity() / 2.0);
+    std::lock_guard<std::mutex> lock(incumbent_mutex);
+    return has_value_;
 }
 
 double IncumbentManager::get_objective() const {

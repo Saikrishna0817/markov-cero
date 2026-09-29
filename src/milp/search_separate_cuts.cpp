@@ -90,15 +90,22 @@ bool Search::separate_cuts() {
                     node->local_cuts.append(fresh);
                     result.cuts_generated += fresh.size();
 
-                    const auto cut_lp =
-                        solve_node_relaxation(node_model, options, node_lp_res.basis);
+                    NodeLpResult cut_lp;
+                    {
+                        ScopedSearchTimer timer(result.lp_bound_ms);
+                        cut_lp = solve_node_relaxation(node_model, options, node_lp_res.basis);
+                    }
                     result.lp_iterations += cut_lp.iterations;
                     if (cut_lp.status != lp::reference::SolveStatus::optimal) {
                         // Unverified cuts must not propagate to children: revert this round.
                         node->local_cuts.truncate(prior_cut_count);
                         result.cuts_generated -= fresh.size();
+                        node_model = root_model;
+                        if (!node->local_cuts.empty())
+                            add_cuts_to_model(node_model, node->local_cuts.values());
                         break;
                     }
+                    record_optimizer_cut_notes(result, node->id, fresh, node_lp_res.primal);
                     // Budget enforcement: if the re-solve consumed more than the
                     // node's allowance, keep the (verified) cuts but stop separating
                     // here. Prevents unbounded LP-work amplification on instances

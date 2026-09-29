@@ -1,3 +1,7 @@
+* Units: production X, inventory I, demand and safety stock tonnes per period;
+* line capacity RHS hours/period, production time hours/tonne, setup time hours.
+* COST: variable and holding coefficients USD/tonne; Y setup cost USD/setup.
+* Synthetic qualification data; not plant operating data; deterministic for a fixed seed.
 NAME PROD_PLAN_LARGE
 ROWS
  N COST

@@ -1,5 +1,7 @@
 * Historical public Fawley benchmark; no plant approval
 * Input SHA256 a35de33a2d9a76f84b5677f40145a984cf0cb7c8361b380d0f7b512d369c97c7
+* Units: flow 1000 tonnes per period; objective 1000 historical USD per period
+* Public illustrative qualification data; not plant operating data.
 NAME FAWLEY_PUBLIC
 ROWS
  N OBJ

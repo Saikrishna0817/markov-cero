@@ -111,6 +111,9 @@ def test_model_builder_milp():
     # cheapest is n=3, y=0 (n=2 fails 2.2 with y>=0), obj 3.
     assert abs(res["x"][x] - round(res["x"][x])) < 1e-6  # integrality
     assert res["objective"] == pytest.approx(3.0, abs=1e-3)
+    assert "guarantee_tier" in res and "proof_budget_exhausted" in res
+    assert "proof_nodes_used" in res and "proof_budget_time_ms" in res
+
 
 
 def test_model_builder_constraint_dimension_guard():
@@ -276,3 +279,21 @@ def test_lp_solution_is_zero_copy_array():
     assert x[0] == pytest.approx(4.0, abs=1e-6)
     assert x[1] == pytest.approx(0.0, abs=1e-6)
     assert res["objective"] == pytest.approx(-12.0, abs=1e-6)
+
+
+def test_model_fingerprint_binding():
+    # W01/D16: results are bound to the validated model at the API boundary.
+    def build(coefficient):
+        model = mc.Model()
+        model.continuous_var(name="x", lb=0.0, ub=10.0)
+        model.minimize([coefficient])
+        model.add_constraint([1.0], lb=2.0, ub=math.inf, name="c")
+        return model
+
+    model = build(1.0)
+    first = model.solve()
+    second = model.solve()
+    assert first["model_fingerprint"] != 0
+    assert first["model_fingerprint"] == second["model_fingerprint"]
+    changed = build(2.0).solve()
+    assert changed["model_fingerprint"] != first["model_fingerprint"]

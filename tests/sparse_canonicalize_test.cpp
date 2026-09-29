@@ -80,11 +80,29 @@ void test_blend_canonical_equivalence() {
     }
 }
 
+void test_maximum_offset_round_trip() {
+    markov_cero::model::Model model;
+    model.objective_sense = markov_cero::model::ObjectiveSense::maximize;
+    model.objective = {1};
+    model.objective_offset = 5;
+    model.matrix = markov_cero::model::SparseMatrixBuilder(0, 1).build();
+    model.variable_lower = {markov_cero::model::Bound::finite(0)};
+    model.variable_upper = {markov_cero::model::Bound::finite(1)};
+    model.variable_type = {markov_cero::model::VariableType::continuous};
+    model.variable_name = {"X"};
+    model.validate();
+    const auto canonical = markov_cero::transform::sparse_canonicalize(model);
+    const double canonical_objective = canonical.objective_offset + canonical.objective[0];
+    assert(std::abs(markov_cero::transform::reconstruct_objective(
+        canonical, canonical_objective) - 6) < 1e-12);
+}
+
 } // namespace
 
 int main() {
     try {
         test_blend_canonical_equivalence();
+        test_maximum_offset_round_trip();
         std::cout << "sparse canonicalize tests passed\n";
         return 0;
     } catch (const std::exception& e) {

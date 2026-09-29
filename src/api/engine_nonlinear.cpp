@@ -1,10 +1,14 @@
 #include "api_internal.hpp"
 
 namespace markov_cero::api::detail {
-void run_nonlinear(const model::Model& model, const SolveOptions& options, SolveResult& out, lp::reference::Result& result) {
+void run_nonlinear(const model::Model& model, const SolveOptions& options, SolveResult& out,
+                   lp::reference::Result& result, core::SolveContext& ctx) {
         io::NlobjBridge bridge{model};
-        const auto nlp_model = bridge.build();
-        if (stop_after_deadline(options, out, result, "NLP model construction")) return;
+        const auto nlp_model = [&] {
+            core::StageScope stage(ctx, "model_build");
+            return bridge.build();
+        }();
+        if (stop_after_deadline(ctx, options, out, result, "NLP model construction")) return;
         // Deterministic start: midpoint of the variable bounds (0 where free).
         std::vector<double> x0(nlp_model.n_vars, 0.0);
         for (std::size_t j = 0; j < nlp_model.n_vars; ++j) {
@@ -17,7 +21,12 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
         if (out.resolved_engine == "sqp") {
             nlp::SqpOptions sqp_opts;
             sqp_opts.deadline = options.lp_options.deadline;
-            const auto sol = nlp::solve_sqp(nlp_model, x0, sqp_opts);
+            const auto sol = [&] {
+                core::StageScope stage(ctx, "solve");
+                auto solved = nlp::solve_sqp(nlp_model, x0, sqp_opts);
+                stage.set_count(solved.iterations);
+                return solved;
+            }();
             out.lp_iterations = sol.iterations;
             out.diagnostic.primal_residual = sol.constraint_violation;
             out.diagnostic.dual_residual = sol.kkt_residual;
@@ -25,6 +34,8 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
             out.diagnostic.condition_estimate = 0.0;
             result.status = sol.status;
             result.message = sol.message;
+            if (stop_after_deadline(ctx, options, out, result, "SQP solve")) return;
+            core::StageScope verify_stage(ctx, "verify");
             if (sol.status == lp::reference::SolveStatus::optimal) {
                 // C4: independent KKT verification before reporting optimal.
                 const auto rep = nlp::verify_nlp_solution(nlp_model, sol, 1e-6);
@@ -68,7 +79,12 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
             minlp::MinlpOptions minlp_opts;
             minlp_opts.deadline = options.lp_options.deadline;
             minlp_opts.sqp_options.deadline = options.lp_options.deadline;
-            const auto sol = minlp::solve_minlp(problem, x0, minlp_opts);
+            const auto sol = [&] {
+                core::StageScope stage(ctx, "solve");
+                auto solved = minlp::solve_minlp(problem, x0, minlp_opts);
+                stage.set_count(solved.iterations);
+                return solved;
+            }();
             out.lp_iterations = sol.iterations;
             out.cuts_generated = sol.cuts_added;
             const double sense_sign = model.objective_sense == model::ObjectiveSense::maximize
@@ -78,6 +94,8 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
             out.relative_gap = sol.relative_gap;
             result.status = sol.status;
             result.message = sol.message;
+            if (stop_after_deadline(ctx, options, out, result, "MINLP solve")) return;
+            core::StageScope verify_stage(ctx, "verify");
             if (sol.integer_feasible && sol.x.size() == nlp_model.n_vars) {
                 const auto feasibility = nlp::verify_nlp_feasibility(
                     nlp_model, sol.x, minlp_opts.feasibility_tolerance);
@@ -107,7 +125,8 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
                     std::isfinite(sol.best_bound) && std::isfinite(sol.relative_gap) &&
                     sol.relative_gap <= minlp_opts.gap_tolerance;
                 out.canonical_verified = false;
-                out.certificate_type = "incumbent_feasibility; solver_trusted_oa";
+                out.certificate_type = out.original_verified
+                    ? "incumbent_feasibility; solver_trusted_oa" : "none";
                 if (!out.original_verified) {
                     result.status = lp::reference::SolveStatus::numerical_failure;
                     result.message = "minlp: independent incumbent verification failed (" +

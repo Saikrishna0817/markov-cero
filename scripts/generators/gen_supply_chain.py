@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 markov-cero Industrial Case Generator: Multi-Echelon Supply Chain Network (MILP)
-Ground truth model for petroleum distribution network design:
+Synthetic qualification model for petroleum distribution network design:
 - 4 primary refinery dispatch terminals
 - 12 candidate regional distribution depots (discrete location-allocation)
 - 30 retail demand centers across southern and western India
@@ -18,6 +18,8 @@ import argparse
 import os
 import random
 import sys
+
+from fixture_provenance import write_provenance
 
 
 def generate_supply_chain_mps(
@@ -67,7 +69,11 @@ def generate_supply_chain_mps(
             dist = rng.uniform(20.0, 250.0)
             delivery_cost[(j, k)] = {p: 0.14 * dist * (1.1 if p == "ATF" else 1.0) for p in products}
 
-    lines = ["NAME SUPPLY_CHAIN_LARGE", "ROWS", " N COST"]
+    lines = ["* Units: plant supply, depot throughput, S/D flows and demand RHS kL/month; Y binary",
+             "* and MAX_DEPOTS in counts. COST: Y fixed USD/month; S/D coefficients USD/kL,",
+             "* so model objective is USD/month.",
+             "* Synthetic qualification data; not plant operating data; deterministic for a fixed seed.",
+             "NAME SUPPLY_CHAIN_LARGE", "ROWS", " N COST"]
 
     # 1. Customer demand fulfillment: DEM_{k}_{p} (G)
     for k in range(num_customers):
@@ -162,6 +168,10 @@ def main():
     )
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(content)
+    write_provenance(args.output, "gen_supply_chain.py",
+                     {"plants": args.plants, "depots": args.depots,
+                      "customers": args.customers, "seed": args.seed},
+                     "Unit and qualification comments added; model rows, columns and coefficients unchanged.")
 
     print(f"[+] Industrial supply chain network MILP model written to {args.output}")
     print(f"    File size: {os.path.getsize(args.output):,} bytes")

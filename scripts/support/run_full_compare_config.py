@@ -16,11 +16,19 @@ import sys
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor, wait
+from .frozen_timing_config import LP_TIME_LIMIT_S, MATCHED_THREADS, MIN_REPEATS
+from .frozen_timing_config import QP_TIME_LIMIT_S, RELEASE_MIP_TIME_LIMIT_S
+from .frozen_timing_config import MIP_TIME_LIMIT_S, DEFAULTS_STATUS, TIMING_SCOPE
+from .frozen_timing_config import class_time_limit as frozen_class_time_limit
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(_ENTRY_POINT)))
 OUT = os.path.join(REPO, "evidence", "comparison")
 TABLES = os.path.join(REPO, "data", "mittelmann_tables")
 SCRIPTS = os.path.join(REPO, "scripts")
 AGREE_TOL = 1e-4
+# Frozen timing (backlog item 7): --timeout defaults to the class cap below,
+# i.e. 60 s for LP/QP and 300 s for MILP, instead of one cap for every class.
+DEFAULT_TIMEOUT_S = LP_TIME_LIMIT_S
+
 CURATED = [
     ("netlib", "LP", "afiro"),
     ("netlib", "LP", "adlittle"),

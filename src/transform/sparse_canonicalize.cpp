@@ -150,8 +150,8 @@ SparseCanonicalModel sparse_canonicalize(const model::Model& in, bool relax_inte
                 out.record.objective_sign * in.objective[j] * vmap.multiplier[q];
         }
     }
-    out.objective_offset =
-        out.record.objective_sign * static_cast<double>(obj_shift) + in.objective_offset;
+    out.objective_offset = static_cast<double>(
+        out.record.objective_sign * (obj_shift + in.objective_offset));
 
     // 4. Assemble SparseCsc matrix from triplets
     const std::size_t total_rows = out.rhs.size();

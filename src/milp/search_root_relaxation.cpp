@@ -2,7 +2,10 @@
 namespace markov_cero::milp::detail {
 bool Search::root_relaxation() {
     // 1. Solve Root Continuous LP Relaxation
-    root_lp = solve_node_relaxation(root_model, options, std::nullopt);
+    {
+        ScopedSearchTimer timer(result.lp_bound_ms);
+        root_lp = solve_node_relaxation(root_model, options, std::nullopt);
+    }
     result.lp_iterations += root_lp.iterations;
     result.condition_estimate = root_lp.condition_estimate;
     result.nodes_explored = 1;
@@ -31,12 +34,12 @@ bool Search::root_relaxation() {
         result.status = lp::reference::SolveStatus::resource_limit;
         result.best_bound = root_lp.lower_bound;
         result.message = "wall-clock deadline reached during root relaxation";
-        if (check_integer_feasibility(root_model, root_lp.primal,
-                                      options.feasibility_tolerance,
-                                      options.integrality_tolerance)) {
-            result.primal = root_lp.primal;
-            result.objective = root_lp.objective;
-            result.relative_gap = relative_gap(root_lp.objective, root_lp.lower_bound);
+        const auto rounded = rounded_integer_candidate(root_model, root_lp.primal,
+            options.feasibility_tolerance, options.integrality_tolerance);
+        if (rounded.found) {
+            result.primal = rounded.primal;
+            result.objective = rounded.objective;
+            result.relative_gap = relative_gap(rounded.objective, root_lp.lower_bound);
         }
         result.runtime_ms = std::chrono::duration<double, std::milli>(
             std::chrono::steady_clock::now() - start_time).count();
@@ -46,12 +49,15 @@ bool Search::root_relaxation() {
     best_lower_bound = root_lp.lower_bound;
 
     // Check if root continuous solution is integer feasible
-    if (check_integer_feasibility(root_model, root_lp.primal, options.feasibility_tolerance,
-                                  options.integrality_tolerance)) {
-        result.primal = root_lp.primal;
-        result.objective = root_lp.objective;
+    const auto rounded_root = rounded_integer_candidate(root_model, root_lp.primal,
+        options.feasibility_tolerance, options.integrality_tolerance);
+    if (rounded_root.found &&
+        gap_status(rounded_root.objective, root_lp.lower_bound,
+                   options.absolute_gap_tolerance) == lp::reference::SolveStatus::optimal) {
+        result.primal = rounded_root.primal;
+        result.objective = rounded_root.objective;
         result.best_bound = root_lp.lower_bound;
-        result.relative_gap = relative_gap(root_lp.objective, root_lp.lower_bound);
+        result.relative_gap = relative_gap(rounded_root.objective, root_lp.lower_bound);
         result.status = result.relative_gap <= options.relative_gap_tolerance
                             ? gap_status(result.objective, result.best_bound, options.absolute_gap_tolerance)
                             : lp::reference::SolveStatus::iteration_limit;
@@ -62,9 +68,14 @@ bool Search::root_relaxation() {
         result.runtime_ms = std::chrono::duration<double, std::milli>(elapsed).count();
         return false;
     }
+    if (rounded_root.found && rounded_root.objective < best_upper_bound) {
+        best_upper_bound = rounded_root.objective;
+        best_primal = rounded_root.primal;
+    }
 
     // 2. Run Primal Heuristics at Root
     if (options.enable_heuristics) {
+        ScopedSearchTimer timer(result.incumbent_ms);
         const auto hr = simple_rounding(root_model, root_lp.primal, options.feasibility_tolerance,
                                         options.integrality_tolerance);
         if (hr.found && hr.objective < best_upper_bound) {
@@ -103,28 +114,33 @@ bool Search::root_relaxation() {
             }
             cuts = filter_cuts(std::move(cuts), options.max_cut_rounds);
             if (!cuts.empty()) {
-                add_cuts_to_model(root_model, cuts);
-                root_cut_list = cuts;
-                result.cuts_generated += cuts.size();
+                model::Model candidate_model = root_model;
+                add_cuts_to_model(candidate_model, cuts);
 
                 // Re-solve root LP with cuts
-                const auto cut_lp =
-                    solve_node_relaxation(root_model, options, root_lp.basis);
+                NodeLpResult cut_lp;
+                {
+                    ScopedSearchTimer timer(result.lp_bound_ms);
+                    cut_lp = solve_node_relaxation(candidate_model, options, root_lp.basis);
+                }
                 result.lp_iterations += cut_lp.iterations;
                 if (cut_lp.status == lp::reference::SolveStatus::optimal) {
+                    const auto rounded_cut = rounded_integer_candidate(root_model,
+                        cut_lp.primal, options.feasibility_tolerance,
+                        options.integrality_tolerance);
+                    record_optimizer_cut_notes(result, 0, cuts, current_primal);
+                    root_model = std::move(candidate_model);
+                    root_cut_list = cuts;
+                    result.cuts_generated += cuts.size();
                     current_primal = cut_lp.primal;
                     current_row_dual = cut_lp.row_dual;
                     current_obj = cut_lp.objective;
                     current_basis = cut_lp.basis;
                     best_lower_bound = std::max(best_lower_bound, cut_lp.lower_bound);
 
-                    if (check_integer_feasibility(root_model, current_primal,
-                                                  options.feasibility_tolerance,
-                                                  options.integrality_tolerance)) {
-                        if (current_obj < best_upper_bound) {
-                            best_upper_bound = current_obj;
-                            best_primal = current_primal;
-                        }
+                    if (rounded_cut.found && rounded_cut.objective < best_upper_bound) {
+                        best_upper_bound = rounded_cut.objective;
+                        best_primal = rounded_cut.primal;
                     }
                 }
             }

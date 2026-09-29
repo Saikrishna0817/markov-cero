@@ -1,0 +1,13 @@
+{
+  "change": "Unit and qualification comments added; model rows, columns and coefficients unchanged.",
+  "fixture": "production_planning_large.mps",
+  "generator": "gen_production_planning.py",
+  "generator_args": {
+    "lines": 3,
+    "periods": 4,
+    "products": 6,
+    "seed": 42
+  },
+  "model_sha256": "0c9980de1fd1ce7af868f1e16783226647180405d5f68c8c7a90e1d374baa1cc",
+  "regeneration_date": "2026-09-29"
+}

@@ -1,3 +1,7 @@
+* Units: plant supply, depot throughput, S/D flows and demand RHS kL/month; Y binary
+* and MAX_DEPOTS in counts. COST: Y fixed USD/month; S/D coefficients USD/kL,
+* so model objective is USD/month.
+* Synthetic qualification data; not plant operating data; deterministic for a fixed seed.
 NAME SUPPLY_CHAIN_LARGE
 ROWS
  N COST

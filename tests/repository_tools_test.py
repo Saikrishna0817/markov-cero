@@ -56,6 +56,16 @@ with tempfile.TemporaryDirectory() as directory:
         result = json.loads(run.stdout)
         assert result['verified'] and result['certificate_type'] == 'independent_mip_tree', result
         assert result['mip_proof_build_ms'] >= 0 and result['mip_proof_verify_ms'] >= 0, result
+        assert result['proof_message'], result['proof_message']
+        assert result['mip_proof'].startswith('MARKOV_MIP_PROOF 3\n'), result['mip_proof'][:64]
+        proof_lines = result['mip_proof'].splitlines()
+        node_count = int(proof_lines[1].split()[2])
+        nodes_used, witness_values_used, budget_time_ms, exhausted, budget_kind = proof_lines[2].split()
+        assert int(nodes_used) == node_count == 3, proof_lines[:3]
+        assert int(witness_values_used) > 0 and float(budget_time_ms) >= 0, proof_lines[:3]
+        assert (exhausted, budget_kind) == ('0', '0'), proof_lines[:3]
+        fingerprint_length, fingerprint = proof_lines[3].split(' ', 1)
+        assert int(fingerprint_length) == len(fingerprint) and fingerprint.isdigit(), proof_lines[:4]
         proof = Path(directory) / 'proof.txt'
         proof.write_text(result['mip_proof'])
         subprocess.run([sys.argv[2], str(model), str(proof), '--time-limit', '10',
@@ -67,6 +77,12 @@ with tempfile.TemporaryDirectory() as directory:
         bad_gap = subprocess.run([sys.argv[2], str(model), str(proof), '--relative-gap', '1'],
                                  capture_output=True)
         assert bad_gap.returncode == 2
+        proof.write_text(result['mip_proof'].replace('MARKOV_MIP_PROOF 3',
+                                                     'MARKOV_MIP_PROOF 7', 1))
+        unknown_version = subprocess.run([sys.argv[2], str(model), str(proof)],
+                                         capture_output=True, text=True)
+        assert unknown_version.returncode == 2, unknown_version
+        assert 'unsupported MIP proof format version' in unknown_version.stderr
         proof.write_text(result['mip_proof'] + '\nEXTRA\n')
         bad = subprocess.run([sys.argv[2], str(model), str(proof)], capture_output=True)
         assert bad.returncode != 0

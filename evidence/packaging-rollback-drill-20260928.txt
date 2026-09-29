@@ -1,0 +1,78 @@
+markov-cero rollback drill (backlog item 11)
+UTC: 2026-09-28T19:35:56Z
+prior wheel: /tmp/opencode/wheels/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl
+sha256: 914136ac146af53e0a153c5a5ac010550f6f2ce05e586d40d3712b65822e941e
+new    wheel: /tmp/opencode/pkg11/../wheels-pkg/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl
+sha256: fac615128c846e6b48c51252afb44fec199be30154e370f587309186a0145f4b
+venv: /tmp/opencode/pkg11/venv-drill (python Python 3.14.7)
+
+=== D0 offline test-runner install ===
++ /tmp/opencode/pkg11/venv-drill/bin/python -m pip install --no-index --find-links /tmp/opencode/pkg11/pipdl pytest numpy
+    Looking in links: /tmp/opencode/pkg11/pipdl
+    Processing /tmp/opencode/pkg11/pipdl/pytest-9.1.1-py3-none-any.whl
+    Processing /tmp/opencode/pkg11/pipdl/numpy-2.5.3-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+    Processing /tmp/opencode/pkg11/pipdl/iniconfig-2.3.0-py3-none-any.whl (from pytest)
+    Processing /tmp/opencode/pkg11/pipdl/packaging-26.3-py3-none-any.whl (from pytest)
+    Processing /tmp/opencode/pkg11/pipdl/pluggy-1.6.0-py3-none-any.whl (from pytest)
+    Processing /tmp/opencode/pkg11/pipdl/pygments-2.21.0-py3-none-any.whl (from pytest)
+    Installing collected packages: pygments, pluggy, packaging, numpy, iniconfig, pytest
+    
+    Successfully installed iniconfig-2.3.0 numpy-2.5.3 packaging-26.3 pluggy-1.6.0 pygments-2.21.0 pytest-9.1.1
+    [exit 0]
+
+=== D1 install PRIOR wheel ===
++ /tmp/opencode/pkg11/venv-drill/bin/python -m pip install --no-index --no-deps --force-reinstall /tmp/opencode/wheels/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl
+    Processing /tmp/opencode/wheels/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl
+    Installing collected packages: markov-cero
+    Successfully installed markov-cero-0.5.2
+    [exit 0]
+installed _core.so sha256: 9700ebf3a0e0c5c830229dabd450080fd7006cc32ccfffde0708a8f016e5539b
++ cd /tmp/opencode/pkg11/run && /tmp/opencode/pkg11/venv-drill/bin/python -m pytest /home/saikrishna/markov-initial-build/python/tests -q
+    ....................                                                     [100%]
+    20 passed in 0.15s
+    [exit 0]
+
+=== D2 UPGRADE to NEW wheel ===
++ /tmp/opencode/pkg11/venv-drill/bin/python -m pip install --no-index --no-deps --force-reinstall /tmp/opencode/pkg11/../wheels-pkg/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl
+    Processing /tmp/opencode/wheels-pkg/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl
+    Installing collected packages: markov-cero
+      Attempting uninstall: markov-cero
+        Found existing installation: markov-cero 0.5.2
+        Uninstalling markov-cero-0.5.2:
+          Successfully uninstalled markov-cero-0.5.2
+    Successfully installed markov-cero-0.5.2
+    [exit 0]
+installed _core.so sha256: 15fe24780b27a3db4c869cd88257bd10ea3f3dc24907e5d487df53de715324be
++ cd /tmp/opencode/pkg11/run && /tmp/opencode/pkg11/venv-drill/bin/python -m pytest /home/saikrishna/markov-initial-build/python/tests -q
+    ....................                                                     [100%]
+    20 passed in 0.11s
+    [exit 0]
+
+=== D3 ROLLBACK to PRIOR wheel ===
++ /tmp/opencode/pkg11/venv-drill/bin/python -m pip install --no-index --no-deps --force-reinstall /tmp/opencode/wheels/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl
+    Processing /tmp/opencode/wheels/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl
+    Installing collected packages: markov-cero
+      Attempting uninstall: markov-cero
+        Found existing installation: markov-cero 0.5.2
+        Uninstalling markov-cero-0.5.2:
+          Successfully uninstalled markov-cero-0.5.2
+    Successfully installed markov-cero-0.5.2
+    [exit 0]
+installed _core.so sha256: 9700ebf3a0e0c5c830229dabd450080fd7006cc32ccfffde0708a8f016e5539b
++ cd /tmp/opencode/pkg11/run && /tmp/opencode/pkg11/venv-drill/bin/python -m pytest /home/saikrishna/markov-initial-build/python/tests -q
+    ....................                                                     [100%]
+    20 passed in 0.10s
+    [exit 0]
+
+=== D4 rollback identity check ===
+PASS: D3 _core.so sha256 == D1 _core.so sha256 (9700ebf3a0e0c5c830229dabd450080fd7006cc32ccfffde0708a8f016e5539b)
+PASS: upgrade changed the installed binary (D1 != D2)
+
+=== D4 uninstall ===
++ /tmp/opencode/pkg11/venv-drill/bin/python -m pip uninstall -y markov-cero
+    Found existing installation: markov-cero 0.5.2
+    Uninstalling markov-cero-0.5.2:
+      Successfully uninstalled markov-cero-0.5.2
+    [exit 0]
+markov_cero import after uninstall:     ModuleNotFoundError: No module named 'markov_cero'
+    [exit 1]

@@ -23,6 +23,9 @@ struct HeuristicResult {
     const std::vector<model::Bound>& variable_upper, const std::vector<double>& primal,
     double feasibility_tol, double integrality_tol);
 
+[[nodiscard]] HeuristicResult rounded_integer_candidate(const model::Model& model,
+    const std::vector<double>& primal, double feasibility_tol, double integrality_tol);
+
 [[nodiscard]] double compute_objective(const model::Model& model,
                                        const std::vector<double>& primal);
 

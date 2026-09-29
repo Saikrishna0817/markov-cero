@@ -11,6 +11,14 @@ from pathlib import Path
 REPO = Path(_ENTRY_POINT).resolve().parent.parent
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
+from .frozen_timing_config import LP_TIME_LIMIT_S, MIP_TIME_LIMIT_S
+from .frozen_timing_config import QP_TIME_LIMIT_S, RELEASE_MIP_TIME_LIMIT_S
+from .frozen_timing_config import MIN_REPEATS, MATCHED_THREADS, DEFAULTS_STATUS
+from .frozen_timing_config import SUITE_CLASS, class_time_limit, suite_time_limit
+# Frozen timing (backlog item 7): --timeout defaults to the suite cap
+# (LP/QP 60 s, MILP 300 s) resolved from the frozen module above.
+DEFAULT_TIMEOUT_S = LP_TIME_LIMIT_S
+
 SUITES = {
     "netlib": {
         "dir": "data/netlib",

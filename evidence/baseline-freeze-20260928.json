@@ -1,0 +1,188 @@
+{
+  "date": "2026-09-28",
+  "backlog_item": 7,
+  "roadmap_item": "docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md section 14 item 7: freeze comparator versions, manifests, family splits and timing definitions, then regenerate the baseline before tuning",
+  "purpose": "Frozen manifests, splits, timing definitions and the regenerated pre-tuning baseline for this uncommitted worktree",
+  "worktree": "uncommitted working tree; results identify this state, not HEAD",
+  "offline": "no download performed; optional datasets absent locally are listed unavailable in the frozen instance manifest",
+  "commands": [
+    {
+      "stage": "compare",
+      "command": "python3 scripts/run_full_compare.py --solver ./build_contracts/markov-cero-solve --timeout 20 --out evidence/comparison/baseline_frozen_20260928",
+      "started": "2026-09-28T19:55:38+00:00",
+      "rc": 0,
+      "ran": false,
+      "rows": 105,
+      "note": "outputs already present when the stage executed: verified and registered without re-running (the identical argv was invoked directly while authoring this freeze)"
+    },
+    {
+      "stage": "benchmark",
+      "command": "python3 scripts/run_full_benchmark.py --solver ./build_contracts/markov-cero-solve --suites netlib --out-dir evidence/benchmarks/baseline_frozen_20260928 --expected-solver-sha256 05c11f6da3a20defaacabb9226dc1aa7f3334ef800aacfcb924bc3e1eb8b4dee --timeout 20",
+      "started": "2026-09-28T19:55:38+00:00",
+      "rc": 0,
+      "ran": false,
+      "rows": 98,
+      "note": "outputs already present when the stage executed: verified and registered without re-running (the identical argv was invoked directly while authoring this freeze)"
+    }
+  ],
+  "manifests": {
+    "comparators": {
+      "path": "evidence/frozen-comparators-20260928.json",
+      "sha256": "91cb400db65692a8435b74913f46d6d8b09079ca0884dcb2b2bb049413fac3f1",
+      "unavailable": []
+    },
+    "instances": {
+      "path": "evidence/frozen-instances-20260928.json",
+      "sha256": "a923a6f54a6915aa0db6dd7b157ba7eef7592e04fe5c7dd57ba187c1b7422101",
+      "counts": {
+        "curated": 23,
+        "curated_present": 21,
+        "suite_instances": 265,
+        "suite_present": 63,
+        "unavailable": 204
+      },
+      "split": {
+        "train": 180,
+        "tune": 47,
+        "holdout": 38
+      },
+      "family_tags": {
+        "netlib": "NETLIB continuous LP collection",
+        "miplib": "MIPLIB and the Mittelmann MIP extension of the same family",
+        "qp": "quadratic objectives (QPLIB)",
+        "domain": "in-house domain cases (cases/refinery)"
+      }
+    },
+    "timing_pins": {
+      "scripts.run_compare": true,
+      "scripts.run_netlib": true,
+      "scripts.run_miplib": true
+    }
+  },
+  "baseline": {},
+  "checks": [
+    {
+      "command": "python3 scripts/check_source_limits.py",
+      "rc": 0,
+      "seconds": 0.04,
+      "output_tail": [
+        "Checked 456 maintained files; maximum 300 lines; 0 violations"
+      ]
+    },
+    {
+      "command": "ctest --test-dir build_contracts -R compare_harness|netlib_benchmarks|miplib_benchmarks|repository_tools --output-on-failure",
+      "rc": 8,
+      "seconds": 0.13,
+      "output_tail": [
+        "",
+        "Total Test time (real) =   0.11 sec",
+        "",
+        "The following tests FAILED:",
+        "\t 89 - repository_tools (Failed)",
+        "Errors while running CTest"
+      ]
+    }
+  ],
+  "limitations": [],
+  "follow_ups": [],
+  "solver": {
+    "path": "./build_contracts/markov-cero-solve",
+    "sha256": "05c11f6da3a20defaacabb9226dc1aa7f3334ef800aacfcb924bc3e1eb8b4dee"
+  },
+  "timing": {
+    "frozen_on": "2026-09-28",
+    "time_limits_s": {
+      "lp": 60.0,
+      "qp": 60.0,
+      "mip": 300.0,
+      "release_mip": 3600.0
+    },
+    "min_repeats": 5,
+    "matched_threads": 1,
+    "class_time_limits_s": {
+      "LP": 60.0,
+      "QP": 60.0,
+      "MILP": 300.0
+    },
+    "suite_class": {
+      "netlib": "LP",
+      "qplib": "QP",
+      "miplib": "MILP",
+      "mittelmann": "MILP",
+      "cases": "MILP"
+    },
+    "timing_scope": {
+      "process_wall": "Parent-observed wall clock around the solver process, including model parse, CLI start-up and result serialisation.",
+      "engine_only": "Time reported by the solver engine itself, excluding parse/start-up; not comparable across solvers and never mixed into cross-solver rows.",
+      "frozen_baseline_scope": "process_wall"
+    },
+    "cold_vs_repeat": {
+      "cold": "First solve of an instance by a solver in a run: fresh process, no reused basis, no warm OS page cache for the model file.",
+      "repeat": "Any later solve of the same instance by the same solver in the same run: warm; reported separately and never averaged with the cold row.",
+      "frozen_baseline_reports": "cold"
+    },
+    "defaults_status": [
+      {
+        "name": "lp_qp_time_limit_s",
+        "value": 60.0,
+        "roadmap_target_s": 60,
+        "harness_default": "run_full_compare --timeout default 60 s; run_full_benchmark --timeout default 60 s for the netlib and qplib suites",
+        "status": "kept",
+        "note": "Both harnesses take the value from this module when --timeout is unset."
+      },
+      {
+        "name": "mip_time_limit_s",
+        "value": 300.0,
+        "roadmap_target_s": 300,
+        "harness_default": "run_full_benchmark --timeout default 300 s for the miplib, mittelmann and cases suites; run_full_compare applies one shared --timeout (default 60 s) to every class",
+        "status": "deviation",
+        "note": "run_full_compare cannot vary the cap per class without rewriting its shared report text, so MILP rows of a default compare run are LP-capped; pass --timeout 300 to apply the frozen MILP cap to that harness."
+      },
+      {
+        "name": "release_mip_time_limit_s",
+        "value": 3600.0,
+        "roadmap_target_s": 3600,
+        "harness_default": "not used by the diagnostic harnesses",
+        "status": "target_only",
+        "note": "Release-campaign cap; recorded so a release run is not confused with the 300 s diagnostic cap."
+      },
+      {
+        "name": "min_repeats",
+        "value": 5,
+        "roadmap_target_s": null,
+        "harness_default": "run_full_compare and run_full_benchmark are single-shot; run_compare --repeat defaults to 3",
+        "status": "deviation",
+        "note": "Roadmap asks for >=5 repeats per reported cell; the frozen baseline is single-shot, so its timings are cold single observations, not medians."
+      },
+      {
+        "name": "matched_threads",
+        "value": 1,
+        "roadmap_target_s": null,
+        "harness_default": "--threads 1 on both harnesses",
+        "status": "kept",
+        "note": "Threads are matched across solvers so wall-clock rows are comparable."
+      },
+      {
+        "name": "timing_scope",
+        "value": "process_wall",
+        "roadmap_target_s": null,
+        "harness_default": "both harnesses measure the parent wall clock around the solver process",
+        "status": "kept",
+        "note": "Process-wall only; engine-only numbers stay in solver-native reports."
+      },
+      {
+        "name": "cold_vs_repeat",
+        "value": "cold",
+        "roadmap_target_s": null,
+        "harness_default": "first (and only) observation per instance/solver cell",
+        "status": "kept",
+        "note": "Single-shot runs are cold by construction; warm repeats are a follow-up."
+      }
+    ]
+  },
+  "reproduce": {
+    "command": "python3 scripts/freeze_baseline.py --solver ./build_contracts/markov-cero-solve --time-box 20",
+    "note": "runs manifests, compare, benchmark, checks and evidence stages; without --time-box the frozen caps (LP/QP 60 s, MILP 300 s) are used",
+    "solver_note": "the roadmap text names build_contracts/markov_cero_solve; the CMake target file is build_contracts/markov-cero-solve"
+  }
+}

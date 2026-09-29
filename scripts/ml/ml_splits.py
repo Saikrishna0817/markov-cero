@@ -155,6 +155,31 @@ def split_instances(
     return report
 
 
+# Backlog item 7 freeze hook: the frozen instance manifests must keep using this
+# module's hash buckets, so changing the bucketing here changes the manifests.
+FREEZE_ALIASES = {"train": "train", "validation": "tune", "test": "holdout"}
+
+
+def frozen_split(instance_ids, seed: int = DEFAULT_SEED) -> dict:
+    """Deterministic 70/15/15 train/tune/holdout split for frozen manifests.
+
+    Delegates to the `hash` strategy above, so membership depends only on
+    (seed, instance id); split names are aliased to the roadmap's
+    train/tune/holdout vocabulary.
+    """
+    report = split_instances(instance_ids, seed=seed, strategy="hash")
+    return {
+        "strategy": "hash",
+        "seed": seed,
+        "ratios": dict(SPLIT_RATIOS),
+        "members": {FREEZE_ALIASES[name]: report["instances"][name]
+                    for name in SPLIT_NAMES},
+        "counts": {FREEZE_ALIASES[name]: report["counts"][name]
+                   for name in SPLIT_NAMES},
+        "instance_ids": report["instance_ids"],
+    }
+
+
 class FeatureScaler:
     """Affine feature normalizer fit on TRAINING candidates only."""
 

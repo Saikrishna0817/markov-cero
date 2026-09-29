@@ -2,6 +2,14 @@ find_package(Python3 REQUIRED COMPONENTS Interpreter)
 include(cmake/TestTargets.cmake)
 add_test(NAME build_info COMMAND build_info_test)
 add_test(NAME model_verifier COMMAND model_test)
+add_test(NAME solve_context COMMAND solve_context_test)
+add_test(NAME model_snapshot COMMAND model_snapshot_test)
+add_test(NAME node_view COMMAND node_view_test)
+add_test(NAME reference_materialisation COMMAND reference_materialisation_test)
+add_test(NAME node_view_reference_identity COMMAND node_view_reference_identity_test)
+add_test(NAME worker_context COMMAND worker_context_test)
+add_test(NAME resource_failure COMMAND resource_failure_test)
+set_tests_properties(resource_failure PROPERTIES TIMEOUT 120 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME mps_parser COMMAND mps_parser_test)
 add_test(NAME lp_parser COMMAND lp_parser_test)
 # W5: Milestone 1 — numerical accuracy
@@ -165,3 +173,7 @@ if(Python3_Interpreter_FOUND)
   add_test(NAME repository_tools COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tests/repository_tools_test.py
     $<TARGET_FILE:markov-cero-solve> $<TARGET_FILE:markov-cero-verify-mip>)
 endif()
+
+add_test(NAME worker_kill_demo
+  COMMAND ${CMAKE_COMMAND} -E env MARKOV_CERO_SOLVE_BIN=$<TARGET_FILE:markov-cero-solve>
+          ${CMAKE_SOURCE_DIR}/scripts/worker_kill_demo.sh)

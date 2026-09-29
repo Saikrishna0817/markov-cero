@@ -7,6 +7,10 @@
 
 namespace markov_cero::refinery {
 
+/// Sentinel "no sulfur limit requested" for ProductSpecification::max_sulfur_ppm.
+/// Any other value is enforced (product 3) or rejected as unmodelled.
+inline constexpr double kUnsetSulfurLimitPpm = 1e9;
+
 struct CrudeAssay {
     std::string name;
     double cost_per_barrel{0.0};       // USD / bbl
@@ -29,11 +33,12 @@ struct ProductSpecification {
     double max_demand_kbpd{0.0};
     double price_per_barrel{0.0};       // USD / bbl
 
-    // Quality specs
-    double min_ron{0.0};               // Research Octane Number (for Gasoline)
-    double max_sulfur_ppm{1e9};        // Sulfur spec in parts per million
-    double min_cetane{0.0};            // Cetane number (for Diesel)
-    double max_rvp_psi{100.0};         // Reid Vapor Pressure
+    // Quality specs (checked by the typed input setters and build_refinery_lp;
+    // genuinely unmodelled specs are rejected).
+    double min_ron{0.0};                        // Research Octane Number [RON], gasoline pool only
+    double max_sulfur_ppm{kUnsetSulfurLimitPpm}; // Sulfur limit [ppm, mass basis], fuel-oil pool only
+    double min_cetane{0.0};                     // Cetane number [cetane index], unmodelled
+    double max_rvp_psi{100.0};                  // Reid Vapor Pressure [psi], unmodelled
 };
 
 struct RefineryPlanningConfig {
@@ -48,7 +53,8 @@ struct RefineryPlanningConfig {
 };
 
 /// Synthetic volume-planning demonstration, not a plant mass/quality model.
-/// Only the gasoline RON proxy is supported; other quality limits are rejected.
+/// Gasoline RON and fuel-oil sulfur are modelled as synthetic blend proxies.
+/// Other quality limits are rejected.
 [[nodiscard]] model::Model build_refinery_lp(const RefineryPlanningConfig& config);
 
 /// Generates explicitly synthetic demonstration data.

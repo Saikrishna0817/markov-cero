@@ -17,4 +17,6 @@ namespace detail_milp_test { void test_refinery_discrete_dispatch(); }
 namespace detail_milp_test { void test_infeasible_milp(); }
 void test_node_selection_policies();
 void test_pseudo_cost_branching();
+void test_near_integer_root_rejected();
+void test_huge_parallel_incumbent();
 }

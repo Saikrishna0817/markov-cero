@@ -56,6 +56,22 @@ int main() {
     req(error(x, updated_lu.solve(b)) < 1e-11, "eta FTRAN parity");
     xt = basis.solve_transpose(b);
     req(error(xt, updated_lu.solve_transpose(b)) < 1e-11, "eta BTRAN parity");
+    SparseBasisOptions transpose_opts;
+    transpose_opts.refinement_trigger_updates = 1;
+    transpose_opts.eta_density_trigger = 1;
+    auto transpose_basis = SparseBasisFactorization::factorize(
+        SparseCsc::from_columns(2, {{2, 0}, {0, 3}}), transpose_opts);
+    transpose_basis.replace_column(0, {1, 1});
+    const auto transpose_matrix = SparseCsc::from_columns(2, {{1, 1}, {0, 3}});
+    const std::vector<double> transpose_rhs{3333333333333333.0, 1e16};
+    const auto transpose_solution = transpose_basis.solve_transpose(transpose_rhs);
+    req(transpose_basis.statistics().refinement_attempts >= 1,
+        "transpose update triggers refinement");
+    req(std::abs(transpose_solution[0] + 1.0 / 3.0) < 1e-3,
+        "transpose refinement applies eta before base solve");
+    req(sparse_infinity_residual(transpose_matrix, transpose_solution,
+                                 transpose_rhs, true) < 2,
+        "transpose refinement solves updated basis");
     req(basis.statistics().updates == 1 && basis.statistics().current_update_chain == 1,
         "eta statistics");
     basis.replace_column(1, std::vector<double>{1, 3, 1});

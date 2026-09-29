@@ -67,6 +67,9 @@ namespace detail_dual_simplex { Result certified_optimal(const transform::Canoni
                          const Options& o); }
 namespace detail_dual_simplex { Result certified_farkas(const transform::CanonicalModel& m, const std::vector<double>& pi,
                         const Options& o); }
+namespace detail_dual_simplex { bool accepted_status(reference::SolveStatus status); }
+namespace detail_dual_simplex { Result verify_accepted(const transform::CanonicalModel& m, const Options& o,
+                          Result out); }
 std::string fingerprint(const transform::CanonicalModel& m);
 BasisState make_basis_state(const transform::CanonicalModel& m, const std::vector<std::size_t>& b);
 void validate_basis_artifact(const BasisState& s);
@@ -74,4 +77,8 @@ std::string serialize_basis(const BasisState& s);
 BasisState parse_basis(const std::string& text);
 Result solve(const transform::CanonicalModel& m, const Options& o,
              const std::optional<BasisState>& warm);
+Result solve_impl(const transform::CanonicalModel& m, const Options& o,
+                  const std::optional<BasisState>& warm, FactorCache* cache);
+Result solve_verified(const transform::CanonicalModel& m, const Options& o,
+                      const std::optional<BasisState>& warm, FactorCache* cache);
 }

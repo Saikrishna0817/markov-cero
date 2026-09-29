@@ -1,9 +1,13 @@
 #include "api_internal.hpp"
 
 namespace markov_cero::api::detail {
-void run_qp(const model::Model& model, const SolveOptions& options, SolveResult& out, lp::reference::Result& result) {
-        const auto qp_model = qp::make_quadratic_model(model);
-        if (stop_after_deadline(options, out, result, "QP model construction")) return;
+void run_qp(const model::Model& model, const SolveOptions& options, SolveResult& out,
+            lp::reference::Result& result, core::SolveContext& ctx) {
+        const auto qp_model = [&] {
+            core::StageScope stage(ctx, "model_build");
+            return qp::make_quadratic_model(model);
+        }();
+        if (stop_after_deadline(ctx, options, out, result, "QP model construction")) return;
         qp::QpOptions qopts;
         qopts.absolute_tolerance = 1e-6;
         qopts.relative_tolerance = 1e-6;
@@ -18,7 +22,17 @@ void run_qp(const model::Model& model, const SolveOptions& options, SolveResult&
         if (gpu_requested) {
             out.recommended_backend = "gpu";
         }
-        const auto qpres = qp::solve_qp(qp_model, qopts, gpu_requested);
+        qp::AdmmQpSolver local_session;
+        auto& repeated_qp_session = options.repeated_qp_session
+            ? *options.repeated_qp_session : local_session;
+        const auto qpres = [&] {
+            core::StageScope stage(ctx, "solve");
+            auto solved = qp::solve_qp(qp_model, qopts, repeated_qp_session, gpu_requested);
+            stage.set_count(solved.iterations);
+            return solved;
+        }();
+        if (stop_after_deadline(ctx, options, out, result, "QP solve")) return;
+        core::StageScope verify_stage(ctx, "verify");
         out.lp_iterations = qpres.iterations;
         out.nodes_explored = 1;
         // D-16: rho changes (each one re-factorized the KKT matrix).

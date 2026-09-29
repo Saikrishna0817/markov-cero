@@ -1,0 +1,11 @@
+{
+  "change": "Unit and qualification comments refreshed; model rows, columns and coefficients unchanged.",
+  "fixture": "process_network_large.mps",
+  "generator": "gen_process_network.py",
+  "generator_args": {
+    "seed": 42,
+    "shifts": 7
+  },
+  "model_sha256": "edff1aa5bd73d9ab661b8b69f22dc96b0757bfe2acf5a96e5700cb008e037be3",
+  "regeneration_date": "2026-09-29"
+}

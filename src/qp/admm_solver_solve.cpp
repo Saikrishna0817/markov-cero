@@ -32,6 +32,7 @@ QpSolution AdmmQpSolver::solve(const QuadraticModel& model) {
                 break;
             }
         }
+        verify_accepted_result(model, sol);
         return sol;
     }
 
@@ -62,8 +63,14 @@ QpSolution AdmmQpSolver::solve(const QuadraticModel& model) {
 
     std::vector<double> rho(m, options_.rho_init);
 
-    KktSolver kkt;
-    if (!kkt.factorize(model.P, model.A, options_.sigma, rho, deadline)) {
+    // Repeated-solve session: the KKT solver (and its symbolic pattern cache)
+    // persists on this AdmmQpSolver instance across solve() calls.
+    kkt_.enable_symbolic_cache(options_.reuse_kkt_symbolic);
+    auto& kkt = kkt_;
+    const std::size_t symbolic_before = kkt.symbolic_reuses();
+    const bool kkt_ready = kkt.factorize(model.P, model.A, options_.sigma, rho, deadline);
+    sol.kkt_symbolic_reuse = kkt.symbolic_reuses() - symbolic_before;
+    if (!kkt_ready) {
         sol.status = kkt.deadline_reached() ? QpStatus::time_limit :
                      kkt.fill_limit_reached() ? QpStatus::unsupported : QpStatus::numerical_error;
         if (kkt.deadline_reached()) sol.message = "deadline reached during QP KKT factorization";
@@ -265,6 +272,8 @@ QpSolution AdmmQpSolver::solve(const QuadraticModel& model) {
     // KKT LDL^T diagonal pivot-ratio proxy of the factorization that produced
     // this solution (reflects the final rho update, if any).
     sol.condition_estimate = kkt.condition_estimate();
+
+    verify_accepted_result(model, sol);
 
     return sol;
 }

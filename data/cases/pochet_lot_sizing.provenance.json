@@ -1,13 +1,21 @@
 {
-  "paper": "Y. Pochet, L.A. Wolsey, 'Production Planning by Mixed Integer Programming', Springer (2006), Chapter 11 (CLSP).",
+  "change": "Unit comments added; parameterized literature model unchanged.",
+  "fixture": "pochet_lot_sizing.mps",
+  "generator": "gen_literature_cases.py",
+  "generator_args": {
+    "case": "pochet_lot_sizing"
+  },
+  "model_sha256": "25439d2d035fc3b34eccbd493216872f8edf5905495869c7291d086efd2fb3b7",
   "modeled_structure": "Capacitated lot sizing: 4 items x 8 periods, shared capacity with big-M setups, unbalanced holding costs, deterministic demand.",
+  "paper": "Y. Pochet, L.A. Wolsey, 'Production Planning by Mixed Integer Programming', Springer (2006), Chapter 11 (CLSP).",
   "parameterization": {
+    "big_m": 30,
+    "capacity": 100,
     "items": 4,
     "periods": 8,
-    "capacity": 100,
-    "setup_cost": "60 + 8i",
-    "big_m": 30
+    "setup_cost": "60 + 8i"
   },
   "problem_class": "MILP",
+  "regeneration_date": "2026-09-29",
   "source": "open literature (see paper citation); parameterized subset, not a copy of any dataset"
 }

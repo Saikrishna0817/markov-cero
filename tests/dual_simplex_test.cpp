@@ -134,5 +134,44 @@ int main() {
         threw = true;
     }
     req(threw, "serializer rejects duplicate basis");
+    // Backlog item 8: the session caches a factor only for the exact
+    // (model fingerprint, basis) it was built for; a constraint-matrix change
+    // forces a cold solve and the session re-bases before reusing again.
+    auto changed_matrix = [](double lo, double up) {
+        auto m = make_model(lo, up);
+        m.matrix.values[0] = -2.0;
+        m.validate();
+        return m;
+    };
+    {
+        auto session = lp::dual::make_session();
+        const auto first = session.resolve(make_model(0, 10));
+        req(first.verified && !first.factor_reused, "session first resolve verified");
+        const auto second = session.resolve(make_model(3, 10));
+        req(second.verified && !second.factor_reused, "first warm resolve factorizes");
+        const auto third = session.resolve(make_model(6, 14));
+        req(third.verified && third.factor_reused, "RHS-only change reuses the cached factor");
+        const auto fourth = session.resolve(changed_matrix(3, 10));
+        req(fourth.used_cold_fallback, "constraint change drops to a cold solve");
+        req(!fourth.factor_reused, "constraint change cannot reuse the cached factor");
+        req(fourth.verified, "constraint change result verified");
+        const auto fifth = session.resolve(changed_matrix(5, 12));
+        req(fifth.verified && !fifth.factor_reused, "session re-bases on the new matrix");
+        const auto sixth = session.resolve(changed_matrix(6, 14));
+        req(sixth.verified && sixth.factor_reused, "reuse resumes on the new matrix");
+        const auto reference = lp::reference::solve(changed_matrix(6, 14));
+        req(reference.status == sixth.solution.status &&
+                std::abs(reference.objective - sixth.solution.objective) < 1e-9,
+            "session parity with reference after invalidation");
+        req(session.cold_fallback_count() == 2, "session counts bootstrap and matrix fallback");
+        const auto impossible = session.resolve(make_model(11, 10));
+        req(impossible.solution.status == lp::reference::SolveStatus::infeasible &&
+                impossible.verified, "session infeasibility is certified");
+        req(!session.basis().has_value() && !session.cache().valid,
+            "infeasible resolve drops the session basis and factor");
+        const auto restarted = session.resolve(make_model(3, 10));
+        req(restarted.verified && restarted.used_cold_fallback && !restarted.factor_reused,
+            "session restarts cold after infeasibility");
+    }
     std::cout << "dual simplex tests passed\n";
 }

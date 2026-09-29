@@ -1,0 +1,177 @@
+{
+ "date": "2026-09-29",
+ "purpose": "Evidence index for roadmap section 14 backlog items 5-12 executed via the parallel subagent swarm; each entry records scope, status and honest open gates.",
+ "roadmap": "docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md section 14",
+ "plan": ".opencode/plans/backlog-items-5-12-subagent-swarm.md",
+ "items": {
+  "item_5_resource_contract": {
+   "evidence": "evidence/resource-envelope-20260928.json",
+   "scope": "Solve-wide total_time_limit_seconds/memory_limit_bytes across C++/CLI/Python; SolveContext through engines and verifiers; StageScope instrumentation; WorkerContext in parallel workers; stop_reason; allocation-failure sweeps; worker-kill demo",
+   "status": "implemented",
+   "checks": {
+    "ctest": "89/89 build_item5 Release",
+    "pytest": "21/21",
+    "source_limits": "0 violations"
+   },
+   "gates_open": [
+    "IR-20 (cooperative deadlines; indivisible kernels overrun)",
+    "IR-21 (charge-point-only metering; not an RSS ceiling)"
+   ]
+  },
+  "item_6_proof_guarantee": {
+   "evidence": "evidence/proof-guarantee-20260928.json",
+   "scope": "Phase 1: proof metadata (assurance tiers, budgets, fingerprint binding, version 2->3 serialization). Phase 2: guarantee fields through SolveResult, CLI JSON/text and Python; exhausted budgets stay unverified; gap proofs labelled independent_mip_gap",
+   "status": "implemented",
+   "checks": {
+    "ctest": "mip_proof + repository_tools + api_test green",
+    "pytest": "22/22"
+   },
+   "gates_open": [
+    "shared proof deadline for build+replay",
+    "parallel proof-event collector"
+   ]
+  },
+  "item_7_baseline_freeze": {
+   "evidence": "evidence/baseline-freeze-20260928.json",
+   "related": [
+    "evidence/frozen-comparators-20260928.json",
+    "evidence/frozen-instances-20260928.json",
+    "evidence/comparison/baseline_frozen_20260928/",
+    "evidence/benchmarks/baseline_frozen_20260928/"
+   ],
+   "scope": "Frozen comparator/instance manifests, deterministic family splits, timing constants as code, regenerated pre-tuning baseline under pinned hashes, offline-only",
+   "status": "implemented",
+   "checks": {
+    "ctest": "compare_harness/netlib/miplib/repository green at run time",
+    "source_limits": "clean"
+   },
+   "gates_open": []
+  },
+  "item_8_repeated_solve": {
+   "evidence": "evidence/repeated-solve-20260928.json",
+   "scope": "Dual-simplex session reuse (basis+factorization, cold fallback), QP symbolic KKT reuse gated on shape/fingerprint/sparsity with invalidation, verification on every accepted result, measured before/after",
+   "status": "implemented_opt_in",
+   "checks": {
+    "ctest": "89/89 build_item8",
+    "source_limits": "0 violations"
+   },
+   "gates_open": [
+    "QP gain below the 20% promotion gate (4-5%)",
+    "engine session wiring is opt-in"
+   ]
+  },
+  "item_9_milp_strengthening": {
+   "evidence": "evidence/milp-strengthening-20260928.json",
+   "related": [
+    "docs/codebase/technical-debt/mip-proof-obligations.md"
+   ],
+   "scope": "Propagated bound-evidence producer, serial LP-bound/incumbent/search timing split, format-3 audit annotations (cuts+propagations) in cut-free-replay-compatible proofs, parallel root-cut failure reporting, worker-local in-tree cuts with counter wired into the worker loop",
+   "status": "implemented",
+   "checks": {
+    "focused": "7/7",
+    "ctest": "89/89 build_item9",
+    "tsan": "parallel helper 1/1"
+   },
+   "gates_open": [
+    "annotations are audit records only; acceptance remains independent cut-free replay",
+    "parallel worker proof-event collector"
+   ]
+  },
+  "item_10_refinery_schema": {
+   "evidence": "evidence/refinery-units-schema-20260928.json",
+   "scope": "Typed units schema with mismatch rejection, enforced synthetic fuel-oil sulfur, unit-checked FCC feed balance, named unit-labelled JSON reports with duals/slacks/quality margins/row-scoped IIS, deterministic generators",
+   "status": "implemented_code_portion",
+   "checks": {
+    "ctest": "12/12 refinery/domain selection build_item10",
+    "source_limits": "clean"
+   },
+   "gates_open": [
+    "IR-34/G34 engineer approval NOT obtained",
+    "G8 shadow-trial agreement NOT obtained",
+    "generated data/cases fixtures need regeneration by their owner"
+   ]
+  },
+  "item_11_packaging_release": {
+   "evidence": "evidence/packaging-qualification-20260928.json",
+   "related": [
+    "docs/governance/support-rollback.md",
+    "evidence/packaging-rollback-drill-20260928.txt",
+    "evidence/packaging-prefix-drill-20260928.txt",
+    "evidence/packaging-verify-release-20260928.txt"
+   ],
+   "scope": "Offline wheel/sdist qualification, prefix install + external find_package consumer, performed upgrade/rollback drill, verify-release.sh extensions, support/rollback documentation, release manifest with wheel SHA-256",
+   "status": "implemented_code_portion",
+   "checks": {
+    "ctest": "89/89 build_item11 at run time",
+    "wheel": "sha256 fac615128c846e6b48c51252afb44fec199be30154e370f587309186a0145f4b"
+   },
+   "gates_open": [
+    "IR-33: SBOM/signing/vuln review/support ownership/hosted evidence",
+    "G7 independent review",
+    "D18 licensing metadata decision"
+   ]
+  },
+  "item_12_promotion_and_limits": {
+   "evidence": "evidence/backlog-5-12-20260928.json",
+   "scope": "This index plus CHANGELOG/STATUS/roadmap/register integration and the final verification matrix run by the integrator",
+   "status": "integration_complete",
+   "promoted": [
+    "solve-wide resource contract (with envelope)",
+    "MIP proof guarantee surface",
+    "frozen benchmark baseline",
+    "MILP strengthening + proof obligations",
+    "refinery units/named reports (code)",
+    "packaging qualification (code)"
+   ],
+   "not_promoted": [
+    "QP symbolic reuse (below 20% gate; opt-in)",
+    "ML branching (unchanged, acceptance open)",
+    "GPU acceleration claims (unchanged, no demonstrated benefit)"
+   ],
+   "limitations_published": [
+    "IR-20/21 open with envelope",
+    "IR-28 unchanged",
+    "IR-33/G7 open",
+    "IR-34/G34/G8 open",
+    "IR-35 unchanged",
+    "transient ~1 GiB RSS anomaly unresolved",
+    "100% critical/high release gate unmet"
+   ]
+  }
+ },
+ "verification_matrix": {
+  "date": "2026-09-29",
+  "release_ctest": "91/91 (build_contracts, Release, warnings-as-errors; includes worker_kill_demo and parallel_proof_events gates)",
+  "asan_ubsan_ctest": "91/91 (build_asan_contracts)",
+  "tsan_ctest": "91/91 (build_tsan_contracts)",
+  "wheel_pytest": "22/22 (wheel rebuilt from worktree, .venv pytest)",
+  "source_limits": "466 files checked, 0 violations (300-line cap)",
+  "check_docs": "8 active documents, 0 broken local links",
+  "check_json": "pass (all tracked JSON parse)",
+  "note": "Per-agent counts recorded above are from each agent's own build tree at its completion time."
+ },
+ "follow_up_wave": {
+  "date": "2026-09-29",
+  "items": [
+   {
+    "item": "Parallel proof-event collector / engine_parallel proof-annotation wiring",
+    "what": "ProofEventCollector passed to worker_loop and root-cut separation; root cuts recorded as cut obligations at the pre-cut separation point; every early exit (root deadline, integral root, root gap closed, strong-branching deadline, no branch variable, final assembly) appends collected obligations to Result; result classification extracted to parallel_tree_search_result.cpp (300-line cap kept via coherent split, no minification).",
+    "tests": "new parallel_proof_events gate (91/91)"
+   },
+   {
+    "item": "Shared proof build/replay deadline",
+    "what": "One absolute deadline covers proof construction and replay; an expired budget skips both and reports time_limit/budget-exhausted honestly; SolveResult records build and replay elapsed times separately.",
+    "tests": "mip_proof_test deadline cases"
+   },
+   {
+    "item": "Generated refinery fixture regeneration",
+    "what": "All 11 model matrices reproduce HEAD after comment stripping; 22 generated model/provenance files reproduce byte-for-byte; no fixture undocumented or unconsumed; 5 literature cases solved to expected objectives.",
+    "tests": "6/6 domain tests"
+   },
+   {
+    "item": "Ledger integrity fix found by integration",
+    "what": "record_cuts dot-product size gate verified (node LP primals are original-space; cuts over structural columns match) and root-cut obligations now reach the replayable ledger."
+   }
+  ]
+ }
+}

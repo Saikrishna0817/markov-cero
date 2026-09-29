@@ -39,7 +39,7 @@ void LpParser::parse_objective() {
             if (!has_more() || is_section_keyword(pos_)) break;
 
             if (peek().text == "[") {
-                parse_quadratic_objective();
+                parse_quadratic_objective(sign);
                 continue;
             }
 
@@ -60,8 +60,9 @@ void LpParser::parse_objective() {
             }
         }
     }
-void LpParser::parse_quadratic_objective() {
+void LpParser::parse_quadratic_objective(double outer_sign) {
         next(); // skip '['
+        const std::size_t first_term = quad_terms_.size();
         while (has_more() && peek().text != "]") {
             double sign = 1.0;
             if (peek().text == "+") {
@@ -94,16 +95,20 @@ void LpParser::parse_quadratic_objective() {
             std::size_t c2 = get_or_create_var(var2);
             if (quad_terms_.size() >= limits_.maximum_quadratic_terms)
                 throw LpResourceLimitError("LP quadratic objective term limit exceeded");
-            quad_terms_.push_back({c1, c2, coeff});
+            quad_terms_.push_back({c1, c2, outer_sign * coeff});
         }
         if (has_more() && peek().text == "]") {
             next();
         }
-        // Optional "/ 2"
+        // LP syntax halves the entire bracketed expression when followed by / 2.
         if (has_more() && peek().text == "/") {
             next();
             if (has_more() && peek().text == "2") {
                 next();
+                for (std::size_t i = first_term; i < quad_terms_.size(); ++i)
+                    quad_terms_[i].coeff *= 0.5;
+            } else {
+                throw std::runtime_error("LP quadratic objective expects / 2");
             }
         }
     }

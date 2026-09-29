@@ -5,7 +5,7 @@ severity: medium
 status: resolved
 verified_on: 2026-09-25
 evidence:
-  - "src/milp/milp_solver.cpp:341-443"
+  - "src/milp/search_separate_cuts.cpp:3-130"
   - "evidence/cut_effectiveness.csv"
 ---
 
@@ -16,7 +16,7 @@ evidence:
 > (STEIN9) and 45.4% (STEIN15) against the `--no-cuts` baseline.
 
 ## Resolution
-- In-tree separation block added at `src/milp/milp_solver.cpp:341` ("In-tree cut
+- In-tree separation block lives at `src/milp/search_separate_cuts.cpp:3` ("In-tree cut
   separation: frequency-gated, pool-deduped, bounded rounds (ED-005)"):
   gated by `options.enable_cuts`, `options.separation_frequency`, and
   `node_lp_res.basis.has_value()`; bounded by `options.max_cut_rounds`.
@@ -34,8 +34,12 @@ evidence:
 ## Historical Observations (pre-RW-1)
 - Cut generation originally only at root (`milp_solver.cpp:165` comment), measured
   `cut_node_reduction: 0.0%` in `evidence/benchmarks/phase4.json:39,49`.
-- Parallel engine (`parallel_tree_search.cpp`) still root-only cuts — tracked
-  separately if RW-1 is extended to the parallel path.
+- Parallel engine still runs root cuts only until the WorkerContext-owned
+  `process_node` call site adopts `solve_parallel_node_with_cuts`. The helper in
+  `parallel_tree_search_root_cuts.cpp` uses a private model per worker,
+  frequency gating, local-cut inheritance through `work_queue.cpp`, and
+  reverts an unverified round. Root cut exceptions are reported to stderr and
+  the root model is kept unchanged when the cut LP does not certify.
 
 ## Related
 - [[negative-parallel-scaling]] · [[testing-gaps]] · [[blend-numerical-failure]]

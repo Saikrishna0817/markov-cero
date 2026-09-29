@@ -1,9 +1,11 @@
 from __future__ import annotations
 from .run_full_compare_config import (
-    CURATED, OUT, REPO, SCRIPTS, SOLVER_ORDER, ThreadPoolExecutor, argparse, hashlib, os, shutil, subprocess, sys, time
+    CURATED, DEFAULT_TIMEOUT_S, OUT, REPO, SCRIPTS, SOLVER_ORDER, ThreadPoolExecutor,
+    argparse, hashlib, os, shutil, subprocess, sys, time
 )
 from .run_full_compare_annotate import aggregates
 from .run_full_compare_annotate import annotate
+from .run_full_compare_annotate import write_comparator_manifest
 from .run_full_compare_build_report import build_report
 from .run_full_compare_run_highs import ensure_runtime_env
 from .run_full_compare_annotate import load_reference_objectives
@@ -19,8 +21,10 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--solver",
                     default=os.path.join(REPO, "build_gap", "markov-cero-solve"))
-    ap.add_argument("--timeout", type=float, default=60.0,
-                    help="per-instance per-solver time cap in seconds")
+    ap.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT_S,
+                    help="per-instance per-solver time cap in seconds (frozen "
+                         "default: LP/QP 60 s; pass 300 for the frozen MILP cap, "
+                         "which this single-cap harness cannot apply per class)")
     ap.add_argument("--workers", type=int, default=1,
                     help="concurrent diagnostic runs; use 1 for timing comparisons")
     ap.add_argument("--threads", type=int, default=1,
@@ -112,6 +116,9 @@ def main() -> int:
         for r in rows if r.get("version")}
     if "markov-cero" in versions:
         probes["markov-cero"]["version"] = versions["markov-cero"]
+    comparator_manifest = write_comparator_manifest(
+        os.path.join(args.out, "frozen-comparators.json"), probes, args.solver)
+    print(f"[+] comparator manifest -> {comparator_manifest}")
 
     refs = load_reference_objectives(instances)
     _, disagreements = annotate(rows, refs, instances)

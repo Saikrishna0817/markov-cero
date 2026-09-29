@@ -1,0 +1,85 @@
+markov-cero cumulative M5 local verification
+UTC: 2026-09-28T19:56:15Z
++ python3 scripts/check-sovereignty.py /home/saikrishna/markov-initial-build
+Sovereignty verification passed: zero external solver dependencies.
+Build artifacts retained at /tmp/markov-verify-gcc.FRDyu1
++ cmake -S /home/saikrishna/markov-initial-build -B /tmp/markov-verify-gcc.FRDyu1 -G Unix Makefiles -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++
+-- The CXX compiler identification is GNU 16.2.1
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Found Python3: /home/saikrishna/.local/bin/python3.11 (found version "3.11.16") found components: Interpreter
+-- Configuring done (0.5s)
+-- Generating done (0.1s)
+-- Build files have been written to: /tmp/markov-verify-gcc.FRDyu1
++ cmake --build /tmp/markov-verify-gcc.FRDyu1 --parallel 2
+[  0%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/api.cpp.o
+[  1%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/mip_certificate.cpp.o
+In file included from /home/saikrishna/markov-initial-build/src/api/api.cpp:1:
+/home/saikrishna/markov-initial-build/src/api/api_internal.hpp: In function ‘bool markov_cero::api::detail::stop_after_deadline(markov_cero::core::SolveContext&, const markov_cero::api::SolveOptions&, markov_cero::api::SolveResult&, markov_cero::lp::reference::Result&, const char*)’:
+/home/saikrishna/markov-initial-build/src/api/api_internal.hpp:86:18: error: ignoring return value of ‘markov_cero::core::StopReason markov_cero::core::SolveContext::note_stop(markov_cero::core::StopReason)’, declared with attribute ‘nodiscard’ [-Werror=unused-result]
+   86 |     ctx.note_stop(core::StopReason::deadline_exceeded);
+      |     ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/saikrishna/markov-initial-build/include/markov_cero/core/instrumentation.hpp:3,
+                 from /home/saikrishna/markov-initial-build/src/api/api_internal.hpp:3:
+/home/saikrishna/markov-initial-build/include/markov_cero/core/solve_context.hpp:114:30: note: declared here
+  114 |     [[nodiscard]] StopReason note_stop(StopReason reason) noexcept {
+      |                              ^~~~~~~~~
+In file included from /home/saikrishna/markov-initial-build/src/api/mip_certificate.cpp:1:
+/home/saikrishna/markov-initial-build/src/api/api_internal.hpp: In function ‘bool markov_cero::api::detail::stop_after_deadline(markov_cero::core::SolveContext&, const markov_cero::api::SolveOptions&, markov_cero::api::SolveResult&, markov_cero::lp::reference::Result&, const char*)’:
+/home/saikrishna/markov-initial-build/src/api/api_internal.hpp:86:18: error: ignoring return value of ‘markov_cero::core::StopReason markov_cero::core::SolveContext::note_stop(markov_cero::core::StopReason)’, declared with attribute ‘nodiscard’ [-Werror=unused-result]
+   86 |     ctx.note_stop(core::StopReason::deadline_exceeded);
+      |     ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/saikrishna/markov-initial-build/include/markov_cero/core/instrumentation.hpp:3,
+                 from /home/saikrishna/markov-initial-build/src/api/api_internal.hpp:3:
+/home/saikrishna/markov-initial-build/include/markov_cero/core/solve_context.hpp:114:30: note: declared here
+  114 |     [[nodiscard]] StopReason note_stop(StopReason reason) noexcept {
+      |                              ^~~~~~~~~
+cc1plus: all warnings being treated as errors
+make[2]: *** [CMakeFiles/markov_cero_core.dir/build.make:93: CMakeFiles/markov_cero_core.dir/src/api/mip_certificate.cpp.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+cc1plus: all warnings being treated as errors
+make[2]: *** [CMakeFiles/markov_cero_core.dir/build.make:79: CMakeFiles/markov_cero_core.dir/src/api/api.cpp.o] Error 1
+make[1]: *** [CMakeFiles/Makefile2:1230: CMakeFiles/markov_cero_core.dir/all] Error 2
+make: *** [Makefile:146: all] Error 2
+FAIL: gcc build step
+Build artifacts retained at /tmp/markov-verify-clang.gpB8q4
++ cmake -S /home/saikrishna/markov-initial-build -B /tmp/markov-verify-clang.gpB8q4 -G Unix Makefiles -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++
+-- The CXX compiler identification is Clang 22.1.8
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/clang++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Found Python3: /home/saikrishna/.local/bin/python3.11 (found version "3.11.16") found components: Interpreter
+-- Configuring done (0.6s)
+-- Generating done (0.1s)
+-- Build files have been written to: /tmp/markov-verify-clang.gpB8q4
++ cmake --build /tmp/markov-verify-clang.gpB8q4 --parallel 2
+[  0%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/api.cpp.o
+[  1%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/mip_certificate.cpp.o
+In file included from /home/saikrishna/markov-initial-build/src/api/mip_certificate.cpp:1:
+/home/saikrishna/markov-initial-build/src/api/api_internal.hpp:86:5: error: ignoring return value of function declared with 'nodiscard' attribute [-Werror,-Wunused-result]
+   86 |     ctx.note_stop(core::StopReason::deadline_exceeded);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/saikrishna/markov-initial-build/src/api/api.cpp:1:
+/home/saikrishna/markov-initial-build/src/api/api_internal.hpp:86:5: error: ignoring return value of function declared with 'nodiscard' attribute [-Werror,-Wunused-result]
+   86 |     ctx.note_stop(core::StopReason::deadline_exceeded);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
+make[2]: *** [CMakeFiles/markov_cero_core.dir/build.make:93: CMakeFiles/markov_cero_core.dir/src/api/mip_certificate.cpp.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+1 error generated.
+make[2]: *** [CMakeFiles/markov_cero_core.dir/build.make:79: CMakeFiles/markov_cero_core.dir/src/api/api.cpp.o] Error 1
+make[1]: *** [CMakeFiles/Makefile2:1230: CMakeFiles/markov_cero_core.dir/all] Error 2
+make: *** [Makefile:146: all] Error 2
+FAIL: clang build step
+FAIL: at least one compiler configuration did not pass

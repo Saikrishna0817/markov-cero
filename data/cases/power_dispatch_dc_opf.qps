@@ -1,3 +1,7 @@
+* Units: PG, nodal demand and line limits p.u. on 100 MVA base; TH radians;
+* branch susceptance p.u./radian. COST linear coefficients synthetic currency/p.u.;
+* QUADOBJ coefficients synthetic currency/p.u.^2 (objective uses 1/2 x'Qx).
+* Synthetic qualification data; not plant operating data; deterministic for a fixed seed.
 NAME IEEE118_DC_OPF
 ROWS
  N COST

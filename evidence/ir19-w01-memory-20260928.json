@@ -1,0 +1,137 @@
+{
+  "date": "2026-09-28",
+  "purpose": "Industry roadmap backlog item 4: bounded reference-materialisation comparator and measured W01 acceptance evidence for IR-19 (immutable bounds/cuts views)",
+  "scope": "Structural comparator/tests plus structure-only and full-solver memory accounting on this host. Not a cross-solver benchmark, not a solve-wide memory-limit enforcement result (IR-21 remains open), and not a root cause for the transient RSS anomaly recorded below.",
+  "host": {
+    "os": "Linux",
+    "compiler": "g++ (GCC) 16.2.1 20260810",
+    "cmake": "4.4.3",
+    "python": "3.14.7 (.venv)"
+  },
+  "worktree": "uncommitted working tree; results identify this state, not HEAD",
+  "new_source": [
+    "include/markov_cero/milp/reference_materialisation.hpp",
+    "src/milp/reference_materialisation.cpp",
+    "include/markov_cero/milp/node_bounds.hpp (retained_bytes)",
+    "tests/reference_materialisation_test.cpp",
+    "tests/node_view_reference_identity_test.cpp",
+    "scripts/frontier_storage_bytes.hpp",
+    "scripts/bench_solve_frontier_memory.cpp"
+  ],
+  "changed_source": [
+    "scripts/bench_node_frontier_memory.cpp (root/worker/queue byte accounting, matrix fill parameter)",
+    "include/markov_cero/milp/milp_solver.hpp (Result::max_queued_nodes)",
+    "src/milp/search_context.hpp (NodeFrontier::peak_size)",
+    "src/milp/search_finish.cpp (serial peak wiring)",
+    "include/markov_cero/milp/work_queue.hpp + src/milp/work_queue.cpp (ThreadSafeNodeQueue::peak_size)",
+    "src/milp/parallel_tree_search_solve_integer_parallel.cpp (parallel peak wiring)"
+  ],
+  "builds": [
+    {
+      "name": "release",
+      "command": "cmake -S . -B build_contracts -DCMAKE_BUILD_TYPE=Release -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON && cmake --build build_contracts --parallel 4 && ctest --test-dir build_contracts -j4 --output-on-failure",
+      "tests_passed": 89,
+      "tests_total": 89,
+      "seconds": 11.25
+    },
+    {
+      "name": "asan_ubsan_warnings_as_errors",
+      "command": "cmake -S . -B build_asan_contracts -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMARKOV_CERO_ENABLE_ASAN_UBSAN=ON -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON && cmake --build build_asan_contracts --parallel 4 && ctest --test-dir build_asan_contracts -j4 --output-on-failure",
+      "tests_passed": 89,
+      "tests_total": 89,
+      "seconds": 64.41
+    },
+    {
+      "name": "tsan_warnings_as_errors",
+      "command": "cmake -S . -B build_tsan_contracts -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMARKOV_CERO_ENABLE_TSAN=ON -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON && cmake --build build_tsan_contracts --parallel 4 && ctest --test-dir build_tsan_contracts -j4 --output-on-failure",
+      "tests_passed": 89,
+      "tests_total": 89,
+      "seconds": 63.14
+    },
+    {
+      "name": "wheel_and_pytest",
+      "build_command": ".venv/bin/python -m pip wheel . -w /tmp/opencode/wheels4 --no-deps --no-build-isolation",
+      "test_command": ".venv/bin/python -m pytest python/tests -q",
+      "wheel_name": "markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+      "wheel_sha256": "0e001fa45f47aeacad3998fdfdb89cd8f8d819ae3c4002136dd4d723fa680a99",
+      "tests_passed": 20,
+      "tests_total": 20
+    }
+  ],
+  "checks": {
+    "source_limits": "python3 scripts/check_source_limits.py -> 449 files, maximum 300 lines, 0 violations",
+    "docs_links": "python3 scripts/check_docs.py -> 8 documents, 0 broken local links",
+    "json": "python3 scripts/check_json.py exit 0 (tracked files); this untracked evidence file additionally validated with json.load",
+    "binary_sha256": {
+      "node_frontier_memory_benchmark": "d1d8c73109e1700deef0bb02b53d96f9a1156fc681a13d29bf5fce0d425a4239",
+      "solve_frontier_memory_benchmark": "b0dfa626646e4b7b3cf23d93624699649070264befb4d8d6ea9973f0e88ace9b",
+      "reference_materialisation_test": "533241a65d84bc5bc71263b4c1c8662931ac19b41eb0b69e6aa05bbf19b892c8",
+      "node_view_reference_identity_test": "aec486249b1b9ab74f72571195ea36c2bd5a797f0fb59c7d16a2b52bcd649f7f"
+    }
+  },
+  "new_ctest_gates": ["reference_materialisation", "node_view_reference_identity"],
+  "comparator": {
+    "design": "The reference path is deliberately a different algorithm from production: it copies the root bounds and replays every recorded branching step chronologically, while NodeBounds::materialize walks the delta chain from tail to root and applies it root-first. NodeView comparison additionally replays the scoped cut list against the concatenation of recorded local cuts and runs production through the budgeted NodeView::materialize on an internal budget sized exactly for the comparison.",
+    "caps": "ReferenceCaps {max_variables, max_steps, max_bytes} covers vectors, steps and total cut ids; preflight refuses before any allocation, and refusal/invalid results report reference_bytes=0. Statuses: ok, mismatch (facet + first_mismatch_index: lower_bounds/upper_bounds/cut_scope/production), refused, invalid, allocation_failed.",
+    "coverage": "200 randomized chains (1-12 variables, depth 1-10, repeated writes to the same variable so chain order is observable), 400-op randomized push/pop against full reconstruction of the retained prefix, sibling bounds+cut isolation including parent immutability after branching, refusal on each cap plus cut-total overflow, mismatch detection with exact facet/index (extra delta, wrong value, upper surface, cut position), invalid inputs (dimension mismatch, out-of-range step). node_view_reference_identity_test solves the node LP from production-materialized and reference-replayed vectors and requires bit-identical status/objective/primal, then verifies the full-solve incumbent against the original model with verify_primal."
+  },
+  "structural_accounting": {
+    "method": "Capacity-based byte accounting per storage class (frontier_storage_bytes.hpp): root = matrix arrays + objective + variable bounds/types; worker = workers x 2n bound vectors; queue = heap records + per-node payload. Baseline queue payload counts per-node full bound vectors, basis copy and deep cut copy; current queue payload counts sizeof(BranchNode) + delta-chain bytes with the shared basis and shared NodeCuts payload counted once. Allocator metadata and strings excluded (strings empty/SSO in these runs).",
+    "parameters": "MODE NODES 1024 1024 4 32 4 [FILL]: 1024 variables, basis 1024, 4 cuts x 32 coefficients, 4 workers; FILL extra nonzeros per column (diagonal + FILL-1 fill entries).",
+    "nodes_sweep_fill1": [
+      {"nodes": 500, "baseline_queue_bytes": 21188000, "current_queue_bytes": 113448, "baseline_peak_rss_kib": 24748, "current_peak_rss_kib": 4176},
+      {"nodes": 1000, "baseline_queue_bytes": 42376000, "current_queue_bytes": 217448, "baseline_peak_rss_kib": 45412, "current_peak_rss_kib": 4268},
+      {"nodes": 2000, "baseline_queue_bytes": 84752000, "current_queue_bytes": 425448, "baseline_peak_rss_kib": 87000, "current_peak_rss_kib": 4652},
+      {"nodes": 4000, "baseline_queue_bytes": 169504000, "current_queue_bytes": 841448, "baseline_peak_rss_kib": 169940, "current_peak_rss_kib": 5164}
+    ],
+    "constants_in_nodes_sweep": {"root_bytes": 69640, "worker_bytes": 131072, "root_matrix_nnz": 1024},
+    "fill_sweep_nodes2000": [
+      {"fill": 1, "root_matrix_nnz": 1024, "root_bytes": 69640, "current_queue_bytes": 425448, "baseline_queue_bytes": 84752000, "current_peak_rss_kib": 4524, "baseline_peak_rss_kib": 87056},
+      {"fill": 8, "root_matrix_nnz": 8192, "root_bytes": 184328, "current_queue_bytes": 425448, "baseline_queue_bytes": 84752000, "current_peak_rss_kib": 4780, "baseline_peak_rss_kib": 87132},
+      {"fill": 64, "root_matrix_nnz": 65536, "root_bytes": 1101832, "current_queue_bytes": 425448, "baseline_queue_bytes": 84752000, "current_peak_rss_kib": 11780, "baseline_peak_rss_kib": 88080},
+      {"fill": 256, "root_matrix_nnz": 262144, "root_bytes": 4247560, "current_queue_bytes": 425448, "baseline_queue_bytes": 84752000, "current_peak_rss_kib": 35640, "baseline_peak_rss_kib": 91044}
+    ],
+    "reading": "Queue bytes scale linearly with node count and are identical across a 61x root-matrix growth (root_bytes 69640 -> 4247560), while root and worker classes are constant across the node sweep. The materialized baseline queue grows to 169.5 MB at 4000 nodes versus 0.84 MB for the persistent representation (~201x at equal content)."
+  },
+  "full_solver_frontier": {
+    "command_template": "./build_contracts/solve_frontier_memory_benchmark INSTANCE.mps [MAX_NODES=2000] [TIME_S=30] [STRONG_BRANCHING=1] [CUTS=1]",
+    "measure": "Result::max_queued_nodes (new peak-frontier field), queue_records_bytes = max_queued_nodes * sizeof(BranchNode) (lower bound: delta chains, shared cut payloads and LP workspaces excluded), root_bytes, getrusage ru_maxrss, plus a 10 ms resident sampler and 250 ms signal-tick high-water for spike localization.",
+    "runs": [
+      {"instance": "flugpl", "max_nodes_cap": 50, "nodes": 50, "max_queued_nodes": 47, "queue_records_bytes": 5640, "root_bytes": 2584, "peak_rss_kib": 5304},
+      {"instance": "flugpl", "max_nodes_cap": 200, "nodes": 200, "max_queued_nodes": 123, "queue_records_bytes": 14760, "root_bytes": 2584, "peak_rss_kib": 5736},
+      {"instance": "flugpl", "max_nodes_cap": 600, "nodes": 600, "max_queued_nodes": 299, "queue_records_bytes": 35880, "root_bytes": 2584, "peak_rss_kib": 5816},
+      {"instance": "flugpl", "max_nodes_cap": 1126, "nodes": 1126, "max_queued_nodes": 437, "queue_records_bytes": 52440, "root_bytes": 2584, "peak_rss_kib": 6500},
+      {"instance": "flugpl", "max_nodes_cap": 4000, "status": "Optimal", "nodes": 2379, "max_queued_nodes": 531, "queue_records_bytes": 63720, "root_bytes": 2584, "peak_rss_kib": 6816},
+      {"instance": "stein15", "status": "Optimal", "nodes": 169, "max_queued_nodes": 47, "queue_records_bytes": 5640, "root_bytes": 2880, "peak_rss_kib": 5256},
+      {"instance": "enlight_hard", "max_nodes_cap": 500, "time_s": 20, "nodes": 489, "max_queued_nodes": 310, "queue_records_bytes": 37200, "root_bytes": 29256, "peak_rss_kib": 9972},
+      {"instance": "pk1", "max_nodes_cap": 100, "nodes": 100, "max_queued_nodes": 101, "queue_records_bytes": 12120, "root_bytes": 22712, "peak_rss_kib": 6164},
+      {"instance": "pk1", "max_nodes_cap": 300, "nodes": 300, "max_queued_nodes": 301, "queue_records_bytes": 36120, "root_bytes": 22712, "peak_rss_kib": 6488},
+      {"instance": "gen-ip002", "max_nodes_cap": 1000, "nodes": 1000, "max_queued_nodes": 1001, "queue_records_bytes": 120120, "root_bytes": 19536, "peak_rss_kib": 6180}
+    ],
+    "reading": "Real solves show frontier growth (flugpl peak queue 47 -> 531 nodes across caps) with queue record bytes in the tens of kilobytes and peak RSS tracking root/LP workspace size, not queue growth; frontier and RSS evidence no longer rests on the synthetic bench alone."
+  },
+  "acceptance_mapping": {
+    "sibling_branch_mutation_isolation": "reference_materialisation_test::test_sibling_isolation (bounds, cuts and parent immutability after branching) plus existing node_view_test sibling coverage.",
+    "randomized_push_pop_matches_full_reconstruction": "test_randomized_chains (200 trials) and test_push_pop_reversibility (400 random push/pop ops compared against chronological replay of the retained prefix).",
+    "identical_original_space_solutions_certificates": "Element-wise bound-vector equality between production and reference feeds identical node LP inputs; node_view_reference_identity_test requires bit-identical node-LP status/objective/primal from both paths and verify_primal passes against the original model for node and full-solve certificates; full suite 89/89 in Release, ASan/UBSan and TSan.",
+    "allocation_measurements_distinguish_root_worker_queue": "Structural accounting reports root_bytes, worker_bytes and queue_bytes separately in both bench modes; constants verified across the node sweep.",
+    "queue_growth_does_not_multiply_full_matrix": "Fill sweep: root_bytes grows 61x while queue_bytes are byte-identical in both modes; node sweep: queue_bytes linear in nodes while root/worker classes stay flat; full-solver queue_records_bytes stay <= 121 KB while frontier grows to 1001 nodes.",
+    "baseline_retained_only_as_bounded_regression_oracle": "The materialized baseline remains in bench_node_frontier_memory for measurement only, and the comparator oracle refuses over-cap requests before allocating (asserted reference_bytes=0); no production path materializes per-node full copies."
+  },
+  "observation_transient_rss_spike": {
+    "what": "Five runs recorded peak_rss_kib exactly 1013492 (~990 MiB) as a transient: pk1 (2x, plain runs), sp150x300d (2x, plain runs), gen-ip002 (1x, instrumented).",
+    "localization": "In the instrumented gen-ip002 occurrence the 250 ms signal tick saw the high-water at tick 0 while the 10 ms resident sampler never exceeded 6844 KiB, so the event is a short-lived ~1 GiB footprint during the first 250 ms (parse/root phase), not steady-state growth. Normal runs of the same commands peak at 5-20 MiB.",
+    "queue_excluded": "Queue records in occurrence runs were <= 82680 bytes; the spike is not queue storage.",
+    "reproduction_attempts": "Not reproduced by 7 runs under an LD_PRELOAD malloc/calloc/realloc interposer (16 MiB logging threshold, zero large allocations logged), 8 further clean gen-ip002 runs, or 13 instrumented sp150x300d runs; overall roughly 5 of ~35 eligible runs. Occurred only in time-limited runs in the observed sample, but one instrumented occurrence was within the first 250 ms (before any deadline), so a deadline-only explanation does not hold.",
+    "status": "Root cause not investigated under IR-19 scope. Recorded here as a candidate for dedicated follow-up; directly relevant to IR-21 (solve-wide memory budget, backlog item 5) because a budgeted cap would bound it even before the root cause is found."
+  },
+  "limitations": [
+    "Structural bench nodes each carry a one-delta chain rooted at an empty parent (exact accounting by construction); in real searches chains are shared with ancestors and retained_bytes is a per-node full-chain figure, so summing it over a tree over-counts shared links (upper bound).",
+    "Full-solver queue_records_bytes counts heap records only: delta-chain payloads, shared cut/basis payloads and all LP/QP workspaces are outside it, so it is a lower bound on queue storage.",
+    "Worker-class storage remains by design: the serial mutable node-model workspace, per-worker bound overlays and the sparse-PDLP fallback materialization are measured as worker_bytes in the synthetic bench but not itemized inside a live solve.",
+    "The transient ~1 GiB RSS anomaly above is unexplained; full-solver RSS numbers exclude the five occurrence runs from the tables.",
+    "All measurements are single-host, single-process, Linux glibc; allocator metadata and strings are excluded from byte accounting.",
+    "This evidence closes IR-19 against the W01 acceptance list only; IR-20/21 and the engine-consumption gaps of items 2/3 remain open."
+  ],
+  "conclusion": "All six W01 acceptance criteria are demonstrated: bounded reference replay agrees with production on randomized and push/pop chains while refusing over-cap requests before allocating; sibling isolation and original-space certificate identity are test-gated; root, worker and queue storage are measured as distinct classes; and queue growth is shown independent of matrix fill in both synthetic and full-solver runs, with the materialized baseline retained only as a measurement oracle. IR-19 is closed on this evidence with the remaining worker-class storage and the transient RSS anomaly explicitly scoped out and handed to item 5 / IR-21 follow-up."
+}

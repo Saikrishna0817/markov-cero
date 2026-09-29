@@ -1,3 +1,7 @@
+* Units: liquid F feeds and capacity RHS kbpd; HGU F and RHS MMSCFD; Y modes binary.
+* COST coefficients are synthetic score per feed-unit and score per active mode; H2_BAL
+* uses normalized hydrogen-proxy units, not a physical hydrogen balance.
+* Synthetic qualification data; not plant operating data; deterministic for a fixed seed.
 NAME PROCESS_NETWORK_LARGE
 ROWS
  N COST

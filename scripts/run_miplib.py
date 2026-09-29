@@ -15,6 +15,10 @@ import sys
 import time
 import urllib.request
 from typing import Dict, Any, List, Optional
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Backlog item 7: this harness entry point runs under the frozen timing
+# definitions (LP/QP 60 s, MIP 300 s, release MIP 3600 s, >=5 repeats).
+from scripts.support.frozen_timing_config import TIMING as FROZEN_TIMING
 
 # Canonical MIPLIB reference benchmark instances and verified integer optima
 MIPLIB_BENCHMARKS = {

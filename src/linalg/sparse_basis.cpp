@@ -76,8 +76,9 @@ std::vector<double> SparseBasisFactorization::refine(std::vector<double> x,
         ++statistics_.refinement_attempts;
         std::vector<double> correction;
         if (transpose) {
-            correction = base_.solve_transpose(r);
+            correction = r;
             apply_updates_transpose(correction);
+            correction = base_.solve_transpose(correction);
         } else {
             correction = base_.solve(r);
             apply_updates(correction);

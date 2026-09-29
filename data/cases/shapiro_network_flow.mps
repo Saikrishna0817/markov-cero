@@ -1,3 +1,5 @@
+* Units: supply, depot/customer demand and arc flow synthetic units per period;
+* objective synthetic currency per period.
 NAME          SHAPIRO_NETWORK_FLOW
 ROWS
  N  objCOST

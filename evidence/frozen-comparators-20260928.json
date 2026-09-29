@@ -1,0 +1,75 @@
+{
+  "date": "2026-09-28",
+  "frozen_by": "scripts/support/run_full_compare_annotate.py probe_availability",
+  "comparator_order": [
+    "markov-cero",
+    "HiGHS",
+    "GLPK",
+    "CBC",
+    "SCIP"
+  ],
+  "probe_python": "/home/saikrishna/markov-initial-build/.compare-venv/bin/python",
+  "probe_python_version": "3.14.7",
+  "solver_binary": {
+    "path": "./build_contracts/markov-cero-solve",
+    "sha256": "05c11f6da3a20defaacabb9226dc1aa7f3334ef800aacfcb924bc3e1eb8b4dee",
+    "executable": true
+  },
+  "comparators": [
+    {
+      "name": "markov-cero",
+      "kind": "markov-cero",
+      "available": true,
+      "version": "0.5.2",
+      "version_source": "CLI",
+      "probe_command": "./build_contracts/markov-cero-solve --help; ./build_contracts/markov-cero-solve <probe.mps> -> JSON 'version'",
+      "method": "binary `--help` probe; version from the solve JSON of a one-row probe model",
+      "notes": "engine selection: auto; CLI solver"
+    },
+    {
+      "name": "HiGHS",
+      "kind": "external",
+      "available": true,
+      "version": "1.15.1",
+      "version_source": "python import",
+      "probe_command": "/home/saikrishna/markov-initial-build/.compare-venv/bin/python -c \"import highspy; print(highspy.Highs().version())\"",
+      "method": "import highspy (in-process API)",
+      "notes": ""
+    },
+    {
+      "name": "GLPK",
+      "kind": "external",
+      "available": true,
+      "version": "GLPSOL--GLPK LP/MIP Solver 5.0",
+      "version_source": "CLI",
+      "probe_command": "/home/saikrishna/markov-initial-build/.venv/bin/glpsol --version",
+      "method": "/home/saikrishna/markov-initial-build/.venv/bin/glpsol",
+      "notes": "external glpsol process; GLPK uses one thread"
+    },
+    {
+      "name": "CBC",
+      "kind": "external",
+      "available": true,
+      "version": "2.10.3",
+      "version_source": "CLI",
+      "probe_command": "/home/saikrishna/markov-initial-build/.compare-venv/lib/python3.14/site-packages/pulp/apis/../solverdir/cbc/linux/i64/cbc   # reached via import pulp; from pulp import PULP_CBC_CMD; print(PULP_CBC_CMD(msg=0).path)",
+      "method": "pulp PULP_CBC_CMD (bundled CBC binary)",
+      "notes": "pulp 3.3.2 + CBC 2.10.3"
+    },
+    {
+      "name": "SCIP",
+      "kind": "external",
+      "available": true,
+      "version": "10.0.2 (PySCIPOpt 6.2.1)",
+      "version_source": "python import",
+      "probe_command": "/home/saikrishna/markov-initial-build/.compare-venv/bin/python -c \"import pyscipopt; from pyscipopt import Model; m=Model();print('%s (PySCIPOpt %s)' % ('.'.join(str(x) for x in (m.getMajorVersion(), m.getMinorVersion(),m.getTechVersion())), pyscipopt.__version__))\"",
+      "method": "import pyscipopt (in-process API)",
+      "notes": ""
+    }
+  ],
+  "unavailable": [],
+  "limitations": [
+    "Probe results are point-in-time for this host and .venv/.compare-venv; an unavailable comparator stays in the manifest with its probe command.",
+    "glpsol runs as an external single-threaded process."
+  ]
+}

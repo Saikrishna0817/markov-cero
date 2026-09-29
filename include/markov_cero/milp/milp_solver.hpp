@@ -4,6 +4,7 @@
 #include "markov_cero/milp/branch_node.hpp"
 #include "markov_cero/milp/branch_selector.hpp"
 #include "markov_cero/model/model.hpp"
+#include "markov_cero/verify/mip_proof.hpp"
 
 #include <cstddef>
 #include <chrono>
@@ -73,10 +74,21 @@ struct Result {
     double best_bound{std::numeric_limits<double>::quiet_NaN()};
     double relative_gap{std::numeric_limits<double>::infinity()};
     std::size_t nodes_explored{0};
+    /// Peak frontier size over the search (W01/IR-19 memory evidence): the
+    /// largest number of branch nodes the queue ever held at once.
+    std::size_t max_queued_nodes{0};
     std::size_t lp_iterations{0};
     std::size_t cuts_generated{0};
     std::size_t heuristics_found{0};
+    // Optimizer event notes for later proof-artifact attachment. Node IDs refer
+    // to the optimizer search tree, not the independent cut-free replay tree.
+    std::vector<verify::MipObligation> obligations;
     double runtime_ms{0.0};
+    // Wall-clock attribution for serial search. Search includes branching,
+    // separation generation and queue work; simultaneous workers are not summed.
+    double lp_bound_ms{0.0};
+    double incumbent_ms{0.0};
+    double search_ms{0.0};
     // Condition proxy (max|Uii|/min|Uii|) of the root LP relaxation basis.
     // 0.0 when no root LP factorization ran.
     double condition_estimate{0.0};

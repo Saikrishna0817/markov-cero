@@ -1,4 +1,5 @@
 #pragma once
+#include "markov_cero/core/deadline.hpp"
 #include "markov_cero/model/model.hpp"
 #include <limits>
 #include <string>
@@ -14,5 +15,5 @@ struct LinearCertificate {
 [[nodiscard]] LinearCertificate verify_linear_solution(
     const model::Model&, const std::vector<double>& primal,
     const std::vector<double>& row_dual, double objective, double tolerance = 1e-7,
-    bool relax_integrality = false);
+    bool relax_integrality = false, const core::Deadline& deadline = {});
 } // namespace markov_cero::verify

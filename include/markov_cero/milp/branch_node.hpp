@@ -4,6 +4,7 @@
 #include "markov_cero/milp/cut_pool.hpp"
 #include "markov_cero/milp/node_cuts.hpp"
 #include "markov_cero/milp/node_bounds.hpp"
+#include "markov_cero/milp/node_view.hpp"
 
 #include <cmath>
 #include <cstddef>
@@ -18,6 +19,7 @@ struct BranchNode {
     std::size_t parent_id{0};
     std::size_t depth{0};
     double lower_bound{0.0};
+    LowerBoundEvidence lower_bound_evidence{};
     /// R13/R17: how many times this node's relaxation failed to certify. Used
     /// to retry once cold and to keep an unsolved node from being pruned.
     std::size_t lp_failures{0};

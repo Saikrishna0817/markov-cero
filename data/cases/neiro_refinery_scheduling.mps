@@ -1,3 +1,5 @@
+* Units: crude/feed/product/inventory quantities synthetic volume units per period;
+* on/off and selection variables counts; objective synthetic currency per horizon.
 NAME          NEIRO_REFINERY_SCHEDULING
 ROWS
  N  objCOST

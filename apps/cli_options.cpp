@@ -127,6 +127,15 @@ CliOptions CliOptions::parse(int argc, char** argv) {
             parsed.maximum_input_bytes = maximum;
             continue;
         }
+        if (arg == "--memory-limit-bytes") {
+            std::size_t maximum = 0;
+            if (i + 1 >= argc || !parse_size(argv[++i], maximum) || maximum == 0) {
+                std::cerr << "memory limit bytes must be positive\n";
+                parsed.error = true; parsed.exit_code = 8; return parsed;
+            }
+            parsed.memory_limit_bytes = maximum;
+            continue;
+        }
         const int time_option = parse_solve_time_option(arg, argc, argv, i,
             parsed.time_limit_seconds, parsed.milp_options.time_limit_seconds,
             parsed.options.time_limit_seconds);

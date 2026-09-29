@@ -1,4 +1,5 @@
 #include "search_context.hpp"
+#include "markov_cero/milp/node_propagation.hpp"
 namespace markov_cero::milp::detail {
 bool Search::node_relaxation() {
         // Evaluate Node LP relaxation if not root
@@ -21,10 +22,32 @@ bool Search::node_relaxation() {
                 add_cuts_to_model(node_model, node->local_cuts.values());
             }
 
+            const auto propagation = propagate_singleton_rows(
+                node_model, node_model.variable_lower, node_model.variable_upper, node->bounds);
+            for (const auto& step : propagation.steps) {
+                verify::MipObligation note;
+                note.kind = verify::MipObligationKind::propagation;
+                note.node = node->id;
+                note.source_row = step.row;
+                note.variable = step.variable;
+                note.source_coefficient = step.coefficient;
+                note.source_rhs = step.source_rhs;
+                note.derived_bound = step.derived_bound;
+                note.source_is_lower = step.source_is_lower;
+                result.obligations.push_back(std::move(note));
+            }
+            if (propagation.evidence.usable()) {
+                node->lower_bound_evidence = propagation.evidence;
+                node->lower_bound = std::max(node->lower_bound, propagation.evidence.value);
+            }
+
             const auto warm_basis = node->warm_basis
                 ? std::optional<lp::dual::BasisState>(*node->warm_basis)
                 : std::nullopt;
-            node_lp_res = solve_node_relaxation(node_model, options, warm_basis);
+            {
+                ScopedSearchTimer timer(result.lp_bound_ms);
+                node_lp_res = solve_node_relaxation(node_model, options, warm_basis);
+            }
             result.lp_iterations += node_lp_res.iterations;
             ++result.nodes_explored;
 

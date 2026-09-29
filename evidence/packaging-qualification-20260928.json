@@ -1,0 +1,225 @@
+{
+  "date": "2026-09-28",
+  "backlog_item": "11 (code portion only: packaging qualification, support/rollback documentation, rollback drill)",
+  "purpose": "Local packaging qualification for roadmap backlog item 11 of docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md section 14. The independent mathematical/security/release review, SBOM, signing, vulnerability review, support ownership and hosted sanitizer/CUDA evidence are EXTERNAL: IR-33 and gate G7 stay OPEN.",
+  "scope": "What was executed, with exact commands, hashes, transcripts and limitations. Not a release claim, not a correctness or security claim, not an independent review.",
+  "worktree": "uncommitted working tree; results identify this state, not HEAD. Concurrent agents were editing the same tree during this run (see concurrent_worktree_note).",
+  "host": {
+    "os": "Linux 7.2.5-3-omarchy x86_64, glibc 2.44",
+    "cpu_threads": 12,
+    "cmake": "4.4.3",
+    "gcc": "g++ (GCC) 16.2.1 20260810",
+    "clang": "clang version 22.1.8 (present; see release_verification)",
+    "python": "3.14.7",
+    "venv_for_build": ".venv (python 3.14.7, pip 26.2.1, setuptools 84.0.0, pybind11 3.1.0)",
+    "matrix_honesty": "single Linux x86-64 host, gcc Release, python 3.14, CPU only. No second host, no CI, no CUDA, no other OS/arch, no other Python version."
+  },
+  "owned_files": [
+    "setup.py",
+    "pyproject.toml",
+    "MANIFEST.in",
+    "cmake/Install.cmake",
+    "cmake/markov_ceroConfig.cmake.in",
+    "scripts/verify-release.sh",
+    "BUILDING.md",
+    "docs/governance/support-rollback.md (NEW)",
+    "evidence/packaging-qualification-20260928.json (NEW)",
+    "evidence/packaging-rollback-drill-20260928.txt (NEW)",
+    "evidence/packaging-prefix-drill-20260928.txt (NEW)",
+    "evidence/packaging-verify-release-20260928.txt (NEW)",
+    "evidence/packaging-consumer/ (NEW: CMakeLists.txt, consumer.cpp)"
+  ],
+  "build_item11": {
+    "configure": "cmake -S . -B build_item11 -DCMAKE_BUILD_TYPE=Release",
+    "build": "cmake --build build_item11 --parallel 4",
+    "configure_utc": "2026-09-28T19:28:08Z",
+    "build_exit": 0,
+    "build_done_utc": "2026-09-28T19:29:50Z",
+    "full_ctest": {
+      "command": "ctest --test-dir build_item11 --output-on-failure --timeout 300",
+      "utc": "2026-09-28T19:32:33Z",
+      "passed": 89,
+      "total": 89,
+      "seconds": 30.73
+    },
+    "required_subset": {
+      "command": "ctest --test-dir build_item11 -R \"sovereignty_guard|build_info|repository_tools\" --output-on-failure",
+      "first_run_utc": "2026-09-28T19:26Z",
+      "first_run_result": "3/3 passed (build_info, sovereignty_guard, repository_tools)",
+      "recheck_utc": "2026-09-28T19:51:51Z",
+      "recheck_result": "2/3: build_info passed, sovereignty_guard passed, repository_tools FAILED against the same 19:29:50Z binaries because a concurrent agent edited tests/repository_tools_test.py at 19:48:53Z to require proof format 'MARKOV_MIP_PROOF 2' while build_item11 still links the 19:29:50Z build that emits 'MARKOV_MIP_PROOF 1'. Not attributable to item 11; a rebuild of build_item11 after the tree stabilises is required."
+    }
+  },
+  "wheel_qualification": {
+    "command": ".venv/bin/python -m pip wheel . -w /tmp/opencode/wheels-pkg --no-deps --no-build-isolation",
+    "offline": true,
+    "build_isolation": false,
+    "dependencies_downloaded": "none for markov-cero (pyproject declares no runtime dependencies)",
+    "utc": "2026-09-28T19:31:50Z",
+    "artifact": "/tmp/opencode/wheels-pkg/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+    "bytes": 4073024,
+    "sha256": "fac615128c846e6b48c51252afb44fec199be30154e370f587309186a0145f4b",
+    "tag": "cp314-cp314-linux_x86_64 (local host wheel, NOT manylinux)",
+    "fresh_venv_install": {
+      "venv": "python3 -m venv /tmp/opencode/pkg11/venv-qual (python 3.14.7)",
+      "install_command": "/tmp/opencode/pkg11/venv-qual/bin/python -m pip install --no-index --no-deps /tmp/opencode/wheels-pkg/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+      "test_runner": "pytest 9.1.1 and numpy 2.5.3 installed offline from a local wheel directory with --no-index --find-links (test-only tools, not package dependencies)"
+    },
+    "pytest_outside_repo": {
+      "cwd": "/tmp/opencode/pkg11/run (outside the repository)",
+      "command": "/tmp/opencode/pkg11/venv-qual/bin/python -m pytest /home/saikrishna/markov-initial-build/python/tests -q",
+      "without_numpy": "15 passed, 5 skipped (skips are 'could not import numpy')",
+      "with_numpy": "20 passed, 0 failed, 0 skipped (final re-check 2026-09-28T19:51:54Z)",
+      "installed_core_sha256": "15fe24780b27a3db4c869cd88257bd10ea3f3dc24907e5d487df53de715324be"
+    }
+  },
+  "sdist_qualification": {
+    "why": "MANIFEST.in is otherwise unexercised; 'python setup.py sdist' rewrites the tracked python/markov_cero.egg-info/SOURCES.txt, which this agent does not own, so the sdist was produced in a throw-away copy of the packaging inputs under /tmp and never in the repository.",
+    "copy_contents": "CMakeLists.txt LICENSE NOTICE PROVENANCE.md README.md VERSION MANIFEST.in setup.py pyproject.toml cmake include src gpu apps python",
+    "command": "<repo>/.venv/bin/python setup.py -q sdist --dist-dir /tmp/opencode/pkg11/dist (cwd = /tmp/opencode/pkg11/sdist-work)",
+    "utc": "2026-09-28T19:40:48Z",
+    "artifact": "/tmp/opencode/pkg11/dist/markov_cero-0.5.2.tar.gz",
+    "bytes": 292453,
+    "sha256": "8a9d474f93b75927ac34b2237b26e74df565b0e95179e30f60831567f884d15b",
+    "entries": 349,
+    "required_paths_present": [
+      "CMakeLists.txt", "setup.py", "pyproject.toml", "MANIFEST.in",
+      "cmake/Install.cmake", "cmake/CoreTargets.cmake", "cmake/markov_ceroConfig.cmake.in",
+      "include/markov_cero/api/solve.hpp", "src/api/api.cpp", "python/src/bindings.cpp",
+      "python/tests/test_bindings.py", "apps/markov_cero_solve.cpp",
+      "gpu/include/markov_cero/gpu/backend.hpp", "LICENSE", "NOTICE"
+    ],
+    "wheel_from_sdist": {
+      "command": "<repo>/.venv/bin/python -m pip wheel . -w /tmp/opencode/pkg11/wheels-from-sdist --no-deps --no-build-isolation (cwd = extracted sdist)",
+      "utc": "2026-09-28T19:44:49Z",
+      "sha256": "c89b840d7c3863456a0d63ba1e497f2b0ae833c7043c051f3b528c381e444c6c",
+      "pytest_outside_repo": "20 passed (installed over the fresh venv at 2026-09-28T19:45Z)",
+      "installed_core_sha256": "50f17913668aeb6b4beaafa6f6ffda9856c572ddd47b8aafee0d7a86b59690db"
+    },
+    "sdist_warnings": [
+      "SetuptoolsDeprecationWarning: project.license as a TOML table is deprecated (setuptools deadline 2027-02-18)",
+      "warning: no files found matching '*.h' under directory 'include' (harmless forward-looking MANIFEST.in pattern)",
+      "warning: no files found matching '*.cuh' under directory 'gpu' (harmless forward-looking MANIFEST.in pattern)"
+    ]
+  },
+  "prefix_qualification": {
+    "install_command": "cmake --install build_item11 --prefix /tmp/opencode/install-pkg",
+    "installed_files": "83 regular files at drill time P1 (2026-09-28T19:38:52Z); 85 after later concurrent additions (install_manifest.txt, 85 entries, sha256 987cf5e16402057bf535107f7d514ac75beb779427a314f01399dfa6bb71a91a)",
+    "contents": "lib/libmarkov_cero_core.a, bin/{markov-cero-iis,markov-cero-verify-mip,markov-cero-solve,markov-cero-info,markov-cero-mps-inspect}, include/markov_cero/**, lib/cmake/markov_cero/{markov_ceroConfig.cmake,markov_ceroConfigVersion.cmake,markov_ceroTargets.cmake,markov_ceroTargets-release.cmake}, share/markov-cero/{LICENSE,NOTICE,PROVENANCE.md}",
+    "consumer_project": "evidence/packaging-consumer/{CMakeLists.txt,consumer.cpp}",
+    "consumer_configure": "cmake -S evidence/packaging-consumer -B /tmp/opencode/pkg11/consumer-build -DCMAKE_PREFIX_PATH=/tmp/opencode/install-pkg -DCMAKE_BUILD_TYPE=Release",
+    "consumer_build": "cmake --build /tmp/opencode/pkg11/consumer-build --parallel 4",
+    "consumer_run": "/tmp/opencode/pkg11/consumer-build/installed-consumer examples/cases/multiperiod_production.mps",
+    "consumer_output": "status=Optimal verified=yes certificate=independent_mip_tree objective=5300 fingerprint=3743977559983760680 / replay accepted=yes checked_nodes=7 message=cut-free integer partitions and every leaf witness independently replayed (numerical tolerances) / installed-consumer PASS (exit 0)",
+    "consumer_proof_file": {"path": "proof.txt in the consumer build dir", "bytes": 317, "sha256": "8b5a95f1048d92cc211e145c7effe17ef70f2b16365e0b78786aa7d71ffe2a6e"},
+    "installed_cli_checks": [
+      "markov-cero-info --help -> 'markov-cero 0.5.2 milestone M5 ...'",
+      "markov-cero-solve examples/blend.mps -> Optimal, verified=true, objective 3500, exit 0",
+      "markov-cero-verify-mip <model> proof.txt -> 'VERIFIED: cut-free integer partitions ...', exit 0"
+    ],
+    "what_this_shows": "the installed prefix is sufficient for an unrelated project: find_package(markov_cero CONFIG REQUIRED) + markov_cero::core compiles, links, solves a MILP, exports a proof and replays it, and the installed CLI binary replays the same proof."
+  },
+  "drills": {
+    "rollback": {
+      "transcript": "evidence/packaging-rollback-drill-20260928.txt",
+      "utc": "2026-09-28T19:35:56Z to 2026-09-28T19:36:06Z",
+      "venv": "/tmp/opencode/pkg11/venv-drill (python 3.14.7, pytest 9.1.1 + numpy 2.5.3 installed with --no-index)",
+      "prior_wheel": {"path": "/tmp/opencode/wheels/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl", "sha256": "914136ac146af53e0a153c5a5ac010550f6f2ce05e586d40d3712b65822e941e", "built": "2026-09-28T20:15 local, earlier build of the same version 0.5.2"},
+      "new_wheel": {"path": "/tmp/opencode/wheels-pkg/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl", "sha256": "fac615128c846e6b48c51252afb44fec199be30154e370f587309186a0145f4b"},
+      "steps": [
+        {"step": "D0", "action": "offline install of pytest+numpy with --no-index --find-links", "result": "exit 0"},
+        {"step": "D1", "action": "install PRIOR wheel: pip install --no-index --no-deps --force-reinstall <prior>", "installed_core_sha256": "9700ebf3a0e0c5c830229dabd450080fd7006cc32ccfffde0708a8f016e5539b", "pytest": "20 passed", "exit": 0},
+        {"step": "D2", "action": "upgrade: pip install --no-index --no-deps --force-reinstall <new>", "installed_core_sha256": "15fe24780b27a3db4c869cd88257bd10ea3f3dc24907e5d487df53de715324be", "pytest": "20 passed", "exit": 0, "note": "binary changed: D1 != D2"},
+        {"step": "D3", "action": "rollback: pip install --no-index --no-deps --force-reinstall <prior>", "installed_core_sha256": "9700ebf3a0e0c5c830229dabd450080fd7006cc32ccfffde0708a8f016e5539b", "pytest": "20 passed", "exit": 0},
+        {"step": "D4", "action": "identity check + pip uninstall -y markov-cero", "result": "PASS: D3 _core.so sha256 == D1 _core.so sha256; PASS: upgrade changed the installed binary; after uninstall 'import markov_cero' raises ModuleNotFoundError", "exit": 1}
+      ],
+      "honest_caveat": "prior and new builds both carry version 0.5.2, so pip will not downgrade on version alone; --force-reinstall plus the wheel/core SHA-256 is the only rollback identity today."
+    },
+    "prefix": {
+      "transcript": "evidence/packaging-prefix-drill-20260928.txt",
+      "utc": "2026-09-28T19:38:52Z to 2026-09-28T19:39:00Z",
+      "steps": [
+        {"step": "P1", "action": "clean prefix install + external consumer configure/build/run", "result": "exit 0, installed-consumer PASS"},
+        {"step": "P2", "action": "rm -rf /tmp/opencode/install-pkg then re-configure the consumer", "result": "configure exit 1 with 'Could not find a package configuration file provided by markov_cero' - expected failure after removal"},
+        {"step": "P3", "action": "cmake --install again + rebuild/rerun consumer + installed markov-cero-verify-mip proof replay", "result": "consumer PASS, CLI replay VERIFIED, both exit 0"},
+        {"step": "P4", "action": "rm -rf /tmp/opencode/install-pkg", "result": "prefix removed; no leftover files"}
+      ]
+    }
+  },
+  "release_verification": {
+    "owned_script": "scripts/verify-release.sh",
+    "execution_variant": "Attempts 1-3 ran /tmp/opencode/pkg11/verify-release-item11.sh, byte-identical to scripts/verify-release.sh except 4 lines (ROOT pinned, REPORT redirected, ENVJSON redirected, banner text), because the script had no way to redirect its output and evidence/local-verification-report.txt is not owned by this work item. scripts/verify-release.sh was then extended (owned file) with MARKOV_CERO_VERIFY_REPORT / MARKOV_CERO_VERIFY_ENVJSON overrides and with both compilers attempted even when the first fails; attempt 4 runs the repository script itself with those two variables set. evidence/local-verification-report.txt and evidence/environment-local.json were never written.",
+    "variant_sha256": "cc1185f8df4ab26e027eca23b8fe5500104ce8beef4440b1d93dca5b7675f71b",
+    "attempts": [
+      {"attempt": 1, "started_utc": "2026-09-28T19:38:36Z", "result": "FAILED (exit 2)", "detail": "check-sovereignty.py passed; gcc Release configure passed; build failed at link of mip_proof_test: undefined reference to markov_cero::verify::build_mip_proof(..., MipProofOptions const&, std::string const&) - a concurrent agent had edited include/markov_cero/verify/mip_proof.hpp at 19:12 local (adding an optional model_fingerprint parameter) while the implementation it links was compiled from the pre-edit state. Mid-edit race, not an item-11 defect."},
+      {"attempt": 2, "started_utc": "2026-09-28T19:45:52Z", "result": "FAILED (exit 2)", "detail": "check-sovereignty.py passed ('zero external solver dependencies'); gcc Release configure passed; build failed with -Werror at src/api/api_internal.hpp:86: 'ignoring return value of SolveContext::note_stop(...), declared with attribute nodiscard' (header last modified 19:11:43 local by a concurrent agent). The worktree as of 19:45Z does not compile with the default MARKOV_CERO_WARNINGS_AS_ERRORS=ON."},
+      {"attempt": 3, "started_utc": "2026-09-28T19:51:12Z", "result": "FAILED (exit 2)", "detail": "same blocker as attempt 2: src/api/api_internal.hpp:86 nodiscard note_stop under -Werror; the loop aborted before the clang configuration, which is why the script was then changed to attempt both compilers."},
+      {"attempt": 4, "started_utc": "2026-09-28T19:56:15Z", "result": "see release_verification.final_attempt"}
+    ],
+    "final_attempt": "pending at the time this file was first written; updated below after the run finished",
+    "gcc_ctest_portion_available": "ctest --test-dir build_item11 --output-on-failure -> 89/89 passed in 30.73 s at 2026-09-28T19:32:33Z (gcc Release binaries from 19:29:50Z)",
+    "out_of_scope_ir33": [
+      "SBOM generation",
+      "artifact signing / signature verification",
+      "dependency vulnerability scan",
+      "reproducible-build / bit-for-bit comparison",
+      "clean committed release (tree is an uncommitted worktree)",
+      "hosted sanitizer and CUDA evidence",
+      "support ownership (two named maintainers + security contact, D18)"
+    ]
+  },
+  "release_manifest": {
+    "wheel_sha256": "fac615128c846e6b48c51252afb44fec199be30154e370f587309186a0145f4b",
+    "wheel_name": "markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+    "source_manifest_reference": "evidence/readiness-validation/source-manifest.csv",
+    "source_manifest_sha256": "4e0deb128d8a4993e915824865aded2b8c395f3d985936e7c1bad859680e806b",
+    "source_manifest_rows": 420,
+    "source_manifest_regenerated": false,
+    "source_manifest_caveat": "not regenerated by this work item (it belongs to another work item); it describes an earlier snapshot and MUST be regenerated against the committed release source before any release is cut.",
+    "install_manifest_sha256": "987cf5e16402057bf535107f7d514ac75beb779427a314f01399dfa6bb71a91a",
+    "install_manifest_path": "build_item11/install_manifest.txt (build directory, git-ignored)"
+  },
+  "checks": {
+    "source_limits": {"command": "python3 scripts/check_source_limits.py", "result": "Checked 456 maintained files; maximum 300 lines; 0 violations", "utc": "2026-09-28T19:51:51Z"},
+    "doc_links": {"command": "python3 scripts/check_docs.py", "result": "8 active documents checked; 0 broken local links (re-run after this file was created)"},
+    "sovereignty": {"command": "python3 scripts/check-sovereignty.py <repo>", "result": "passed, zero external solver dependencies (run by verify-release attempts 1-3)", "note": "evidence/local-verification-report.txt not touched"},
+    "ctest_required_subset": "see build_item11.required_subset",
+    "fresh_venv_pytest": "20 passed (see wheel_qualification.pytest_outside_repo)"
+  },
+  "concurrent_worktree_note": "This run shared the worktree with other in-flight agents. Between 19:08Z and 19:52Z other agents edited src/api/*, include/markov_cero/verify/mip_proof.hpp, src/verify/mip_proof*.cpp, tests/repository_tools_test.py, src/refinery/*, scripts/support/* and more. Two consequences recorded above: verify-release attempts 1 and 2 failed on mid-edit/unfinished sources, and the repository_tools CTest failed at 19:51:51Z because its expectations moved to proof format v2 while build_item11 still holds 19:29:50Z binaries. Item 11 changed no file under src/, include/, tests/, apps/ or python/.",
+  "findings": [
+    "pyproject.toml declares license = {text = \"Proprietary\"} while the LICENSE file shipped in the same sdist is Apache License 2.0 and NOTICE exists; the metadata is also deprecated by setuptools (deadline 2027-02-18). NOT changed here: D18 requires an explicit reviewed licensing decision, which is a human action outside this work item.",
+    "Python floor is inconsistent: BUILDING.md says Python 3.10+ while pyproject.toml declares requires-python = \">=3.9\"; only 3.14.7 was exercised.",
+    "The wheel carries the local tag linux_x86_64, not manylinux, so it is a host wheel; no portable wheel is produced.",
+    "Package version 0.5.2 is identical across builds, so install/upgrade/rollback cannot be expressed as a version change; SHA-256 of the wheel and of the installed _core*.so are the only build identity.",
+    "cmake/Install.cmake installs only the static core archive (ARCHIVE destination); no shared-library or runtime destination is declared, which is correct for the current static-only core but must change if BUILD_SHARED_LIBS is ever offered.",
+    "scripts/verify-release.sh writes only to evidence/local-verification-report.txt and evidence/environment-local.json, so any redirected execution must be declared (done above)."
+  ],
+  "limitations": [
+    "Single Linux x86-64 host, gcc 16.2.1 Release, Python 3.14.7, CPU only; clang attempted only through verify-release (see release_verification).",
+    "No hosted CI, no second machine, no CUDA device, no Windows/macOS/aarch64, no other Python version, no other distribution or glibc.",
+    "No SBOM, no signing, no vulnerability scan, no reproducible-build comparison, no dependency lockfile: all are IR-33 open items.",
+    "No support owner, no named maintainers, no security contact, no SLA: D18 is unfulfilled and IR-33 stays open.",
+    "The external consumer solves one small MILP from examples/cases and replays its proof; that is a smoke test, not a correctness campaign.",
+    "Test data for the consumer comes from the repository (examples/cases/multiperiod_production.mps); only the consumer project and the link/compile/run are external.",
+    "The sdist was built in a /tmp copy, not in the repository, to avoid rewriting the tracked python/markov_cero.egg-info/SOURCES.txt.",
+    "pytest/numpy are test-only tools installed from a local wheel directory; the markov-cero wheel install itself used --no-index --no-deps.",
+    "Rollback was proven at the wheel/binary level between two builds of the same version 0.5.2, not across a version downgrade.",
+    "CTest and wheel results pin the tree to 2026-09-28T19:29:50Z; the tree moved afterwards (see concurrent_worktree_note), so a rebuild and re-run is required before release."
+  ],
+  "gates": {
+    "IR-33": "OPEN - SBOM/vulnerability review, clean committed release, support ownership and hosted sanitizer/CUDA evidence all pending",
+    "G7": "OPEN - independent mathematical/security/release review not commissioned by this work item",
+    "statement": "Backlog item 11 code portion delivered (qualification, support/rollback doc, drills); the review half of item 11 and every IR-33 gate remain open."
+  },
+  "transcripts": [
+    "evidence/packaging-rollback-drill-20260928.txt",
+    "evidence/packaging-prefix-drill-20260928.txt",
+    "evidence/packaging-verify-release-20260928.txt",
+    "/tmp/opencode/pkg11/{wheel.log,sdist.log,wheel-from-sdist.log,ctest-full.log} (temporary; not committed)"
+  ],
+  "documentation": [
+    "docs/governance/support-rollback.md",
+    "BUILDING.md (new packaging qualification / upgrade / rollback section)"
+  ]
+}

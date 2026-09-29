@@ -68,6 +68,8 @@ Result certified_optimal(const transform::CanonicalModel& m, const std::vector<s
     if (!check.accepted) {
         out.solution.status = reference::SolveStatus::numerical_failure;
         out.solution.message = "dual optimum witness rejected: " + check.message;
+    } else {
+        out.verified = true;
     }
     out.message = out.solution.message;
     return out;
@@ -87,6 +89,8 @@ Result certified_farkas(const transform::CanonicalModel& m, const std::vector<do
     if (!check.accepted) {
         out.solution.status = reference::SolveStatus::numerical_failure;
         out.solution.message = "dual Farkas witness rejected: " + check.message;
+    } else {
+        out.verified = true;
     }
     out.message = out.solution.message;
     return out;
@@ -163,5 +167,39 @@ BasisState parse_basis(const std::string& text) {
     }
     validate_basis_artifact(s);
     return s;
+}
+
+namespace detail_dual_simplex {
+bool accepted_status(reference::SolveStatus status) {
+    return status == reference::SolveStatus::optimal ||
+           status == reference::SolveStatus::infeasible ||
+           status == reference::SolveStatus::unbounded;
+}
+}
+
+namespace detail_dual_simplex {
+// Verification gate shared by every accepting path (cold, warm and reused
+// factorization): an accepted result is only returned when it re-passes
+// verify::verify_reference_result, and `verified` records that fact for tests
+// and callers. Results already checked inside certified_optimal/certified_farkas
+// are not checked twice.
+Result verify_accepted(const transform::CanonicalModel& m, const Options& o, Result out) {
+    if (!accepted_status(out.solution.status)) {
+        out.verified = false;
+        return out;
+    }
+    if (out.verified) {
+        return out;
+    }
+    const auto check = verify::verify_reference_result(
+        m, out.solution, std::max(o.feasibility_tolerance, o.dual_tolerance));
+    out.verified = check.accepted;
+    if (!check.accepted) {
+        out.solution.status = reference::SolveStatus::numerical_failure;
+        out.solution.message = "accepted result rejected by verification: " + check.message;
+        out.message = out.solution.message;
+    }
+    return out;
+}
 }
 }

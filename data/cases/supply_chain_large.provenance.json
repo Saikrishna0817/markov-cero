@@ -1,0 +1,13 @@
+{
+  "change": "Unit and qualification comments added; model rows, columns and coefficients unchanged.",
+  "fixture": "supply_chain_large.mps",
+  "generator": "gen_supply_chain.py",
+  "generator_args": {
+    "customers": 15,
+    "depots": 8,
+    "plants": 3,
+    "seed": 42
+  },
+  "model_sha256": "219928cce852760a536a1ff625fa1041fb69f9a64932ca0cb87d70ad1c48a3d4",
+  "regeneration_date": "2026-09-29"
+}

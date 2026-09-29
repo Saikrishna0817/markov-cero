@@ -2,6 +2,185 @@
 
 ## Unreleased
 
+### Industry roadmap: solve-wide resource contract (backlog item 5)
+
+- **Solve-wide limits** (`include/markov_cero/api/solve.hpp`, `src/api/`):
+  `total_time_limit_seconds` and `memory_limit_bytes` options across C++, CLI
+  (`--memory-limit-bytes`, plus `--time-limit` mapping) and Python; one `SolveContext` per solve
+  threads the deadline, budget, quotas and sticky stop reason through every engine and verifier;
+  `SolveResult::stop_reason` reports the shared stop.
+- **Instrumentation and workers**: `StageScope` wraps each LP/QP/PDLP/MILP/parallel/nonlinear
+  stage; parallel workers run under `WorkerContext` with per-charge accounting and local stops;
+  the four maintained verifiers accept optional deadlines checked between iterations with
+  documented bounded overrun.
+- **Failure discipline**: budget refusals map to `resource_limit` (never `numerical_failure`),
+  nothing escapes `solve_file`/`solve_model`, and allocation-failure injection sweeps hit LP,
+  MILP, parallel, PDLP and QP engines; `scripts/worker_kill_demo.sh` demonstrates a SIGKILLed
+  solver producing no false result with a clean rerun.
+- **Gates**: 89/89 CTest (`build_item5`), 21/21 wheel pytest, source limits clean. Deadlines are
+  cooperative and memory limits meter instrumented charge points only; IR-20/21 remain OPEN
+  pending independent review (`evidence/resource-envelope-20260928.json`).
+
+### Industry roadmap: proof guarantees (backlog item 6)
+
+- **Phase 1 — proof metadata** (`include/markov_cero/verify/mip_proof.hpp`, `src/verify/mip_proof*`):
+  assurance tiers (`independent_tree`/`replayed_tree`/`unverified`), consumed budgets (nodes,
+  witness values, time, exhausted flag, budget kind), model fingerprint binding, report-carried
+  build/replay timings, and exhausted-vs-rejected-vs-unsupported distinction; serialization bumped
+  and round-trip tested with unknown-version rejection. Timing evidence recorded on 157-node and
+  17-node production certificates (`evidence/proof-guarantee-20260928.json`).
+- **Phase 2 — result surface** (`src/api/mip_certificate.cpp`, engines, CLI, Python):
+  `SolveResult`, CLI JSON/text and Python expose the guarantee tier, proof status, consumed
+  budgets, exhaustion and fingerprint binding. Exhausted proofs retain only the checked-incumbent
+  certificate (`incumbent_feasibility`, tier `unverified`); accepted relative-gap proofs use
+  `independent_mip_gap` and never claim exact optimality.
+
+### Industry roadmap: frozen benchmark baseline (backlog item 7)
+
+- Frozen comparator and instance manifests with deterministic family splits and timing constants
+  as code (`scripts/support/frozen_timing_config.py`), then the pre-tuning baseline was
+  regenerated under pinned hashes (`evidence/comparison/baseline_frozen_20260928/`,
+  `evidence/benchmarks/baseline_frozen_20260928/`). Offline-only: missing optional datasets are
+  listed unavailable, never downloaded (`evidence/baseline-freeze-20260928.json`).
+
+### Industry roadmap: repeated-solve reuse (backlog item 8)
+
+- **Session reuse** (`src/lp/dual/`, `src/qp/`): the dual-simplex session retains the accepted
+  basis and factorization across repeat solves with cold fallback on invalidation or
+  infeasibility; QP reuses symbolic KKT analysis gated on shape, fingerprint and exact sparsity
+  pattern with correct invalidation; accepted LP and QP results pass an independent verifier
+  before return.
+- **Measured, not promoted**: 100-repeat LP warm-to-session time improved about 22% (300→233 ms);
+  QP cold-to-session about 4–5% — below the roadmap 20% QP promotion gate, so engine wiring ships
+  as opt-in sessions with numbers in `evidence/repeated-solve-20260928.json`.
+
+### Industry roadmap: MILP strengthening and proof obligations (backlog item 9)
+
+- Singleton-row propagation now produces `BoundEvidenceSource::propagated`; serial search records
+  LP-bound, incumbent and remaining-search timings; verified cuts and applied propagations emit
+  format-3 audit annotations accepted into replay-compatible proofs; parallel root-cut failures
+  are reported and leave the root model unchanged; the worker-local in-tree cut helper and child
+  cut inheritance are wired through the worker loop. Annotations are audit records — acceptance
+  still comes from independent cut-free replay
+  (`evidence/milp-strengthening-20260928.json`, `docs/codebase/technical-debt/mip-proof-obligations.md`).
+
+### Industry roadmap: refinery units, quality and named reports (backlog item 10, code portion)
+
+- Typed refinery input conversions with dimension-mismatch rejection (bbl/kbpd/d, t/kt, sulfur
+  wt%↔ppm via density, RON, cetane, RVP, USD/bbl), a synthetic fuel-oil sulfur constraint,
+  unit-checked FCC feed balance, and named JSON reports with unit-labelled variables, objective
+  coefficients, rows, duals, slacks, active bound names, quality margins and row-scoped IIS
+  entries (`include/markov_cero/refinery/refinery_{units,quality,report,report_json,input_schema}.hpp`).
+- Synthetic/public-data qualification passed the refinery/domain tests; refinery engineer approval
+  (IR-34/G34) and shadow-trial agreement (G8) were NOT obtained and remain OPEN
+  (`evidence/refinery-units-schema-20260928.json`).
+
+### Industry roadmap: packaging qualification, support and rollback (backlog item 11, code portion)
+
+- Offline wheel and sdist qualification with fresh-venv install and pytest, CMake prefix install
+  verified with an external `find_package` consumer, a performed upgrade/rollback drill restoring
+  the prior wheel and re-running tests, extended `scripts/verify-release.sh` (report/env overrides,
+  both compilers attempted), support/rollback documentation (`docs/governance/support-rollback.md`)
+  and a release manifest with wheel SHA-256 (`evidence/packaging-qualification-20260928.json`).
+- SBOM, signing, vulnerability review, support ownership and hosted evidence remain OPEN under
+  IR-33/G7; the licensing metadata inconsistency (proprietary text vs Apache-2.0 LICENSE) is
+  recorded for a human decision (D18).
+
+### Industry roadmap: immutable node views and memory evidence (backlog item 4)
+
+- **Bounded reference-materialisation comparator** (`include/markov_cero/milp/reference_materialisation.hpp`,
+  `src/milp/reference_materialisation.cpp`): `compare_bounds_to_reference`/`compare_view_to_reference`
+  replay caller-supplied branching steps chronologically against production's delta-chain walk — two
+  independent algorithms, so the oracle needs no accessors on `NodeView` — with `ReferenceCaps`
+  (variables, steps, total cut ids, bytes) refusing over-cap requests before any allocation
+  (`reference_bytes == 0`), budget-charged `NodeView` materialization for view comparison, and
+  facet/index mismatch reporting (`lower_bounds`, `upper_bounds`, `cut_scope`, `production`).
+- **Tests** (`tests/reference_materialisation_test.cpp`,
+  `tests/node_view_reference_identity_test.cpp`): 200 randomized chains with repeated writes, 400
+  push/pop operations against chronological reconstruction, sibling bounds/cut isolation including
+  parent immutability, refusal on every cap, exact mismatch facets and invalid inputs; bit-identical
+  node-LP status/objective/primal from production-materialized and reference-replayed bounds, with
+  original-space `verify_primal` certificates for node and full-solve results.
+- **Frontier peak tracking** (`Result::max_queued_nodes`, `NodeFrontier::peak_size`,
+  `ThreadSafeNodeQueue::peak_size`, `NodeBounds::retained_bytes()`): serial and parallel drivers
+  record the peak frontier size so full-solver queue storage is measured rather than assumed.
+- **Memory evidence** (`scripts/frontier_storage_bytes.hpp`, extended
+  `scripts/bench_node_frontier_memory.cpp` with root/worker/queue byte classes and a matrix-fill
+  parameter, new `scripts/bench_solve_frontier_memory.cpp` with parse/solve RSS split, a 10 ms
+  resident sampler and a 250 ms signal-tick high-water): queue bytes are byte-identical across a 61×
+  root-matrix growth and linear in node count; the materialized baseline queue reaches 169.5 MB at
+  4,000 nodes versus 0.84 MB current; full-solver runs peak at 47–531 queued nodes with queue record
+  bytes ≤ 63,720. All six W01 acceptance criteria are mapped and IR-19 is closed in
+  `evidence/ir19-w01-memory-20260928.json`, which also records an unexplained transient ~1 GiB RSS
+  anomaly (5/~35 runs, parse/root phase, queue excluded) handed to IR-21 follow-up.
+- **Gates**: suite 89/89 in Release, ASan/UBSan with warnings-as-errors, and TSan; the locally built
+  wheel passes 20 pytest cases; source limits (449 files), doc links and JSON checks pass. Open:
+  worker-class storage (serial node-model workspace, per-worker overlays, sparse-PDLP fallback),
+  per-node cut application, reusable factor work, persistent-structure caps, and solve-wide memory
+  budgets (IR-20/21, backlog item 5).
+
+### Industry roadmap: instrumentation and failure harnesses (backlog item 3)
+
+- **Stage instrumentation** (`include/markov_cero/core/instrumentation.hpp`,
+  `SolveContext::remaining_ms()`, `TraceEvent::worker`): a `StageScope` RAII timer emits
+  exactly one trace event per stage — on early return and unwinding too — carrying the stage
+  name, the shared sticky stop reason, the stage counter, net bytes charged during the stage,
+  observed elapsed time and a worker index; deadline slack is reported live and never
+  silently extended.
+- **Worker isolation boundary** (`include/markov_cero/core/worker_context.hpp`): one shared
+  `SolveContext` (deadline, cancellation, a single memory budget, the solve-wide stop reason,
+  capability policy, seed, quotas, sink) versus per-worker charge attribution, release rights
+  clamped to what that worker charged, and a worker-local sticky stop that stops only that
+  worker. Refusals still fail the solve closed; destruction returns held bytes.
+- **Allocation-failure harness** (`tests/support/failing_new.hpp`,
+  `tests/resource_failure_test.cpp`): a global `operator new`/`delete` replacement in one test
+  binary fails the nth allocation of a call under test exactly once (nothrow forms return
+  `nullptr`). Coverage: harness self-check, `ModelSnapshot::capture` reporting and recovery,
+  `NodeView::materialize` failing closed, and the API boundary — every injected failure across
+  the exercised allocation points maps to `resource_limit` with failure site
+  `allocation_failure`, with zero exceptions escaping `solve_file`/`solve_model` and never an
+  infeasible or unbounded status.
+- **Failure-semantics fixes found by the harness**: `src/api/api.cpp` catches `std::bad_alloc`
+  at the boundary (previously it fell through the generic handler to `numerical_failure`) and
+  wraps both entry points so nothing escapes; `MaterializationStatus::allocation_failed`
+  distinguishes a host allocation failure from solve-budget exhaustion; `NodeBounds::materialize`
+  builds its delta path before writing outputs so a failure cannot leave a half-written result.
+- **Gates**: new CTest `worker_context` and `resource_failure` take the suite to 87/87 — in
+  Release, under ASan/UBSan with warnings-as-errors, and under TSan; the locally built wheel
+  passes 20 pytest cases; source-limit (443 files) and doc-link checks pass. Commands and
+  limitations are recorded in `evidence/resource-instrumentation-20260928.json`. Open: no
+  engine stage emits stage events, the API creates no `SolveContext`, the parallel search does
+  not use `WorkerContext`, injection coverage stops at the exercised boundary points, and
+  IR-20/21 remain open.
+
+### Industry roadmap: shared contracts (backlog item 2)
+
+- **SolveContext contract** (`include/markov_cero/core/`): sticky first-reason `StopReason`
+  with failure semantics (a resource stop is reported as a resource/limit status, never as
+  optimal/infeasible/unbounded), one absolute `Deadline` stages may only shorten, an
+  overflow-safe fail-closed `MemoryBudget` for solve-wide allocation accounting, and a
+  per-solve `SolveContext` carrying cancellation, thread/device quotas, seed, capability
+  policy and a caller-owned trace sink — no globals, narrow accessors per stage.
+- **ModelSnapshot contract** (`include/markov_cero/model/model_snapshot.hpp`,
+  `src/model/model_hash.cpp`): validating capture by copy or move (snapshots are not
+  copyable), separable structural/numeric FNV-1a hashes with a mixed stable fingerprint,
+  and estimated solver-owned bytes for budget accounting.
+- **NodeView contract** (`include/markov_cero/milp/node_view.hpp`, `src/milp/node_view.cpp`):
+  immutable shared-parent node views holding only per-node bound deltas, structurally scoped
+  cut IDs, bound-evidence provenance (`certified_relaxation`/`inherited`/`propagated`/
+  `unknown`, NaN when unknown) and shared basis metadata, with explicit budget-charged
+  materialization that fails closed on refusal, shape mismatch or an out-of-range delta.
+- **Result binding**: `src/api/dispatch.cpp` hashes the validated model once at the API
+  boundary and `SolveResult::model_fingerprint` binds every result to that model; covered by
+  `tests/api_test.cpp`, exposed to Python as `model_fingerprint` (`python/src/results.cpp`),
+  and covered by `python/tests/test_bindings.py`. New CTest gates `solve_context`,
+  `model_snapshot`, `node_view`; fresh Release run passes 85/85 (also 85/85 under ASan/UBSan
+  and under TSan), the wheel build passes its 20 pytest cases, and the source-limit and
+  doc-link checks pass; commands and limitations are recorded in
+  `evidence/contracts-slice-20260928.json`. These are contracts:
+  engines still receive the mutable `Model`, no solve-wide byte limit is exposed or enforced,
+  and IR-19/20/21 remain open.
+
 ### Phase 8 RW batch: keep the core, rebuild the edges
 
 - **RW-1 (in-tree cuts)**: cut-loop tuning — separation frequency gating, per-node time/efficacy

@@ -48,6 +48,7 @@ bool ThreadSafeNodeQueue::push(std::shared_ptr<BranchNode> node) {
         }
         heap_.push_back(std::move(node));
         std::push_heap(heap_.begin(), heap_.end(), comparator_);
+        peak_size_ = std::max(peak_size_, heap_.size());
     }
     cv_.notify_one();
     return true;
@@ -79,6 +80,7 @@ bool ThreadSafeNodeQueue::push_children(std::shared_ptr<BranchNode> left,
             std::push_heap(heap_.begin(), heap_.end(), comparator_);
             pushed = true;
         }
+        peak_size_ = std::max(peak_size_, heap_.size());
         if (!pushed) {
             return true;
         }
@@ -117,6 +119,7 @@ bool ThreadSafeNodeQueue::push_branch_children(
         down_child->is_down_branch = true;
         down_child->bounds = parent.bounds.with_upper(branch_var, model::Bound::finite(floor_val));
         down_child->warm_basis = shared_warm_basis;
+        down_child->local_cuts = parent.local_cuts;
     }
 
     if (!parent_upper[branch_var].is_finite() ||
@@ -131,6 +134,7 @@ bool ThreadSafeNodeQueue::push_branch_children(
         up_child->is_down_branch = false;
         up_child->bounds = parent.bounds.with_lower(branch_var, model::Bound::finite(ceil_val));
         up_child->warm_basis = shared_warm_basis;
+        up_child->local_cuts = parent.local_cuts;
     }
 
     return push_children(std::move(down_child), std::move(up_child));

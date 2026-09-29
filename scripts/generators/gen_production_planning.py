@@ -16,6 +16,8 @@ import os
 import random
 import sys
 
+from fixture_provenance import write_provenance
+
 
 def generate_production_planning_mps(
     num_products: int = 12,
@@ -70,7 +72,11 @@ def generate_production_planning_mps(
         for l in range(num_lines):
             max_batch[(p, l)] = (line_cap[l] - setup_time[p][l]) / prod_time[p][l]
 
-    lines = ["NAME PROD_PLAN_LARGE", "ROWS", " N COST"]
+    lines = ["* Units: production X, inventory I, demand and safety stock tonnes per period;",
+             "* line capacity RHS hours/period, production time hours/tonne, setup time hours.",
+             "* COST: variable and holding coefficients USD/tonne; Y setup cost USD/setup.",
+             "* Synthetic qualification data; not plant operating data; deterministic for a fixed seed.",
+             "NAME PROD_PLAN_LARGE", "ROWS", " N COST"]
 
     # 1. Inventory balance: IB_{p}_{t} (E)
     # 2. Line capacity:     LC_{l}_{t} (L)
@@ -179,6 +185,10 @@ def main():
     )
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(mps_content)
+    write_provenance(args.output, "gen_production_planning.py",
+                     {"products": args.products, "lines": args.lines,
+                      "periods": args.periods, "seed": args.seed},
+                     "Unit and qualification comments added; model rows, columns and coefficients unchanged.")
 
     print(f"[+] Production planning MILP model written to {args.output}")
     print(f"    File size: {os.path.getsize(args.output):,} bytes")

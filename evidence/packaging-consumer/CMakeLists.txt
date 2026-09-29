@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.25)
+project(installed_consumer CXX)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+find_package(markov_cero CONFIG REQUIRED)
+add_executable(installed-consumer consumer.cpp)
+target_link_libraries(installed-consumer PRIVATE markov_cero::core)

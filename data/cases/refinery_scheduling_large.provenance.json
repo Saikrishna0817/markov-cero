@@ -1,0 +1,11 @@
+{
+  "change": "Unit and qualification comments refreshed; model rows, columns and coefficients unchanged.",
+  "fixture": "refinery_scheduling_large.mps",
+  "generator": "gen_refinery_scheduling.py",
+  "generator_args": {
+    "days": 7,
+    "seed": 42
+  },
+  "model_sha256": "844e5b7f15e6e9ca09e97db0164a4851aad5a4ed673a1756810801030b53b677",
+  "regeneration_date": "2026-09-29"
+}

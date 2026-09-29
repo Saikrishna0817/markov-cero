@@ -27,9 +27,13 @@ class LinearModel:
         column = self.columns[variable]
         column[row] = column.get(row, 0.0) + coefficient
 
-    def write(self, output, digest):
+    def write(self, output, digest, flow_unit, objective_unit, quality_units):
         lines = ['* Historical public Fawley benchmark; no plant approval',
-                 '* Input SHA256 ' + digest, 'NAME FAWLEY_PUBLIC', 'ROWS', ' N OBJ']
+                 '* Input SHA256 ' + digest,
+                 '* Units: flow ' + flow_unit + '; objective ' + objective_unit,
+                 '* Quality units: ' + '; '.join(f'{name}={unit}' for name, unit in sorted(quality_units.items())),
+                 '* Public illustrative qualification data; not plant operating data.',
+                 'NAME FAWLEY_PUBLIC', 'ROWS', ' N OBJ']
         lines += [f' {sense} {name}' for name, (sense, _) in self.rows.items()]
         lines.append('COLUMNS')
         for name, entries in self.columns.items():
@@ -120,7 +124,9 @@ def main():
     parser.add_argument('--output', type=Path, default=root / 'examples/refinery/fawley-public.mps')
     args = parser.parse_args()
     raw = args.data.read_bytes()
-    build(json.loads(raw)).write(args.output, hashlib.sha256(raw).hexdigest())
+    data = json.loads(raw)
+    build(data).write(args.output, hashlib.sha256(raw).hexdigest(), data['flow_unit'],
+                      data['objective_unit'], data['quality_unit_by_property'])
 
 
 if __name__ == '__main__':

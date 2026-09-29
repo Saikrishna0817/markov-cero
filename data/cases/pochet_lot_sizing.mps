@@ -1,3 +1,5 @@
+* Units: production, inventory, demand and capacity synthetic items per period;
+* setup variables counts; objective synthetic currency per horizon.
 NAME          POCHET_LOT_SIZING
 ROWS
  N  objCOST
