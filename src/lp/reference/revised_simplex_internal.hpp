@@ -72,7 +72,7 @@ namespace detail_revised_simplex { void snap_basic_solution(std::vector<double>&
 namespace detail_revised_simplex { std::size_t select_entering(const Work& w, const std::vector<double>& cost,
                                     const std::vector<double>& y, const std::vector<bool>& basic,
                                     std::size_t enter_limit, const Options& o, double& minimum_rc); }
-namespace detail_revised_simplex { std::size_t select_leaving(const Work& w, the std::vector<double>& xb,
+namespace detail_revised_simplex { std::size_t select_leaving(const Work& w, const std::vector<double>& xb,
                            const std::vector<double>& d, const Options& o, double& theta); }
 namespace detail_revised_simplex { IterationOutcome iterate(Work& w, const std::vector<double>& cost, std::size_t enter_limit,
                          const Options& o, int phase, std::size_t budget,
