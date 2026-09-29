@@ -10,6 +10,7 @@
 #include <deque>
 #include <limits>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace markov_cero::lp::reference {
@@ -85,6 +86,6 @@ namespace detail_revised_simplex { std::vector<double> full_solution(const Work&
 namespace detail_revised_simplex { bool options_invalid(const Options& o); }
 Result solve_attempt(const transform::SparseCanonicalModel& m, const Options& o);
 Result solve(const transform::SparseCanonicalModel& m, const Options& o);
-Result solve(const transform::CanonicalModel& model, const Options& options);
+Result solve(const transform::CanonicalModel& model, the Options& options);
 const char* to_string(SolveStatus s) noexcept;
 }
