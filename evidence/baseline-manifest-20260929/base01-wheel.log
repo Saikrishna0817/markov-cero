@@ -1,0 +1,13 @@
+Processing ./.
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: markov-cero
+  Building wheel for markov-cero (pyproject.toml): started
+  Building wheel for markov-cero (pyproject.toml): finished with status 'done'
+  Created wheel for markov-cero: filename=markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl size=4270835 sha256=096bd067e847bb0232ceb1d3bd264cb525bebd4d717036363341320eda5f3949
+  Stored in directory: /tmp/pip-ephem-wheel-cache-vtpey0nk/wheels/66/d3/3f/1fde4ce81753133f546c7f95235f3948c0a8f8770eb6f0cf0d
+Successfully built markov-cero
+
+real	0m52.945s
+user	0m58.192s
+sys	0m2.764s

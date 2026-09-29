@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+### 2026-09-29 blueprint BASE-01 — frozen source, claims and release metadata
+
+- Resolved the license conflict (owner decision D18): `pyproject.toml` now
+  declares `Apache-2.0` with `LICENSE`/`NOTICE` shipped in the wheel, matching
+  the checked-in Apache 2.0 license; build requirement raised to
+  `setuptools>=77` for PEP 639 metadata.
+- Added a `python-bindings` CI job that verifies license coherence, builds the
+  wheel and runs `python/tests`, closing the gap that let a stale binding-test
+  expectation go unnoticed.
+- Corrected `python/tests/test_proof_guarantee.py` to expect `Feasible` after
+  proof-budget exhaustion, per blueprint section 5 (proof exhaustion is never
+  converted to `Optimal`). The solver behaviour was already correct; only the
+  test expectation changed.
+- Recorded the reproducible baseline in
+  `evidence/baseline-manifest-20260929.json` with raw logs: clean Release build
+  of revision `aa6f35e` (no C++ source changed), 92/92 CTest, 22/22 binding
+  tests, installed-consumer proof replay PASS, and artifact SHA-256 hashes.
+
 ### 2026-09-29 repository layout and documentation
 
 - Consolidated current guides under `docs/guides/`, status and provenance under

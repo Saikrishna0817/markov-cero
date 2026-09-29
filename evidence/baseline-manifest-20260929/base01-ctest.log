@@ -1,0 +1,193 @@
+Test project /tmp/opencode/markov-base01-build
+      Start  1: classifier
+ 1/92 Test  #1: classifier ............................   Passed    0.00 sec
+      Start  2: ml_branching
+ 2/92 Test  #2: ml_branching ..........................   Passed    0.00 sec
+      Start  3: nlp_sqp
+ 3/92 Test  #3: nlp_sqp ...............................   Passed    0.00 sec
+      Start  4: nlp_rosenbrock
+ 4/92 Test  #4: nlp_rosenbrock ........................   Passed    0.00 sec
+      Start  5: nlp_constrained
+ 5/92 Test  #5: nlp_constrained .......................   Passed    0.00 sec
+      Start  6: minlp_basic
+ 6/92 Test  #6: minlp_basic ...........................   Passed    0.01 sec
+      Start  7: nlobj_parser
+ 7/92 Test  #7: nlobj_parser ..........................   Passed    0.00 sec
+      Start  8: parallel_proof_events
+ 8/92 Test  #8: parallel_proof_events .................   Passed    0.00 sec
+      Start  9: build_info
+ 9/92 Test  #9: build_info ............................   Passed    0.00 sec
+      Start 10: model_verifier
+10/92 Test #10: model_verifier ........................   Passed    0.00 sec
+      Start 11: solve_context
+11/92 Test #11: solve_context .........................   Passed    0.12 sec
+      Start 12: model_snapshot
+12/92 Test #12: model_snapshot ........................   Passed    0.00 sec
+      Start 13: node_view
+13/92 Test #13: node_view .............................   Passed    0.00 sec
+      Start 14: reference_materialisation
+14/92 Test #14: reference_materialisation .............   Passed    0.00 sec
+      Start 15: node_view_reference_identity
+15/92 Test #15: node_view_reference_identity ..........   Passed    0.00 sec
+      Start 16: worker_context
+16/92 Test #16: worker_context ........................   Passed    0.00 sec
+      Start 17: resource_failure
+17/92 Test #17: resource_failure ......................   Passed    0.01 sec
+      Start 18: mps_parser
+18/92 Test #18: mps_parser ............................   Passed    0.00 sec
+      Start 19: lp_parser
+19/92 Test #19: lp_parser .............................   Passed    0.01 sec
+      Start 20: ipm_large
+20/92 Test #20: ipm_large .............................   Passed    0.02 sec
+      Start 21: pdlp_crossover
+21/92 Test #21: pdlp_crossover ........................   Passed    0.01 sec
+      Start 22: qp_adaptive_rho
+22/92 Test #22: qp_adaptive_rho .......................   Passed    0.01 sec
+      Start 23: numerical_diagnostic
+23/92 Test #23: numerical_diagnostic ..................   Passed    0.00 sec
+      Start 24: mps_fuzz_smoke
+24/92 Test #24: mps_fuzz_smoke ........................   Passed    0.03 sec
+      Start 25: model_properties
+25/92 Test #25: model_properties ......................   Passed    0.00 sec
+      Start 26: dense_lu
+26/92 Test #26: dense_lu ..............................   Passed    0.00 sec
+      Start 27: primal_simplex
+27/92 Test #27: primal_simplex ........................   Passed    0.00 sec
+      Start 28: primal_simplex_properties
+28/92 Test #28: primal_simplex_properties .............   Passed    0.01 sec
+      Start 29: dual_simplex
+29/92 Test #29: dual_simplex ..........................   Passed    0.00 sec
+      Start 30: warm_start_properties
+30/92 Test #30: warm_start_properties .................   Passed    0.01 sec
+      Start 31: sparse_basis
+31/92 Test #31: sparse_basis ..........................   Passed    0.02 sec
+      Start 32: sparse_lu_deadline
+32/92 Test #32: sparse_lu_deadline ....................   Passed    0.00 sec
+      Start 33: sparse_update_properties
+33/92 Test #33: sparse_update_properties ..............   Passed    0.04 sec
+      Start 34: audit_regressions
+34/92 Test #34: audit_regressions .....................   Passed    0.00 sec
+      Start 35: regression_backend_actually_used
+35/92 Test #35: regression_backend_actually_used ......   Passed    0.00 sec
+      Start 36: regression_simplex_scale200_pricing
+36/92 Test #36: regression_simplex_scale200_pricing ...   Passed    0.19 sec
+      Start 37: sparse_canonicalize
+37/92 Test #37: sparse_canonicalize ...................   Passed    0.00 sec
+      Start 38: presolve
+38/92 Test #38: presolve ..............................   Passed    0.00 sec
+      Start 39: ruiz_scaling
+39/92 Test #39: ruiz_scaling ..........................   Passed    0.00 sec
+      Start 40: milp
+40/92 Test #40: milp ..................................   Passed    0.01 sec
+      Start 41: milp_heuristics
+41/92 Test #41: milp_heuristics .......................   Passed    0.00 sec
+      Start 42: milp_cuts
+42/92 Test #42: milp_cuts .............................   Passed    0.00 sec
+      Start 43: strong_branching
+43/92 Test #43: strong_branching ......................   Passed    0.00 sec
+      Start 44: pdlp
+44/92 Test #44: pdlp ..................................   Passed    0.17 sec
+      Start 45: ipm
+45/92 Test #45: ipm ...................................   Passed    0.00 sec
+      Start 46: parallel_tree_search
+46/92 Test #46: parallel_tree_search ..................   Passed    0.01 sec
+      Start 47: gpu_buffer
+47/92 Test #47: gpu_buffer ............................   Passed    0.00 sec
+      Start 48: equivalence
+48/92 Test #48: equivalence ...........................   Passed    0.03 sec
+      Start 49: gpu_reduction
+49/92 Test #49: gpu_reduction .........................   Passed    0.02 sec
+      Start 50: gpu_pdhg_step
+50/92 Test #50: gpu_pdhg_step .........................   Passed    0.00 sec
+      Start 51: gpu_pdhg_restart
+51/92 Test #51: gpu_pdhg_restart ......................   Passed    0.03 sec
+      Start 52: gpu_pdhg_adaptive
+52/92 Test #52: gpu_pdhg_adaptive .....................   Passed    0.17 sec
+      Start 53: gpu_pdhg_kkt
+53/92 Test #53: gpu_pdhg_kkt ..........................   Passed    0.05 sec
+      Start 54: gpu_pdhg_timing
+54/92 Test #54: gpu_pdhg_timing .......................   Passed    0.02 sec
+      Start 55: gpu_admm
+55/92 Test #55: gpu_admm ..............................   Passed    0.00 sec
+      Start 56: gpu_fallback
+56/92 Test #56: gpu_fallback ..........................   Passed    0.00 sec
+      Start 57: gpu_qp
+57/92 Test #57: gpu_qp ................................   Passed    0.44 sec
+      Start 58: qp
+58/92 Test #58: qp ....................................   Passed    0.01 sec
+      Start 59: json_records
+59/92 Test #59: json_records ..........................   Passed    0.09 sec
+      Start 60: sovereignty_guard
+60/92 Test #60: sovereignty_guard .....................   Passed    0.11 sec
+      Start 61: cli_blend_optimal
+61/92 Test #61: cli_blend_optimal .....................   Passed    0.00 sec
+      Start 62: cli_qp_portfolio
+62/92 Test #62: cli_qp_portfolio ......................   Passed    0.00 sec
+      Start 63: cli_refinery_feasible
+63/92 Test #63: cli_refinery_feasible .................   Passed    0.00 sec
+      Start 64: cli_refinery_infeasible
+64/92 Test #64: cli_refinery_infeasible ...............   Passed    0.00 sec
+      Start 65: cli_refinery_malformed
+65/92 Test #65: cli_refinery_malformed ................   Passed    0.00 sec
+      Start 66: cli_refinery_limited
+66/92 Test #66: cli_refinery_limited ..................   Passed    0.00 sec
+      Start 67: cli_case_crude_oil
+67/92 Test #67: cli_case_crude_oil ....................   Passed    0.00 sec
+      Start 68: cli_case_multiperiod
+68/92 Test #68: cli_case_multiperiod ..................   Passed    0.00 sec
+      Start 69: cli_case_supply_chain
+69/92 Test #69: cli_case_supply_chain .................   Passed    0.00 sec
+      Start 70: cli_queued_node_capacity
+70/92 Test #70: cli_queued_node_capacity ..............   Passed    0.00 sec
+      Start 71: cli_input_byte_limit
+71/92 Test #71: cli_input_byte_limit ..................   Passed    0.00 sec
+      Start 72: domain_refinery_scheduling_large
+72/92 Test #72: domain_refinery_scheduling_large ......   Passed    2.67 sec
+      Start 73: domain_crude_blending_large
+73/92 Test #73: domain_crude_blending_large ...........   Passed    0.01 sec
+      Start 74: domain_process_network_large
+74/92 Test #74: domain_process_network_large ..........   Passed    1.22 sec
+      Start 75: domain_production_planning_large
+75/92 Test #75: domain_production_planning_large ......   Passed    7.84 sec
+      Start 76: domain_power_dispatch_dc_opf
+76/92 Test #76: domain_power_dispatch_dc_opf ..........   Passed    0.22 sec
+      Start 77: domain_supply_chain_large
+77/92 Test #77: domain_supply_chain_large .............   Passed    9.87 sec
+      Start 78: api_demo
+78/92 Test #78: api_demo ..............................   Passed    0.00 sec
+      Start 79: api_test
+79/92 Test #79: api_test ..............................   Passed    0.00 sec
+      Start 80: refinery_domain_and_iis
+80/92 Test #80: refinery_domain_and_iis ...............   Passed   29.34 sec
+      Start 81: e2e_tier1_m1_features
+81/92 Test #81: e2e_tier1_m1_features .................   Passed    0.00 sec
+      Start 82: e2e_tier2_m1_boundaries
+82/92 Test #82: e2e_tier2_m1_boundaries ...............   Passed    0.00 sec
+      Start 83: e2e_tier3_m1_combinations
+83/92 Test #83: e2e_tier3_m1_combinations .............   Passed    0.00 sec
+      Start 84: e2e_tier4_m1_scenarios
+84/92 Test #84: e2e_tier4_m1_scenarios ................   Passed    0.00 sec
+      Start 85: e2e_runner_harness
+85/92 Test #85: e2e_runner_harness ....................   Passed    0.08 sec
+      Start 86: readiness_correctness
+86/92 Test #86: readiness_correctness .................   Passed    0.00 sec
+      Start 87: cli_public_fawley
+87/92 Test #87: cli_public_fawley .....................   Passed    0.00 sec
+      Start 88: mip_proof
+88/92 Test #88: mip_proof .............................   Passed    0.00 sec
+      Start 89: source_limits
+89/92 Test #89: source_limits .........................   Passed    0.06 sec
+      Start 90: readiness_edge_cases
+90/92 Test #90: readiness_edge_cases ..................   Passed    0.00 sec
+      Start 91: repository_tools
+91/92 Test #91: repository_tools ......................   Passed    0.12 sec
+      Start 92: worker_kill_demo
+92/92 Test #92: worker_kill_demo ......................   Passed    1.11 sec
+
+100% tests passed out of 92
+
+Total Test time (real) =  54.35 sec
+
+real	0m54.362s
+user	0m56.535s
+sys	0m0.381s

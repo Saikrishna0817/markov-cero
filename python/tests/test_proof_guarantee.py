@@ -25,7 +25,9 @@ def test_milp_proof_guarantee_fields():
     assert accepted["proof_model_fingerprint"] == str(accepted["model_fingerprint"])
 
     exhausted = m.solve(engine="milp", proof_max_nodes=1)
-    assert exhausted["status"] == "Optimal"
+    # Blueprint §5: proof exhaustion must never be converted to Optimal.
+    # The incumbent stays original-verified, but optimality is not certified.
+    assert exhausted["status"] == "Feasible"
     assert exhausted["original_verified"] is True
     assert exhausted["verified"] is False
     assert exhausted["certificate_type"] == "incumbent_feasibility"

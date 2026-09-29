@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=64", "pybind11>=2.12", "cmake>=3.25"]
+requires = ["setuptools>=77", "pybind11>=2.12", "cmake>=3.25"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,8 @@ name = "markov-cero"
 version = "0.5.2"
 description = "Sovereign LP/MILP/QP/MIQP/NLP/MINLP solver core (markov-cero) Python bindings"
 requires-python = ">=3.9"
-license = {text = "Proprietary"}
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 
 [project.optional-dependencies]
 ml-training = ["torch>=2.9", "onnx>=1.16", "onnxruntime>=1.19"]

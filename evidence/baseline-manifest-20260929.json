@@ -1,0 +1,231 @@
+{
+  "date": "2026-09-29",
+  "task": "BASE-01",
+  "blueprint": "docs/project/INDUSTRY_GRADE_IMPLEMENTATION_BLUEPRINT.md, TASK BASE-01",
+  "purpose": "Committed-source and binary baseline: raw commands, environment, hashes, exit codes and outputs for the first blueprint task. Later tasks must reference this manifest instead of an ad-hoc build directory.",
+  "evidence_class": "current baseline (not a historical run)",
+  "source": {
+    "committed_revision": "aa6f35e15a2cae70ba3cbb30b0744add0aa49d32",
+    "revision_subject": "added a blueprint for next phases",
+    "branch": "main",
+    "remote": "https://github.com/Saikrishna0817/markov-zip1.git",
+    "submodules": "none",
+    "tracked_file_set_sha256": "5d4cb2d64720bc1500ff1679c2907f31be40d9a153b64df08b58b69ccacbb511",
+    "tracked_file_set_method": "git ls-files -z | xargs -0 sha256sum | sha256sum",
+    "working_tree_delta_at_manifest_time": [
+      "pyproject.toml (license metadata: Proprietary -> Apache-2.0, owner decision D18)",
+      ".github/workflows/ci.yml (new python-bindings job: license coherence + wheel + pytest)",
+      "python/tests/test_proof_guarantee.py (proof-exhaustion status expectation aligned with blueprint section 5)"
+    ],
+    "delta_scope": "metadata and test-expectation only; no C++/CUDA source changed, so binaries equal the committed-revision build",
+    "dependency_state": {
+      "git_submodules": "none",
+      "vendored_third_party_source": "none; third_party/ holds a license ledger only (third_party/LICENSES/README.md)",
+      "build_time_deps": "system g++/cmake; Python build needs setuptools>=77, pybind11>=2.12, cmake>=3.25 from pip",
+      "runtime_deps": "libstdc++/libc only; the Python extension has zero runtime dependencies (numpy optional)",
+      "external_solver_linkage": "none \u2014 ctest sovereignty_guard passed: zero external solver libraries, headers or symbols",
+      "optional_datasets": "227 large benchmark files absent by design (data/optional-datasets.json); no benchmark row produced here"
+    }
+  },
+  "environment": {
+    "os": "Omarchy (Linux)",
+    "arch": "x86_64",
+    "cpu_threads": 12,
+    "ram_gib": 11,
+    "compiler": "g++ (GCC) 16.2.1 20260810",
+    "cmake": "cmake version 4.4.3",
+    "build_type": "Release",
+    "cxx_flags_release": "-O3 -DNDEBUG",
+    "warnings_as_errors": true,
+    "cuda": "OFF (no device claim)",
+    "ml": "OFF",
+    "sanitizers": "OFF",
+    "build_dir": "/tmp/opencode/markov-base01-build (fresh, outside all prior build*/ trees)",
+    "python_wheel_env": "repo .venv, CPython 3.14.7, setuptools 84.0.0, pybind11 3.1.0"
+  },
+  "commands": [
+    {
+      "stage": "configure",
+      "command": "cmake -S . -B /tmp/opencode/markov-base01-build -DCMAKE_BUILD_TYPE=Release",
+      "rc": 0,
+      "log": "evidence/baseline-manifest-20260929/base01-configure.log",
+      "seconds": 0.7,
+      "note": "fresh build directory created for this manifest; no prior cache"
+    },
+    {
+      "stage": "build",
+      "command": "cmake --build /tmp/opencode/markov-base01-build --parallel 12",
+      "rc": 0,
+      "seconds": 74.6,
+      "warnings": 0,
+      "errors": 0,
+      "log": "evidence/baseline-manifest-20260929/base01-build.log"
+    },
+    {
+      "stage": "ctest",
+      "command": "ctest --test-dir /tmp/opencode/markov-base01-build --output-on-failure --timeout 180",
+      "rc": 0,
+      "seconds": 54.35,
+      "result": "92/92 passed, 0 failed, 0 skipped",
+      "log": "evidence/baseline-manifest-20260929/base01-ctest.log"
+    },
+    {
+      "stage": "wheel",
+      "command": ".venv/bin/python -m pip wheel . --no-deps --no-build-isolation -w /tmp/opencode/wheels",
+      "rc": 0,
+      "seconds": 52.9,
+      "log": "evidence/baseline-manifest-20260929/base01-wheel.log"
+    },
+    {
+      "stage": "python_tests",
+      "command": ".venv/bin/python -m pytest python/tests -q",
+      "rc": 0,
+      "result": "22 passed",
+      "seconds": 0.09,
+      "note": "run against the freshly installed wheel, not an in-tree module"
+    },
+    {
+      "stage": "install",
+      "command": "cmake --install /tmp/opencode/markov-base01-build --prefix /tmp/opencode/base01-prefix",
+      "rc": 0,
+      "files_installed": 112,
+      "log": "evidence/baseline-manifest-20260929/base01-install.log"
+    },
+    {
+      "stage": "installed_consumer",
+      "command": "cmake -S evidence/packaging-consumer -B <tmp> -DCMAKE_PREFIX_PATH=<prefix> && cmake --build <tmp> && ./installed-consumer examples/cases/multiperiod_production.mps",
+      "rc": 0,
+      "result": "installed-consumer PASS; proof replay accepted, 7 nodes",
+      "log": "evidence/baseline-manifest-20260929/base01-consumer-configure.log"
+    },
+    {
+      "stage": "cli_smoke",
+      "command": "<prefix>/bin/markov-cero-solve MODEL --time-limit 30 (stdout JSON, stderr progress)",
+      "rc": 0,
+      "note": "LP, MILP and QP classes each returned verified results with the documented schema"
+    }
+  ],
+  "artifacts": {
+    "binaries": {
+      "markov-cero-solve": "189cb3395911cd7230648f9c1e357dcc2318c16cf053614cf681aecf3f8b59a7",
+      "markov-cero-info": "5b78725bbdedb7a7586197cab19bd4a08dddbe91fc0f243610c4a30fb58d7acb",
+      "markov-cero-verify-mip": "be1a993d546d776cb328b081d6d4b1325d60f08ee63a7b011be3d9ec99c54e68",
+      "markov-cero-iis": "bf465b8cae8be12b6a1ae4c94c3ada37802663ead862998fb93ac64da9b6be1f",
+      "markov-cero-mps-inspect": "9909c610d7e820a89de9e99bcfce9516d7fecd5863151e5749d9fd6f02a611d1",
+      "libmarkov_cero_core.a": "fc5ce0a6c63e4b0adf74907aec7d3081954677a2abfe541b24964d9900028ef4"
+    },
+    "wheel": {
+      "name": "markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+      "sha256": "096bd067e847bb0232ceb1d3bd264cb525bebd4d717036363341320eda5f3949",
+      "license_expression": "Apache-2.0"
+    }
+  },
+  "cli_class_smoke": [
+    {
+      "model": "examples/blend.mps",
+      "sha256": "5f45def165f8aa987562bf2e3ffa885c46571ca8f7936f7586905ff330c7aa05",
+      "class": "LP",
+      "engine": "primal",
+      "status": "Optimal",
+      "verified": true,
+      "certificate_type": "canonical_lp_witness",
+      "best_bound": 3500
+    },
+    {
+      "model": "examples/qp_portfolio.mps",
+      "sha256": "08d9ec87519795ebc16584ffef51f84d5e6fb28505ba7b50cb63d111601f4fc7",
+      "class": "QP",
+      "engine": "qp",
+      "status": "Optimal",
+      "verified": true,
+      "certificate_type": "convex_qp_kkt"
+    },
+    {
+      "model": "examples/cases/multiperiod_production.mps",
+      "sha256": "38355b33db2b7433dfd3fb0d64af90dda0d5223d70e583901663fb28aeac3d68",
+      "class": "MILP",
+      "engine": "milp",
+      "status": "Optimal",
+      "verified": true,
+      "certificate_type": "independent_mip_tree",
+      "guarantee_tier": "independent_tree",
+      "best_bound": 5300
+    },
+    {
+      "model": "examples/refinery/refinery-feasible.mps",
+      "sha256": "2cd2b6ab83978ad07247d3ea3305afa78b5cf3d6edd1839fc7168ffcb6d7e1f5",
+      "class": "LP",
+      "engine": "primal",
+      "status": "Optimal",
+      "verified": true
+    },
+    {
+      "model": "examples/refinery/refinery-infeasible.mps",
+      "sha256": "1fe22d3ce3837c5e5bf98458a9dcf80a2d3536394a5f19f29d6eb084d19c791c",
+      "class": "LP",
+      "engine": "primal",
+      "status": "Infeasible",
+      "verified": true,
+      "exit_code": 1,
+      "note": "non-zero exit for non-optimal status is intended CLI behaviour"
+    }
+  ],
+  "proof_budget_edge_case": {
+    "case": "markov-cero-solve examples/cases/multiperiod_production.mps --proof-max-nodes 1",
+    "observed": {
+      "status": "Feasible",
+      "verified": false,
+      "original_verified": true,
+      "certificate_type": "incumbent_feasibility",
+      "proof_status": "exhausted",
+      "proof_budget_exhausted": true,
+      "guarantee_tier": "unverified"
+    },
+    "decision": "Matches blueprint section 5: proof exhaustion is never converted to Optimal. python/tests/test_proof_guarantee.py asserted the forbidden behaviour and was corrected to expect Feasible; the solver code was not changed."
+  },
+  "license_decision": {
+    "decision_id": "D18",
+    "owner_decision": "Apache-2.0 everywhere",
+    "decided_by": "project owner (license authority) during BASE-01 execution, 2026-09-29",
+    "changes": [
+      "pyproject.toml: license = \"Apache-2.0\", license-files = [LICENSE, NOTICE], setuptools>=77 (PEP 639)"
+    ],
+    "verified": "built wheel METADATA reports License-Expression: Apache-2.0 and ships LICENSE + NOTICE; CI python-bindings job re-checks coherence"
+  },
+  "results": {
+    "ctest": "92/92",
+    "python_bindings": "22/22",
+    "installed_consumer": "PASS",
+    "cli_smoke": "5/5 as specified",
+    "source_limit_check": "passed within ctest (source_limits)",
+    "sovereignty_check": "passed within ctest (sovereignty_guard): zero external solver dependencies"
+  },
+  "known_issues_recorded": [
+    {
+      "id": "web-adapter-field-mismatch",
+      "severity": "low",
+      "status": "open",
+      "detail": "web/backend/server.py:131 whitelists 'iterations' and 'optimality_gap'; the CLI emits 'lp_iterations' and 'relative_gap', so those keys are dropped before the UI sees them.",
+      "planned_task": "REL-01 (deployment/interfaces)"
+    },
+    {
+      "id": "python-tests-not-in-default-ctest",
+      "severity": "medium",
+      "status": "mitigated",
+      "detail": "python tests are opt-in via MARKOV_CERO_ENABLE_PYTHON_TESTS and were not run by CI; the stale proof-exhaustion expectation went unnoticed. A python-bindings CI job now builds the wheel and runs pytest on every push/PR.",
+      "planned_task": "closed by BASE-01"
+    }
+  ],
+  "claims_recorded": [
+    "A clean Release build of revision aa6f35e builds warning-free with -Werror and passes 92/92 ctest on this host.",
+    "The Python wheel built from the same source passes 22/22 binding tests and reports Apache-2.0 metadata.",
+    "An external consumer links the installed CMake package and replays an independent MIP proof.",
+    "No speed, GPU, ML, benchmark-breadth, provenance or refinery-readiness claim is made by this manifest."
+  ],
+  "limitations": [
+    "Single host, single compiler (gcc 16.2.1); clang/sanitizer/CUDA matrices are CI-only and were not run here.",
+    "CUDA and ML options were OFF, so no device or model path was exercised.",
+    "Optional benchmark datasets are absent locally; no benchmark row was produced by this manifest.",
+    "Raw logs are stored next to this file; the temporary build/prefix directories live under /tmp/opencode and are disposable."
+  ]
+}

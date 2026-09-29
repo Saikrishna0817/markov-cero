@@ -4,7 +4,9 @@
 
 ## Release decision
 
-**The production and refinery gates remain open.** The [gate status record](../../evidence/gate-status-20260929.json) and [defect closure register](../../evidence/defect-closure-register.csv) name the remaining work. The main boundaries are complete deadline/allocation coverage, independent provenance review, broader numerical and benchmark coverage, support ownership, and refinery engineer sign-off with a shadow trial. The Python license metadata also conflicts with the checked-in Apache 2.0 license text.
+**The production and refinery gates remain open.** The [gate status record](../../evidence/gate-status-20260929.json) and [defect closure register](../../evidence/defect-closure-register.csv) name the remaining work. The main boundaries are complete deadline/allocation coverage, independent provenance review, broader numerical and benchmark coverage, support ownership, and refinery engineer sign-off with a shadow trial. The license conflict is resolved: an owner decision (D18, 2026-09-29) set the Python package metadata to `Apache-2.0` to match the checked-in license, with a CI coherence check.
+
+Blueprint task BASE-01 is complete: a clean Release build of revision `aa6f35e` built warning-free with `-Werror`, passed 92/92 CTest and 22/22 Python binding tests, and an external consumer linked the installed CMake package and replayed an independent MIP proof. Commands, hashes and raw logs are in the [baseline manifest](../../evidence/baseline-manifest-20260929.json); that manifest makes no speed, GPU, ML, benchmark-breadth or refinery-readiness claim.
 
 ## Implemented paths and their limits
 

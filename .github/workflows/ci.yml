@@ -121,6 +121,33 @@ jobs:
       - run: cmake --build build-ml --parallel 2
       - run: ctest --test-dir build-ml -R 'ml_branching|strong_branching|mip_proof' --output-on-failure
 
+  python-bindings:
+    name: Python wheel and binding tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify license metadata is coherent
+        run: |
+          python3 - <<'EOF'
+          import pathlib, tomllib
+          project = tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]
+          assert project["license"] == "Apache-2.0", project["license"]
+          assert "Apache License" in pathlib.Path("LICENSE").read_text()
+          print("license metadata coherent:", project["license"])
+          EOF
+      - name: Build wheel
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip wheel . --no-deps -w dist
+      - name: Install wheel and run binding tests
+        run: |
+          python -m pip install --no-deps dist/markov_cero-*.whl
+          python -m pip install pytest numpy
+          python -m pytest python/tests -q
+
   docs-and-web:
     name: Documentation paths and web build
     runs-on: ubuntu-latest

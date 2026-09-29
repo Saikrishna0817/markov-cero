@@ -1,0 +1,373 @@
+[  1%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/mip_proof_builder.cpp.o
+[  1%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/engine_nonlinear.cpp.o
+[  1%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/mip_certificate.cpp.o
+[  1%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/mip_proof_relaxation.cpp.o
+[  1%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/dispatch.cpp.o
+[  2%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/engine_parallel.cpp.o
+[  2%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/mip_proof_io.cpp.o
+[  3%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/mip_proof.cpp.o
+[  3%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/api.cpp.o
+[  3%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/engine_pdlp.cpp.o
+[  4%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/engine_milp.cpp.o
+[  4%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/engine_qp.cpp.o
+[  4%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/engine_lp.cpp.o
+[  4%] Building CXX object CMakeFiles/markov_cero_core.dir/src/foundation/build_info.cpp.o
+[  5%] Building CXX object CMakeFiles/markov_cero_core.dir/src/model/model.cpp.o
+[  5%] Building CXX object CMakeFiles/markov_cero_core.dir/src/model/classifier.cpp.o
+[  5%] Building CXX object CMakeFiles/markov_cero_core.dir/src/model/model_snapshot.cpp.o
+[  6%] Building CXX object CMakeFiles/markov_cero_core.dir/src/model/model_hash.cpp.o
+[  6%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/mps.cpp.o
+[  7%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/mps_records.cpp.o
+[  7%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/mps_extensions.cpp.o
+[  7%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/mps_model.cpp.o
+[  8%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/lp_lexer.cpp.o
+[  8%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/lp_objective.cpp.o
+[  8%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/lp_constraints.cpp.o
+[  9%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/lp_bounds.cpp.o
+[  9%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/lp_model.cpp.o
+[  9%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/lp_parser.cpp.o
+[ 10%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/nlobj_parser.cpp.o
+[ 10%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/nlp_callbacks.cpp.o
+[ 10%] Building CXX object CMakeFiles/markov_cero_core.dir/src/nlp/lbfgs.cpp.o
+[ 11%] Building CXX object CMakeFiles/markov_cero_core.dir/src/nlp/nlp_model.cpp.o
+[ 11%] Building CXX object CMakeFiles/markov_cero_core.dir/src/nlp/nlp_verifier.cpp.o
+[ 11%] Building CXX object CMakeFiles/markov_cero_core.dir/src/nlp/sqp_solver_subproblem.cpp.o
+[ 12%] Building CXX object CMakeFiles/markov_cero_core.dir/src/nlp/sqp_solver.cpp.o
+[ 12%] Building CXX object CMakeFiles/markov_cero_core.dir/src/minlp/minlp_solver.cpp.o
+[ 12%] Building CXX object CMakeFiles/markov_cero_core.dir/src/minlp/minlp_solver_iterate_outer_approximation.cpp.o
+[ 13%] Building CXX object CMakeFiles/markov_cero_core.dir/src/minlp/minlp_solver_solve_minlp.cpp.o
+[ 13%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/primal_verifier.cpp.o
+[ 13%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/linear_certificate.cpp.o
+[ 14%] Building CXX object CMakeFiles/markov_cero_core.dir/src/linalg/dense_lu.cpp.o
+[ 14%] Building CXX object CMakeFiles/markov_cero_core.dir/src/linalg/sparse_basis_ordering.cpp.o
+[ 14%] Building CXX object CMakeFiles/markov_cero_core.dir/src/linalg/sparse_basis_matrix.cpp.o
+[ 15%] Building CXX object CMakeFiles/markov_cero_core.dir/src/linalg/sparse_basis_factor.cpp.o
+[ 15%] Building CXX object CMakeFiles/markov_cero_core.dir/src/linalg/sparse_basis_solve.cpp.o
+[ 15%] Building CXX object CMakeFiles/markov_cero_core.dir/src/linalg/sparse_basis.cpp.o
+[ 16%] Building CXX object CMakeFiles/markov_cero_core.dir/src/transform/canonicalize.cpp.o
+[ 16%] Building CXX object CMakeFiles/markov_cero_core.dir/src/transform/sparse_canonicalize_model.cpp.o
+[ 16%] Building CXX object CMakeFiles/markov_cero_core.dir/src/transform/sparse_canonicalize.cpp.o
+[ 17%] Building CXX object CMakeFiles/markov_cero_core.dir/src/presolve/presolve.cpp.o
+[ 17%] Building CXX object CMakeFiles/markov_cero_core.dir/src/presolve/eliminate_singletons.cpp.o
+[ 17%] Building CXX object CMakeFiles/markov_cero_core.dir/src/presolve/eliminate_duplicates.cpp.o
+[ 18%] Building CXX object CMakeFiles/markov_cero_core.dir/src/presolve/compact.cpp.o
+[ 18%] Building CXX object CMakeFiles/markov_cero_core.dir/src/presolve/postsolve.cpp.o
+[ 18%] Building CXX object CMakeFiles/markov_cero_core.dir/src/scale/ruiz_scaling.cpp.o
+[ 19%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/reference/revised_simplex_pricing.cpp.o
+[ 19%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/reference/revised_simplex_iteration.cpp.o
+[ 19%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/reference/revised_simplex_workspace.cpp.o
+[ 20%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/reference/revised_simplex.cpp.o
+[ 20%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/reference_lp_verifier.cpp.o
+[ 21%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/sparse_lp_verifier.cpp.o
+[ 21%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/dual/dual_simplex.cpp.o
+[ 21%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/dual/dual_simplex_select_entering_column.cpp.o
+[ 22%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/dual/dual_simplex_solve.cpp.o
+[ 22%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/interior/ipm.cpp.o
+[ 22%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/interior/ipm_crossover_basis_sparse.cpp.o
+[ 23%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/interior/ipm_solve.cpp.o
+[ 23%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/interior/ipm_solve_overload.cpp.o
+[ 23%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/first_order/pdlp.cpp.o
+[ 24%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/first_order/pdlp_degenerate.cpp.o
+[ 24%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/first_order/pdlp_try_dual_simplex_crossover.cpp.o
+[ 24%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/first_order/pdlp_iterate_pdlp.cpp.o
+[ 25%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/first_order/pdlp_solve_pdlp.cpp.o
+[ 25%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/branch_selector.cpp.o
+[ 25%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/branch_selector_features.cpp.o
+[ 26%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/cut_pool.cpp.o
+[ 26%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/gomory.cpp.o
+[ 26%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/heuristics.cpp.o
+[ 27%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/heuristics_pump.cpp.o
+[ 27%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/heuristics_repair.cpp.o
+[ 27%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/milp_solver.cpp.o
+[ 28%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_initialize.cpp.o
+[ 28%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_root_relaxation.cpp.o
+[ 28%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_root_branching.cpp.o
+[ 29%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_node_relaxation.cpp.o
+[ 29%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_separate_cuts.cpp.o
+[ 29%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_branch.cpp.o
+[ 30%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_finish.cpp.o
+[ 30%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/node_lp.cpp.o
+[ 30%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/node_qp.cpp.o
+[ 31%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/node_view.cpp.o
+[ 31%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/reference_materialisation.cpp.o
+[ 31%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/mir.cpp.o
+[ 32%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/cover.cpp.o
+[ 32%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/parallel_tree_search.cpp.o
+[ 32%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/parallel_tree_search_solve_integer_parallel.cpp.o
+[ 33%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/parallel_tree_search_result.cpp.o
+[ 33%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/parallel_tree_search_root_cuts.cpp.o
+[ 33%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/parallel_tree_search_solve_parallel.cpp.o
+[ 34%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/shared_incumbent.cpp.o
+[ 34%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/strong_branching.cpp.o
+[ 34%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/work_queue.cpp.o
+[ 35%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/model_matrix.cpp.o
+[ 35%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/model_convexity.cpp.o
+[ 36%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/model.cpp.o
+[ 36%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/kkt_factor.cpp.o
+[ 36%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/kkt_assembly.cpp.o
+[ 37%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/kkt.cpp.o
+[ 37%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/admm_solver.cpp.o
+[ 37%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/admm_solver_solve.cpp.o
+[ 38%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/equilibrate.cpp.o
+[ 38%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/supporting_bound.cpp.o
+[ 38%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/verifier.cpp.o
+[ 39%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/certificates.cpp.o
+[ 39%] Building CXX object CMakeFiles/markov_cero_core.dir/src/refinery/synthetic_config.cpp.o
+[ 39%] Building CXX object CMakeFiles/markov_cero_core.dir/src/refinery/refinery_model.cpp.o
+[ 40%] Building CXX object CMakeFiles/markov_cero_core.dir/src/refinery/pooling_slp.cpp.o
+[ 40%] Building CXX object CMakeFiles/markov_cero_core.dir/src/analysis/iis_analyzer.cpp.o
+[ 40%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/buffer.cpp.o
+[ 41%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/csr.cpp.o
+[ 41%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/device.cpp.o
+[ 41%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/admm_matvec.cpp.o
+[ 42%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/pdhg_step.cpp.o
+[ 42%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/pdhg_iteration.cpp.o
+[ 42%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/pdhg_residuals.cpp.o
+[ 43%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/pdhg_solver.cpp.o
+[ 43%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/reduce.cpp.o
+[ 43%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/spmv.cpp.o
+[ 44%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/vector_ops.cpp.o
+[ 44%] Linking CXX static library libmarkov_cero_core.a
+[ 44%] Built target markov_cero_core
+[ 44%] Building CXX object CMakeFiles/markov-cero-solve.dir/apps/markov_cero_solve.cpp.o
+[ 44%] Building CXX object CMakeFiles/build_info_test.dir/tests/build_info_test.cpp.o
+[ 44%] Building CXX object CMakeFiles/markov-cero-verify-mip.dir/apps/markov_cero_verify_mip.cpp.o
+[ 45%] Building CXX object CMakeFiles/nlp_rosenbrock_test.dir/tests/nlp_rosenbrock_test.cpp.o
+[ 45%] Building CXX object CMakeFiles/markov-cero-info.dir/apps/markov_cero_info.cpp.o
+[ 45%] Building CXX object CMakeFiles/markov-cero-iis.dir/apps/markov_cero_iis.cpp.o
+[ 45%] Building CXX object CMakeFiles/model_test.dir/tests/model_test.cpp.o
+[ 45%] Building CXX object CMakeFiles/ml_branching_test.dir/tests/ml_branching_test.cpp.o
+[ 45%] Building CXX object CMakeFiles/classifier_test.dir/tests/classifier_test.cpp.o
+[ 45%] Building CXX object CMakeFiles/nlp_sqp_test.dir/tests/nlp_sqp_test.cpp.o
+[ 45%] Building CXX object CMakeFiles/nlp_constrained_test.dir/tests/nlp_constrained_test.cpp.o
+[ 46%] Building CXX object CMakeFiles/markov-cero-mps-inspect.dir/apps/markov_cero_mps_inspect.cpp.o
+[ 47%] Linking CXX executable build_info_test
+[ 47%] Built target build_info_test
+[ 48%] Building CXX object CMakeFiles/markov-cero-solve.dir/apps/cli_options.cpp.o
+[ 48%] Linking CXX executable markov-cero-info
+[ 48%] Built target markov-cero-info
+[ 49%] Building CXX object CMakeFiles/minlp_basic_test.dir/tests/minlp_basic_test.cpp.o
+[ 49%] Linking CXX executable markov-cero-mps-inspect
+[ 49%] Built target markov-cero-mps-inspect
+[ 49%] Linking CXX executable nlp_rosenbrock_test
+[ 49%] Building CXX object CMakeFiles/nlobj_parser_test.dir/tests/nlobj_parser_test.cpp.o
+[ 50%] Linking CXX executable model_test
+[ 51%] Linking CXX executable markov-cero-verify-mip
+[ 52%] Linking CXX executable markov-cero-iis
+[ 52%] Built target nlp_rosenbrock_test
+[ 52%] Built target model_test
+[ 53%] Building CXX object CMakeFiles/mps_parser_test.dir/tests/mps_parser_test.cpp.o
+[ 54%] Linking CXX executable nlp_sqp_test
+[ 54%] Building CXX object CMakeFiles/mps_fuzz_smoke.dir/tests/fuzz/mps_fuzz_smoke.cpp.o
+[ 54%] Built target markov-cero-verify-mip
+[ 55%] Building CXX object CMakeFiles/model_property_test.dir/tests/model_property_test.cpp.o
+[ 55%] Built target markov-cero-iis
+[ 55%] Linking CXX executable classifier_test
+[ 56%] Building CXX object CMakeFiles/dense_lu_test.dir/tests/dense_lu_test.cpp.o
+[ 56%] Built target nlp_sqp_test
+[ 56%] Building CXX object CMakeFiles/primal_simplex_test.dir/tests/primal_simplex_test.cpp.o
+[ 56%] Built target classifier_test
+[ 57%] Building CXX object CMakeFiles/primal_simplex_property_test.dir/tests/primal_simplex_property_test.cpp.o
+[ 57%] Linking CXX executable nlp_constrained_test
+[ 57%] Built target nlp_constrained_test
+[ 57%] Building CXX object CMakeFiles/dual_simplex_test.dir/tests/dual_simplex_test.cpp.o
+[ 57%] Building CXX object CMakeFiles/warm_start_property_test.dir/tests/warm_start_property_test.cpp.o
+[ 57%] Linking CXX executable mps_fuzz_smoke
+[ 58%] Linking CXX executable nlobj_parser_test
+[ 58%] Built target mps_fuzz_smoke
+[ 59%] Building CXX object CMakeFiles/sparse_basis_test.dir/tests/sparse_basis_test.cpp.o
+[ 59%] Built target nlobj_parser_test
+[ 59%] Building CXX object CMakeFiles/sparse_lu_deadline_test.dir/tests/sparse_lu_deadline_test.cpp.o
+[ 59%] Linking CXX executable ml_branching_test
+[ 59%] Linking CXX executable model_property_test
+[ 59%] Built target model_property_test
+[ 60%] Building CXX object CMakeFiles/sparse_update_property_test.dir/tests/sparse_update_property_test.cpp.o
+[ 60%] Built target ml_branching_test
+[ 60%] Building CXX object CMakeFiles/regression_test.dir/tests/regression_test.cpp.o
+[ 60%] Linking CXX executable markov-cero-solve
+[ 60%] Linking CXX executable mps_parser_test
+[ 60%] Built target mps_parser_test
+[ 60%] Building CXX object CMakeFiles/regression_backend_actually_used.dir/tests/regression_backend_actually_used.cpp.o
+[ 60%] Built target markov-cero-solve
+[ 61%] Linking CXX executable primal_simplex_test
+[ 62%] Building CXX object CMakeFiles/regression_simplex_scale200_pricing.dir/tests/regression_simplex_scale200_pricing.cpp.o
+[ 62%] Linking CXX executable sparse_lu_deadline_test
+[ 62%] Built target primal_simplex_test
+[ 62%] Building CXX object CMakeFiles/sparse_canonicalize_test.dir/tests/sparse_canonicalize_test.cpp.o
+[ 62%] Built target sparse_lu_deadline_test
+[ 62%] Building CXX object CMakeFiles/presolve_test.dir/tests/presolve_test.cpp.o
+[ 62%] Linking CXX executable primal_simplex_property_test
+[ 62%] Built target primal_simplex_property_test
+[ 63%] Building CXX object CMakeFiles/ruiz_scaling_test.dir/tests/ruiz_scaling_test.cpp.o
+[ 63%] Linking CXX executable dense_lu_test
+[ 63%] Built target dense_lu_test
+[ 64%] Building CXX object CMakeFiles/milp_test.dir/tests/milp_test.cpp.o
+[ 65%] Linking CXX executable dual_simplex_test
+[ 65%] Built target dual_simplex_test
+[ 66%] Linking CXX executable warm_start_property_test
+[ 66%] Building CXX object CMakeFiles/milp_heuristics_test.dir/tests/milp_heuristics_test.cpp.o
+[ 66%] Linking CXX executable regression_backend_actually_used
+[ 66%] Built target warm_start_property_test
+[ 66%] Building CXX object CMakeFiles/milp_test.dir/tests/milp_test_test_node_selection_policies.cpp.o
+[ 66%] Linking CXX executable sparse_update_property_test
+[ 66%] Linking CXX executable minlp_basic_test
+[ 66%] Built target regression_backend_actually_used
+[ 66%] Built target sparse_update_property_test
+[ 66%] Building CXX object CMakeFiles/milp_cuts_test.dir/tests/milp_cuts_test.cpp.o
+[ 66%] Building CXX object CMakeFiles/strong_branching_test.dir/tests/strong_branching_test.cpp.o
+[ 66%] Built target minlp_basic_test
+[ 67%] Building CXX object CMakeFiles/strong_branching_test.dir/tests/strong_branching_test_test_strong_branching_and_domain_reduction.cpp.o
+[ 68%] Linking CXX executable regression_test
+[ 68%] Built target regression_test
+[ 69%] Linking CXX executable sparse_canonicalize_test
+[ 69%] Building CXX object CMakeFiles/pdlp_test.dir/tests/pdlp_test.cpp.o
+[ 69%] Built target sparse_canonicalize_test
+[ 69%] Building CXX object CMakeFiles/ipm_test.dir/tests/ipm_test.cpp.o
+[ 69%] Linking CXX executable regression_simplex_scale200_pricing
+[ 69%] Built target regression_simplex_scale200_pricing
+[ 69%] Building CXX object CMakeFiles/parallel_tree_search_test.dir/tests/parallel_tree_search_test.cpp.o
+[ 69%] Linking CXX executable ruiz_scaling_test
+[ 69%] Built target ruiz_scaling_test
+[ 70%] Building CXX object CMakeFiles/parallel_tree_search_test.dir/tests/parallel_tree_search_test_test_thread_safety_repeated_runs.cpp.o
+[ 70%] Linking CXX executable presolve_test
+[ 70%] Built target presolve_test
+[ 70%] Building CXX object CMakeFiles/parallel_tree_search_test.dir/tests/parallel_tree_search_test_queue_capacity.cpp.o
+[ 70%] Linking CXX executable milp_heuristics_test
+[ 70%] Built target milp_heuristics_test
+[ 70%] Linking CXX executable sparse_basis_test
+[ 71%] Building CXX object CMakeFiles/parallel_proof_events_test.dir/tests/parallel_proof_events_test.cpp.o
+[ 71%] Built target sparse_basis_test
+[ 72%] Building CXX object CMakeFiles/gpu_buffer_test.dir/gpu/tests/gpu_buffer_test.cpp.o
+[ 72%] Building CXX object CMakeFiles/gpu_buffer_test.dir/gpu/tests/gpu_buffer_test_test_model_sparse_matrix_roundtrip.cpp.o
+[ 73%] Linking CXX executable pdlp_test
+[ 73%] Built target pdlp_test
+[ 73%] Building CXX object CMakeFiles/equivalence_test.dir/gpu/tests/equivalence_test.cpp.o
+[ 73%] Linking CXX executable strong_branching_test
+[ 73%] Built target strong_branching_test
+[ 74%] Building CXX object CMakeFiles/gpu_reduction_test.dir/gpu/tests/reduction_test.cpp.o
+[ 74%] Building CXX object CMakeFiles/gpu_pdhg_step_test.dir/gpu/tests/pdhg_step_test.cpp.o
+[ 74%] Linking CXX executable milp_test
+[ 74%] Built target milp_test
+[ 75%] Building CXX object CMakeFiles/gpu_pdhg_restart_test.dir/gpu/tests/pdhg_restart_test.cpp.o
+[ 75%] Building CXX object CMakeFiles/equivalence_test.dir/gpu/tests/equivalence_test_test_project_bounds_equivalence.cpp.o
+[ 75%] Linking CXX executable ipm_test
+[ 75%] Built target ipm_test
+[ 75%] Building CXX object CMakeFiles/gpu_pdhg_adaptive_test.dir/gpu/tests/pdhg_adaptive_test.cpp.o
+[ 76%] Linking CXX executable milp_cuts_test
+[ 76%] Building CXX object CMakeFiles/gpu_pdhg_kkt_test.dir/gpu/tests/pdhg_kkt_test.cpp.o
+[ 76%] Built target milp_cuts_test
+[ 76%] Building CXX object CMakeFiles/gpu_pdhg_timing_test.dir/gpu/tests/pdhg_timing_test.cpp.o
+[ 76%] Building CXX object CMakeFiles/gpu_admm_test.dir/gpu/tests/admm_gpu_test.cpp.o
+[ 76%] Linking CXX executable parallel_proof_events_test
+[ 76%] Built target parallel_proof_events_test
+[ 77%] Building CXX object CMakeFiles/gpu_fallback_test.dir/tests/gpu_fallback_test.cpp.o
+[ 77%] Linking CXX executable gpu_buffer_test
+[ 77%] Linking CXX executable parallel_tree_search_test
+[ 77%] Built target gpu_buffer_test
+[ 77%] Building CXX object CMakeFiles/gpu_qp_test.dir/tests/gpu_qp_test.cpp.o
+[ 77%] Built target parallel_tree_search_test
+[ 77%] Building CXX object CMakeFiles/qp_test.dir/tests/qp_test.cpp.o
+[ 77%] Building CXX object CMakeFiles/qp_test.dir/tests/qp_scenarios_0.cpp.o
+[ 77%] Linking CXX executable gpu_reduction_test
+[ 77%] Built target gpu_reduction_test
+[ 78%] Building CXX object CMakeFiles/qp_test.dir/tests/qp_scenarios_1.cpp.o
+[ 78%] Linking CXX executable gpu_pdhg_restart_test
+[ 78%] Built target gpu_pdhg_restart_test
+[ 78%] Building CXX object CMakeFiles/api_demo.dir/examples/api_demo.cpp.o
+[ 79%] Linking CXX executable gpu_pdhg_step_test
+[ 80%] Linking CXX executable gpu_pdhg_adaptive_test
+[ 80%] Built target gpu_pdhg_step_test
+[ 81%] Linking CXX executable equivalence_test
+[ 82%] Building CXX object CMakeFiles/api_test.dir/tests/api_test.cpp.o
+[ 82%] Built target gpu_pdhg_adaptive_test
+[ 82%] Building CXX object CMakeFiles/refinery_test.dir/tests/refinery_test.cpp.o
+[ 82%] Linking CXX executable gpu_pdhg_kkt_test
+[ 83%] Linking CXX executable gpu_pdhg_timing_test
+[ 83%] Built target equivalence_test
+[ 84%] Building CXX object CMakeFiles/lp_parser_test.dir/tests/lp_parser_test.cpp.o
+[ 84%] Built target gpu_pdhg_kkt_test
+[ 84%] Building CXX object CMakeFiles/ipm_large_test.dir/tests/ipm_large_test.cpp.o
+[ 84%] Built target gpu_pdhg_timing_test
+[ 85%] Building CXX object CMakeFiles/pdlp_crossover_test.dir/tests/pdlp_crossover_test.cpp.o
+[ 85%] Linking CXX executable gpu_admm_test
+[ 85%] Built target gpu_admm_test
+[ 85%] Building CXX object CMakeFiles/qp_adaptive_rho_test.dir/tests/qp_adaptive_rho_test.cpp.o
+[ 85%] Linking CXX executable gpu_fallback_test
+[ 85%] Built target gpu_fallback_test
+[ 85%] Building CXX object CMakeFiles/numerical_diagnostic_test.dir/tests/numerical_diagnostic_test.cpp.o
+[ 85%] Linking CXX executable gpu_qp_test
+[ 85%] Built target gpu_qp_test
+[ 85%] Building CXX object CMakeFiles/e2e_tier1_m1_features.dir/tests/e2e/test_tier1_m1_features.cpp.o
+[ 85%] Building CXX object CMakeFiles/e2e_tier2_m1_boundaries.dir/tests/e2e/test_tier2_m1_boundaries.cpp.o
+[ 85%] Linking CXX executable api_demo
+[ 86%] Building CXX object CMakeFiles/e2e_tier2_m1_boundaries.dir/tests/e2e/test_tier2_m1_boundaries_t2_f04_03_admmprimalinfeasibledetection.cpp.o
+[ 86%] Built target api_demo
+[ 86%] Building CXX object CMakeFiles/e2e_tier2_m1_boundaries.dir/tests/e2e/test_tier2_m1_boundaries_t2_f07_04_presolvedisableddiagnosticmatch.cpp.o
+[ 87%] Linking CXX executable ipm_large_test
+[ 87%] Linking CXX executable qp_test
+[ 87%] Built target qp_test
+[ 87%] Built target ipm_large_test
+[ 88%] Building CXX object CMakeFiles/e2e_tier3_m1_combinations.dir/tests/e2e/test_tier3_m1_combinations.cpp.o
+[ 88%] Building CXX object CMakeFiles/e2e_tier1_m1_features.dir/tests/e2e/test_tier1_m1_features_t1_f03_01_pdlpprimalfeasibilityverification.cpp.o
+[ 89%] Linking CXX executable qp_adaptive_rho_test
+[ 89%] Linking CXX executable pdlp_crossover_test
+[ 89%] Built target pdlp_crossover_test
+[ 89%] Built target qp_adaptive_rho_test
+[ 90%] Building CXX object CMakeFiles/e2e_tier1_m1_features.dir/tests/e2e/test_tier1_m1_features_t1_f06_03_sparsebasisstatisticstracking.cpp.o
+[ 90%] Building CXX object CMakeFiles/e2e_tier4_m1_scenarios.dir/tests/e2e/test_tier4_m1_scenarios.cpp.o
+[ 90%] Linking CXX executable lp_parser_test
+[ 90%] Built target lp_parser_test
+[ 90%] Building CXX object CMakeFiles/node_frontier_memory_benchmark.dir/scripts/bench_node_frontier_memory.cpp.o
+[ 90%] Linking CXX executable numerical_diagnostic_test
+[ 90%] Built target numerical_diagnostic_test
+[ 90%] Building CXX object CMakeFiles/solve_frontier_memory_benchmark.dir/scripts/bench_solve_frontier_memory.cpp.o
+[ 90%] Linking CXX executable api_test
+[ 90%] Built target api_test
+[ 90%] Building CXX object CMakeFiles/solve_context_test.dir/tests/solve_context_test.cpp.o
+[ 91%] Building CXX object CMakeFiles/model_snapshot_test.dir/tests/model_snapshot_test.cpp.o
+[ 91%] Building CXX object CMakeFiles/node_view_test.dir/tests/node_view_test.cpp.o
+[ 92%] Linking CXX executable refinery_test
+[ 92%] Built target refinery_test
+[ 93%] Building CXX object CMakeFiles/reference_materialisation_test.dir/tests/reference_materialisation_test.cpp.o
+[ 94%] Building CXX object CMakeFiles/node_view_reference_identity_test.dir/tests/node_view_reference_identity_test.cpp.o
+[ 94%] Linking CXX executable solve_frontier_memory_benchmark
+[ 94%] Building CXX object CMakeFiles/worker_context_test.dir/tests/worker_context_test.cpp.o
+[ 95%] Linking CXX executable e2e_tier4_m1_scenarios
+[ 95%] Built target solve_frontier_memory_benchmark
+[ 95%] Building CXX object CMakeFiles/resource_failure_test.dir/tests/resource_failure_test.cpp.o
+[ 96%] Linking CXX executable solve_context_test
+[ 96%] Built target e2e_tier4_m1_scenarios
+[ 96%] Linking CXX executable node_frontier_memory_benchmark
+[ 96%] Building CXX object CMakeFiles/readiness_correctness_test.dir/tests/readiness_correctness_test.cpp.o
+[ 96%] Built target solve_context_test
+[ 96%] Building CXX object CMakeFiles/mip_proof_test.dir/tests/mip_proof_test.cpp.o
+[ 96%] Built target node_frontier_memory_benchmark
+[ 96%] Building CXX object CMakeFiles/readiness_edge_cases_test.dir/tests/readiness_edge_cases_test.cpp.o
+[ 96%] Linking CXX executable e2e_tier3_m1_combinations
+[ 96%] Linking CXX executable model_snapshot_test
+[ 96%] Built target model_snapshot_test
+[ 96%] Built target e2e_tier3_m1_combinations
+[ 96%] Linking CXX executable e2e_tier1_m1_features
+[ 96%] Linking CXX executable e2e_tier2_m1_boundaries
+[ 96%] Built target e2e_tier1_m1_features
+[ 96%] Built target e2e_tier2_m1_boundaries
+[ 97%] Linking CXX executable worker_context_test
+[ 98%] Linking CXX executable node_view_test
+[ 98%] Built target worker_context_test
+[ 98%] Built target node_view_test
+[ 99%] Linking CXX executable readiness_correctness_test
+[ 99%] Built target readiness_correctness_test
+[ 99%] Linking CXX executable node_view_reference_identity_test
+[ 99%] Built target node_view_reference_identity_test
+[ 99%] Linking CXX executable reference_materialisation_test
+[ 99%] Built target reference_materialisation_test
+[ 99%] Linking CXX executable readiness_edge_cases_test
+[ 99%] Built target readiness_edge_cases_test
+[100%] Linking CXX executable mip_proof_test
+[100%] Built target mip_proof_test
+[100%] Linking CXX executable resource_failure_test
+[100%] Built target resource_failure_test
+
+real	1m14.625s
+user	11m3.879s
+sys	0m47.630s
