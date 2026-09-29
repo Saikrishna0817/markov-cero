@@ -12,7 +12,8 @@ SparseBasisFactorization SparseBasisFactorization::factorize(const SparseCsc& ba
     out.current_basis_ = basis;
     out.base_ = SparseLu::factorize(basis, options.singular_tolerance,
                                     options.maximum_factor_nonzeros,
-                                    options.fill_reducing_ordering);
+                                    options.fill_reducing_ordering,
+                                    options.deadline);
     out.statistics_.refactorizations = 1;
     return out;
 }
@@ -173,7 +174,9 @@ bool SparseBasisFactorization::needs_refactorization() const noexcept {
 }
 void SparseBasisFactorization::refactorize() {
     base_ = SparseLu::factorize(current_basis_, options_.singular_tolerance,
-                                options_.maximum_factor_nonzeros);
+                                options_.maximum_factor_nonzeros,
+                                options_.fill_reducing_ordering,
+                                options_.deadline);
     updates_.clear();
     ++statistics_.refactorizations;
     statistics_.current_update_chain = 0;
