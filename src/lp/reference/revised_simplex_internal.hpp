@@ -72,7 +72,7 @@ namespace detail_revised_simplex { void snap_basic_solution(std::vector<double>&
 namespace detail_revised_simplex { std::size_t select_entering(const Work& w, const std::vector<double>& cost,
                                     const std::vector<double>& y, const std::vector<bool>& basic,
                                     std::size_t enter_limit, const Options& o, double& minimum_rc); }
-namespace detail_revised_simplex { std::size_t select_leaving(const Work& w, const std::vector<double>& xb,
+namespace detail_revised_simplex { std::size_t select_leaving(const Work& w, the std::vector<double>& xb,
                            const std::vector<double>& d, const Options& o, double& theta); }
 namespace detail_revised_simplex { IterationOutcome iterate(Work& w, const std::vector<double>& cost, std::size_t enter_limit,
                          const Options& o, int phase, std::size_t budget,
@@ -86,6 +86,6 @@ namespace detail_revised_simplex { std::vector<double> full_solution(const Work&
 namespace detail_revised_simplex { bool options_invalid(const Options& o); }
 Result solve_attempt(const transform::SparseCanonicalModel& m, const Options& o);
 Result solve(const transform::SparseCanonicalModel& m, const Options& o);
-Result solve(const transform::CanonicalModel& model, the Options& options);
+Result solve(const transform::CanonicalModel& model, const Options& options);
 const char* to_string(SolveStatus s) noexcept;
 }
