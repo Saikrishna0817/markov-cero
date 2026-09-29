@@ -1,4 +1,5 @@
 #include "sparse_basis_internal.hpp"
+#include <chrono>
 namespace markov_cero::linalg {
 using namespace detail_sparse_basis;
 SparseLuSymbolicAnalysis SparseLu::analyze_sparsity(const SparseCsc& matrix, bool reduce_fill) {
@@ -24,10 +25,10 @@ SparseLuSymbolicAnalysis SparseLu::analyze_sparsity(const SparseCsc& matrix, boo
         out.column_position[out.column_order[pos]] = pos;
     return out;
 }
-SparseLu SparseLu::factorize_numeric(const SparseCsc& matrix,
-                                     const SparseLuSymbolicAnalysis& symbolic,
-                                     double singular_tolerance,
-                                     std::size_t maximum_factor_nonzeros) {
+SparseLu SparseLu::factorize_numeric(
+    const SparseCsc& matrix, const SparseLuSymbolicAnalysis& symbolic,
+    double singular_tolerance, std::size_t maximum_factor_nonzeros,
+    std::optional<std::chrono::steady_clock::time_point> deadline) {
     matrix.validate();
     require_finite(singular_tolerance, "non-finite sparse singular tolerance");
     if (singular_tolerance <= 0)
@@ -72,6 +73,10 @@ SparseLu SparseLu::factorize_numeric(const SparseCsc& matrix,
         matrix.rows ? std::numeric_limits<double>::infinity() : 0;
     double maximum_factor = maximum_original;
     for (std::size_t k = 0; k < matrix.rows; ++k) {
+        // IR-20: cooperative stop every 64 pivots (matches KKT factor cadence).
+        if ((k & 63U) == 0U && deadline &&
+            std::chrono::steady_clock::now() >= *deadline)
+            throw std::runtime_error("deadline reached during sparse LU");
         // Step 1: Find column maximum magnitude among rows i >= k
         double max_col_abs = 0;
         for (std::size_t i = k; i < matrix.rows; ++i) {
@@ -201,9 +206,12 @@ SparseLu SparseLu::factorize_numeric(const SparseCsc& matrix,
     out.diagnostics_.growth_factor = maximum_original == 0 ? 0 : maximum_factor / maximum_original;
     return out;
 }
-SparseLu SparseLu::factorize(const SparseCsc& matrix, double singular_tolerance,
-                             std::size_t maximum_factor_nonzeros, bool reduce_fill) {
+SparseLu SparseLu::factorize(
+    const SparseCsc& matrix, double singular_tolerance,
+    std::size_t maximum_factor_nonzeros, bool reduce_fill,
+    std::optional<std::chrono::steady_clock::time_point> deadline) {
     const auto symbolic = analyze_sparsity(matrix, reduce_fill);
-    return factorize_numeric(matrix, symbolic, singular_tolerance, maximum_factor_nonzeros);
+    return factorize_numeric(matrix, symbolic, singular_tolerance,
+                             maximum_factor_nonzeros, deadline);
 }
 }
