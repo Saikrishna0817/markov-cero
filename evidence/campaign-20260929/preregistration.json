@@ -1,0 +1,988 @@
+{
+  "campaign_id": "campaign-20260929",
+  "title": "Pre-registered comparison campaign: markov-cero vs frozen comparators under the frozen 2026-09-28 manifests",
+  "written_before_any_campaign_run": true,
+  "written_at_utc": "2026-09-29T09:10:42+00:00",
+  "author": "agent CAMP",
+  "worktree_state": "uncommitted working tree; results identify this state, not HEAD",
+  "mandatory_freeze": "evidence/baseline-freeze-20260928.json follow_ups requires the frozen manifests to be re-run with frozen caps and >=5 repeats per cell before any tuning claim. This file is written before any campaign cell is executed.",
+  "roadmap_references": {
+    "3.1": "convex QP tier must compare OSQP/HiGHS where supported",
+    "3.3": "niche gate: >=50 held-out instances, >=10 structurally distinct families, no coverage reduction, paired geometric runtime ratio with upper 95% CI < 0.80",
+    "9.1": "suites and resource budgets; compute planning 240x5x3600x4 = 4800 solver-slot hours",
+    "9.2": "fair execution: matched threads, >=5 repeats, cold and repeat-session tracks, independent primal checks, retain all timeouts",
+    "9.3": "statistics: paired geometric ratio + bootstrap-by-family CI; Dolan-More with all-failed cases in the denominator; promotion rule",
+    "W04": ">=20% held-out repeated-solve latency improvement over the frozen baseline before promoting a performance change",
+    "G4_G5": "preregistered target, matched experiment, complete denominator, held-out improvement, independent reproduction"
+  },
+  "frozen_manifests": {
+    "instances": {
+      "path": "evidence/frozen-instances-20260928.json",
+      "sha256": "a923a6f54a6915aa0db6dd7b157ba7eef7592e04fe5c7dd57ba187c1b7422101"
+    },
+    "comparators": {
+      "path": "evidence/frozen-comparators-20260928.json",
+      "sha256": "91cb400db65692a8435b74913f46d6d8b09079ca0884dcb2b2bb049413fac3f1"
+    },
+    "baseline_freeze": {
+      "path": "evidence/baseline-freeze-20260928.json",
+      "sha256": "7fe70368c397afbdf957390fe59fed50c1e9f7f14879311435ef701a80cba939"
+    },
+    "timing_config": {
+      "path": "scripts/support/frozen_timing_config.py",
+      "sha256": "0cbed52d93719a0665909844df293d983474fb295b5b98eaa5baeac67adcd2a3",
+      "status": "read-only for this campaign; constants not modified"
+    },
+    "split_counts_manifest": {
+      "train": 180,
+      "tune": 47,
+      "holdout": 38
+    },
+    "present_local": 63,
+    "unavailable_local": 204
+  },
+  "our_solver": {
+    "name": "markov-cero",
+    "path": "build_wA_camp/markov-cero-solve",
+    "version": "0.5.2",
+    "sha256": "67dceacc2bb33a728bfc6db39680c1aba6dfb2584442a992f3eb8f50f144df89",
+    "build_command": "cmake -S . -B build_wA_camp -DCMAKE_BUILD_TYPE=Release && cmake --build build_wA_camp -j8",
+    "identical_to_frozen_baseline_binary": true,
+    "frozen_baseline_binary": {
+      "path": "build_contracts/markov-cero-solve",
+      "sha256": "67dceacc2bb33a728bfc6db39680c1aba6dfb2584442a992f3eb8f50f144df89"
+    }
+  },
+  "comparators": [
+    {
+      "name": "markov-cero",
+      "kind": "ours",
+      "version": "0.5.2",
+      "binary": "build_wA_camp/markov-cero-solve",
+      "sha256": "67dceacc2bb33a728bfc6db39680c1aba6dfb2584442a992f3eb8f50f144df89",
+      "threads": 1
+    },
+    {
+      "name": "HiGHS",
+      "kind": "external",
+      "version": "1.15.1",
+      "method": "highspy in-process worker",
+      "binary": "/home/saikrishna/markov-initial-build/.compare-venv/lib/python3.14/site-packages/highspy/_core.cpython-314-x86_64-linux-gnu.so",
+      "sha256": "15119a3f48b20a2fae0ab2168987d3a14fbda216e65cf8efac2905f990779d22",
+      "frozen_in_frozen_manifest": true,
+      "threads": 1
+    },
+    {
+      "name": "GLPK",
+      "kind": "external",
+      "version": "GLPSOL 5.0",
+      "method": "external glpsol process",
+      "binary": "/home/saikrishna/markov-initial-build/.venv/bin/glpsol",
+      "sha256": "2fa8320b677238f977ba6c79630d7fd5bf52b9ee9656af2df3ee81750746a334",
+      "frozen_in_frozen_manifest": true,
+      "threads": 1
+    },
+    {
+      "name": "CBC",
+      "kind": "external",
+      "version": "2.10.3 (pulp 3.3.2)",
+      "method": "bundled CBC binary",
+      "binary": "/home/saikrishna/markov-initial-build/.compare-venv/lib/python3.14/site-packages/pulp/apis/../solverdir/cbc/linux/i64/cbc",
+      "sha256": "2e17077752aa52b06385ad248c9e90bb4f1ce34038c34c94e1012ca6adea5cc7",
+      "frozen_in_frozen_manifest": true,
+      "threads": 1
+    },
+    {
+      "name": "SCIP",
+      "kind": "external",
+      "version": "10.0.2 (PySCIPOpt 6.2.1)",
+      "method": "pyscipopt in-process worker",
+      "binary": "/home/saikrishna/markov-initial-build/.compare-venv/lib/python3.14/site-packages/pyscipopt/_pyscipopt.cpython-314-x86_64-linux-gnu.so",
+      "sha256": null,
+      "frozen_in_frozen_manifest": true,
+      "threads": 1
+    },
+    {
+      "name": "OSQP",
+      "kind": "external",
+      "version": "1.1.3",
+      "method": "osqp Python API (convex QP only)",
+      "binary": "/home/saikrishna/markov-initial-build/.compare-venv/lib/python3.14/site-packages/osqp/__init__.py",
+      "sha256": "a918686c59347e101c31ab51223a7341cf93285cbf526c6ea1b9eb0f3147a437",
+      "frozen_in_frozen_manifest": false,
+      "added_by_this_campaign": true,
+      "settings": {
+        "eps_abs": 1e-05,
+        "eps_rel": 1e-05,
+        "polishing": true,
+        "max_iter": 40000,
+        "time_limit_s": 60.0,
+        "note": "tightened from the OSQP default 1e-3 so objective agreement is evaluated at the harness tolerance (1e-4); declared before running"
+      },
+      "scope": "convex QP instances only (linear/box constraints); reported Unsupported elsewhere"
+    }
+  ],
+  "probe_evidence": {
+    "compare_python": "/home/saikrishna/markov-initial-build/.compare-venv/bin/python",
+    "compare_python_sha256": "d78f9cf7178ecff09963551399855543c297f37ac207e626228bfe43cb26a70c",
+    "highs": "?",
+    "pulp": "3.3.2",
+    "pyscipopt": "6.2.1",
+    "osqp": "1.1.3",
+    "scipy_for_osqp": "1.18.1",
+    "glpsol_version": "GLPSOL--GLPK LP/MIP Solver 5.0"
+  },
+  "caps": {
+    "source": "scripts/support/frozen_timing_config.py (unchanged)",
+    "lp_s": 60.0,
+    "qp_s": 60.0,
+    "mip_s": 300.0,
+    "release_mip_s": 3600.0,
+    "resolution": "per-instance cap resolved by the frozen suite->class map (netlib=LP, qplib=QP, miplib/mittelmann/cases=MILP); a new --frozen-class-caps flag applies it, default off so old runs are unchanged",
+    "known_frozen_deviations_carried_forward": [
+      "cases suite is mapped to MILP by the frozen config, so LP-form domain cases run under the 300 s MILP cap; the frozen mapping is not modified by this campaign"
+    ]
+  },
+  "threads": {
+    "campaign": 1,
+    "note": "single-thread campaign; any multi-thread run would be a separate pre-registered campaign and is not part of this one"
+  },
+  "repeats": {
+    "per_cell": 5,
+    "source": "frozen MIN_REPEATS = 5",
+    "tracks": {
+      "cold": "repeat index 0 (first observation in the run)",
+      "warm": "repeat indices 1..4, reported separately, never averaged with cold"
+    }
+  },
+  "split_filter": {
+    "values": [
+      "train",
+      "tune",
+      "holdout",
+      "all"
+    ],
+    "implementation": "scripts/support/run_campaign_plan.py reads the frozen instance manifest; --split is added to run_full_compare.py, run_full_benchmark.py and run_compare.py",
+    "default": "unset -> legacy behaviour (curated set for compare, whole suites for benchmark)",
+    "campaign_use": "three sequential jobs --split holdout, --split tune, --split train, in that order, so held-out cells are collected first"
+  },
+  "run_order": "split rank (holdout, tune, train), then frozen manifest id ascending; within an instance, all solvers run concurrently, repeats sequential; the order is fixed before any result is observed",
+  "budget": {
+    "wall_clock_budget_s": 10800,
+    "max_concurrent_solver_processes": 6,
+    "censoring_policy": "an instance is launched only if elapsed wall time is below the budget; instances not launched are written as not_run_budget rows and count against coverage; no started cell is dropped",
+    "expected_cost_basis": [
+      "frozen single-shot baseline (evidence/comparison/baseline_frozen_20260928, 21 curated instances x 5 solvers, 20 s cap) totals 428 solver-seconds",
+      "x5 repeats scales that portion to about 2140 s",
+      "hard MILP cells are the dominant term: 5 repeats x 300 s cap = 1500 s wall per hard instance (solvers run concurrently); 4 of 7 curated MILP instances hit a 20 s cap in the frozen baseline, so up to 9 declared MILP instances could each consume 1500 s",
+      "worst case for the declared subset therefore exceeds the budget; the pre-declared order plus censoring decides what completes, not the results"
+    ]
+  },
+  "declared_subset": {
+    "rule": "every instance present in the frozen manifest at freeze time, all three splits",
+    "count": 63,
+    "counts_by_split": {
+      "holdout": 13,
+      "tune": 14,
+      "train": 36
+    },
+    "counts_by_frozen_suite_class": {
+      "MILP": 28,
+      "LP": 31,
+      "QP": 4
+    },
+    "structural_family_rule": {
+      "formula": "manifest_family + '/' + derived_class + '/' + size_bucket + '/' + ranged_flag",
+      "manifest_family": "frozen manifest 'family' field (netlib, miplib, qp, domain)",
+      "derived_class": "MILP if the MPS has integer markers or integer bound types, else QP if a quadratic objective section is present, else LP (read from the input file only, before any solve)",
+      "size_bucket": "s if COLUMNS nonzeros < 2000, m if < 50000, else l",
+      "ranged_flag": "R if the MPS has a RANGES section, else -",
+      "note": "mechanical and computed from input files only; the frozen manifest's own family taxonomy has only 4 entries, which cannot satisfy the >=10 structurally distinct families requirement on its own - both counts are reported in the analysis"
+    },
+    "structural_family_counts": {
+      "domain/LP/s/-": 2,
+      "domain/MILP/m/-": 1,
+      "domain/MILP/s/-": 5,
+      "domain/QP/s/-": 2,
+      "miplib/MILP/s/-": 18,
+      "netlib/LP/m/-": 1,
+      "netlib/LP/s/-": 29,
+      "netlib/LP/s/R": 1,
+      "qplib/QP/s/-": 1,
+      "qplib/QP/s/R": 3
+    },
+    "n_structural_families": 10,
+    "holdout_structural_families": 4,
+    "instances": [
+      {
+        "id": "data/cases/capitanescu_dc_opf.mps",
+        "split": "holdout",
+        "manifest_family": "domain",
+        "suite": "cases",
+        "frozen_suite_class": "MILP",
+        "derived_class": "QP",
+        "nnz_columns": 23,
+        "structural_family": "domain/QP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/cases/pochet_lot_sizing.mps",
+        "split": "holdout",
+        "manifest_family": "domain",
+        "suite": "cases",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 128,
+        "structural_family": "domain/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/enlight_hard.mps",
+        "split": "holdout",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 660,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/neos-3754480-nidda.mps",
+        "split": "holdout",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 1741,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/netlib/bore3d.mps",
+        "split": "holdout",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 821,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/brandy.mps",
+        "split": "holdout",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 1135,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/e226.mps",
+        "split": "holdout",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 1454,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/etamacro.mps",
+        "split": "holdout",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 1403,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/sc50a.mps",
+        "split": "holdout",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 80,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/scagr25.mps",
+        "split": "holdout",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 1065,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/share1b.mps",
+        "split": "holdout",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 624,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/share2b.mps",
+        "split": "holdout",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 381,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/stocfor1.mps",
+        "split": "holdout",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 249,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/cases/refinery_scheduling_large.mps",
+        "split": "tune",
+        "manifest_family": "domain",
+        "suite": "cases",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 2270,
+        "structural_family": "domain/MILP/m/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/mas76.mps",
+        "split": "tune",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 956,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/pk1.mps",
+        "split": "tune",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 486,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/sp150x300d.mps",
+        "split": "tune",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 900,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/mittelmann/neos5.mps",
+        "split": "tune",
+        "manifest_family": "miplib",
+        "suite": "mittelmann",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 1071,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/netlib/bandm.mps",
+        "split": "tune",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 1487,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/beaconfd.mps",
+        "split": "tune",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 1800,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/boeing2.mps",
+        "split": "tune",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 708,
+        "structural_family": "netlib/LP/s/R",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/capri.mps",
+        "split": "tune",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 952,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/israel.mps",
+        "split": "tune",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 1224,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/kb2.mps",
+        "split": "tune",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 160,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/scsd1.mps",
+        "split": "tune",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 1932,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/sctap1.mps",
+        "split": "tune",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 1236,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/vtpbase.mps",
+        "split": "tune",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 523,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/cases/crude_blending_large.mps",
+        "split": "train",
+        "manifest_family": "domain",
+        "suite": "cases",
+        "frozen_suite_class": "MILP",
+        "derived_class": "QP",
+        "nnz_columns": 1500,
+        "structural_family": "domain/QP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/cases/li_crude_blending.mps",
+        "split": "train",
+        "manifest_family": "domain",
+        "suite": "cases",
+        "frozen_suite_class": "MILP",
+        "derived_class": "LP",
+        "nnz_columns": 144,
+        "structural_family": "domain/LP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/cases/neiro_refinery_scheduling.mps",
+        "split": "train",
+        "manifest_family": "domain",
+        "suite": "cases",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 124,
+        "structural_family": "domain/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/cases/process_network_large.mps",
+        "split": "train",
+        "manifest_family": "domain",
+        "suite": "cases",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 1008,
+        "structural_family": "domain/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/cases/production_planning_large.mps",
+        "split": "train",
+        "manifest_family": "domain",
+        "suite": "cases",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 330,
+        "structural_family": "domain/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/cases/shapiro_network_flow.mps",
+        "split": "train",
+        "manifest_family": "domain",
+        "suite": "cases",
+        "frozen_suite_class": "MILP",
+        "derived_class": "LP",
+        "nnz_columns": 120,
+        "structural_family": "domain/LP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/cases/supply_chain_large.mps",
+        "split": "train",
+        "manifest_family": "domain",
+        "suite": "cases",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 880,
+        "structural_family": "domain/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/flugpl.mps",
+        "split": "train",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 40,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/gen-ip002.mps",
+        "split": "train",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 963,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/gen-ip054.mps",
+        "split": "train",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 562,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/markshare_4_0.mps",
+        "split": "train",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 64,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/mas74.mps",
+        "split": "train",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 951,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/neos-2657525-crna.mps",
+        "split": "train",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 1722,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/neos-3046615-murg.mps",
+        "split": "train",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 1268,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/stein15.mps",
+        "split": "train",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 75,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/stein9.mps",
+        "split": "train",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 27,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/miplib/timtab1.mps",
+        "split": "train",
+        "manifest_family": "miplib",
+        "suite": "miplib",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 613,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/mittelmann/markshare_5_0.mps",
+        "split": "train",
+        "manifest_family": "miplib",
+        "suite": "mittelmann",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 123,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/mittelmann/ran14x18_1.mps",
+        "split": "train",
+        "manifest_family": "miplib",
+        "suite": "mittelmann",
+        "frozen_suite_class": "MILP",
+        "derived_class": "MILP",
+        "nnz_columns": 1512,
+        "structural_family": "miplib/MILP/s/-",
+        "cap_s": 300.0
+      },
+      {
+        "id": "data/netlib/adlittle.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 254,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/afiro.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 46,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/blend.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 275,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/grow7.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 1372,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/lotfi.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 602,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/recipe.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 421,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/sc105.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 175,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/sc205.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 347,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/sc50b.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 68,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/scagr7.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 291,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/scfxm1.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 1427,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/scorpion.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 941,
+        "structural_family": "netlib/LP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/netlib/scsd6.mps",
+        "split": "train",
+        "manifest_family": "netlib",
+        "suite": "netlib",
+        "frozen_suite_class": "LP",
+        "derived_class": "LP",
+        "nnz_columns": 3492,
+        "structural_family": "netlib/LP/m/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/qp/QPLIB_0001.mps",
+        "split": "train",
+        "manifest_family": "qplib",
+        "suite": "qplib",
+        "frozen_suite_class": "QP",
+        "derived_class": "QP",
+        "nnz_columns": 5,
+        "structural_family": "qplib/QP/s/-",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/qp/QPLIB_0002.mps",
+        "split": "train",
+        "manifest_family": "qplib",
+        "suite": "qplib",
+        "frozen_suite_class": "QP",
+        "derived_class": "QP",
+        "nnz_columns": 10,
+        "structural_family": "qplib/QP/s/R",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/qp/QPLIB_0010.mps",
+        "split": "train",
+        "manifest_family": "qplib",
+        "suite": "qplib",
+        "frozen_suite_class": "QP",
+        "derived_class": "QP",
+        "nnz_columns": 18,
+        "structural_family": "qplib/QP/s/R",
+        "cap_s": 60.0
+      },
+      {
+        "id": "data/qp/QPLIB_0025.mps",
+        "split": "train",
+        "manifest_family": "qplib",
+        "suite": "qplib",
+        "frozen_suite_class": "QP",
+        "derived_class": "QP",
+        "nnz_columns": 18,
+        "structural_family": "qplib/QP/s/R",
+        "cap_s": 60.0
+      }
+    ]
+  },
+  "metrics": {
+    "primary": "paired geometric runtime ratio R = exp(mean(log(t_markov/t_baseline))) over common accepted solves (both Optimal and independently agreed); the pre-registered cell statistic is the median of the 5 repeats. Because the frozen timing config forbids averaging cold with warm observations, the analysis additionally reports the cold track (repeat 0) and the warm track (median of repeats 1..4) as separate estimates; all three are published and the gate is scored on the pre-registered 5-repeat median.",
+    "ci": "cluster bootstrap by structural family, 10000 resamples, seed 20260929, 95% percentile interval; instance-level bootstrap reported as a sensitivity check",
+    "secondary": [
+      "coverage: accepted/Optimal/Feasible/TimeLimit/Unsupported/other counts per solver over the full declared denominator, including not_run_budget cells",
+      "Dolan-More performance profile over the complete declared denominator with all-failed instances kept in the denominator (scripts/dolan_more_profile.py)",
+      "p95 latency per solver, cold and warm tracks reported separately",
+      "memory: not captured by the frozen harnesses; recorded as unassessable unless a resource wrapper is added, and never estimated",
+      "disagreements: every accepted objective cross-checked against provenance reference_objective where present, otherwise against the consensus of accepted solvers at relative tolerance 1e-4; markov-cero rows additionally require its own certificate/verification flag"
+    ],
+    "timing_scope": "process wall clock around the solver process (frozen scope)",
+    "shift_policy": "no timing shift is applied to the primary ratio; sub-millisecond cells are reported as measured and a +/-1 ms shift sensitivity is published"
+  },
+  "promotion_rule": {
+    "source": "roadmap 3.3 + 9.3",
+    "text": "upper 95% CI of the paired geometric runtime ratio < 0.80 versus a named baseline, on >= 50 held-out instances across >= 10 structurally distinct families, with no coverage regression, no false accepted result, p95/memory regressions explained, and independent replication",
+    "this_campaign_can_satisfy": [
+      "paired geometric ratio with CI",
+      "coverage accounting",
+      "Dolan-More profiles",
+      "p95",
+      "cold vs warm tracks"
+    ],
+    "this_campaign_cannot_satisfy": [
+      ">=50 held-out instances: the frozen manifest defines 38 holdout records in total and 13 of them are present locally - the corpus cannot reach 50",
+      "independent replication on a second machine: no second machine is available to this agent"
+    ]
+  },
+  "gates_declared_for_scoring": {
+    "3.3_niche_gate": "scored; NOT MET is an acceptable outcome",
+    "9.3_promotion_rule": "scored; NOT MET is an acceptable outcome",
+    "W04_repeated_solve_20pct": "scored against build_contracts/markov-cero-solve (the frozen baseline binary) on held-out instances only",
+    "G4_G5": "scored only for the parts this data can support; independent reproduction is expected to remain unassessable"
+  },
+  "planned_stages": [
+    {
+      "id": "S1",
+      "driver": "scripts/run_full_compare.py",
+      "argv_template": "--split {holdout|tune|train} --repeat 5 --frozen-class-caps --with-osqp --workers 1 --threads 1 --out evidence/campaign-20260929/raw/compare_{split}",
+      "covers": "LP (Netlib), MILP (MIPLIB + Mittelmann + domain cases), convex QP (QPLIB), OSQP added as convex-QP comparator"
+    },
+    {
+      "id": "S2",
+      "driver": "scripts/run_full_benchmark.py",
+      "argv_template": "--suites netlib qplib --split holdout --repeat 5 --out-dir ...",
+      "covers": "markov-cero-only repeated benchmark rows for the cheap classes; MILP suites only if budget remains"
+    },
+    {
+      "id": "R1",
+      "driver": "scripts/run_repeated_solve_holdout.py",
+      "covers": "repeated-solve sequences with deterministic cost/RHS/bound changes on holdout instances, cold vs warm-basis tracks, current binary vs frozen baseline binary"
+    },
+    {
+      "id": "R2",
+      "driver": "scripts/bench_repeated_solve.py --build-dir build_wA_camp",
+      "covers": "in-process cold/warm/session timing on synthetic RHS/bound sequences"
+    }
+  ],
+  "known_deviations_and_limitations": [
+    "OSQP is not part of the frozen comparator manifest; it is added here as a declared pre-registered extra, never merged into frozen evidence files",
+    "independent per-incumbent primal re-verification of external solver solutions is limited to objective cross-agreement plus markov-cero's own certificate; the frozen harness does not export competitor primal vectors, so 'independent primal checks for all returned incumbents' is only partially satisfied and is reported as such",
+    "peak memory is not measured by the frozen harnesses",
+    "no second machine / independent reproduction is available in this campaign",
+    "the full frozen corpus is 288 records of which 204 are unavailable locally; the campaign runs only the 63 present instances"
+  ],
+  "full_campaign_outstanding": {
+    "text": "The FULL campaign remains outstanding: complete frozen corpus (download the 204 unavailable instances), full repeats under release caps, and independent reproduction",
+    "roadmap_9_1_worst_case": "240 instances x 5 seeds x 3600 s x 4 MILP solvers = 4800 solver-slot hours",
+    "this_campaign_fraction": "bounded by a 3 h wall clock and <=6 concurrent solver processes"
+  },
+  "reproduce": {
+    "build": "cmake -S . -B build_wA_camp -DCMAKE_BUILD_TYPE=Release && cmake --build build_wA_camp -j8",
+    "stage1": "python3 scripts/run_full_compare.py --split holdout --repeat 5 --frozen-class-caps --with-osqp --workers 1 --threads 1 --out evidence/campaign-20260929/raw/compare_holdout (then tune, then train)",
+    "analysis": "python3 scripts/run_campaign_analyse.py --campaign evidence/campaign-20260929"
+  },
+  "interpretation_note": "Declared before running: 'never averaged with the cold row' is satisfied by publishing cold and warm separately; the 5-repeat median is the pre-registered cell statistic for the primary ratio because the freeze also requires >=5 repeats per cell."
+}

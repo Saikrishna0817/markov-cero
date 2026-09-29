@@ -1,0 +1,38 @@
+[ 46%] Built target markov_cero_core
+[ 47%] Linking CXX executable build_info_test
+[ 47%] Linking CXX executable classifier_test
+[ 48%] Linking CXX executable markov-cero-mps-inspect
+[ 49%] Linking CXX executable markov-cero-solve
+[ 49%] Linking CXX executable markov-cero-info
+[ 49%] Linking CXX executable markov-cero-verify-mip
+[ 49%] Linking CXX executable markov-cero-iis
+[ 49%] Linking CXX executable model_test
+[ 49%] Built target build_info_test
+[ 49%] Linking CXX executable ml_branching_test
+/usr/bin/ld: libmarkov_cero_core.a(parallel_tree_search_solve_integer_parallel.cpp.o): in function `markov_cero::milp::solve_integer_parallel(markov_cero::model::Model const&, markov_cero::milp::ParallelOptions const&, std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >)':
+parallel_tree_search_solve_integer_parallel.cpp:(.text+0x3641): undefined reference to `std::__detail::__notify_impl(void const*, bool, std::__detail::__wait_args_base const&)'
+/usr/bin/ld: libmarkov_cero_core.a(parallel_tree_search_solve_integer_parallel.cpp.o): in function `std::vector<std::jthread, std::allocator<std::jthread> >::~vector()':
+parallel_tree_search_solve_integer_parallel.cpp:(.text._ZNSt6vectorISt7jthreadSaIS0_EED2Ev[_ZNSt6vectorISt7jthreadSaIS0_EED5Ev]+0x254): undefined reference to `std::__detail::__notify_impl(void const*, bool, std::__detail::__wait_args_base const&)'
+/usr/bin/ld: libmarkov_cero_core.a(parallel_tree_search_solve_integer_parallel.cpp.o): in function `markov_cero::milp::solve_integer_parallel(markov_cero::model::Model const&, markov_cero::milp::ParallelOptions const&, std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >)':
+parallel_tree_search_solve_integer_parallel.cpp:(.text+0x3641): undefined reference to `std::__detail::__notify_impl(void const*, bool, std::__detail::__wait_args_base const&)'
+/usr/bin/ld: libmarkov_cero_core.a(parallel_tree_search_solve_integer_parallel.cpp.o): in function `std::vector<std::jthread, std::allocator<std::jthread> >::~vector()':
+parallel_tree_search_solve_integer_parallel.cpp:(.text._ZNSt6vectorISt7jthreadSaIS0_EED2Ev[_ZNSt6vectorISt7jthreadSaIS0_EED5Ev]+0x254): undefined reference to `std::__detail::__notify_impl(void const*, bool, std::__detail::__wait_args_base const&)'
+[ 50%] Built target markov-cero-info
+[ 51%] Linking CXX executable nlp_sqp_test
+[ 51%] Built target ml_branching_test
+collect2: error: ld returned 1 exit status
+make[2]: *** [CMakeFiles/markov-cero-iis.dir/build.make:104: markov-cero-iis] Error 1
+make[1]: *** [CMakeFiles/Makefile2:1393: CMakeFiles/markov-cero-iis.dir/all] Error 2
+make[1]: *** Waiting for unfinished jobs....
+[ 51%] Built target markov-cero-verify-mip
+[ 51%] Built target classifier_test
+[ 51%] Built target markov-cero-mps-inspect
+[ 51%] Built target model_test
+[ 52%] Building CXX object CMakeFiles/nlp_rosenbrock_test.dir/tests/nlp_rosenbrock_test.cpp.o
+collect2: error: ld returned 1 exit status
+make[2]: *** [CMakeFiles/markov-cero-solve.dir/build.make:120: markov-cero-solve] Error 1
+make[1]: *** [CMakeFiles/Makefile2:1329: CMakeFiles/markov-cero-solve.dir/all] Error 2
+[ 52%] Built target nlp_sqp_test
+[ 52%] Linking CXX executable nlp_rosenbrock_test
+[ 52%] Built target nlp_rosenbrock_test
+make: *** [Makefile:146: all] Error 2

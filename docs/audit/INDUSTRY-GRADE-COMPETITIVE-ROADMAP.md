@@ -85,113 +85,197 @@ All defaults below are recommendations. Record accepted decisions in this docume
 
 ### D01 — Product envelope · P + N · before implementation
 
+**Record 2026-09-29** — status: adopted (default). Owner roles: **P + N** (role assignment pending a named human owner).  
+Rejected alternative: broad MINLP/GPU/ML feature race. Reconsideration trigger: after G4 and a paying/pilot use case require it.
+
 Support LP, MILP, convex QP first. Keep certified convex MIQP a separately labelled extension; keep arbitrary nonlinear/nonconvex models experimental. Alternative: broad MINLP/GPU/ML feature race. Reject that as the initial implementation scope because each new class adds distinct soundness and qualification obligations. Reconsider after G4 and a paying/pilot use case require it.
 
 ### D02 — First market and workload · P + D · at the relevant prerequisite gate
+
+**Record 2026-09-29** — status: adopted (default), external confirmation pending. Owner roles: **P + D** (role assignment pending a named human owner).  
+Rejected alternative: direct plant control as the first workload; marking industrial acceptance complete on public qualification cases. Reconsideration trigger: if planners cannot identify a material workflow benefit.
 
 Start with repeated refinery planning, not direct plant control. Obtain five planner interviews and three anonymised workflows; select a supported formulation and decision horizon. Proceed with public qualification cases if access fails, but do not mark industrial acceptance complete. Reconsider the niche if planners cannot identify a material workflow benefit.
 
 ### D03 — Sovereignty and dependency policy · P + S · before implementation
 
+**Record 2026-09-29** — status: adopted (default), external confirmation pending. Owner roles: **P + S** (role assignment pending a named human owner).  
+Rejected alternative: folding external solver libraries into the core; assuming a permissive licence makes a dependency acceptable, or that "no solver library" forbids every mathematical library. Reconsideration trigger: written sponsor clarification about numerical utilities, GPU vendor libraries and exact arithmetic libraries.
+
 Keep optimization engines independent; external solvers remain separate development/benchmark executables. Retain the current strict core dependency policy pending written sponsor clarification about numerical utilities, GPU vendor libraries and exact arithmetic libraries. Do not silently assume “no solver library” forbids every mathematical library, or that a permissive licence automatically makes a dependency acceptable.
 
 ### D04 — Provenance reconciliation · Q + P · at the relevant prerequisite gate
+
+**Record 2026-09-29** — status: adopted (default), external confirmation pending. Owner roles: **Q + P** (role assignment pending a named human owner).  
+Rejected alternative: an unqualified clean-room claim; treating source exposure alone as proof of copying. Reconsideration trigger: completion of the independent history/diff and algorithm-similarity review, and quarantine/reimplementation if the approved policy requires it.
 
 The historical competitive report records source-level inspection of 27 peer repositories on 2026-09-25. Provenance records now distinguish the claimed 2026-09-13 M0 implementation period from that later exposure. This reconciles the documentation timeline, but not the effect of exposure: independent history/diff and algorithm-similarity review remains required before any unqualified clean-room claim. Quarantine/reimplement affected work if required by the approved policy; source exposure alone does not prove copying.
 
 ### D05 — Model storage · S + M · at the relevant prerequisite gate
 
+**Record 2026-09-29** — status: adopted (default). Owner roles: **S + M** (role assignment pending a named human owner).  
+Rejected alternative: complete model copies per node. Reconsideration trigger: not stated — add on first use.
+
 Choose immutable canonical/root storage plus persistent bound/cut deltas and reusable per-worker workspaces. Avoid complete model copies per node. Allow explicit, budgeted materialization at a bounded interface while migrating; expose its count/bytes. Acceptance is memory scaling and branch isolation, not a class named “immutable.”
 
 ### D06 — Resource contract · S · at the relevant prerequisite gate
+
+**Record 2026-09-29** — status: adopted (default). Owner roles: **S** (role assignment pending a named human owner).  
+Rejected alternative: one mechanism serving both cooperative cancellation and process-enforced limits; advertising hard real-time behaviour on a general-purpose OS. Reconsideration trigger: not stated — add on first use.
 
 Separate cooperative library cancellation from process-enforced service limits. One absolute steady-clock deadline includes preparation, search, verification and output. One allocation budget includes factor fill, node queues, cuts, proof data and retained results. Preserve the best validated incumbent before expensive optional work. Do not advertise hard real-time behaviour on a general-purpose OS.
 
 ### D07 — Numeric policy · N + Q · at the relevant prerequisite gate
 
+**Record 2026-09-29** — status: adopted (default). Owner roles: **N + Q** (role assignment pending a named human owner).  
+Rejected alternative: silently loosening tolerance; labelling floating-point results "exact" outside exact arithmetic. Reconsideration trigger: not stated — add on first use.
+
 FP64 baseline; explicitly report absolute and componentwise scaled residuals in original units. Use refinement and conservative bounds. Offer precision escalation only with clear semantics; do not loosen tolerance silently. Tolerance presets must be calibrated against scaling/adversarial suites and plant measurement accuracy. “Exact” is reserved for exact arithmetic certificates.
 
 ### D08 — Engine selection · N · at the relevant prerequisite gate
+
+**Record 2026-09-29** — status: adopted (default). Owner roles: **N** (role assignment pending a named human owner).  
+Rejected alternative: a universal row-count rule for engine selection. Reconsideration trigger: not stated — add on first use.
 
 Use sparse dual revised simplex for basis reoptimization; retain sparse primal for cold starts/reference paths; qualify IPM for suitable large sparse LP; qualify PDLP for memory-limited matrix-vector workloads. Select by measured structure, reuse opportunity, fill estimate, tolerance and budget. Keep thresholds in a versioned policy and validate on held-out families; no universal row-count rule.
 
 ### D09 — QP path · N · at the relevant prerequisite gate
 
+**Record 2026-09-29** — status: adopted (default). Owner roles: **N** (role assignment pending a named human owner).  
+Rejected alternative: promoting a first-order QP research method because a paper reports strong results. Reconsideration trigger: fill/memory measurements that justify developing an indirect SPD solve.
+
 Prioritise stable direct sparse factorization, numeric/symbolic reuse, scaling and polishing. Develop an indirect SPD solve only when fill/memory measurements justify it. Do not promote a first-order QP research method just because a paper reports strong results. Always test singular PSD cases and retain curvature-indeterminate status.
 
 ### D10 — Proof assurance · N + Q · at the relevant prerequisite gate
+
+**Record 2026-09-29** — status: adopted (default). Owner roles: **N + Q** (role assignment pending a named human owner).  
+Rejected alternative: conflating a second cut-free search with a scalable proof log of the production search. Reconsideration trigger: resolution of the D03 dependency policy before evaluating an exact/rational LP/MILP checker.
 
 Ship numerical replay with explicit tolerances and assumptions. The implementation exposes caller-configurable proof time/node/witness budgets through C++, solve CLI and Python; the standalone verifier accepts compatible parsing/replay limits. The default five-second generation/replay deadline is clipped to the overall solve deadline. C++ results, CLI JSON and Python results expose separate proof-build and proof-replay milliseconds, excluding the primary solve. Later evaluate an isolated exact/rational LP/MILP checker subject to D03. Do not conflate a second cut-free search with a scalable proof log of the production search.
 
 ### D11 — MILP priorities · M · at the relevant prerequisite gate
 
+**Record 2026-09-29** — status: adopted (default). Owner roles: **M** (role assignment pending a named human owner).  
+Rejected alternative: more cut families or ML ahead of warm node LPs, safe propagation, incumbent heuristics, reliability branching and cut scheduling. Reconsideration trigger: not stated — add on first use.
+
 Prioritise warm node LPs, safe propagation, incumbent heuristics, reliability branching and effective cut scheduling before more cut families or ML. Every cut has a validity derivation, scope and provenance. Local cuts never leak to unrelated subtrees. Promote changes on solved coverage and primal-dual progress, not node count alone.
 
 ### D12 — Parallel execution · M + S · at the relevant prerequisite gate
+
+**Record 2026-09-29** — status: adopted (default). Owner roles: **M + S** (role assignment pending a named human owner).  
+Rejected alternative: nondeterministic work stealing before a deterministic serial baseline and deterministic epoch mode. Reconsideration trigger: not stated — add on first use.
 
 Provide deterministic serial baseline and deterministic epoch mode before nondeterministic work stealing. Share immutable inputs; own worker factor/basis state; publish incumbents only after validation. Parallelise independent scenarios early because isolation and benefit are easier to assess. Oversubscription is prevented by a global thread budget.
 
 ### D13 — GPU · N + S · after profiling
 
+**Record 2026-09-29** — status: adopted (default). Owner roles: **N + S** (role assignment pending a named human owner).  
+Rejected alternative: a residual-only kernel as evidence of acceleration; default-on GPU activation. Reconsideration trigger: after profiling; promotion only after G6, otherwise stay CPU-default and experimental.
+
 Implement the full W11 programme; keep activation opt-in until promotion. Move the actual iterative hot path and retained vectors/matrix to the device; a residual-only kernel is insufficient for an acceleration claim. Budget device and host memory separately. CPU fallback must be explicit and device execution observable. Promote only after G6; otherwise ship CPU and publish why GPU remains experimental.
 
 ### D14 — ML · M + Q · after baseline stabilises
+
+**Record 2026-09-29** — status: adopted (default). Owner roles: **M + Q** (role assignment pending a named human owner).  
+Rejected alternative: default-on ML activation; ML inventing bounds, bypassing certificates or discarding feasible regions. Reconsideration trigger: once the deterministic baseline stabilises, and promotion only on the ML-09 evidence.
 
 Implement the full W12 programme; keep activation disabled by default until promotion; first test a simple calibrated candidate ranker. Group training/validation/test by instance family and generator seed lineage. ML may rank safe branches/cuts/heuristics; it may not invent bounds, bypass certificates or discard feasible regions. No model promoted without inference parity, corruption/OOD fallback and measured solve-time benefit.
 
 ### D15 — Refinery data and physics · D + engineer · at the relevant prerequisite gate
 
+**Record 2026-09-29** — status: adopted (default), external confirmation pending. Owner roles: **D + engineer** (role assignment pending a named human owner; the engineer role is an external acceptance role).  
+Rejected alternative: treating public Fawley data as plant-specific approval; nonlinear quality/pooling before approved correlations. Reconsideration trigger: operator-approved assays/yields and a named engineer review.
+
 Use public Fawley as historical qualification, synthetic cases for controlled experiments, and operator-approved assays/yields for a pilot. Declare all units/bases, data rights and model version. Fixed-yield LP/MILP first; nonlinear quality/pooling only with approved correlations and explicit approximation error. Public data cannot supply plant-specific approval.
 
 ### D16 — API and integration · S + P · at the relevant prerequisite gate
+
+**Record 2026-09-29** — status: adopted (default). Owner roles: **S + P** (role assignment pending a named human owner).  
+Rejected alternative: a distributed control plane and GUI first; a versioned C ABI before a consumer requires it. Reconsideration trigger: when a consumer requires a versioned C ABI.
 
 Stabilise C++/CLI/JSON/Python contracts; add a versioned C ABI only when a consumer requires it. Provide transactional scenario updates, model fingerprints, basis reuse and structured errors. Choose local batch worker plus file/API integration first; defer a distributed control plane and GUI.
 
 ### D17 — Platforms and packaging · S + Q · at the relevant prerequisite gate
 
+**Record 2026-09-29** — status: adopted (default). Owner roles: **S + Q** (role assignment pending a named human owner).  
+Rejected alternative: claiming all environments work. Reconsideration trigger: tested consumer demand, and per-platform CI, wheel and consumer gates passing.
+
 Declare Linux x86-64 CPU the first supported production platform. Build other CPU platforms as preview until their own CI, wheel and consumer gates pass. CUDA is a separate support tier. Select supported compiler/Python versions from tested consumer demand; publish the matrix instead of claiming all environments work.
 
 ### D18 — Licensing, stewardship and support · P · before public release
+
+**Record 2026-09-29** — status: adopted (default), external confirmation pending. Owner roles: **P** (role assignment pending a named human owner).  
+Rejected alternative: changing the repository licence without an explicit reviewed approval; promising an SLA without funded staffing. Reconsideration trigger: an explicit reviewed licence-change decision plus adoption research, before public release.
 
 Retain the repository's existing licence unless an explicit reviewed change is approved. Review contributor rights, dataset redistribution, notices and dependency licences separately. Recommend an open core with paid integration/support, conditional on adoption research. Name two maintainers and a security contact; do not promise an SLA without funded staffing.
 
 ### D19 — Benchmark protocol · Q · before optimisation
 
+**Record 2026-09-29** — status: adopted (default). Owner roles: **Q** (role assignment pending a named human owner).  
+Rejected alternative: cherry-picking instances or results after seeing holdout outcomes. Reconsideration trigger: before optimisation work or any benchmark campaign intended to promote a change.
+
 Freeze family-based train/tune/holdout splits, versions, caps, tolerances, hardware and acceptance rules. Compare default and equal-tuning-budget configurations separately. Publish all instances, outcomes, proof costs and unsupported cases. No cherry-picking after seeing holdout results.
 
 ### D20 — Repository and modularity · S + Q · ongoing
+
+**Record 2026-09-29** — status: adopted (default). Owner roles: **S + Q** (role assignment pending a named human owner).  
+Rejected alternative: line splitting as a substitute for architecture; silent Git-history rewriting. Reconsideration trigger: any Git-history rewrite, which requires a separate coordinated migration.
 
 Keep ≤300 physical lines for maintained code; target 200–250. Enforce acyclic module dependencies, narrow ownership and useful interfaces. Consolidate duplicate script helpers where it improves cohesion; line splitting alone is not architecture. Keep small fixtures and manifests in Git, larger corpora in explicit verified caches. Git-history rewriting requires a separate coordinated migration.
 
 ### D21 — Release assurance · Q + independent reviewer · before G7
 
+**Record 2026-09-29** — status: adopted (default). Owner roles: **Q + independent reviewer** (role assignment pending a named human owner; the independent reviewer is an external acceptance role).  
+Rejected alternative: percentage closure as a release criterion. Reconsideration trigger: at the G7 release review (stated as "before G7").
+
 Zero unresolved critical/high defects in the supported release envelope. Require numerical, security, concurrency and packaging evidence, not a percentage alone. Use signed release/source manifests, SBOM, pinned dependencies, vulnerability review and rollback drills. Record untested configurations as unsupported.
 
 ### D22 — SIH scope and submission · P · before implementation
+
+**Record 2026-09-29** — status: adopted (default), external confirmation pending. Owner roles: **P** (role assignment pending a named human owner).  
+Rejected alternative: turning the statement's "may include" suggestions into mandatory requirements; diverting effort into an unrequested GUI or speculative ML branding. Reconsideration trigger: authoritative clarification of the SIH26119 rules and submission format.
 
 Use confirmed SIH26119 and the stored statement as the requirement baseline; obtain authoritative clarification where needed. Its prose says algorithms “may include” simplex/IPM, so the derived checklist must not silently turn suggestions into independently mandatory requirements. Demonstrate both existing paths if reliable, but prioritise the actual robustness/performance objectives. Do not divert competition effort into an unrequested GUI or speculative ML branding.
 
 ### D23 — Presolve and postsolve · N/M/Q · before stronger reductions
 
+**Record 2026-09-29** — status: adopted (default). Owner roles: **N/M/Q** (role assignment pending a named human owner).  
+Rejected alternative: one opaque "presolved model" with only a primal map. Reconsideration trigger: before enabling stronger reductions.
+
 Each presolve rule owns a mathematical precondition, domain effect, reconstruction map and certificate mapping. Stage transformations transactionally; if a rule cannot reconstruct a supported guarantee, disable that rule in the stronger assurance mode. Reject the alternative of one opaque “presolved model” with only a primal map. Keep reduction trace IDs in proofs and diagnostics.
 
 ### D24 — File formats and model semantics · S/N · before adding dialects
+
+**Record 2026-09-29** — status: adopted (default). Owner roles: **S/N** (role assignment pending a named human owner).  
+Rejected alternative: "best effort" interpretation of unsupported sections. Reconsideration trigger: before adding a file-format dialect.
 
 Version supported MPS/LP/QP conventions, duplicate handling, integer markers, free/ranged rows, objective offsets and quadratic factors explicitly. Keep generic matrix API semantics independent of a text parser. Preserve original tokens where exact-decimal verification is promised; otherwise identify the parsed FP64 model as the mathematical object. Prefer strict rejection of unsupported sections over “best effort” interpretation.
 
 ### D25 — Observability and privacy · S/P · at API design
 
+**Record 2026-09-29** — status: adopted (default). Owner roles: **S/P** (role assignment pending a named human owner).  
+Rejected alternative: process-global environment mutation or unsolicited library output; model coefficient/name logging by default. Reconsideration trigger: at API design review.
+
 Use caller-controlled structured traces with stage timings, fill, memory high-water marks, node/cut counts and numerical diagnostics. Model coefficient/name logging is opt-in; metrics are local by default. No process-global environment mutation or unsolicited library output. Production logs must explain termination without exposing confidential plant data.
 
 ### D26 — Persistence and reproducibility · S/Q · before checkpoint support
+
+**Record 2026-09-29** — status: adopted (default). Owner roles: **S/Q** (role assignment pending a named human owner).  
+Rejected alternative: resuming a checkpoint against a different model silently. Reconsideration trigger: before checkpoint support ships.
 
 Version checkpoint/basis/proof formats and bind them to model, policy and compatible build identities. Save atomically with checksums and quotas; never resume a checkpoint against a different model silently. Separate deterministic algorithm mode from repeatable statistical benchmarking. Recovery should preserve a validated incumbent even when full search continuation is incompatible.
 
 ### D27 — Conflict and feasibility repair · D/N · before planner-facing diagnosis
 
+**Record 2026-09-29** — status: adopted (default). Owner roles: **D/N** (role assignment pending a named human owner).  
+Rejected alternative: presenting a resource-exhausted deletion trial as a complete diagnosis; automatic feasibility relaxation that changes the operational formulation. Reconsideration trigger: before planner-facing diagnosis.
+
 Distinguish a certified infeasible subsystem, an irreducible subsystem, a minimum-cardinality conflict and a heuristic explanation. Row-deletion IIS is relative to the bounds it holds fixed. A resource-exhausted deletion trial means incomplete diagnosis. Feasibility relaxation is a separate model with named penalties and requires user approval before changing the operational formulation.
 
 ### D28 — Evolution and deprecation · P/S/Q · before stable release
+
+**Record 2026-09-29** — status: adopted (default). Owner roles: **P/S/Q** (role assignment pending a named human owner).  
+Rejected alternative: an experimental engine silently becoming the default; incompatible result-status changes without migration guidance. Reconsideration trigger: before stable release.
 
 Adopt semantic versioning for public interfaces, separate schema versions for proof/checkpoint data, and a documented deprecation window selected with consumers. An experimental engine cannot silently become the default. New backends/model classes must pass the same guarantee and packaging gates; incompatible result-status changes require explicit migration guidance.
 
@@ -753,6 +837,31 @@ This lane follows the available evidence and does not assume a date or headcount
 
 **G8 industrial refinery use:** approved current data/model, independently checked mass/quality balances, shadow validation, human authorisation and rollback. G7 alone does not approve a plant model.
 
+### Gate and milestone status (2026-09-29)
+
+Derived from the evidence files named below, not from optimism. No gate is closed here: closure requires the stated acceptance evidence, and several gates require external human review that has not occurred.
+
+| Item | Status | Evidence present | Missing evidence / blockers |
+|---|---|---|---|
+| G0 governance | partial | `docs/sih26119_problem_statement.md`; `PROVENANCE.md`; `evidence/baseline-freeze-20260928.json`; `evidence/readiness-checkpoint.json` | Authoritative SIH rule/rubric confirmation (portal returned HTTP 403); independent history/diff provenance review (D04/W00 open); a committed frozen source revision — the tested worktree is uncommitted |
+| G1 engineering | partial | `evidence/ir19-w01-memory-20260928.json` (IR-19 closed with measured evidence); `evidence/contracts-slice-20260928.json`; `evidence/resource-envelope-20260928.json` | IR-20 closure (indivisible/preemptible work bounds, end-to-end deadline evidence); IR-21 closure (uniform solve-wide allocation/fill budget, peak RSS and device accounting); independent review agreeing the advertised envelope closes them |
+| G2 mathematics | partial | `evidence/proof-guarantee-20260928.json`; `evidence/milp-strengthening-20260928.json`; original-space verifiers in `src/verify/` | A fresh independent reviewer deriving the M1–M4/M12 inequalities; a recorded adversarial campaign showing zero accepted false certificates; W03 acceptance sign-off |
+| G3 supported functionality | partial | `STATUS.md` capability matrix; 89/89 local CTest; `evidence/packaging-qualification-20260928.json` | Continuous clean hosted CI (`.github/workflows/ci.yml` exists with no recorded run); a published supported-version matrix validated on a second host; optional CUDA/ML paths qualified or explicitly disabled |
+| G4 competitiveness (named niche gate) | not met | Preregistration frozen: `evidence/frozen-comparators-20260928.json`, `evidence/frozen-instances-20260928.json`, `evidence/baseline-freeze-20260928.json` | Matched held-out campaign with a complete denominator; measured held-out improvement against the named baseline; independent reproduction; IR-35 open |
+| G5 competitiveness (broad gate) | not met | Same frozen protocol and manifests as G4; one-case matched smoke only (`evidence/readiness-validation/matched-smoke.csv`) | Full preregistered supported suites reported per class; held-out improvement; independent reproduction; IR-35 open |
+| G6 optional acceleration | not met | `evidence/gpu_hardware.json`; `evidence/gpu_hardware_kernel_run.json` (local/historical observations, no end-to-end benefit) | Device-resident PDLP/QP x-update with numerical acceptance (IR-28 open); ≥20% matched end-to-end benefit under the Section 9 protocol; GPU-09 promotion artifacts and independent reproduction |
+| G7 industrial software | OPEN | `docs/governance/support-rollback.md`; `evidence/packaging-qualification-20260928.json` (offline packaging qualification and a performed rollback drill) | SBOM, signed artifacts, vulnerability/rights review, funded support ownership, hosted sanitizer/CUDA evidence and independent release review — IR-33 open |
+| G8 industrial refinery use | OPEN | `evidence/refinery-units-schema-20260928.json` (public/synthetic qualification only) | Named model owner and qualified engineer approval, approved plant data, supervised shadow pilot over ≥30 cycles, human authorisation and rollback — IR-34 open |
+| Milestone A | partial (exit G0 not met) | W00 timeline reconciliation recorded in §2; frozen baseline manifests | All G0 missing evidence; no independent contract review record for ModelSnapshot/NodeView/SolveContext |
+| Milestone B | partial (exit G1/G2 not met) | W01 complete (IR-19 closed); W02/W03 slices with `evidence/resource-envelope-20260928.json`, `evidence/proof-guarantee-20260928.json` | IR-20 and IR-21 open; independent review of the resource envelope; G2 independent derivation review |
+| Milestone C | partial (exit G3 not met) | Partial W04–W09 slices: `evidence/repeated-solve-20260928.json`, `evidence/milp-strengthening-20260928.json`, `evidence/refinery-units-schema-20260928.json`, `evidence/packaging-qualification-20260928.json` | G3 hosted CI and supported-configuration matrix; W04/W05/W06/W09 package acceptance evidence |
+| Milestone D | partial (exit G4/G5 not met) | Frozen pre-tuning baseline (`evidence/baseline-freeze-20260928.json`) | W10 held-out campaign not run; independent reproduction; IR-35 open |
+| Milestone E | partial (exit G6 not met) | Pre-existing GPU/ML components only (`evidence/gpu_hardware.json`, `src/milp/ml_branching/`) | W11/W12 programmes not executed as specified (IR-28 open); W13/W14 not started; D03 dependency policy pending |
+| Milestone F | blocked | Local packaging qualification and support/rollback documentation | G7 open (IR-33): SBOM, signing, vulnerability review, support ownership, hosted evidence, independent release audit |
+| Milestone G | blocked | Public/synthetic refinery qualification (`evidence/refinery-units-schema-20260928.json`) | G8 open (IR-34): engineer-approved W08, shadow pilot ≥30 cycles, agreed pilot acceptance criteria, human authorisation |
+
+Package basis for the milestone rows: W01 done; W00 and W02–W10 partial; W11/W12 have pre-existing components only; W13/W14 not started. Machine-readable counterpart: [evidence/gate-status-20260929.json](../../evidence/gate-status-20260929.json).
+
 ## 9. Benchmark protocol that can defend a competitive claim
 
 ### 9.1 Suites and resource budgets
@@ -862,6 +971,19 @@ Release artifacts include source revision, source manifest, compiler/flags, enab
 - **Commercial adoption fails:** reassess integration friction, reliability/support needs and differentiation against free mature solvers; more algorithms alone may not solve this.
 
 **External decisions still needed:** confirmed SIH rules and submission format; accountable decision owners; dependency-policy clarification; permitted dataset redistribution; target hardware/compute budget; model owner and engineer; support/licensing authority; pilot acceptance criteria. The defaults above allow engineering planning to proceed, but cannot substitute for those owners' decisions.
+
+### External decision status (2026-09-29)
+
+Each item was checked against this repository before recording. **All eight are UNRESOLVED**; no approval, roster, sign-off or confirmation record exists for any of them.
+
+- **Confirmed SIH rules and submission format — UNRESOLVED.** The official portal returned HTTP 403 during the review and no later reconfirmation is recorded; only the stored statement `docs/sih26119_problem_statement.md` exists and its dataset clause is truncated. *Resolved by:* authoritative portal/SPOC confirmation of the current rules, evaluation rubric and submission format.
+- **Accountable decision owners — UNRESOLVED.** No named-human owner roster exists anywhere in the repository; section 4 records role letters only, and every record states that role assignment is pending a named human owner. *Resolved by:* a dated roster mapping N/M/S/Q/D/P and the external engineer and independent-reviewer roles to named people.
+- **Dependency-policy clarification — UNRESOLVED.** D03 retains the strict default "pending written sponsor clarification"; no sponsor clarification or approval record exists in `docs/`, `docs/decisions/` or `evidence/`. *Resolved by:* a written sponsor decision on numerical utilities, GPU vendor libraries and exact arithmetic libraries.
+- **Permitted dataset redistribution — UNRESOLVED.** `PROVENANCE.md` states that redistribution rights remain a review gate, and `evidence/packaging-qualification-20260928.json` records the licence-metadata conflict as deliberately unchanged because D18 needs a human decision; no redistribution decision exists for `data/optional-datasets.json` or the bundled fixtures. *Resolved by:* a reviewed licence and dataset-rights decision.
+- **Target hardware/compute budget — UNRESOLVED.** W10 is marked "compute budget required" and the Section 9 campaign estimate (≈4,800 solver-slot hours in the all-timeout worst case) has no provisioning or approval record anywhere in the repository. *Resolved by:* an approved machine list, memory envelopes and core-hour allocation for the held-out campaign.
+- **Model owner and engineer — UNRESOLVED.** IR-34 is open in `evidence/defect-closure-register.csv`; `docs/governance/support-rollback.md` documents that naming people is an external human action and invents no names; no engineer approval record exists. *Resolved by:* a named model owner and a suitably qualified refinery engineer approving the W08 balances, units and formulation.
+- **Support/licensing authority — UNRESOLVED.** `docs/governance/support-rollback.md` records the support contact, security contact and named maintainers as UNASSIGNED (D18 requires two maintainers plus a security contact before public release), and `evidence/packaging-qualification-20260928.json` records the licence metadata as undecided. *Resolved by:* named maintainers and a security contact, plus an explicit reviewed licence decision.
+- **Pilot acceptance criteria — UNRESOLVED.** The Section 11 targets (30 representative shadow cycles, ≥20% workflow-time reduction) are labelled negotiable and dependent on a baseline; no agreed acceptance-criteria record or shadow-trial agreement exists and IR-34 stays open. *Resolved by:* a signed pilot charter naming the reference planning process, acceptance thresholds and rollback authority.
 
 ## 14. First implementation backlog after this plan is accepted
 

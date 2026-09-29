@@ -1,0 +1,187 @@
+[  1%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/api.cpp.o
+[  3%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/dispatch.cpp.o
+[  3%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/mip_proof_relaxation.cpp.o
+[  3%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/mip_proof_builder.cpp.o
+[  3%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/mip_proof.cpp.o
+[  3%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/engine_nonlinear.cpp.o
+[  3%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/mip_certificate.cpp.o
+[  3%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/mip_proof_io.cpp.o
+[  4%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/engine_parallel.cpp.o
+[  4%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/engine_pdlp.cpp.o
+[  4%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/engine_qp.cpp.o
+[  5%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/engine_milp.cpp.o
+[  5%] Building CXX object CMakeFiles/markov_cero_core.dir/src/api/engine_lp.cpp.o
+[  5%] Building CXX object CMakeFiles/markov_cero_core.dir/src/foundation/build_info.cpp.o
+[  6%] Building CXX object CMakeFiles/markov_cero_core.dir/src/model/model.cpp.o
+[  6%] Building CXX object CMakeFiles/markov_cero_core.dir/src/model/classifier.cpp.o
+[  6%] Building CXX object CMakeFiles/markov_cero_core.dir/src/model/model_snapshot.cpp.o
+[  7%] Building CXX object CMakeFiles/markov_cero_core.dir/src/model/model_hash.cpp.o
+[  7%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/mps.cpp.o
+[  7%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/mps_records.cpp.o
+[  8%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/mps_extensions.cpp.o
+[  8%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/mps_model.cpp.o
+[  8%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/lp_lexer.cpp.o
+[  9%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/lp_objective.cpp.o
+[  9%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/lp_constraints.cpp.o
+[  9%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/lp_bounds.cpp.o
+[ 10%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/lp_model.cpp.o
+[ 10%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/lp_parser.cpp.o
+[ 10%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/nlobj_parser.cpp.o
+[ 11%] Building CXX object CMakeFiles/markov_cero_core.dir/src/io/nlp_callbacks.cpp.o
+[ 11%] Building CXX object CMakeFiles/markov_cero_core.dir/src/nlp/lbfgs.cpp.o
+[ 11%] Building CXX object CMakeFiles/markov_cero_core.dir/src/nlp/nlp_model.cpp.o
+[ 12%] Building CXX object CMakeFiles/markov_cero_core.dir/src/nlp/nlp_verifier.cpp.o
+[ 12%] Building CXX object CMakeFiles/markov_cero_core.dir/src/nlp/sqp_solver_subproblem.cpp.o
+[ 12%] Building CXX object CMakeFiles/markov_cero_core.dir/src/nlp/sqp_solver.cpp.o
+[ 13%] Building CXX object CMakeFiles/markov_cero_core.dir/src/minlp/minlp_solver.cpp.o
+[ 13%] Building CXX object CMakeFiles/markov_cero_core.dir/src/minlp/minlp_solver_iterate_outer_approximation.cpp.o
+[ 13%] Building CXX object CMakeFiles/markov_cero_core.dir/src/minlp/minlp_solver_solve_minlp.cpp.o
+[ 14%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/primal_verifier.cpp.o
+[ 14%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/linear_certificate.cpp.o
+[ 14%] Building CXX object CMakeFiles/markov_cero_core.dir/src/linalg/dense_lu.cpp.o
+[ 15%] Building CXX object CMakeFiles/markov_cero_core.dir/src/linalg/sparse_basis_ordering.cpp.o
+[ 15%] Building CXX object CMakeFiles/markov_cero_core.dir/src/linalg/sparse_basis_matrix.cpp.o
+[ 15%] Building CXX object CMakeFiles/markov_cero_core.dir/src/linalg/sparse_basis_factor.cpp.o
+[ 16%] Building CXX object CMakeFiles/markov_cero_core.dir/src/linalg/sparse_basis_solve.cpp.o
+[ 16%] Building CXX object CMakeFiles/markov_cero_core.dir/src/linalg/sparse_basis.cpp.o
+[ 16%] Building CXX object CMakeFiles/markov_cero_core.dir/src/transform/canonicalize.cpp.o
+[ 17%] Building CXX object CMakeFiles/markov_cero_core.dir/src/transform/sparse_canonicalize_model.cpp.o
+[ 17%] Building CXX object CMakeFiles/markov_cero_core.dir/src/transform/sparse_canonicalize.cpp.o
+[ 17%] Building CXX object CMakeFiles/markov_cero_core.dir/src/presolve/presolve.cpp.o
+[ 18%] Building CXX object CMakeFiles/markov_cero_core.dir/src/presolve/eliminate_singletons.cpp.o
+[ 18%] Building CXX object CMakeFiles/markov_cero_core.dir/src/presolve/eliminate_duplicates.cpp.o
+[ 18%] Building CXX object CMakeFiles/markov_cero_core.dir/src/presolve/compact.cpp.o
+[ 19%] Building CXX object CMakeFiles/markov_cero_core.dir/src/presolve/postsolve.cpp.o
+[ 19%] Building CXX object CMakeFiles/markov_cero_core.dir/src/scale/ruiz_scaling.cpp.o
+[ 19%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/reference/revised_simplex_pricing.cpp.o
+[ 20%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/reference/revised_simplex_iteration.cpp.o
+[ 20%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/reference/revised_simplex_workspace.cpp.o
+[ 20%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/reference/revised_simplex.cpp.o
+[ 21%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/reference_lp_verifier.cpp.o
+[ 21%] Building CXX object CMakeFiles/markov_cero_core.dir/src/verify/sparse_lp_verifier.cpp.o
+[ 21%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/dual/dual_simplex.cpp.o
+[ 22%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/dual/dual_simplex_select_entering_column.cpp.o
+[ 22%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/dual/dual_simplex_solve.cpp.o
+[ 22%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/interior/ipm.cpp.o
+[ 23%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/interior/ipm_crossover_basis_sparse.cpp.o
+[ 23%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/interior/ipm_solve.cpp.o
+[ 23%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/interior/ipm_solve_overload.cpp.o
+[ 24%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/first_order/pdlp.cpp.o
+[ 24%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/first_order/pdlp_degenerate.cpp.o
+[ 24%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/first_order/pdlp_try_dual_simplex_crossover.cpp.o
+[ 25%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/first_order/pdlp_iterate_pdlp.cpp.o
+[ 25%] Building CXX object CMakeFiles/markov_cero_core.dir/src/lp/first_order/pdlp_solve_pdlp.cpp.o
+[ 25%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/branch_selector.cpp.o
+[ 26%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/branch_selector_features.cpp.o
+[ 26%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/cut_pool.cpp.o
+[ 26%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/gomory.cpp.o
+[ 27%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/heuristics.cpp.o
+[ 27%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/heuristics_pump.cpp.o
+[ 27%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/heuristics_repair.cpp.o
+[ 28%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/milp_solver.cpp.o
+[ 28%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_initialize.cpp.o
+[ 29%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_root_relaxation.cpp.o
+[ 29%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_root_branching.cpp.o
+[ 29%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_node_relaxation.cpp.o
+[ 30%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_separate_cuts.cpp.o
+[ 30%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_branch.cpp.o
+[ 30%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/search_finish.cpp.o
+[ 31%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/node_lp.cpp.o
+[ 31%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/node_qp.cpp.o
+[ 31%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/node_view.cpp.o
+[ 32%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/reference_materialisation.cpp.o
+[ 32%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/mir.cpp.o
+[ 32%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/cover.cpp.o
+[ 33%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/parallel_tree_search.cpp.o
+[ 33%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/parallel_tree_search_solve_integer_parallel.cpp.o
+[ 33%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/parallel_tree_search_result.cpp.o
+[ 34%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/parallel_tree_search_root_cuts.cpp.o
+[ 34%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/parallel_tree_search_solve_parallel.cpp.o
+[ 34%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/shared_incumbent.cpp.o
+[ 35%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/strong_branching.cpp.o
+[ 35%] Building CXX object CMakeFiles/markov_cero_core.dir/src/milp/work_queue.cpp.o
+[ 35%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/model_matrix.cpp.o
+[ 36%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/model_convexity.cpp.o
+[ 36%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/model.cpp.o
+[ 36%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/kkt_factor.cpp.o
+[ 37%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/kkt_assembly.cpp.o
+[ 37%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/kkt.cpp.o
+[ 37%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/admm_solver.cpp.o
+[ 38%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/admm_solver_solve.cpp.o
+[ 38%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/equilibrate.cpp.o
+[ 38%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/supporting_bound.cpp.o
+[ 39%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/verifier.cpp.o
+[ 39%] Building CXX object CMakeFiles/markov_cero_core.dir/src/qp/certificates.cpp.o
+[ 39%] Building CXX object CMakeFiles/markov_cero_core.dir/src/refinery/synthetic_config.cpp.o
+[ 40%] Building CXX object CMakeFiles/markov_cero_core.dir/src/refinery/refinery_model.cpp.o
+[ 40%] Building CXX object CMakeFiles/markov_cero_core.dir/src/refinery/pooling_slp.cpp.o
+[ 40%] Building CXX object CMakeFiles/markov_cero_core.dir/src/analysis/iis_analyzer.cpp.o
+[ 41%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/buffer.cpp.o
+[ 41%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/csr.cpp.o
+[ 41%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/device.cpp.o
+[ 42%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/admm_matvec.cpp.o
+[ 42%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/pdhg_step.cpp.o
+[ 42%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/pdhg_iteration.cpp.o
+[ 43%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/pdhg_residuals.cpp.o
+[ 43%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/pdhg_solver.cpp.o
+[ 43%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/reduce.cpp.o
+[ 44%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/spmv.cpp.o
+[ 44%] Building CXX object CMakeFiles/markov_cero_core.dir/gpu/src/vector_ops.cpp.o
+[ 44%] Building CUDA object CMakeFiles/markov_cero_core.dir/gpu/kernels/pdhg_step.cu.o
+[ 45%] Building CUDA object CMakeFiles/markov_cero_core.dir/gpu/kernels/reduce.cu.o
+[ 45%] Building CUDA object CMakeFiles/markov_cero_core.dir/gpu/kernels/spmv.cu.o
+[ 45%] Building CUDA object CMakeFiles/markov_cero_core.dir/gpu/kernels/vector_ops.cu.o
+[ 46%] Building CUDA object CMakeFiles/markov_cero_core.dir/gpu/kernels/admm_step.cu.o
+/home/saikrishna/markov-initial-build/gpu/kernels/admm_step.cu(47): warning #177-D: function "markov_cero::gpu::detail::<unnamed>::launch_admm_spmv" was declared but never referenced
+  void launch_admm_spmv(std::size_t rows,
+       ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+[ 46%] Linking CXX static library libmarkov_cero_core.a
+[ 46%] Built target markov_cero_core
+[ 46%] Building CXX object CMakeFiles/markov-cero-verify-mip.dir/apps/markov_cero_verify_mip.cpp.o
+[ 46%] Building CXX object CMakeFiles/markov-cero-solve.dir/apps/markov_cero_solve.cpp.o
+[ 46%] Building CXX object CMakeFiles/build_info_test.dir/tests/build_info_test.cpp.o
+[ 46%] Building CXX object CMakeFiles/markov-cero-iis.dir/apps/markov_cero_iis.cpp.o
+[ 46%] Building CXX object CMakeFiles/markov-cero-mps-inspect.dir/apps/markov_cero_mps_inspect.cpp.o
+[ 46%] Building CXX object CMakeFiles/model_test.dir/tests/model_test.cpp.o
+[ 47%] Building CXX object CMakeFiles/markov-cero-info.dir/apps/markov_cero_info.cpp.o
+[ 47%] Building CXX object CMakeFiles/classifier_test.dir/tests/classifier_test.cpp.o
+[ 48%] Linking CXX executable build_info_test
+[ 48%] Built target build_info_test
+[ 48%] Building CXX object CMakeFiles/ml_branching_test.dir/tests/ml_branching_test.cpp.o
+[ 48%] Linking CXX executable markov-cero-info
+[ 48%] Built target markov-cero-info
+[ 48%] Building CXX object CMakeFiles/markov-cero-solve.dir/apps/cli_options.cpp.o
+[ 49%] Linking CXX executable markov-cero-mps-inspect
+[ 49%] Built target markov-cero-mps-inspect
+[ 49%] Building CXX object CMakeFiles/nlp_sqp_test.dir/tests/nlp_sqp_test.cpp.o
+[ 49%] Linking CXX executable markov-cero-iis
+[ 49%] Linking CXX executable model_test
+/usr/bin/ld: libmarkov_cero_core.a(parallel_tree_search_solve_integer_parallel.cpp.o): in function `markov_cero::milp::solve_integer_parallel(markov_cero::model::Model const&, markov_cero::milp::ParallelOptions const&, std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >)':
+parallel_tree_search_solve_integer_parallel.cpp:(.text+0x3641): undefined reference to `std::__detail::__notify_impl(void const*, bool, std::__detail::__wait_args_base const&)'
+/usr/bin/ld: libmarkov_cero_core.a(parallel_tree_search_solve_integer_parallel.cpp.o): in function `std::vector<std::jthread, std::allocator<std::jthread> >::~vector()':
+parallel_tree_search_solve_integer_parallel.cpp:(.text._ZNSt6vectorISt7jthreadSaIS0_EED2Ev[_ZNSt6vectorISt7jthreadSaIS0_EED5Ev]+0x254): undefined reference to `std::__detail::__notify_impl(void const*, bool, std::__detail::__wait_args_base const&)'
+collect2: error: ld returned 1 exit status
+make[2]: *** [CMakeFiles/markov-cero-iis.dir/build.make:104: markov-cero-iis] Error 1
+make[1]: *** [CMakeFiles/Makefile2:1393: CMakeFiles/markov-cero-iis.dir/all] Error 2
+make[1]: *** Waiting for unfinished jobs....
+[ 49%] Built target model_test
+[ 49%] Linking CXX executable markov-cero-verify-mip
+[ 49%] Linking CXX executable classifier_test
+[ 49%] Built target markov-cero-verify-mip
+[ 49%] Built target classifier_test
+[ 50%] Linking CXX executable nlp_sqp_test
+[ 50%] Built target nlp_sqp_test
+[ 50%] Linking CXX executable ml_branching_test
+[ 50%] Built target ml_branching_test
+[ 51%] Linking CXX executable markov-cero-solve
+/usr/bin/ld: libmarkov_cero_core.a(parallel_tree_search_solve_integer_parallel.cpp.o): in function `markov_cero::milp::solve_integer_parallel(markov_cero::model::Model const&, markov_cero::milp::ParallelOptions const&, std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >)':
+parallel_tree_search_solve_integer_parallel.cpp:(.text+0x3641): undefined reference to `std::__detail::__notify_impl(void const*, bool, std::__detail::__wait_args_base const&)'
+/usr/bin/ld: libmarkov_cero_core.a(parallel_tree_search_solve_integer_parallel.cpp.o): in function `std::vector<std::jthread, std::allocator<std::jthread> >::~vector()':
+parallel_tree_search_solve_integer_parallel.cpp:(.text._ZNSt6vectorISt7jthreadSaIS0_EED2Ev[_ZNSt6vectorISt7jthreadSaIS0_EED5Ev]+0x254): undefined reference to `std::__detail::__notify_impl(void const*, bool, std::__detail::__wait_args_base const&)'
+collect2: error: ld returned 1 exit status
+make[2]: *** [CMakeFiles/markov-cero-solve.dir/build.make:120: markov-cero-solve] Error 1
+make[1]: *** [CMakeFiles/Makefile2:1329: CMakeFiles/markov-cero-solve.dir/all] Error 2
+make: *** [Makefile:146: all] Error 2
