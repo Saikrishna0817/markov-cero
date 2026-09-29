@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # Edmonds Polytopes and a Hierarchy of Combinatorial Problems
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Defines Chvátal–Gomory cuts and Chvátal rank: a hierarchy of tightening that provably reaches the integer hull in finitely many rounds.
 
 ## Metadata

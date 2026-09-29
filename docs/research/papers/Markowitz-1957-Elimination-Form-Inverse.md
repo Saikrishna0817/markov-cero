@@ -12,6 +12,9 @@ tags: [paper, sparse]
 ---
 
 # The Elimination Form of the Inverse and its Application to Linear Programming
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Origin of pivot selection that trades fill-in against numerical stability — the Markowitz criterion.
 ## Metadata
 | Field | Value |

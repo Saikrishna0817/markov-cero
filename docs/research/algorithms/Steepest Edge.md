@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Steepest Edge
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Rank candidate pivots by improvement *per unit of geometric step* — the pricing rule that survives degeneracy, and the one this solver does not have yet.
 
 ## Definition
@@ -33,17 +36,17 @@ Standard pricing picks the column with the most negative reduced cost, ignoring 
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[21-traceability|audit/21-traceability]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
+- 15-roadmap
+- 21-traceability
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
+- Research-Code Traceability MOC
 - [[Dual Simplex|research/algorithms/Dual Simplex]]
 - [[Degeneracy|research/concepts/Degeneracy]]
 - [[Reduced Cost|research/concepts/Reduced Cost]]
 - [[Bland-Only Pricing|research/limitations/Bland-Only Pricing]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Bixby-2002-Evolution-of-LP|research/papers/Bixby-2002-Evolution-of-LP]]
 - [[Fourer-1994-Steepest-Edge-Simplexing|research/papers/Fourer-1994-Steepest-Edge-Simplexing]]
 - [[Goldfarb-1977-Practicable-Steepest-Edge|research/papers/Goldfarb-1977-Practicable-Steepest-Edge]]

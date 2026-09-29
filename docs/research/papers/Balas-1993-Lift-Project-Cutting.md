@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # A Lift-and-Project Cutting Plane Algorithm for Mixed 0/1 Programs
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Lift-and-project / disjunctive cuts: cut a 0/1 polytope by optimizing over each branch of a variable split and recombining the results.
 
 ## Metadata

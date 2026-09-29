@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Root-Only Cuts
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Cuts are separated once at the root and never again — the tree inherits the root's gap for its entire life.
 
 ## Definition
@@ -33,15 +36,15 @@ Cut separation restricted to the root node means the LP relaxation is tightened 
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
+- 21-traceability
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
+- Research-Code Traceability MOC
 - [[Branch and Cut|research/algorithms/Branch and Cut]]
 - [[Weak Relaxation|research/concepts/Weak Relaxation]]
 - [[ED-005-in-tree-cut-loop-not-more-cut-types|research/engineering-decisions/ED-005-in-tree-cut-loop-not-more-cut-types]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Cut Efficiency|research/metrics/Cut Efficiency]]
 - [[Cut Pooling|research/techniques/Cut Pooling]]

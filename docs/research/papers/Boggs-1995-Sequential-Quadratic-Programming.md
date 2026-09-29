@@ -11,6 +11,9 @@ status: standard
 tags: [paper, qp]
 ---
 # Sequential Quadratic Programming
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Acta Numerica survey of SQP — QP subproblems as the building block of the future NLP/MINLP extension.
 ## Metadata
 | Field | Value |

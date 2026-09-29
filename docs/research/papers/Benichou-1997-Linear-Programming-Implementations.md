@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # Linear Programming Implementations of the Lift-and-Project Method
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Engineering report on running lift-and-project cuts inside a production LP solver (OSL): what actually works when the theory meets floating point.
 
 ## Metadata

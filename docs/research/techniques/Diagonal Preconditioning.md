@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Diagonal Preconditioning
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Rescale variables and constraints so every proximal/step-size parameter is O(1) — the difference between a method that converges and one that crawls.
 
 ## Definition
@@ -28,10 +31,10 @@ Diagonal preconditioning replaces the isotropic step sizes of a first-order meth
 - [[ADMM]]
 - [[Scaling]]
 - [[Ruiz Scaling]]
-- [[PDLP-Engine]]
+- PDLP-Engine
 
 ## Referenced By
 
-- [[Architecture MOC|research/Architecture MOC]]
+- Architecture MOC
 - [[Primal-Dual Hybrid Gradient|research/algorithms/Primal-Dual Hybrid Gradient]]
 - [[Adaptive Restart|research/techniques/Adaptive Restart]]

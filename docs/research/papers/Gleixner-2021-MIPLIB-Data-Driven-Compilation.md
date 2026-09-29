@@ -13,6 +13,9 @@ tags: [paper, benchmark]
 
 # MIPLIB 2017: Data-Driven Compilation of the 6th MIP Library
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Builds the standard MIP benchmark library as a *data-driven* selection: a 1065-instance collection plus a 240-instance benchmark set chosen by features, clustering and expert scoring — with verified best-known solutions.
 
 ## Metadata

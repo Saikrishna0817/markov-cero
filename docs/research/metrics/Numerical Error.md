@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Numerical Error
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Distance from the true answer — objective deviation, residual size, and the accuracy ceiling each engine can reach.
 
 ## Definition
@@ -33,9 +36,9 @@ Numerical error quantifies how far a computed solution is from the exact one, me
 
 ## Referenced By
 
-- [[numerical-policy-centralized|codebase/decisions/numerical-policy-centralized]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Evaluation MOC|research/Evaluation MOC]]
+- numerical-policy-centralized
+- Architecture MOC
+- Evaluation MOC
 - [[Iterative Refinement|research/algorithms/Iterative Refinement]]
 - [[Numerical Stability|research/concepts/Numerical Stability]]
 - [[ED-008-retain-zero-trust-verifiers|research/engineering-decisions/ED-008-retain-zero-trust-verifiers]]

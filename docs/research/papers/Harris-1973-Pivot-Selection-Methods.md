@@ -13,6 +13,9 @@ tags: [paper, lp, numerics]
 
 # Pivot Selection Methods of the Devex Simplex Code
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Tolerance-based (Harris) ratio test plus Devex pricing — the defaults buried inside every modern simplex.
 
 ## Metadata

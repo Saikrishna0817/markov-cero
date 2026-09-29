@@ -13,6 +13,9 @@ tags: [paper, milp]
 
 # An Automatic Method of Solving Discrete Programming Problems
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The original branch-and-bound: recursive partitioning with LP bounds to solve discrete optimization automatically.
 
 ## Metadata

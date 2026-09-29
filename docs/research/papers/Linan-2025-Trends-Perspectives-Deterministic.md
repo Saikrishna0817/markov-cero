@@ -11,6 +11,9 @@ status: standard
 tags: [paper, minlp]
 ---
 # Trends and Perspectives in Deterministic MINLP Optimization for Integrated Planning, Scheduling, Control and Design of Chemical Processes
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Deterministic MINLP methods for integrated chemical-process decisions — the review that lines up most directly with MRPL's refinery use case.
 ## Metadata
 | Field | Value |

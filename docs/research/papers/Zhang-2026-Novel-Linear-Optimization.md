@@ -11,6 +11,9 @@ status: standard
 tags: [paper, presolve]
 ---
 # A Novel Linear Optimization Presolve Technique Based on Fourier-Motzkin Elimination
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > FME-based presolve with a predictor of how many reductions each elimination will yield; 6-11% CPU reductions on CPLEX (per source list).
 ## Metadata
 | Field | Value |

@@ -8,6 +8,9 @@ tags: [engineering-decision, gpu, r8, p0, claims]
 
 # ED-007 — Honest GPU Scoping: Fix the Measurement, Then Narrow the Claim
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > **Revalidated 2026-09-28:** the historical 13-row CPU-fallback study below is superseded
 > for current performance claims. A CUDA-enabled solver was run on the physical RTX 2050;
 > four GPU PDLP solutions verified, and GPU was 2.60–8.64× slower end-to-end than CPU PDLP
@@ -52,9 +55,9 @@ tags: [engineering-decision, gpu, r8, p0, claims]
 
 ## Linked Requirements
 
-- R8, R20, R18 → [[sih26119_problem_statement]]
+- R8, R20, R18 → sih26119_problem_statement
 
 ## Related
 
-- [[09-research-code-alignment]] (R8, §6.3, experiment E4) · [[12-keep-remove-rebuild]] (RW-9) · [[13-restart-point]] (step 2) · [[21-traceability]] §21.1 R8, §21.2
-- [[GPU-PDHG-Engine]] · [[ED-001-comparison-harness-before-new-algorithms]]
+- 09-research-code-alignment (R8, §6.3, experiment E4) · 12-keep-remove-rebuild (RW-9) · 13-restart-point (step 2) · 21-traceability §21.1 R8, §21.2
+- GPU-PDHG-Engine · [[ED-001-comparison-harness-before-new-algorithms]]

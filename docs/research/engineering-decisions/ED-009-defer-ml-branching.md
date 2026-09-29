@@ -8,6 +8,9 @@ tags: [engineering-decision, deferred, branching, r5, r18, p3]
 
 # ED-009 — Defer ML Branching to the Roadmap
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Machine-learning branching and cut selection are explicitly out of scope for this cycle: classical reliability branching is what R5 asks for, and the README's Phase 7 ML plan is delisted.
 
 ## Context (Observed fact)
@@ -46,9 +49,9 @@ tags: [engineering-decision, deferred, branching, r5, r18, p3]
 
 ## Linked Requirements
 
-- R5, R18 → [[sih26119_problem_statement]]
+- R5, R18 → sih26119_problem_statement
 
 ## Related
 
-- [[09-research-code-alignment]] (§6.3, §6.4) · [[12-keep-remove-rebuild]] (RW-10) · [[13-restart-point]] (intentionally not sequenced) · [[21-traceability]] §21.3 M15–M16
-- [[BranchAndCut]] · [[ED-005-in-tree-cut-loop-not-more-cut-types]]
+- 09-research-code-alignment (§6.3, §6.4) · 12-keep-remove-rebuild (RW-10) · 13-restart-point (intentionally not sequenced) · 21-traceability §21.3 M15–M16
+- BranchAndCut · [[ED-005-in-tree-cut-loop-not-more-cut-types]]

@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # Primal Heuristics for Mixed Integer Programs (MS thesis)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Extended treatment of the SCIP heuristic taxonomy: derivations, additional experiments and scheduling detail behind the 2007 ZIB report.
 
 ## Metadata

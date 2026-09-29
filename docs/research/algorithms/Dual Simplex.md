@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Dual Simplex
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Keep dual feasibility, restore primal feasibility — the re-optimization workhorse that makes branch-and-bound affordable.
 
 ## Definition
@@ -28,22 +31,22 @@ The dual simplex starts from a basis that is dual-feasible but primal-infeasible
 - [[Revised Simplex]]
 - [[Reduced Cost]]
 - [[Steepest Edge]]
-- [[DualSimplexEngine]]
+- DualSimplexEngine
 - [[Koberstein-2005-Dual-Simplex-Method]]
 
 ## Referenced By
 
-- [[DualSimplexEngine|codebase/components/DualSimplexEngine]]
-- [[IndependentVerifiers|codebase/components/IndependentVerifiers]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
+- DualSimplexEngine
+- IndependentVerifiers
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
+- Research-Code Traceability MOC
 - [[Revised Simplex|research/algorithms/Revised Simplex]]
 - [[Steepest Edge|research/algorithms/Steepest Edge]]
 - [[Warm Start|research/concepts/Warm Start]]
 - [[ED-002-keep-simplex-core-add-first-order-not-replace|research/engineering-decisions/ED-002-keep-simplex-core-add-first-order-not-replace]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Benichou-1997-Linear-Programming-Implementations|research/papers/Benichou-1997-Linear-Programming-Implementations]]
 - [[Berthold-2013-Cloud-Branching|research/papers/Berthold-2013-Cloud-Branching]]
 - [[Berthold-2023-Feasibility-Jump|research/papers/Berthold-2023-Feasibility-Jump]]

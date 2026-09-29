@@ -11,6 +11,9 @@ status: standard
 tags: [paper, benchmark]
 ---
 # MIPLIB 2017 — Design and Experiments + Solution Checker
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > The engineering companion to MIPLIB 2017: how the library was built and tested, plus the solution checker that independently certifies feasibility and optimality of returned solutions.
 ## Metadata
 | Field | Value |

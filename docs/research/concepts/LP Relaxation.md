@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # LP Relaxation
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The continuous shadow of a MIP: every bound this solver proves, and every node it prunes, comes from here.
 
 ## Definition
@@ -14,7 +17,7 @@ The LP relaxation of a mixed-integer program is the model obtained by deleting i
 
 ## Why It Matters Here
 - R5 requires branch-and-bound/branch-and-cut, all of which is "solve this relaxation, then divide it"; R13 asks about "difficult mixed-integer formulations", which is a statement about relaxation quality.
-- Observed state: every node LP goes through `solve_node_relaxation` — quadratic models to [[QP-ADMM-Engine]], otherwise warm-started [[DualSimplexEngine]] or [[RevisedSimplexEngine]] (src/milp/node_lp.cpp:15-77).
+- Observed state: every node LP goes through `solve_node_relaxation` — quadratic models to QP-ADMM-Engine, otherwise warm-started DualSimplexEngine or RevisedSimplexEngine (src/milp/node_lp.cpp:15-77).
 - Observed state: root heuristics consume the relaxation point directly (`simple_rounding`, `feasibility_pump`, src/milp/milp_solver.cpp:146-163).
 
 ## Key Facts / Rules
@@ -32,7 +35,7 @@ The LP relaxation of a mixed-integer program is the model obtained by deleting i
 
 ## Referenced By
 
-- [[Research MOC|research/Research MOC]]
+- Research MOC
 - [[Branch and Bound|research/algorithms/Branch and Bound]]
 - [[Feasibility Pump|research/algorithms/Feasibility Pump]]
 - [[Cut Validity|research/concepts/Cut Validity]]

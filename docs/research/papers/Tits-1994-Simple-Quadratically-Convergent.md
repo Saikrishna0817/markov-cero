@@ -11,6 +11,9 @@ status: standard
 tags: [paper, qp]
 ---
 # A Simple, Quadratically Convergent Interior Point Algorithm for LP and Convex QP
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > One algorithm for both LP and convex QP with quadratic (not just linear) local convergence near the solution.
 ## Metadata
 | Field | Value |

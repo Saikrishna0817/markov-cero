@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # RENS — Relaxation Enforced Neighborhood Search
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Fix every *fractional* variable of the LP solution to its floor/ceiling and solve the resulting sub-MIP — the mirror image of RINS.
 
 ## Metadata

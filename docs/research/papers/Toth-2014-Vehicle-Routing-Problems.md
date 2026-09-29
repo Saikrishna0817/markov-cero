@@ -11,6 +11,9 @@ status: standard
 tags: [paper, domain]
 ---
 # Vehicle Routing: Problems, Methods, and Applications
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > The reference survey of vehicle routing — the transportation/logistics model family of R11 — plus network arc-flow formulations that stress LP relaxations.
 ## Metadata
 | Field | Value |

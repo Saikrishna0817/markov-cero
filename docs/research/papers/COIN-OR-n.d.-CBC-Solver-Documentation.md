@@ -11,6 +11,9 @@ status: standard
 tags: [paper, milp]
 ---
 # CBC Solver Documentation (black box vs. framework)
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Living documentation of CBC's API: black-box solver vs. embeddable framework, and what that means for interface design.
 ## Metadata
 | Field | Value |

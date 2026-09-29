@@ -12,6 +12,9 @@ tags: [paper, lp]
 ---
 
 # Solving Linear Programs by Dual Simplex
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Standard exposition of the dual simplex method as an LP solution technique.
 ## Metadata
 | Field | Value |

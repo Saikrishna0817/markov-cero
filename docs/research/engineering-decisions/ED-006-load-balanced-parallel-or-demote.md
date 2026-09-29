@@ -8,6 +8,9 @@ tags: [engineering-decision, parallel, r7, p0, load-balancing]
 
 # ED-006 — Load-Balanced Parallel Search or Demote the Claim
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Within this window, parallel tree search either gets a load-balanced (work-stealing) scheduler that re-measures ≥1× at 4 threads, or it is demoted to `--threads 1` with its speedup claim removed.
 
 ## Context (Observed fact)
@@ -44,9 +47,9 @@ tags: [engineering-decision, parallel, r7, p0, load-balancing]
 
 ## Linked Requirements
 
-- R7, R18 → [[sih26119_problem_statement]]
+- R7, R18 → sih26119_problem_statement
 
 ## Related
 
-- [[09-research-code-alignment]] (R7, §6.2) · [[12-keep-remove-rebuild]] (RW-2) · [[13-restart-point]] (step 4) · [[21-traceability]] §21.1 R7, §21.2
-- [[ParallelTreeSearch]] · [[ED-001-comparison-harness-before-new-algorithms]]
+- 09-research-code-alignment (R7, §6.2) · 12-keep-remove-rebuild (RW-2) · 13-restart-point (step 4) · 21-traceability §21.1 R7, §21.2
+- ParallelTreeSearch · [[ED-001-comparison-harness-before-new-algorithms]]

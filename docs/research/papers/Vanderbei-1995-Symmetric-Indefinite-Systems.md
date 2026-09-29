@@ -11,6 +11,9 @@ status: standard
 tags: [paper, ipm]
 ---
 # Symmetric Indefinite Systems for Interior Point Methods
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > LDL^T on a symmetric indefinite saddle system vs. normal equations: conditioning tradeoff for IPM linear algebra.
 ## Metadata
 | Field | Value |

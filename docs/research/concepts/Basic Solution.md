@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Basic Solution
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Set the nonbasics to zero and solve the square system — the vertex from which every simplex move departs.
 
 ## Definition

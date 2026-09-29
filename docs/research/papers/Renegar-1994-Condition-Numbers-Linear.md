@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # Condition Numbers, the Linear Programming Problem and Sensitivity Analysis
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Gives LP a rigorous definition of "ill-conditioned": relative data perturbations produce bounded relative solution changes iff κ is bounded — with matching sensitivity bounds.
 
 ## Metadata

@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # Cover Inequalities for Mixed-Integer Programs
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Modern cover generation beyond the basic 0/1 case: covers with mixed-integer variables, multi-row covers and better separation.
 
 ## Metadata

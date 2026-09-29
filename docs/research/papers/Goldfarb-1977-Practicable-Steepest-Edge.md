@@ -13,6 +13,9 @@ tags: [paper, lp]
 
 # A Practicable Steepest-Edge Simplex Algorithm
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Makes steepest-edge pricing affordable: efficient weight updates turn a theoretical ideal into a working pricing rule.
 
 ## Metadata

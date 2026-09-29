@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Cut Validity
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > A cut that is not valid cuts off optimal solutions — a correctness property, not a performance tuning knob.
 
 ## Definition
@@ -32,9 +35,9 @@ A valid inequality holds for every point of the integer-feasible set (ideally fo
 
 ## Referenced By
 
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
+- Architecture MOC
+- Research MOC
+- Research-Code Traceability MOC
 - [[Branch and Cut|research/algorithms/Branch and Cut]]
 - [[Gomory Mixed Integer Cut|research/algorithms/Gomory Mixed Integer Cut]]
 - [[Mixed Integer Rounding Cut|research/algorithms/Mixed Integer Rounding Cut]]
@@ -42,7 +45,7 @@ A valid inequality holds for every point of the integer-feasible set (ideally fo
 - [[Weak Relaxation|research/concepts/Weak Relaxation]]
 - [[ED-005-in-tree-cut-loop-not-more-cut-types|research/engineering-decisions/ED-005-in-tree-cut-loop-not-more-cut-types]]
 - [[Root-Only Cuts|research/limitations/Root-Only Cuts]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Cut Efficiency|research/metrics/Cut Efficiency]]
 - [[Achterberg-2007-Constraint-Integer-Programming|research/papers/Achterberg-2007-Constraint-Integer-Programming]]
 - [[Atamturk-2003-Cover-Inequalities-Mixed|research/papers/Atamturk-2003-Cover-Inequalities-Mixed]]

@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Cut Efficiency
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > How much bound and node reduction a cut buys per unit of separation cost — the metric that decides whether cutting planes pay.
 
 ## Definition
@@ -32,15 +35,15 @@ Cut efficiency measures return on investment for cut separation: on the strength
 
 ## Referenced By
 
-- [[16-testing-evaluation-strategy|audit/16-testing-evaluation-strategy]]
-- [[21-traceability|audit/21-traceability]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Evaluation MOC|research/Evaluation MOC]]
-- [[Research MOC|research/Research MOC]]
+- 16-testing-evaluation-strategy
+- 21-traceability
+- Architecture MOC
+- Evaluation MOC
+- Research MOC
 - [[Cut Validity|research/concepts/Cut Validity]]
 - [[ED-005-in-tree-cut-loop-not-more-cut-types|research/engineering-decisions/ED-005-in-tree-cut-loop-not-more-cut-types]]
 - [[Root-Only Cuts|research/limitations/Root-Only Cuts]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Atamturk-2003-Cover-Inequalities-Mixed|research/papers/Atamturk-2003-Cover-Inequalities-Mixed]]
 - [[Balas-1980-Cuts-Fixed-Rank|research/papers/Balas-1980-Cuts-Fixed-Rank]]
 - [[Balas-1993-Lift-Project-Cutting|research/papers/Balas-1993-Lift-Project-Cutting]]

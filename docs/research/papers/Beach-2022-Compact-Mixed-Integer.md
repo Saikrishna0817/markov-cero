@@ -11,6 +11,9 @@ status: standard
 tags: [paper, miqp]
 ---
 # Compact Mixed-Integer Programming Formulations in Quadratic Optimization
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Compact (non-extended) linearizations of quadratic optimization models — the formulation toolkit on an MIQP extension path would rest.
 ## Metadata
 | Field | Value |

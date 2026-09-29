@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Markowitz Pivoting
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Choose the pivot minimizing (row count × column count) — the classic trade between fill-in and stability during sparse elimination.
 
 ## Definition
@@ -33,8 +36,8 @@ Markowitz (1957) selects an elimination pivot by scoring each candidate (i, j) w
 
 ## Referenced By
 
-- [[Algorithms MOC|research/Algorithms MOC]]
+- Algorithms MOC
 - [[Sparse LU|research/algorithms/Sparse LU]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Markowitz-1957-Elimination-Form-Inverse|research/papers/Markowitz-1957-Elimination-Form-Inverse]]
 - [[Fill-Reducing Ordering|research/techniques/Fill-Reducing Ordering]]

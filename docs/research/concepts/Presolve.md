@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Presolve
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Cheap structural reductions before the real solve — historically the single largest speedup a solver can buy.
 
 ## Definition

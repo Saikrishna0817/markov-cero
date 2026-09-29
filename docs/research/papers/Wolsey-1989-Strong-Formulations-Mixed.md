@@ -11,6 +11,9 @@ status: standard
 tags: [paper, milp]
 ---
 # Strong Formulations for Mixed Integer Programming: A Survey
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Formulation strength determines tree size before any algorithm touches the model.
 ## Metadata
 | Field | Value |

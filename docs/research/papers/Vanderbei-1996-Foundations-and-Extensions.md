@@ -12,6 +12,9 @@ tags: [paper, survey, lp]
 ---
 # Linear Programming: Foundations and Extensions
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Standard LP text deriving simplex and interior-point methods from duality with an implementer's eye.
 ## Metadata
 | Field | Value |

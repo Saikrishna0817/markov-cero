@@ -1,18 +1,22 @@
-# Qualification refinery slice
+# Refinery qualification examples
 
-Four MPS files exercise the user-facing solver. Answers are **computed** by `markov-cero-solve`; they are not baked into the demo script.
+This folder provides small models for demonstrating the solver's input, solve and verification path. Four synthetic cases exercise distinct outcomes. A fifth MPS file is derived from attributed historical public Fawley inputs; it is a mathematical qualification model, **not** approved MRPL plant data or an operational schedule.
 
-| File | Expected typed outcome |
-|---|---|
-| `refinery-feasible.mps` | Optimal, independently verified |
-| `refinery-infeasible.mps` | Infeasible with a checked Farkas witness |
-| `refinery-malformed.mps` | InvalidModel |
-| `refinery-limited.mps` | IterationLimit when run with `--iteration-limit 1` |
+| File | Purpose | Expected kind of result |
+|---|---|---|
+| `refinery-feasible.mps` | Two-crude CDU blend with product and sulfur constraints | Verified optimum for the synthetic case |
+| `refinery-infeasible.mps` | Deliberately inconsistent constraints | Checked infeasibility witness when supported |
+| `refinery-malformed.mps` | Invalid input structure | Typed `InvalidModel` failure |
+| `refinery-limited.mps` | Demonstrate a solver limit | `IterationLimit` with `--iteration-limit 1` |
+| `fawley-public.mps` | Historical public-input qualification | Objective and feasibility checks for this generated model |
+
+From the **repository root**:
 
 ```sh
-cmake -S ../.. -B ../../build -DCMAKE_BUILD_TYPE=RelWithDebInfo
-cmake --build ../../build -j --target markov-cero-solve
-../../build/markov-cero-solve refinery-feasible.mps
+bash scripts/run-qualification-demo.sh
+./build/markov-cero-solve examples/refinery/fawley-public.mps
 ```
 
-From the repository root, `bash run-qualification-demo.sh` runs the feasible case end to end.
+The demo script builds the CLI if necessary, solves the synthetic feasible model and prints its JSON output. The Fawley MPS is generated from [`data/refinery/fawley_public.json`](../../data/refinery/fawley_public.json) using [`scripts/generators/gen_public_refinery.py`](../../scripts/generators/gen_public_refinery.py). Its [data dictionary](data-dictionary.md) explains units and fields, and [expected results](expected-results.json) describe the qualification checks. The public data include approximate blend indices and historical assumptions; review [provenance](../../docs/project/PROVENANCE.md) before using the result in a presentation.
+
+A recorded local markov-cero run and development HiGHS oracle agreed on objective −2899.252790423 thousand historical USD per period for the 29-row, 36-column generated model. This agreement does not validate the physical formulation. Engineer review of mass and quality balance, approved operating data and an agreed shadow trial remain open [release gates](../../evidence/gate-status-20260929.json).

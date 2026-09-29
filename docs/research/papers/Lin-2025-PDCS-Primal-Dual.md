@@ -11,6 +11,9 @@ status: standard
 tags: [paper, gpu]
 ---
 # PDCS: A Primal-Dual Large-Scale Conic Programming Solver with GPU Enhancements
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > A GPU primal-dual first-order solver for large LP/QP/conic problems reported to beat commercial solvers at scale — evidence for a two-engine architecture.
 ## Metadata
 | Field | Value |

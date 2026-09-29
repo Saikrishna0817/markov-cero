@@ -12,6 +12,9 @@ tags: [paper, sparse, numerics]
 ---
 
 # A Fast LU Factorization for Linear Programming Bases
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Threshold partial pivoting: LP basis factorization that keeps sparsity without giving up stability.
 ## Metadata
 | Field | Value |

@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Parallel Scalability Gap
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > R7 promises multi-core scaling; the measurement shows a slowdown — the distance between the claim and the evidence.
 
 ## Definition
@@ -34,6 +37,6 @@ This gap covers everything between "threads exist in the code" and "wall-clock t
 ## Referenced By
 
 - [[Negative Parallel Scaling|research/limitations/Negative Parallel Scaling]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Parallel Efficiency|research/metrics/Parallel Efficiency]]

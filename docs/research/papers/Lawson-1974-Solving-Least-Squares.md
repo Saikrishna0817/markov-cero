@@ -11,6 +11,9 @@ status: standard
 tags: [paper, qp]
 ---
 # Solving Least Squares Problems; Practical Optimization
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Two classical books: NNLS/least-squares algorithms and the practical toolbox (Cholesky handling, dogleg, QP subproblems) behind optimization codes.
 ## Metadata
 | Field | Value |

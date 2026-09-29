@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # Reduced Cost Fixing
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Fix variables to their bounds using LP [[Reduced Cost]] values plus an incumbent bound — free presolve-style pruning everywhere in the tree.
 
 ## Metadata

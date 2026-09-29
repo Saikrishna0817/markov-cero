@@ -13,6 +13,9 @@ tags: [paper, benchmark]
 
 # MIPLIB 2003
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The reference instance taxonomy and performance-measurement methodology for mixed-integer programming — the predecessor of MIPLIB 2017 and the origin of most modern MIP benchmarking practice.
 
 ## Metadata

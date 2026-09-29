@@ -12,6 +12,9 @@ tags: [paper, scaling, numerics]
 ---
 
 # Automatic Scaling of Matrices for Gaussian Elimination
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Row/column equilibration chosen to keep elimination stable, not merely to normalize magnitudes (listed also as "Model Scaling in LP").
 ## Metadata
 | Field | Value |

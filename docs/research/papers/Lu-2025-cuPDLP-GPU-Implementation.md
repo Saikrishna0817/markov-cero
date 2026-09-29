@@ -11,6 +11,9 @@ status: standard
 tags: [paper, gpu]
 ---
 # cuPDLP.jl: A GPU Implementation of Restarted PDHG for LP
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Demonstrates that a restarted primal-dual hybrid gradient method on a GPU can solve large LPs at speeds no CPU simplex reaches — the direct ancestor of our PDHG engine.
 ## Metadata
 | Field | Value |

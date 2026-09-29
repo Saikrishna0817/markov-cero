@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Pseudo-Cost Branching
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Remember how much each variable has moved the bound in each direction — branching by accumulated experience instead of by trial.
 
 ## Definition
@@ -27,20 +30,20 @@ A pseudo-cost records, per variable and per direction, the observed objective-bo
 - [[Strong Branching]]
 - [[Branch and Bound]]
 - [[Diving]]
-- [[BranchAndCut]]
+- BranchAndCut
 - [[Achterberg-2005-Branching-Rules-Revisited]]
 - [[Driebeek-1966-Algorithm-Assignment-Problem]]
 
 ## Referenced By
 
-- [[BranchAndCut|codebase/components/BranchAndCut]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- BranchAndCut
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
 - [[Branch and Bound|research/algorithms/Branch and Bound]]
 - [[Strong Branching|research/algorithms/Strong Branching]]
 - [[ED-009-defer-ml-branching|research/engineering-decisions/ED-009-defer-ml-branching]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Achterberg-2005-Branching-Rules-Revisited|research/papers/Achterberg-2005-Branching-Rules-Revisited]]
 - [[Achterberg-2007-Best-Estimate-Bound|research/papers/Achterberg-2007-Best-Estimate-Bound]]
 - [[Berthold-2006-Hybrid-Branching|research/papers/Berthold-2006-Hybrid-Branching]]

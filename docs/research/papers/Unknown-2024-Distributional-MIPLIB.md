@@ -11,6 +11,9 @@ status: standard
 tags: [paper, benchmark]
 ---
 # Distributional MIPLIB (D-MIPLIB)
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Reframes MIPLIB instances as *distributions* of hardness rather than single points — benchmarking that absorbs the performance variability classical instance sets ignore.
 ## Metadata
 | Field | Value |

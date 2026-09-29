@@ -11,6 +11,9 @@ status: standard
 tags: [paper, benchmark]
 ---
 # Parallel Optimization (reporting metrics)
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Standard definitions of strong/weak scaling — speedup and parallel efficiency — used to judge any parallel solver claim, including ours.
 ## Metadata
 | Field | Value |

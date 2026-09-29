@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # First-Order Accuracy Ceiling
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > First-order methods converge to a tolerance floor and stop — no basis, no extra digits, no refinement pass to push further.
 
 ## Definition
@@ -33,12 +36,12 @@ PDHG/PDLP and ADMM are first-order methods: their per-iteration cost is one matr
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Architecture MOC|research/Architecture MOC]]
+- 21-traceability
+- Architecture MOC
 - [[Iterative Refinement|research/algorithms/Iterative Refinement]]
 - [[Primal-Dual Hybrid Gradient|research/algorithms/Primal-Dual Hybrid Gradient]]
 - [[ED-003-interior-point-required-by-ps|research/engineering-decisions/ED-003-interior-point-required-by-ps]]
 - [[ED-007-honest-gpu-scoping|research/engineering-decisions/ED-007-honest-gpu-scoping]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Numerical Error|research/metrics/Numerical Error]]

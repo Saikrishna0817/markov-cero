@@ -12,6 +12,9 @@ tags: [paper, sparse]
 ---
 
 # The Role of Elimination Trees in Sparse Factorization
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Elimination-tree theory: what determines the structure of L, and where parallelism lives.
 ## Metadata
 | Field | Value |

@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Multi-Engine Solver Architecture
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > One canonical model, several engines behind it — the design that lets simplex, first-order and ADMM coexist without duplicating the pipeline.
 
 ## Definition
@@ -27,17 +30,17 @@ A multi-engine solver architecture separates the front end (parsing, canonicaliz
 - [[CSC Sparse Model]]
 - [[Presolve-Postsolve Stack]]
 - [[Interior-Point Method]]
-- [[RevisedSimplexEngine]]
-- [[PDLP-Engine]]
-- [[QP-ADMM-Engine]]
+- RevisedSimplexEngine
+- PDLP-Engine
+- QP-ADMM-Engine
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Codebase MOC|codebase/Codebase MOC]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- Codebase MOC
+- Research MOC
 - [[CSC Sparse Model|research/architectures/CSC Sparse Model]]
 - [[Presolve-Postsolve Stack|research/architectures/Presolve-Postsolve Stack]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Lin-2025-PDCS-Primal-Dual|research/papers/Lin-2025-PDCS-Primal-Dual]]

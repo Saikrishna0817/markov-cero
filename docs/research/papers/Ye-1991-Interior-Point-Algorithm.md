@@ -11,6 +11,9 @@ status: standard
 tags: [paper, ipm]
 ---
 # On an Interior Point Algorithm for Linear Programming
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Polynomial iteration bounds for practical path-following variants (Ye 1991; Monteiro & Adler 1989).
 ## Metadata
 | Field | Value |

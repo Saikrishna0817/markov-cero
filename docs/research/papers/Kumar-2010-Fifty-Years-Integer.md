@@ -12,6 +12,9 @@ tags: [paper, survey, milp]
 ---
 # Fifty Years of Integer Programming: A Review of the Solution Approaches
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Expository map of the integer-programming solution approaches developed since 1959.
 ## Metadata
 | Field | Value |

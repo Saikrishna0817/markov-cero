@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Weak Relaxation
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > An LP bound that barely constrains the integer problem — the gap the whole tree has to close by brute force.
 
 ## Definition
@@ -33,14 +36,14 @@ A relaxation is weak when its optimum lies far below the integer optimum (large 
 
 ## Referenced By
 
-- [[Research MOC|research/Research MOC]]
+- Research MOC
 - [[Gomory Mixed Integer Cut|research/algorithms/Gomory Mixed Integer Cut]]
 - [[Mixed Integer Rounding Cut|research/algorithms/Mixed Integer Rounding Cut]]
 - [[Degeneracy|research/concepts/Degeneracy]]
 - [[LP Relaxation|research/concepts/LP Relaxation]]
 - [[Presolve|research/concepts/Presolve]]
 - [[Root-Only Cuts|research/limitations/Root-Only Cuts]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- research-dependency-map
 - [[Cut Efficiency|research/metrics/Cut Efficiency]]
 - [[Atamturk-2003-Cover-Inequalities-Mixed|research/papers/Atamturk-2003-Cover-Inequalities-Mixed]]
 - [[Balas-1965-Additive-Algorithm-Solving|research/papers/Balas-1965-Additive-Algorithm-Solving]]

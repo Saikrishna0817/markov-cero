@@ -24,6 +24,11 @@ bool Search::initialize() {
         result.message = e.what();
         return false;
     }
+    if (options.deadline && std::chrono::steady_clock::now() >= *options.deadline) {
+        result.status = lp::reference::SolveStatus::resource_limit;
+        result.message = "MILP wall-clock deadline reached before root relaxation";
+        return false;
+    }
 
     // The B&B implementation's incumbent comparisons and global-bound logic
     // are defined for minimization. Normalize maximization once at the solver

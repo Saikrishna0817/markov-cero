@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # A Feasibility Pump Heuristic for General MIPs
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Extends the Feasibility Pump from 0/1 to general-integer and continuous variables via constrained/soft projections.
 
 ## Metadata

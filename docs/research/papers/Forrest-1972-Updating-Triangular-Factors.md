@@ -13,6 +13,9 @@ tags: [paper, sparse, lp]
 
 # Updating Triangular Factors of the Basis to Maintain Sparsity
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Keeps L,U current through cheap rank-1 updates between refactorizations instead of refactoring every iteration.
 
 ## Metadata

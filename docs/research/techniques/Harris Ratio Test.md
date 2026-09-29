@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Harris Ratio Test
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Accept any row within a tolerance band of the minimum ratio, then take the biggest pivot among them — the ratio test every production simplex runs.
 
 ## Definition
@@ -33,13 +36,13 @@ The exact-arithmetic ratio test demands the strict minimum, which in floating po
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- Architecture MOC
+- Research MOC
 - [[Revised Simplex|research/algorithms/Revised Simplex]]
 - [[Degeneracy|research/concepts/Degeneracy]]
 - [[Numerical Stability|research/concepts/Numerical Stability]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Benichou-1997-Linear-Programming-Implementations|research/papers/Benichou-1997-Linear-Programming-Implementations]]
 - [[DeFarias-2019-Positive-Edge-Pricing|research/papers/DeFarias-2019-Positive-Edge-Pricing]]
 - [[Georg-1987-Numerical-Stability-Simplex|research/papers/Georg-1987-Numerical-Stability-Simplex]]

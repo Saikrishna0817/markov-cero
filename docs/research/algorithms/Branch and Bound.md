@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Branch and Bound
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Solve relaxations, split on fractional variables, prune with bounds — the completeness argument behind every MILP result.
 
 ## Definition
@@ -28,17 +31,17 @@ Branch-and-bound searches a binary tree over the integer variables: each node is
 - [[Warm Start]]
 - [[Branch and Cut]]
 - [[Pseudo-Cost Branching]]
-- [[BranchAndCut]]
+- BranchAndCut
 - [[Land-1960-Automatic-Method-Solving]]
 
 ## Referenced By
 
-- [[BranchAndCut|codebase/components/BranchAndCut]]
-- [[ParallelTreeSearch|codebase/components/ParallelTreeSearch]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
+- BranchAndCut
+- ParallelTreeSearch
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
+- Research-Code Traceability MOC
 - [[Branch and Cut|research/algorithms/Branch and Cut]]
 - [[Pseudo-Cost Branching|research/algorithms/Pseudo-Cost Branching]]
 - [[Strong Branching|research/algorithms/Strong Branching]]

@@ -12,6 +12,9 @@ tags: [paper, sparse]
 ---
 
 # A Fast and High Quality Multilevel Scheme for Partitioning Irregular Graphs
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > METIS: multilevel coarsen–partition–refine graph partitioning, the template for nested-dissection orderings on very large systems.
 ## Metadata
 | Field | Value |

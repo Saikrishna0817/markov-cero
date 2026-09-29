@@ -11,6 +11,9 @@ status: standard
 tags: [paper, presolve]
 ---
 # Analysis of Mathematical Programming Problems Prior to Applying the Simplex Method
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > The original presolve paper: bound propagation, redundancy and implied bounds before the first pivot.
 ## Metadata
 | Field | Value |

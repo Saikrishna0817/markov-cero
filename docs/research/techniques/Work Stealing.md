@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Work Stealing
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Idle workers pull nodes from busy ones instead of waiting — the standard fix for load imbalance in parallel branch-and-bound.
 
 ## Definition
@@ -28,18 +31,18 @@ Work stealing lets a thread that empties its local queue request nodes (or whole
 - [[Parallel Efficiency]]
 - [[Branch and Bound]]
 - [[Negative Parallel Scaling]]
-- [[ParallelTreeSearch]]
+- ParallelTreeSearch
 - [[Eckstein-1994-Control-Strategies-Parallel]]
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[21-traceability|audit/21-traceability]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 15-roadmap
+- 21-traceability
+- Architecture MOC
+- Research MOC
 - [[ED-006-load-balanced-parallel-or-demote|research/engineering-decisions/ED-006-load-balanced-parallel-or-demote]]
 - [[Negative Parallel Scaling|research/limitations/Negative Parallel Scaling]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Parallel Efficiency|research/metrics/Parallel Efficiency]]
 - [[Parallel Speedup|research/metrics/Parallel Speedup]]
 - [[Abbasi-2020-PIPS-PSBB-Multi-Level|research/papers/Abbasi-2020-PIPS-PSBB-Multi-Level]]

@@ -13,6 +13,9 @@ tags: [paper, lp]
 
 # Steepest Edge Simplex Algorithms for Linear Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Dual steepest-edge pricing — the scheme that keeps degenerate and near-degenerate LP relaxations moving.
 
 ## Metadata

@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Symbolic Factorization
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Decide the fill pattern from the sparsity graph alone, then run numbers into it — the phase that makes repeated factorizations affordable.
 
 ## Definition
@@ -27,13 +30,13 @@ Symbolic factorization determines, without touching numeric values, the nonzero 
 - [[Sparse LDL Factorization]]
 - [[Fill-Reducing Ordering]]
 - [[Sparsity]]
-- [[LDL-Factorization]]
+- LDL-Factorization
 - [[Grigori-2007-Parallel-Symbolic-Factorization]]
 
 ## Referenced By
 
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- Architecture MOC
+- Research MOC
 - [[Sparse LDL Factorization|research/algorithms/Sparse LDL Factorization]]
 - [[Sparsity|research/concepts/Sparsity]]
 - [[Amestoy-1996-Approximate-Minimum-Degree|research/papers/Amestoy-1996-Approximate-Minimum-Degree]]

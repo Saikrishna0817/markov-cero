@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # Rounding and Propagation Heuristics for Mixed Integer Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Focused study of the cheapest heuristic tier: when does plain rounding work, and how much does constraint propagation add?
 
 ## Metadata

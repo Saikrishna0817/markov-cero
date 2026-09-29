@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Netlib LP Collection
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The classic continuous test set — small, diverse, and where every LP solver's numerics get checked first.
 
 ## Definition
@@ -32,12 +35,12 @@ The Netlib LP test set is the historical collection of linear programming proble
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[benchmark-suites|codebase/tests/benchmark-suites]]
-- [[Datasets MOC|research/Datasets MOC]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- benchmark-suites
+- Datasets MOC
+- Research MOC
 - [[Mittelmann Benchmarks|research/datasets/Mittelmann Benchmarks]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Anderssen-1984-NETLIB-LP-Test-Set|research/papers/Anderssen-1984-NETLIB-LP-Test-Set]]
 - [[Gamst-1970s-MPS-format-specification|research/papers/Gamst-1970s-MPS-format-specification]]
 - [[Khachiyan-1979-Polynomial-Algorithm-Linear|research/papers/Khachiyan-1979-Polynomial-Algorithm-Linear]]

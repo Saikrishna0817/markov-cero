@@ -11,6 +11,9 @@ status: standard
 tags: [paper, domain]
 ---
 # Production Planning by Mixed Integer Programming (supply-chain arc-flow/lot-sizing literature)
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > The canonical supply-chain/lot-sizing MIP formulations (arc-flow, multi-item capacitated lot-sizing) behind R11's supply-chain scope.
 ## Metadata
 | Field | Value |

@@ -13,6 +13,9 @@ tags: [paper, milp]
 
 # A Branch-and-Cut Algorithm for the Resolution of Large-Scale Symmetric TSP Problems
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The branch-and-cut paper: LP relaxation + cutting-plane separation + combinatorial bounding inside one search.
 
 ## Metadata

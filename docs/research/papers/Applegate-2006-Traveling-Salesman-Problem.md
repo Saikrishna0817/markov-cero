@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # The Traveling Salesman Problem: A Computational Study (heuristic chapters)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Deep practical engineering of combinatorial heuristics (k-opt, bootstrapping, cutting planes at scale) from the Concorde authors.
 
 ## Metadata

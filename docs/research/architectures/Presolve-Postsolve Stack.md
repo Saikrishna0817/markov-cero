@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Presolve-Postsolve Stack
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Record every reduction as a reversible operation, then replay them backwards — the architecture that makes aggressive presolve safe.
 
 ## Definition
@@ -32,14 +35,14 @@ The presolve-postsolve stack is a log-structured pattern: each reduction (delete
 
 ## Referenced By
 
-- [[07-current-architecture|audit/07-current-architecture]]
-- [[21-traceability|audit/21-traceability]]
-- [[Codebase MOC|codebase/Codebase MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 07-current-architecture
+- 21-traceability
+- Codebase MOC
+- Architecture MOC
+- Research MOC
 - [[CSC Sparse Model|research/architectures/CSC Sparse Model]]
 - [[Multi-Engine Solver Architecture|research/architectures/Multi-Engine Solver Architecture]]
 - [[Presolve|research/concepts/Presolve]]
 - [[ED-010-presolve-depth-over-new-engine|research/engineering-decisions/ED-010-presolve-depth-over-new-engine]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map

@@ -11,6 +11,9 @@ status: standard
 tags: [paper, parallel]
 ---
 # Parallel Sparse Linear Algebra in MUMPS
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Task-parallel multifrontal sparse factorization showing how to keep many cores busy inside a single sparse solve.
 ## Metadata
 | Field | Value |

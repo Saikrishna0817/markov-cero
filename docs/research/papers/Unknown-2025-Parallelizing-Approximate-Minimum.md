@@ -11,6 +11,9 @@ status: standard
 tags: [paper, parallel]
 ---
 # Parallelizing the Approximate Minimum Degree Ordering Algorithm
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > First scalable shared-memory parallel AMD ordering — reported 7.29× on 64 threads — removing a serial bottleneck before any factorization starts.
 ## Metadata
 | Field | Value |

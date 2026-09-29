@@ -49,6 +49,11 @@ Result solve_attempt(const transform::SparseCanonicalModel& m, const Options& o)
         result.message = "invalid simplex options";
         return result;
     }
+    if (o.deadline && std::chrono::steady_clock::now() >= *o.deadline) {
+        result.status = SolveStatus::resource_limit;
+        result.message = "simplex wall-clock deadline reached before factorization";
+        return result;
+    }
     try {
         auto w = make_work(m);
         result.telemetry.reserve(std::min(o.iteration_limit, o.telemetry_limit));
@@ -145,7 +150,8 @@ Result solve_attempt(const transform::SparseCanonicalModel& m, const Options& o)
         return result;
     } catch (const std::exception& e) {
 
-        result.status = SolveStatus::numerical_failure;
+        result.status = o.deadline && std::chrono::steady_clock::now() >= *o.deadline
+                            ? SolveStatus::resource_limit : SolveStatus::numerical_failure;
         result.message = e.what();
         return result;
     }

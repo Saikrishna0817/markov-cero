@@ -4,7 +4,7 @@
 // model::Model::nlobj_terms. This translation unit bridges those terms into
 // an nlp::NlpModel consumable by the SQP engine, so file-based NLP models and
 // callback-based NLP models share one solver path. The format specification
-// lives in docs/nlobj_format.md and is a non-standard MPS extension.
+// is a non-standard MPS extension; its original format note is in Git history.
 
 #include "markov_cero/io/nlobj_parser.hpp"
 

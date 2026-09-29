@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Feasibility Pump
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Round, project back onto the constraints, round again — the fastest known route to a first MIP incumbent.
 
 ## Definition
@@ -27,17 +30,17 @@ The feasibility pump alternates between two projections: round the current LP po
 - [[Rounding Heuristic]]
 - [[LP Relaxation]]
 - [[Diving]]
-- [[PrimalHeuristics]]
+- PrimalHeuristics
 - [[Fischetti-2005-Feasibility-Pump]]
 - [[Achterberg-2007-Improving-Feasibility-Pump]]
 
 ## Referenced By
 
-- [[PrimalHeuristics|codebase/components/PrimalHeuristics]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- PrimalHeuristics
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
+- cross-paper-synthesis
 - [[Achterberg-0000-Objective-Feasibility-Pump|research/papers/Achterberg-0000-Objective-Feasibility-Pump]]
 - [[Achterberg-2007-Improving-Feasibility-Pump|research/papers/Achterberg-2007-Improving-Feasibility-Pump]]
 - [[Berthold-2006-Primal-Heuristics-Mixed|research/papers/Berthold-2006-Primal-Heuristics-Mixed]]

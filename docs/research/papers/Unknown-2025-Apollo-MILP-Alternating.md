@@ -11,6 +11,9 @@ status: standard
 tags: [paper, ml]
 ---
 # Apollo-MILP: An Alternating Prediction-Correction Neural Solving Framework for MILP
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Neural prediction alternating with optimization-based correction to warm-start MILP solving — the ML track the PS explicitly places outside required scope.
 ## Metadata
 | Field | Value |

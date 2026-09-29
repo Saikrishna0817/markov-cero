@@ -11,6 +11,9 @@ status: standard
 tags: [paper, benchmark]
 ---
 # Mittelmann LP/MILP Benchmark Sets
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > The free instance sets behind the Mittelmann leaderboards (Netlib/Kennington LP collections and MILP sets) — the raw material for R15/R19 benchmark runs.
 ## Metadata
 | Field | Value |

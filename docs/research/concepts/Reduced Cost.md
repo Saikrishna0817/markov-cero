@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Reduced Cost
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > d = c − πᵀA — the marginal price of one unit of a column, and the simplex's optimality test in one line.
 
 ## Definition

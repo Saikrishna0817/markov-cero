@@ -8,6 +8,9 @@ tags: [engineering-decision, simplex, first-order, r4, r10, keep]
 
 # ED-002 — Keep the Simplex Core, Add First-Order Methods, Do Not Replace
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The certified revised/dual simplex core stays; first-order and interior-point engines are added alongside it, and Bland anti-cycling is demoted to a fallback — never removed.
 
 ## Context (Observed fact)
@@ -21,7 +24,7 @@ tags: [engineering-decision, simplex, first-order, r4, r10, keep]
 
 - [[Revised Simplex]] — cold-solve reference method (Phase-I/II, Farkas certificates).
 - [[Dual Simplex]] — warm-start re-optimization; why it exists as the node LP engine.
-- [[Primal-Dual Hybrid Gradient]] — the first-order complement already shipped as [[PDLP-Engine]].
+- [[Primal-Dual Hybrid Gradient]] — the first-order complement already shipped as PDLP-Engine.
 - [[Bland-Only Pricing]] — correct architecture: good pricing default, Bland as the guarantee.
 - [[Bixby-2002-Evolution-of-LP]] — dual simplex and steepest-edge are speedups *inside* simplex, so improve the core rather than swap it out.
 
@@ -45,9 +48,9 @@ tags: [engineering-decision, simplex, first-order, r4, r10, keep]
 
 ## Linked Requirements
 
-- R2, R4, R5, R9, R10 → [[sih26119_problem_statement]]
+- R2, R4, R5, R9, R10 → sih26119_problem_statement
 
 ## Related
 
-- [[09-research-code-alignment]] · [[12-keep-remove-rebuild]] (§8.1, RW-7) · [[13-restart-point]] (step 8) · [[21-traceability]] §21.1 R2/R4/R13
+- 09-research-code-alignment · 12-keep-remove-rebuild (§8.1, RW-7) · 13-restart-point (step 8) · 21-traceability §21.1 R2/R4/R13
 - [[ED-003-interior-point-required-by-ps]] · [[ED-004-sparse-first-canonicalization]]

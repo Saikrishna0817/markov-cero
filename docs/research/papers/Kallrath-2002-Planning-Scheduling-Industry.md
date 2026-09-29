@@ -11,6 +11,9 @@ status: standard
 tags: [paper, domain]
 ---
 # Planning and Scheduling in Industry
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Practice-focused catalog of production planning and scheduling formulations — the MILP model patterns behind the PS's planning/logistics scope.
 ## Metadata
 | Field | Value |

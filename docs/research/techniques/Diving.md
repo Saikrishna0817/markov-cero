@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Diving
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Fix one integer variable at a time from the LP point and re-solve — a greedy descent toward a feasible incumbent without touching the tree.
 
 ## Definition
@@ -28,16 +31,16 @@ A dive starts from a fractional LP solution and repeatedly selects a fractional 
 - [[Feasibility Pump]]
 - [[Pseudo-Cost Branching]]
 - [[LP Relaxation]]
-- [[PrimalHeuristics]]
+- PrimalHeuristics
 - [[Berthold-2007-Heuristics-Branch-Cut]]
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[Research MOC|research/Research MOC]]
+- 15-roadmap
+- Research MOC
 - [[Feasibility Pump|research/algorithms/Feasibility Pump]]
 - [[Pseudo-Cost Branching|research/algorithms/Pseudo-Cost Branching]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Achterberg-0000-Objective-Feasibility-Pump|research/papers/Achterberg-0000-Objective-Feasibility-Pump]]
 - [[Achterberg-2011-Rounding-Propagation-Heuristics|research/papers/Achterberg-2011-Rounding-Propagation-Heuristics]]
 - [[Berthold-2006-Primal-Heuristics-Mixed|research/papers/Berthold-2006-Primal-Heuristics-Mixed]]

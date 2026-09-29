@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # Exploring Relaxation Induced Neighborhoods to Improve MIP Solutions (RINS)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > RINS: fix every variable where the LP relaxation and the incumbent agree, then solve the much smaller sub-MIP around them.
 
 ## Metadata

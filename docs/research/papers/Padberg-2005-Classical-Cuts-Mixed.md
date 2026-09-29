@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # Classical Cuts for Mixed-Integer Programming and Branch-and-Cut
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Survey unifying fractional, cover, MIR and lift-and-project cuts and — critically for us — their validity once branching has changed the relaxation.
 
 ## Metadata

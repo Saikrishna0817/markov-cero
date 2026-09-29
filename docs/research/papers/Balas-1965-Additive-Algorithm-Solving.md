@@ -13,6 +13,9 @@ tags: [paper, milp]
 
 # An Additive Algorithm for Solving LPs with Zero-One Variables
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Implicit enumeration without full LP solves per node — additive bound updates over a 0-1 structure.
 
 ## Metadata

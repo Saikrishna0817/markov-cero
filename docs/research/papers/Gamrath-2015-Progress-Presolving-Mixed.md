@@ -13,6 +13,9 @@ tags: [paper, presolve]
 
 # Progress in Presolving for Mixed Integer Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > New-generation MIP presolve rules: singleton-column stuffing, dominating columns, connected components.
 
 ## Metadata

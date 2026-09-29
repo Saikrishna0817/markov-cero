@@ -8,6 +8,9 @@ tags: [engineering-decision, cuts, branch-and-cut, r5, p0]
 
 # ED-005 — In-Tree Cut Loop, Not More Cut Types
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Fix *where* cuts are separated before adding *which* cuts: re-separate inside the tree under budgets with a bounded pool; new cut families come only after the measurement exists.
 
 ## Context (Observed fact)
@@ -45,9 +48,9 @@ tags: [engineering-decision, cuts, branch-and-cut, r5, p0]
 
 ## Linked Requirements
 
-- R5, R20 → [[sih26119_problem_statement]]
+- R5, R20 → sih26119_problem_statement
 
 ## Related
 
-- [[09-research-code-alignment]] (R5, §6.2) · [[12-keep-remove-rebuild]] (RW-1) · [[13-restart-point]] (step 3) · [[21-traceability]] §21.1 R5, §21.2
-- [[CutGenerators]] · [[BranchAndCut]] · [[ED-010-presolve-depth-over-new-engine]]
+- 09-research-code-alignment (R5, §6.2) · 12-keep-remove-rebuild (RW-1) · 13-restart-point (step 3) · 21-traceability §21.1 R5, §21.2
+- CutGenerators · BranchAndCut · [[ED-010-presolve-depth-over-new-engine]]

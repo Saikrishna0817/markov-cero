@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Deterministic Reduction
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Fix the order of floating-point summation and the same inputs give the same outputs — the precondition for any credible parallel benchmark.
 
 ## Definition
@@ -33,7 +36,7 @@ A reduction (sum, max, norm, dot product) computed in parallel is nondeterminist
 ## Referenced By
 
 - [[ED-006-load-balanced-parallel-or-demote|research/engineering-decisions/ED-006-load-balanced-parallel-or-demote]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Parallel Efficiency|research/metrics/Parallel Efficiency]]
 - [[GPU CSR SpMV|research/techniques/GPU CSR SpMV]]
 - [[Work Stealing|research/techniques/Work Stealing]]

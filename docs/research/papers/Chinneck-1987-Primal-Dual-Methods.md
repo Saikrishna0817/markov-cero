@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # Primal-Dual Methods for LP with Ill-Conditioning
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Handling near-singular LP systems: detect ill-conditioning, diagnose whether it is inherent or artificial, and recover rather than crash.
 
 ## Metadata

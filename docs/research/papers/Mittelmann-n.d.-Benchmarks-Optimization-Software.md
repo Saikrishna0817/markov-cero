@@ -13,6 +13,9 @@ tags: [paper, benchmark]
 
 # Benchmarks for Optimization Software (Mittelmann)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The de-facto leaderboard for LP/MIP/conic/NLP solvers — standardized hardware, time limits and geometric means; the yardstick R16 ultimately points at.
 
 ## Metadata

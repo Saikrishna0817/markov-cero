@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Interior-Point Method
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Barrier/path-following methods that trade a basis for polynomial complexity — the second LP method R4 names.
 
 > **Implemented (2026-09-26).** `src/lp/interior/ipm.cpp` is a Mehrotra predictor-corrector
@@ -40,18 +43,18 @@ Interior-point methods solve LP (and convex QP) by following the central path x_
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[LDL-Factorization|codebase/components/LDL-Factorization]]
-- [[QP-ADMM-Engine|codebase/components/QP-ADMM-Engine]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 15-roadmap
+- LDL-Factorization
+- QP-ADMM-Engine
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
 - [[Primal-Dual Hybrid Gradient|research/algorithms/Primal-Dual Hybrid Gradient]]
 - [[Multi-Engine Solver Architecture|research/architectures/Multi-Engine Solver Architecture]]
 - [[Crossover|research/concepts/Crossover]]
 - [[QPLIB|research/datasets/QPLIB]]
 - [[No Crossover|research/limitations/No Crossover]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Amestoy-2000-Parallel-Sparse-Linear|research/papers/Amestoy-2000-Parallel-Sparse-Linear]]
 - [[Carpentier-1962-Origin-Economic-Dispatch|research/papers/Carpentier-1962-Origin-Economic-Dispatch]]
 - [[Gondzio-1996-Multiple-Centrality-Corrections|research/papers/Gondzio-1996-Multiple-Centrality-Corrections]]

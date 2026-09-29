@@ -8,6 +8,9 @@ tags: [engineering-decision, interior-point, crossover, r4, p0]
 
 # ED-003 — Interior-Point Is Required by the PS (Add It or Re-Scope Formally)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > R4 names interior-point methods explicitly, so a sparse primal-dual IPM **with crossover to a basis** gets built (or the requirement is formally re-scoped with evidence) — PDHG does not count.
 
 ## Context (Observed fact)
@@ -26,8 +29,8 @@ tags: [engineering-decision, interior-point, crossover, r4, p0]
 
 ## Decision
 
-- Implement a **minimal sparse Mehrotra-style primal-dual IPM** for small/medium LPs behind `--engine ipm`, plus a crossover phase that hands the resulting basis to [[DualSimplexEngine]] for polishing and node warm starts.
-- Every crossover basis must pass [[IndependentVerifiers]] before any `optimal` status is reported — same dual gate as the simplex engines (ED-008).
+- Implement a **minimal sparse Mehrotra-style primal-dual IPM** for small/medium LPs behind `--engine ipm`, plus a crossover phase that hands the resulting basis to DualSimplexEngine for polishing and node warm starts.
+- Every crossover basis must pass IndependentVerifiers before any `optimal` status is reported — same dual gate as the simplex engines (ED-008).
 - Sequence: harness first (ED-001), then IPM. If by day 3 no measured instance class benefits, a **formal re-scope** is written into STATUS with the harness data attached — the only acceptable substitute.
 - Explicitly rejected as a substitute: relabelling PDHG/PDLP as "interior-point".
 
@@ -45,9 +48,9 @@ tags: [engineering-decision, interior-point, crossover, r4, p0]
 
 ## Linked Requirements
 
-- R4, R5, R20 → [[sih26119_problem_statement]]
+- R4, R5, R20 → sih26119_problem_statement
 
 ## Related
 
-- [[09-research-code-alignment]] (R4, §6.2) · [[12-keep-remove-rebuild]] · [[13-restart-point]] (step 6) · [[21-traceability]] §21.1 R4, §21.2
+- 09-research-code-alignment (R4, §6.2) · 12-keep-remove-rebuild · 13-restart-point (step 6) · 21-traceability §21.1 R4, §21.2
 - [[ED-001-comparison-harness-before-new-algorithms]] · [[ED-002-keep-simplex-core-add-first-order-not-replace]] · [[ED-008-retain-zero-trust-verifiers]]

@@ -1,139 +1,131 @@
+<p align="center">
+  <img src="web/public/assets/markov-logo.jpeg" alt="markov-cero logo: refinery inside an optimization mark" width="240">
+</p>
+
 # markov-cero
 
-markov-cero is a from-scratch C++20 research solver for linear and mixed-integer
-optimization, with convex quadratic and experimental nonlinear paths. It is a
-solver prototype, not a production refinery planning system or a demonstrated
-commercial-solver replacement.
+**Optimization for a higher yield** · **Team: markov-cero team** · **Smart India Hackathon 2026, problem statement SIH26119 (MRPL)** · **Version 0.5.2**
 
-## Current release status
+markov-cero is a C++20 mathematical optimization solver research project built around a practical question: how can a team model a refinery decision, solve it, and show enough evidence to trust the reported answer? The repository contains the solver core, command-line tools, Python bindings, a visual web experience, refinery examples, benchmark runners, independent result checks, and dated qualification records.
 
-The current native CPU acceptance run passes **81/81 CTests**. A prior
-ML-enabled Release build passed 80/80, and the installed Python wheel passed
-16/16; the current in-tree Python extension suite passes 18/18.
-The five previously failing numerical/domain cases pass; production planning
-meets its requested 5% MIP gap, while the other four report verified optima.
-Maintained code and
-build files meet the **300 physical line** limit, enforced by CI.
+The current release is a **research prototype**. It is not an approved refinery planning system or a demonstrated replacement for established commercial solvers. The team presents measured results with their model, machine, time limit, and verification boundary so judges and contributors can distinguish implemented features from proven performance.
 
-The [closure register](evidence/defect-closure-register.csv) records **29/32
-(90.6%) actionable code defects closed** from the plan's baseline. Four capability
-and release gates are listed separately. This is a scoped implementation tally,
-not a claim that 90% of all possible bugs are known or fixed. Three engineering
-defects remain open: full immutable node views, complete deadline coverage, and
-solve-wide memory budgets. The 100% critical/high release gate is therefore unmet.
-See [current evidence](evidence/readiness-checkpoint.json).
-See [the implementation plan](docs/audit/INDUSTRY-READINESS-IMPLEMENTATION-PLAN.md)
-for the remaining acceptance requirements.
+## The challenge and our approach
 
-The 2026-09-28 W01 work now stores branch bounds as persistent deltas, shares
-local cut lists and warm-start bases between siblings, and sends bound overlays
-to parallel LP/QP nodes. The current full native CTest run passes 81/81. W01
-remains open pending remaining model-copy cleanup, memory limits, and full-solver
-frontier/RSS evidence. A separate structure-only RSS comparison is recorded in
-the [evidence file](evidence/node-frontier-memory-20260928.json); see the
-[competitive roadmap](docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md).
+Refinery planning combines limited feedstocks, unit capacities, product demand, blend quality and economic trade-offs. A useful solver needs more than a fast objective value: it needs an auditable path from input data to a feasible decision and an honest account of numerical and operational limits.
 
-MILP callers can bound queued nodes with `max_queued_nodes` in C++/Python or
-`--max-queued-nodes` in the CLI (default 50,000). Hitting that cap returns
-`ResourceLimit`; the solver retains the omitted frontier's inherited lower
-bound and does not report infeasibility or optimality.
-Parallel branching also propagates certified LP lower bounds when creating and
-processing nodes. A node-count queue cap is not a solve-wide byte budget;
-LP text parsing also exposes byte, token, row, column, coefficient, quadratic
-term and name caps; `solve_file` accepts an optional `maximum_input_bytes`
-override through C++, `--max-input-bytes` through the CLI, or `max_input_bytes`
-through Python. Solve-wide allocator accounting/failure injection and
-device-memory limits remain open; see [parser details](docs/codebase/components/MPSParser.md)
-and the [competitive roadmap](docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md).
+| Challenge | markov-cero approach | Evidence or boundary |
+|---|---|---|
+| Express planning decisions | Free-format MPS and LP input, sparse model representation, quadratic MPS extensions, and documented refinery examples | [Example models](examples/refinery/README.md), [capability register](docs/project/STATUS.md) |
+| Solve several model classes | Revised and dual simplex, interior-point and PDLP for LP; branch-and-cut for MILP; ADMM/KKT for convex QP and MIQP; restricted SQP/OA experiments | [Implementation map](docs/README.md) |
+| Check results independently | Original-model feasibility, canonical LP witnesses, QP KKT checks, and bounded numerical tree replay for supported MILP/MIQP cases | [Verification guide](docs/guides/VERIFY.md) |
+| Compare with established tools | Hash-pinned instance and comparator manifests, recorded local runs, explicit time limits, and result-level agreement checks | [Evidence index](evidence/INDEX.md) |
+| Make the system accessible | C++ API, JSON-emitting CLI, Python binding, and an optional authenticated web workspace | [Quickstart](docs/guides/QUICKSTART.md), [web app](web/README.md) |
 
-## Build and solve
+The solver path is deliberately traceable from a model file to a checked result:
 
-    cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
-    cmake --build build -j
-    ./build/markov-cero-solve examples/blend.mps
-    ./build/markov-cero-solve examples/qp_portfolio.mps --engine qp
+```mermaid
+flowchart LR
+    A["MPS / LP input"] --> B["Parse and classify"]
+    B --> C["Presolve, scale, canonicalize"]
+    C --> D{"Choose engine"}
+    D --> E["LP / MILP / QP / restricted nonlinear"]
+    E --> F["Postsolve and independent checks"]
+    F --> G["Status, JSON, diagnostics and optional proof"]
+```
 
-For the offline qualification example:
+## What is implemented
 
-    bash run-qualification-demo.sh
+- **Core pipeline:** checked input parsing, model classification, sparse canonicalization, reversible presolve, Ruiz scaling, engine dispatch, postsolve, and result telemetry.
+- **LP:** primal revised simplex, dual warm simplex, interior-point, and matrix-free PDLP. Sparse LU supports fill-aware pivot selection, reuse and a cooperative deadline.
+- **Mixed integer:** branch-and-cut with cuts, heuristics, strong branching, parallel tree search, queued-node limits, and proof export where the numerical guarantee can be replayed.
+- **Quadratic:** convex QP through ADMM and sparse KKT work, plus MIQP relaxations with independent residual checks.
+- **Nonlinear research:** SQP and restricted convex/quadratic outer approximation. A local NLP optimum is not a global proof; arbitrary nonlinear MINLP is outside the accepted path.
+- **GPU research:** optional CUDA kernels for PDLP operations and a partial QP matrix-vector path. Current measured RTX 2050 cases did not show an end-to-end GPU speed advantage over CPU PDLP.
+- **ML research:** optional branching inference and data collection exist, but no trained runtime model has passed the promotion gate.
 
-Follow [BUILDING.md](BUILDING.md), [QUICKSTART.md](QUICKSTART.md) and
-[VERIFY.md](VERIFY.md) for build options and verification commands. Optional
-Python, comparison and CUDA checks require their documented dependencies and
-must not be inferred from a CPU-only build.
+The [status register](docs/project/STATUS.md) gives feature-specific conditions and open issues. Code presence alone does not establish a verified result on an unseen model.
 
-## What the repository demonstrates
+## Quick start
 
-- C++20 solver implementation and a recorded provenance history; independent source-trace review is pending, so clean-room status is not claimed.
-- Sparse model representation, presolve, scaling and multiple LP engines.
-- MILP branch-and-cut and a convex QP/MIQP path.
-- Independent LP/QP/NLP checks and bounded MILP/MIQP tree replay; see STATUS.
-- CLI, C++ API, Python bindings and benchmark/evidence tooling.
+From the repository root, use CMake 3.25 or newer and a C++20 compiler:
 
-These are implementation areas, not blanket claims that every engine or model
-class is production-ready. The refinery examples include synthetic models and the public historical Fawley
-qualification model; they are not approved MRPL operating data. The GPU evidence currently shows no
-end-to-end advantage over CPU PDLP on the measured RTX 2050 cases. ML branching
-has not passed its deployment acceptance gate.
+```sh
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel 2
+./build/markov-cero-solve examples/blend.mps
+./build/markov-cero-solve examples/qp_portfolio.mps --engine qp
+ctest --test-dir build --output-on-failure
+```
 
-## Evidence and project documents
+Run the small refinery qualification scenario with:
 
-- [Industry-grade implementation and competitive roadmap](docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md)
+```sh
+bash scripts/run-qualification-demo.sh
+```
 
-- [Current capability and evidence register](STATUS.md)
-- [Current codebase audit](docs/audit/CODEBASE-AUDIT-2026-09-28.md)
-- [Consolidated findings](docs/audit/sih_2026_findings.md)
-- [Full SIH and engineering audit](docs/audit/sih_2026_implementation_audit.md)
-- [Official SIH problem statement](docs/sih26119_problem_statement.md)
-- [Provenance and verification](docs/governance/provenance-and-verification.md)
-- [Change history](CHANGELOG.md)
+The demo uses a synthetic two-crude model, runs the CLI, and prints JSON results and the verification verdict. It does not validate a live MRPL plant model. For a guided first run, CLI options and expected result interpretation, see the [quickstart](docs/guides/QUICKSTART.md). Build flags, installation and optional CUDA/Python requirements are in [building](docs/guides/BUILDING.md).
 
-The optional dataset migration removes 227 large benchmark files from the current
-checkout: retained data is approximately 4 MB instead of 588 MB. Small default
-fixtures stay offline. Git history is unchanged; use the
-[hash-pinned manifest](data/optional-datasets.json) and explicit restoration:
+## Refinery demonstration
 
-    python3 scripts/datasets.py --list
-    python3 scripts/datasets.py --name gen-ip002
-    python3 scripts/datasets.py --family netlib --download
+The repository contains synthetic feasible, infeasible, resource-limited and malformed refinery cases, plus an attributed historical public Fawley input converted into MPS. The 29-row, 36-column public-input model includes feed consumption, capacities, recipe blending and explicit quality bases. A recorded local run agreed with a development HiGHS oracle on objective **−2899.252790423** in thousand historical USD per period. This is evidence for that generated mathematical model, not proof of physical plant validity or suitability for operations.
 
-The first restore uses a preserved local cache or the pinned Git revision;
-`--download` permits fetching that revision when absent. Missing datasets are
-reported as `DatasetUnavailable`, and full runners retain them in the denominator.
+A refinery engineer still needs to validate feed and quality balances and own a shadow trial before operational claims. Read the [case guide](examples/refinery/README.md), [input provenance](docs/project/PROVENANCE.md), and [release gates](evidence/gate-status-20260929.json).
 
-## Independent MIP proofs and conflicts
+## Evaluation: results with boundaries
 
-Linear MILP and convex MIQP results can include a cut-free proof tree in JSON
-`mip_proof`. The standalone checker replays every integer partition and LP/QP
-leaf witness without running a solver:
+The table below points to **dated runs**, not tests rerun by viewing this README. Source, binary, instances and method can differ from the current checkout.
 
-    ./build/markov-cero-verify-mip model.mps proof.txt
-    ./build/markov-cero-iis infeasible.mps
+| Recorded evaluation | Observation | What it establishes |
+|---|---|---|
+| Five-solver, 23-case comparison | markov-cero 17/23 optimal; HiGHS 17/23; GLPK 14/23; CBC 13/23; SCIP 18/23, with no disagreement between paired verified optimal objectives | Agreement on reported optima in this suite; six markov-cero cases failed or timed out ([report](evidence/comparison/current_glpk_pinned_20260928/full_comparison_report.md)) |
+| Pinned, repeated 20-case HiGHS comparison | Verified objective agreement 20/20 at one and four markov-cero threads | Correctness on preregistered cases; reported geometric runtime ratios of 15.61× and 12.76× markov-cero/HiGHS favored HiGHS and used differing timing boundaries ([one thread](evidence/compare/current_final_threads1_20260928/report.md), [four threads](evidence/compare/current_final_threads4_20260928/report.md)) |
+| Local 15-second benchmark sweep | 255 checked-in Netlib, MIPLIB, Mittelmann and QPLIB rows attempted | Coverage of those local inputs and that time cap; it is not the full upstream corpora or a 300-second industrial study ([run index](evidence/INDEX.md)) |
+| RTX 2050 GPU PDLP checks | Four measured generated cases verified in repeated runs; GPU was slower end to end | Device-path correctness on those cases, without a demonstrated speed benefit ([host record](evidence/gpu_hardware_host_access_check_20260928.json)) |
 
-Proof generation accepts `--proof-time-limit`, `--proof-max-nodes` and
-`--proof-max-values`; the standalone checker accepts matching `--time-limit`,
-`--max-nodes` and `--max-values` controls. Proofs are numerical, and an
-incomplete proof remains unverified. OA/MINLP has no global proof export.
-Conflict analysis reports row irreducibility relative to unchanged variable
-bounds; unknown or timed-out trials cannot establish irreducibility.
+The [evidence index](evidence/INDEX.md) separates current entry points, frozen baselines and historical runs. Optional large benchmark files are listed in the [hash-pinned dataset manifest](data/optional-datasets.json); they are not required for the default build.
 
-## Public refinery qualification data
+## Verification and result meaning
 
-An attributed [Fawley historical input](data/refinery/fawley_public.json) and
-[independently generated MPS](examples/refinery/fawley-public.mps) are available:
+The CLI writes JSON with model class, selected engine, status, objective or bound, diagnostics and verification fields. `Optimal`, `Infeasible` and `Unbounded` are only as strong as the accompanying witness and its stated model class. A time, node, memory, numerical or proof budget can leave a useful incumbent while the global conclusion remains unverified. `verified` describes the result-level gate; `original_verified` and certificate fields describe narrower checks.
 
-    python3 scripts/generators/gen_public_refinery.py
-    ./build/markov-cero-solve examples/refinery/fawley-public.mps
+For supported linear MILP and convex MIQP results, a separate checker can replay an exported cut-free numerical proof tree:
 
-The 29-row, 36-column model has explicit process feed consumption, capacities,
-recipe blending, and weight/volume quality bases. Markov and the development
-HiGHS oracle returned objective −2899.252790423 (thousand historical USD/period).
-This is qualification evidence for this generated LP, not validation of a plant.
-The source uses approximate blend indices, historical lead cost and energy-equivalent
-transfers; see [provenance and limitations](PROVENANCE.md).
+```sh
+./build/markov-cero-verify-mip model.mps proof.txt
+./build/markov-cero-iis infeasible.mps
+```
 
-Python wheels now build an isolated CPU core with CMake; they do not consume a
-pre-existing local build. Python input buffers are copied into owned vectors;
-NumPy solution output adopts vector storage. `verified` denotes the API's global
-verification result; `original_verified` and `certificate_type` describe narrower
-incumbent or local checks.
+Proof construction and replay have explicit time, node and witness limits. The replay checker shares parser and numerical primitives with the core, so it is independent of search logic but is not an exact-arithmetic or plant-model certificate. See [verification](docs/guides/VERIFY.md).
+
+## Repository map
+
+| Directory | Purpose |
+|---|---|
+| [`src/`](src/) and [`include/markov_cero/`](include/markov_cero/) | Solver implementation and public C++ API |
+| [`apps/`](apps/) | CLI entry points |
+| [`gpu/`](gpu/) | Optional CUDA backend, kernels and tests |
+| [`python/`](python/) | Python package, binding source and tests |
+| [`web/`](web/) | Visual frontend and optional HTTP adapter |
+| [`examples/`](examples/) and [`data/`](data/) | Demonstration models, local fixtures and dataset manifests |
+| [`tests/`](tests/) and [`scripts/`](scripts/) | Regression, fuzz, verification, benchmark and demo tooling |
+| [`docs/`](docs/) | Current guides, project records and dated research notes |
+| [`evidence/`](evidence/) | Dated benchmark, hardware, qualification and gate records |
+| [`cmake/`](cmake/) and [`third_party/`](third_party/) | Build definitions and dependency license ledger |
+
+Build outputs, downloaded optional datasets, local environments and web dependencies are ignored. The tracked evidence directories preserve run context, including some repeated or empty-category results.
+
+## Interfaces and deployment
+
+- **C++:** include `markov_cero/api/solve.hpp`, link the installed `markov_cero::core` target, and use `SolveOptions`/`SolveResult`.
+- **CLI:** `markov-cero-solve MODEL.mps --engine auto --time-limit 60 --output result.json`; inspect `--help` for the full option list.
+- **Python:** `python -m pip wheel .` builds an isolated CPU core and the `markov_cero` extension; see [building](docs/guides/BUILDING.md).
+- **Web:** `web/` is a Vite/React presentation and an optional authenticated workspace. Live solves require a separately configured HTTP adapter; the visual site alone does not run the solver. See [web setup](web/README.md).
+
+A standard CMake prefix install includes the library, CLI binaries and headers. CUDA, benchmark comparators and web deployment require separate configuration. No deployment is implied by the files in this repository.
+
+## Team, stewardship and release status
+
+**Team name:** markov-cero team. No verified public member roster is maintained in this repository, so individual names and roles are not claimed here. The project was prepared for Smart India Hackathon 2026 problem statement SIH26119. Substantial implementation used AI coding assistance under human direction; authors remain responsible for mathematical review, evidence and release claims. [Provenance](docs/project/PROVENANCE.md) records the source-exposure boundary, which still needs independent review.
+
+The v0.5.2 release gate remains open on resource coverage, provenance review, benchmark breadth, GPU benefit, support ownership and refinery engineer sign-off. See [status](docs/project/STATUS.md), [gate status](evidence/gate-status-20260929.json), [changelog](CHANGELOG.md), and the [original request](docs/project/ORIGINAL_REQUEST.md). The checked-in [Apache 2.0 license](LICENSE) and Python package metadata currently disagree on the license label; this needs an owner decision before a release claim.

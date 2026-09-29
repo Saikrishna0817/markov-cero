@@ -1,7 +1,7 @@
 markov-cero — SIH26119 Indigenous GPU-Accelerated Optimization Solver
 Copyright 2026 markov-cero contributors
 
-This software contains clean-room C++20 implementations of:
+This software contains C++20 implementations of:
 - Continuous Linear Programming (LP) solvers:
   * Primal revised simplex with Bland's rule anti-cycling
   * Dual revised simplex with Harris ratio test, basis serialization, and warm-starts
@@ -28,5 +28,5 @@ This software contains clean-room C++20 implementations of:
 - Zero-trust dual-gated verification (canonical and original model space)
 
 Explicit Prototype Limitations:
-- Machine learning-assisted branching is not implemented in this version (planned for Phase 7).
+- Machine learning-assisted branching is experimental; no model has passed its deployment gate.
 - Dual steepest-edge recurrence is not implemented (planned for Phase 8).

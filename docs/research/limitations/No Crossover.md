@@ -8,6 +8,9 @@ resolved_on: 2026-09-26
 
 # No Crossover
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > There is no way to turn an interior solution into a basis — because there is no interior method to turn into one.
 
 > **Resolved (2026-09-26).** Both halves now exist: `--engine ipm`
@@ -40,11 +43,11 @@ Crossover is the IPM→simplex handoff that drives a barrier solution to an opti
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- Architecture MOC
+- Research MOC
 - [[Crossover|research/concepts/Crossover]]
 - [[ED-003-interior-point-required-by-ps|research/engineering-decisions/ED-003-interior-point-required-by-ps]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[No Interior-Point Engine|research/research-gaps/No Interior-Point Engine]]

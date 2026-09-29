@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # A Revised Simplex Method with Integer Q-Matrices
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Exact/multiprecision revised simplex via an integer Q-matrix formulation — keeping arithmetic integral so pivots are exact by construction.
 
 ## Metadata

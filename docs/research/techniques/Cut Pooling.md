@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Cut Pooling
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Store generated inequalities once, filter by validity/duplicate detection, reuse across nodes.
 
 ## Definition
@@ -32,10 +35,10 @@ re-generation, cut-node reduction measures 0.0% (`evidence/benchmarks/phase4.jso
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[21-traceability|audit/21-traceability]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
+- 15-roadmap
+- 21-traceability
+- Architecture MOC
+- Research-Code Traceability MOC
 - [[ED-005-in-tree-cut-loop-not-more-cut-types|research/engineering-decisions/ED-005-in-tree-cut-loop-not-more-cut-types]]
 - [[Balas-1993-Lift-Project-Cutting|research/papers/Balas-1993-Lift-Project-Cutting]]
 - [[Balas-1996-Gomory-Cuts-Revisited|research/papers/Balas-1996-Gomory-Cuts-Revisited]]

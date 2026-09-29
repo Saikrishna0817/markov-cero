@@ -13,6 +13,9 @@ tags: [paper, branching]
 
 # Restart Strategies in MIP (knapsack-conflict restarts)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > When to abandon a fruitless search subtree and restart with fresh pseudo-costs, a fresh node order and a new incumbent-focused strategy.
 
 ## Metadata

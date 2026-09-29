@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Sparsity
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Industrial models are overwhelmingly zeros; algorithms that see that are the only ones that reach R12 scale.
 
 ## Definition
@@ -33,13 +36,13 @@ Sparsity is the property that only a small fraction of A's entries are nonzero, 
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- Research MOC
 - [[Markowitz Pivoting|research/algorithms/Markowitz Pivoting]]
 - [[Sparse LU|research/algorithms/Sparse LU]]
 - [[CSC Sparse Model|research/architectures/CSC Sparse Model]]
 - [[ED-004-sparse-first-canonicalization|research/engineering-decisions/ED-004-sparse-first-canonicalization]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Amestoy-1996-Approximate-Minimum-Degree|research/papers/Amestoy-1996-Approximate-Minimum-Degree]]
 - [[Cheshmi-2017-Transforming-Sparse-Matrix|research/papers/Cheshmi-2017-Transforming-Sparse-Matrix]]
 - [[Fourer-n.d.-Hierarchical-Solution-Large|research/papers/Fourer-n.d.-Hierarchical-Solution-Large]]

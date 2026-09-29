@@ -8,6 +8,9 @@ tags: [engineering-decision, presolve, r5, r13, p1]
 
 # ED-010 — Presolve Depth Over a New Engine
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Spend the next engineering increment deepening the existing presolve rule set (implied bounds, forcing/dominated rows, duplicate rows, probing-lite) instead of building another solver engine; IPM is the only new engine authorized, by R4 (ED-003).
 
 ## Context (Observed fact)
@@ -46,9 +49,9 @@ tags: [engineering-decision, presolve, r5, r13, p1]
 
 ## Linked Requirements
 
-- R5, R9, R13, R20 → [[sih26119_problem_statement]]
+- R5, R9, R13, R20 → sih26119_problem_statement
 
 ## Related
 
-- [[09-research-code-alignment]] (R5, §6.2) · [[12-keep-remove-rebuild]] (RW-6) · [[13-restart-point]] (step 8) · [[21-traceability]] §21.4 row 8
+- 09-research-code-alignment (R5, §6.2) · 12-keep-remove-rebuild (RW-6) · 13-restart-point (step 8) · 21-traceability §21.4 row 8
 - [[Presolve]] · [[ED-004-sparse-first-canonicalization]] · [[ED-005-in-tree-cut-loop-not-more-cut-types]]

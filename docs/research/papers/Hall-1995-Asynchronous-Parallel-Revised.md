@@ -11,6 +11,9 @@ status: standard
 tags: [paper, parallel]
 ---
 # An Asynchronous Parallel Revised Simplex Algorithm
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Parallelizes *inside* the revised simplex (FTRAN/BTRAN/PRICE) with asynchronous execution — an alternative axis to tree-level parallelism.
 ## Metadata
 | Field | Value |

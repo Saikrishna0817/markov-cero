@@ -11,6 +11,9 @@ status: standard
 tags: [paper, presolve]
 ---
 # Integer-Programming Software Systems
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > How presolve integrates with cuts, heuristics and node LP solves inside branch-and-cut software.
 ## Metadata
 | Field | Value |

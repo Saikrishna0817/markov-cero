@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # The Feasibility Pump
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Rounds an LP solution toward integrality by iteratively projecting back to the LP relaxation — the fastest generic route to a first incumbent.
 
 ## Metadata

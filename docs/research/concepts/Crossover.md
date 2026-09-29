@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Crossover
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Interior-point lands in the interior; crossover walks you to a vertex so simplex, warm starts and MIP can take over.
 
 ## Definition
@@ -32,14 +35,14 @@ Crossover is the procedure that converts an interior-point (barrier) solution â€
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Research MOC|research/Research MOC]]
+- 15-roadmap
+- Algorithms MOC
+- Research MOC
 - [[Interior-Point Method|research/algorithms/Interior-Point Method]]
 - [[Warm Start|research/concepts/Warm Start]]
 - [[No Crossover|research/limitations/No Crossover]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Wright-1997-Primal-Dual-Interior-Point-Methods|research/papers/Wright-1997-Primal-Dual-Interior-Point-Methods]]
 - [[Wright-2004-Interior-Point-Revolution|research/papers/Wright-2004-Interior-Point-Revolution]]
 - [[Ye-1998-Crossover-Interior-Point|research/papers/Ye-1998-Crossover-Interior-Point]]

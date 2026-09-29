@@ -8,6 +8,9 @@ tags: [engineering-decision, verification, trust, r17, r18, keep]
 
 # ED-008 — Retain and Promote the Zero-Trust Verifiers
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The three independent verifiers are the trust layer and stay mandatory: no engine reports a terminal status an independent recomputation has not confirmed, and certificates are emitted in comparison and demo output.
 
 ## Context (Observed fact)
@@ -21,8 +24,8 @@ tags: [engineering-decision, verification, trust, r17, r18, keep]
 - [[Unknown-2026-Verified-Linear-Programming]] — verification of LP results as a first-class deliverable, not an afterthought.
 - [[KKT Residual]] — the metric that makes "verified" quantitative and reportable per instance.
 - [[Numerical Error]] — allowance accounting (`tol·scale + 512ε·max(1,scale)`) already implemented in the canonical verifier.
-- [[status-certificate-fail-closed]] — repo decision: failure to verify downgrades status.
-- [[IndependentVerifiers]] — component note with the exact file:line evidence.
+- status-certificate-fail-closed — repo decision: failure to verify downgrades status.
+- IndependentVerifiers — component note with the exact file:line evidence.
 
 ## Decision
 
@@ -45,9 +48,9 @@ tags: [engineering-decision, verification, trust, r17, r18, keep]
 
 ## Linked Requirements
 
-- R9, R13, R17, R18 → [[sih26119_problem_statement]]
+- R9, R13, R17, R18 → sih26119_problem_statement
 
 ## Related
 
-- [[09-research-code-alignment]] (§6.5) · [[12-keep-remove-rebuild]] (§8.1 KEEP) · [[13-restart-point]] (step 5) · [[21-traceability]] §21.4 row 10
+- 09-research-code-alignment (§6.5) · 12-keep-remove-rebuild (§8.1 KEEP) · 13-restart-point (step 5) · 21-traceability §21.4 row 10
 - [[ED-001-comparison-harness-before-new-algorithms]] · [[ED-003-interior-point-required-by-ps]]

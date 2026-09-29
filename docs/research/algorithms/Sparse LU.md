@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Sparse LU
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Eliminate the basis column by column, pivoting for stability and watching fill — the linear algebra every simplex iteration stands on.
 
 ## Definition
@@ -28,19 +31,19 @@ Sparse LU factorizes a square sparse matrix B = P L U with Gaussian elimination 
 - [[Markowitz Pivoting]]
 - [[Sparsity]]
 - [[Fill-Reducing Ordering]]
-- [[SparseBasis-LU]]
+- SparseBasis-LU
 - [[Suhl-1990-Fast-LU-Factorization]]
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[SparseBasis-LU|codebase/components/SparseBasis-LU]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- SparseBasis-LU
+- Algorithms MOC
+- Research MOC
 - [[Markowitz Pivoting|research/algorithms/Markowitz Pivoting]]
 - [[Basis|research/concepts/Basis]]
 - [[Sparsity|research/concepts/Sparsity]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Amestoy-2000-Parallel-Sparse-Linear|research/papers/Amestoy-2000-Parallel-Sparse-Linear]]
 - [[Anderson-1989-Solving-Sparse-Linear|research/papers/Anderson-1989-Solving-Sparse-Linear]]
 - [[Bartels-1969-Simplex-LU-Decomposition|research/papers/Bartels-1969-Simplex-LU-Decomposition]]

@@ -13,6 +13,9 @@ tags: [paper, survey, milp]
 
 # Constraint Integer Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The architectural blueprint for a MIP solver: presolve, cuts, heuristics, branching and the LP solver as tightly coupled components.
 
 ## Metadata

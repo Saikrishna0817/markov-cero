@@ -13,6 +13,9 @@ tags: [paper, sparse]
 
 # COLAMD: A Column Approximate Minimum Degree Ordering Algorithm (Algorithm 836)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Column-oriented approximate minimum degree ordering for unsymmetric matrices and normal-equation products.
 
 ## Metadata

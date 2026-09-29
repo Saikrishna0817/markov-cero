@@ -11,6 +11,9 @@ status: standard
 tags: [paper, ipm]
 ---
 # Solving Dense Linear Systems with Semi-Normal Equations
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > More robust way to run normal-equation solves inside optimization codes: compute residuals through a semi-normal-equation path.
 ## Metadata
 | Field | Value |

@@ -11,6 +11,9 @@ status: standard
 tags: [paper, parallel]
 ---
 # Deterministic Parallel MIP
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Makes parallel branch-and-bound reproducible: same instance, same settings, same answer and same search path regardless of thread count.
 ## Metadata
 | Field | Value |

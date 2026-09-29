@@ -13,6 +13,9 @@ tags: [paper, survey, lp]
 
 # The Interior-Point Revolution in Optimization
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Explains how barrier and path-following methods displaced — but did not replace — simplex, and what each engine is still good for.
 
 ## Metadata

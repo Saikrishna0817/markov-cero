@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # To Pool or Not to Pool? (row aggregation in cut generation)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Asks whether aggregating rows before cut generation (and pooling the results) helps or hurts cut quality — an empirical cut-management question.
 
 ## Metadata

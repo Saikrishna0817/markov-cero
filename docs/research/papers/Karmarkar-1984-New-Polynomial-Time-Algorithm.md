@@ -13,6 +13,9 @@ tags: [paper, ipm]
 
 # A New Polynomial-Time Algorithm for Linear Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Origin of interior-point methods: projective-scaling algorithm polynomial in theory and (claimed) faster than simplex in practice.
 
 ## Metadata

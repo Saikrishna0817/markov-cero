@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # Exact Algorithms for Linear Programming / Projective Test
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Rational-arithmetic fallback: solve the LP exactly when floating point is untrustworthy, including a projective test for phase-one infeasibility.
 
 ## Metadata

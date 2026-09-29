@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Mittelmann Coverage Gap
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > R15 names Mittelmann benchmark sets; the repo contains none of them — named deliverable, zero instances.
 
 ## Definition
@@ -32,10 +35,10 @@ The gap between the dataset requirement in R19/R15 and the actual instance inven
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Datasets MOC|research/Datasets MOC]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- Algorithms MOC
+- Datasets MOC
+- Research MOC
 - [[Mittelmann Benchmarks|research/datasets/Mittelmann Benchmarks]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map

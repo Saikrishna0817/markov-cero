@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Primal Residual
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > ‖Ax − b‖ (and bound violation) — how far the iterate is from actually satisfying the constraints.
 
 ## Definition
@@ -31,9 +34,9 @@ The primal residual measures constraint violation of the current point: for equa
 
 ## Referenced By
 
-- [[16-testing-evaluation-strategy|audit/16-testing-evaluation-strategy]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Evaluation MOC|research/Evaluation MOC]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- 16-testing-evaluation-strategy
+- Architecture MOC
+- Evaluation MOC
+- cross-paper-synthesis
 - [[KKT Residual|research/metrics/KKT Residual]]
 - [[Kojima-1989-Primal-Dual-Interior-Point-Algorithm|research/papers/Kojima-1989-Primal-Dual-Interior-Point-Algorithm]]

@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Scaling
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Put rows and columns on comparable footing before anything numerical runs — the cheapest robustness win available.
 
 ## Definition
@@ -33,15 +36,15 @@ Scaling multiplies variables and constraints by positive diagonal matrices, Ã =
 
 ## Referenced By
 
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
+- Architecture MOC
+- Research MOC
+- Research-Code Traceability MOC
 - [[Presolve-Postsolve Stack|research/architectures/Presolve-Postsolve Stack]]
 - [[Ill-Conditioning|research/concepts/Ill-Conditioning]]
 - [[Numerical Stability|research/concepts/Numerical Stability]]
 - [[Presolve|research/concepts/Presolve]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Chinneck-1987-Primal-Dual-Methods|research/papers/Chinneck-1987-Primal-Dual-Methods]]
 - [[Kallrath-2002-Planning-Scheduling-Industry|research/papers/Kallrath-2002-Planning-Scheduling-Industry]]
 - [[Karmarkar-1984-New-Polynomial-Time-Algorithm|research/papers/Karmarkar-1984-New-Polynomial-Time-Algorithm]]

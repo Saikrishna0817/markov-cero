@@ -13,6 +13,9 @@ tags: [paper, benchmark]
 
 # Performance Variability in Mixed-Integer Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Shows that MIP runtimes vary by orders of magnitude under equivalent reformulations and random seeds — single-run benchmark tables are not evidence.
 
 ## Metadata

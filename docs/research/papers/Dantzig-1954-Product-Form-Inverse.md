@@ -13,6 +13,9 @@ tags: [paper, lp, sparse]
 
 # The Product Form for the Inverse in the Simplex Method
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > PFI: carry B⁻¹ as a product of cheap elementary matrices instead of recomputing it every iteration.
 
 ## Metadata

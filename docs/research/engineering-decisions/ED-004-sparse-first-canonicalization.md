@@ -8,13 +8,16 @@ tags: [engineering-decision, canonicalization, sparsity, r6, r12, p1]
 
 # ED-004 — Sparse-First Canonicalization, One Path
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Collapse the two canonicalization paths into a single sparse-first path; the dense route survives only as an internal fast path behind the same interface, never as a caller-visible branch.
 
 ## Context (Observed fact)
 
 - Two divergent implementations: dense `canonicalize(model)` (`src/transform/canonicalize.cpp:48`) and `sparse_canonicalize(model, relax_integrality)` (`src/transform/sparse_canonicalize.cpp:119`), selected by a dense gate of 2048×8192 with `maximum_canonical_dimension = 8192` hardcoded at `src/transform/canonicalize.cpp:8`.
 - 09 §6.3 grades the gate "convenience threshold, no research basis, creates two paths → REWRITE to sparse-first"; `12` RW-5 makes it P1.
-- Downstream [[DenseLU]] and the reference engines densify node LPs via `to_dense()` (`include/markov_cero/transform/sparse_canonical_model.hpp:24`), so the large-scale path is the least-tested one — R12 risk.
+- Downstream DenseLU and the reference engines densify node LPs via `to_dense()` (`include/markov_cero/transform/sparse_canonical_model.hpp:24`), so the large-scale path is the least-tested one — R12 risk.
 
 ## Research Evidence
 
@@ -44,9 +47,9 @@ tags: [engineering-decision, canonicalization, sparsity, r6, r12, p1]
 
 ## Linked Requirements
 
-- R6, R12, R3 → [[sih26119_problem_statement]]
+- R6, R12, R3 → sih26119_problem_statement
 
 ## Related
 
-- [[09-research-code-alignment]] (R6, R12, §6.3) · [[12-keep-remove-rebuild]] (RW-5) · [[13-restart-point]] (step 8) · [[21-traceability]] §21.1 R6/R12
-- [[Canonicalizer]] · [[ED-010-presolve-depth-over-new-engine]]
+- 09-research-code-alignment (R6, R12, §6.3) · 12-keep-remove-rebuild (RW-5) · 13-restart-point (step 8) · 21-traceability §21.1 R6/R12
+- Canonicalizer · [[ED-010-presolve-depth-over-new-engine]]

@@ -13,6 +13,9 @@ tags: [paper, lp]
 
 # Linear Programming and Extensions / Computational Algorithm of the Revised Simplex Method
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The origin of the simplex method and the revised simplex algorithm every modern LP engine descends from.
 
 ## Metadata

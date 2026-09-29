@@ -13,6 +13,9 @@ tags: [paper, branching]
 
 # Hybrid Branching
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Combines MIP reliability branching with CP inference scoring and SAT-style activity scores — SCIP's default branching cascade.
 
 ## Metadata

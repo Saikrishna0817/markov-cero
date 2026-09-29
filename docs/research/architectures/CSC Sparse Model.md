@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # CSC Sparse Model
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The compressed-sparse-column canonical form at the center of the pipeline — one representation that presolve, scaling, factorization and the GPU all consume.
 
 ## Definition
@@ -27,20 +30,20 @@ A CSC (compressed sparse column) model stores A as three arrays — column point
 - [[Sparsity]]
 - [[Multi-Engine Solver Architecture]]
 - [[Presolve-Postsolve Stack]]
-- [[Canonicalizer]]
-- [[SparseBasis-LU]]
+- Canonicalizer
+- SparseBasis-LU
 - [[Fill-Reducing Ordering]]
 
 ## Referenced By
 
-- [[07-current-architecture|audit/07-current-architecture]]
-- [[21-traceability|audit/21-traceability]]
-- [[Codebase MOC|codebase/Codebase MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 07-current-architecture
+- 21-traceability
+- Codebase MOC
+- Architecture MOC
+- Research MOC
 - [[Multi-Engine Solver Architecture|research/architectures/Multi-Engine Solver Architecture]]
 - [[Presolve-Postsolve Stack|research/architectures/Presolve-Postsolve Stack]]
 - [[Presolve|research/concepts/Presolve]]
 - [[Sparsity|research/concepts/Sparsity]]
 - [[ED-004-sparse-first-canonicalization|research/engineering-decisions/ED-004-sparse-first-canonicalization]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- research-dependency-map

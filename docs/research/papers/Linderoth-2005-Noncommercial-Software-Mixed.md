@@ -11,6 +11,9 @@ status: standard
 tags: [paper, milp]
 ---
 # Noncommercial Software for Mixed-Integer Linear Programming (CBC)
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Architectural description of CBC: class hierarchy, component customization, open-source design decisions.
 ## Metadata
 | Field | Value |

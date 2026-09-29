@@ -12,6 +12,9 @@ tags: [paper, lp]
 ---
 
 # Implementation of the Simplex Algorithm
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Practical revised-simplex implementation guide: round-off, sparsity and a public-domain code comparison.
 ## Metadata
 | Field | Value |

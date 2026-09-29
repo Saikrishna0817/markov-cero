@@ -13,6 +13,9 @@ tags: [paper, sparse, lp]
 
 # The Simplex Method of Linear Programming Using LU Decomposition
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Carries the LP basis as an LU decomposition with triangular solves instead of an explicitly maintained inverse.
 
 ## Metadata

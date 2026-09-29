@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # A New Degeneracy Method and Steepest-Edge-Based Conditioning for LP
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Recursive degeneracy resolution plus cheap basis-condition estimates derived from steepest-edge weights.
 
 ## Metadata

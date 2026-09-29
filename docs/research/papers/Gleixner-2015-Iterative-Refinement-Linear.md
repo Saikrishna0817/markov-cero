@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # Iterative Refinement for Linear Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > LP-specific refinement that yields certified (even exact) solutions in SoPlex — the blueprint for turning a floating-point LP solver into a certifying one.
 
 ## Metadata

@@ -13,6 +13,9 @@ tags: [paper, branching]
 
 # An Algorithm for the Assignment Problem (pseudocost origins)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The earliest known use of pseudo-costs: estimate a variable's branching impact from its past behavior instead of re-solving.
 
 ## Metadata

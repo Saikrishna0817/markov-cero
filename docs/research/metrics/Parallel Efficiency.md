@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Parallel Efficiency
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > E_p = S_p/p — speedup divided by threads, so 4 threads on a 0.56× speedup reads as 14%, not as "parallel".
 
 ## Definition
@@ -32,12 +35,12 @@ Parallel efficiency normalizes speedup by the processor count: E_p = S_p/p = T_1
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[16-testing-evaluation-strategy|audit/16-testing-evaluation-strategy]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Evaluation MOC|research/Evaluation MOC]]
+- 15-roadmap
+- 16-testing-evaluation-strategy
+- Architecture MOC
+- Evaluation MOC
 - [[Negative Parallel Scaling|research/limitations/Negative Parallel Scaling]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Parallel Speedup|research/metrics/Parallel Speedup]]
 - [[Abbasi-2020-PIPS-PSBB-Multi-Level|research/papers/Abbasi-2020-PIPS-PSBB-Multi-Level]]
 - [[Anderson-1989-Solving-Sparse-Linear|research/papers/Anderson-1989-Solving-Sparse-Linear]]

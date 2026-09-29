@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Bland-Only Pricing
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The primary pricing rule is "first admissible index" — guaranteed finite, and blind to which pivot is actually good.
 
 ## Definition
@@ -32,11 +35,11 @@ Pricing determines which column enters the basis; the current rule is Bland-styl
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
+- 21-traceability
+- Algorithms MOC
+- Research-Code Traceability MOC
 - [[Steepest Edge|research/algorithms/Steepest Edge]]
 - [[ED-002-keep-simplex-core-add-first-order-not-replace|research/engineering-decisions/ED-002-keep-simplex-core-add-first-order-not-replace]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Bland Anti-Cycling|research/techniques/Bland Anti-Cycling]]

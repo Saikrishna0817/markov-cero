@@ -13,6 +13,9 @@ tags: [paper, branching]
 
 # Lookahead Branching for Mixed Integer Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Two-level lookahead: after a trial branch, branch one level deeper in the trial children before committing, using the implications observed.
 
 ## Metadata

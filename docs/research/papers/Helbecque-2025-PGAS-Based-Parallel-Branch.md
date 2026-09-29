@@ -11,6 +11,9 @@ status: standard
 tags: [paper, gpu]
 ---
 # PGAS-based Parallel Branch-and-Bound for Ultra-Scale GPU-powered Supercomputers
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Compares PGAS versus MPI+X programming models for multi-level (GPU + inter-node) branch-and-bound at exascale.
 ## Metadata
 | Field | Value |

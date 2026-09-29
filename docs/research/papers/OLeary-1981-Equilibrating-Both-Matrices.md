@@ -12,6 +12,9 @@ tags: [paper, scaling, numerics]
 ---
 
 # Equilibrating Both Matrices in Linearly Dependent Problems
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Equilibration designed for rank-deficient/dependent systems where scaling a single matrix is unstable or meaningless.
 ## Metadata
 | Field | Value |

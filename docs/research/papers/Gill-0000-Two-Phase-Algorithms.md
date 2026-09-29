@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # Two-Phase Algorithms / Farkas certificate extraction
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Produces *provable* infeasibility/unboundedness: a Farkas certificate (y ≥ 0, yᵀA ≥ 0, yᵀb < 0) that independently verifies why no solution exists.
 
 ## Metadata

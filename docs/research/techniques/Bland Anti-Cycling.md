@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Bland Anti-Cycling
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Always take the smallest admissible index — ugly, slow, and the only rule that provably terminates on degenerate LPs.
 
 ## Definition
@@ -33,13 +36,13 @@ Bland's rule resolves every tie deterministically: among columns with negative r
 
 ## Referenced By
 
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- Architecture MOC
+- Research MOC
 - [[Revised Simplex|research/algorithms/Revised Simplex]]
 - [[Steepest Edge|research/algorithms/Steepest Edge]]
 - [[Degeneracy|research/concepts/Degeneracy]]
 - [[Bland-Only Pricing|research/limitations/Bland-Only Pricing]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Bland-1977-Anti-Cycling-Rule|research/papers/Bland-1977-Anti-Cycling-Rule]]
 - [[Charnes-1954-Optimality-Multi-Valuedness|research/papers/Charnes-1954-Optimality-Multi-Valuedness]]
 - [[Gill-1989-Practical-Anti-Cycling|research/papers/Gill-1989-Practical-Anti-Cycling]]

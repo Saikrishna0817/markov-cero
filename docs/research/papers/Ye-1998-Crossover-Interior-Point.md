@@ -13,6 +13,9 @@ tags: [paper, ipm]
 
 # Crossover and Interior Point Algorithms for LP
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The missing bridge from an interior-point solution to a basic optimal solution: crossover to a vertex/basis.
 
 ## Metadata

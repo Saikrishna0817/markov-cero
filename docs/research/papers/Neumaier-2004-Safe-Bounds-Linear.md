@@ -11,6 +11,9 @@ status: standard
 tags: [paper, benchmark]
 ---
 # Safe Bounds in Linear and Mixed-Integer Linear Programming
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Rigorous (outward-rounded) lower/upper bounds for LP and MILP — certification that survives floating-point failure and ill-posed data; shared note for Module 11 #153 and Module 13 #192.
 ## Metadata
 | Field | Value |

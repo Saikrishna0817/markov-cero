@@ -35,6 +35,9 @@ Result solve_parallel(const model::Model& model, const ParallelOptions& input_op
     } catch (const std::exception& e) {
         return fail_early(lp::reference::SolveStatus::invalid_model, e.what());
     }
+    if (options.deadline && std::chrono::steady_clock::now() >= *options.deadline)
+        return fail_early(lp::reference::SolveStatus::resource_limit,
+                          "parallel MILP wall-clock deadline reached before root relaxation");
 
     if (model.objective_sense == model::ObjectiveSense::maximize) {
         auto normalized = model;

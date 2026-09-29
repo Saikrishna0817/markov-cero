@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # A Frank-Wolfe-based Primal Heuristic for Quadratic Mixed-Integer Optimization
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > First real MIQP primal heuristic: conditional-gradient descent on the quadratic relaxation, then rounding — 1st place Land-Doig MIP Competition 2025.
 
 ## Metadata

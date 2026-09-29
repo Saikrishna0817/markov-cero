@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # KKT Conditions
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The single contract every engine's answer must satisfy — stationarity, feasibility, complementarity — and the shape of the independent verifiers.
 
 ## Definition
@@ -28,11 +31,11 @@ For a convex program with affine constraints, the Karush–Kuhn–Tucker conditi
 - [[Duality Gap]]
 - [[KKT Residual]]
 - [[ADMM]]
-- [[IndependentVerifiers]]
+- IndependentVerifiers
 
 ## Referenced By
 
-- [[Research MOC|research/Research MOC]]
+- Research MOC
 - [[ADMM|research/algorithms/ADMM]]
 - [[Interior-Point Method|research/algorithms/Interior-Point Method]]
 - [[Sparse LDL Factorization|research/algorithms/Sparse LDL Factorization]]

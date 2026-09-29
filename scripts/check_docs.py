@@ -6,9 +6,14 @@ import sys
 from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
-CURRENT = ['README.md', 'BUILDING.md', 'QUICKSTART.md', 'VERIFY.md', 'STATUS.md',
-           'PROVENANCE.md', 'docs/governance/provenance-and-verification.md',
-           'docs/audit/INDUSTRY-READINESS-IMPLEMENTATION-PLAN.md']
+CURRENT = ['README.md', 'docs/README.md', 'docs/guides/BUILDING.md',
+           'docs/guides/QUICKSTART.md', 'docs/guides/VERIFY.md',
+           'docs/project/STATUS.md', 'docs/project/PROVENANCE.md',
+           'docs/project/ORIGINAL_REQUEST.md', 'docs/research/README.md',
+           'CHANGELOG.md', 'web/README.md', 'examples/cases/README.md',
+           'examples/refinery/README.md', 'examples/refinery/data-dictionary.md',
+           'data/mittelmann/README.md', 'data/qp/README.md',
+           'third_party/LICENSES/README.md', 'evidence/INDEX.md']
 failures = []
 for name in CURRENT:
     path = ROOT / name

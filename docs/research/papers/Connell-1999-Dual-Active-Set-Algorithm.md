@@ -11,6 +11,9 @@ status: standard
 tags: [paper, qp]
 ---
 # A Dual Active-Set Algorithm for Positive Semidefinite Quadratic Programming
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Extends Goldfarb-Idnani to PSD (not strictly PD) Q — the case our convexity check must tolerate.
 ## Metadata
 | Field | Value |

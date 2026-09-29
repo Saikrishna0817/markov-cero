@@ -12,6 +12,9 @@ tags: [paper, lp, sparse]
 ---
 
 # Another Simplex-Type Method for Large Scale Linear Programming
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Dual simplex paired with hypersparse linear algebra so large-scale LP iterations stay proportional to touched entries.
 ## Metadata
 | Field | Value |

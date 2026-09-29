@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Degeneracy Handling Gap
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Degeneracy is named in the problem statement and answered with a safety rule — the anti-cycling floor exists, the anti-degeneracy toolbox does not.
 
 ## Definition
@@ -33,8 +36,8 @@ The gap between "the simplex terminates on degenerate LPs" and "the simplex *per
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- 21-traceability
+- Algorithms MOC
+- Research-Code Traceability MOC
+- cross-paper-synthesis
+- research-dependency-map

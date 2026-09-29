@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # ADMM
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Alternate a KKT solve, a projection and a dual ascent — the splitting method behind this solver's QP/MIQP engine.
 
 ## Definition
@@ -27,22 +30,22 @@ The Alternating Direction Method of Multipliers splits a constrained problem int
 - [[KKT Conditions]]
 - [[Sparse LDL Factorization]]
 - [[Primal-Dual Hybrid Gradient]]
-- [[QP-ADMM-Engine]]
+- QP-ADMM-Engine
 - [[Vanderbei-1995-Symmetric-Indefinite-Systems]]
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[LDL-Factorization|codebase/components/LDL-Factorization]]
-- [[QP-ADMM-Engine|codebase/components/QP-ADMM-Engine]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- LDL-Factorization
+- QP-ADMM-Engine
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
 - [[Sparse LDL Factorization|research/algorithms/Sparse LDL Factorization]]
 - [[KKT Conditions|research/concepts/KKT Conditions]]
 - [[QPLIB|research/datasets/QPLIB]]
 - [[First-Order Accuracy Ceiling|research/limitations/First-Order Accuracy Ceiling]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Primal Residual|research/metrics/Primal Residual]]
 - [[Goldfarb-1983-Numerically-Stable-Dual|research/papers/Goldfarb-1983-Numerically-Stable-Dual]]
 - [[Unknown-2025-Overview-GPU-Based-First|research/papers/Unknown-2025-Overview-GPU-Based-First]]

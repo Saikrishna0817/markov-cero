@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # Rounding Errors in Algebraic Processes / Moler iterative refinement
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Moler's iterative refinement: compute a residual in extra precision and correct the solution — turning an inaccurate solve into an accurate one for ~1 LP solve' worth of cost.
 
 ## Metadata

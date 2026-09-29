@@ -12,6 +12,9 @@ tags: [paper, sparse]
 ---
 
 # Parallel Symbolic Cholesky Factorization
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Symbolic factorization executed in parallel on CPU/GPU — the setup phase for large-scale IPM/QP factorizations.
 ## Metadata
 | Field | Value |

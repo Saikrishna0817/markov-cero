@@ -13,6 +13,9 @@ tags: [paper, qp]
 
 # Primal-Dual IPM (Ch. on convex QP)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Interior-point QP extending Mehrotra to convex quadratic programs (Wright 1997 chapter; lineage to Monteiro, Adler & Resende 1990).
 
 ## Metadata

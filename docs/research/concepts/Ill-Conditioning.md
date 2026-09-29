@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Ill-Conditioning
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > When κ(B) is huge, a "solved" system is only as good as ε·κ — the failure mode SIH asks this solver to survive.
 
 ## Definition
@@ -33,17 +36,17 @@ The condition number κ(B) = ‖B‖·‖B⁻¹‖ measures how much the solutio
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[21-traceability|audit/21-traceability]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 15-roadmap
+- 21-traceability
+- Architecture MOC
+- Research MOC
 - [[Iterative Refinement|research/algorithms/Iterative Refinement]]
 - [[Degeneracy|research/concepts/Degeneracy]]
 - [[Numerical Stability|research/concepts/Numerical Stability]]
 - [[Scaling|research/concepts/Scaling]]
 - [[Netlib LP Collection|research/datasets/Netlib LP Collection]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Numerical Error|research/metrics/Numerical Error]]
 - [[Bartels-1968-Numerical-Investigation-Simplex|research/papers/Bartels-1968-Numerical-Investigation-Simplex]]
 - [[Chinneck-1987-Primal-Dual-Methods|research/papers/Chinneck-1987-Primal-Dual-Methods]]

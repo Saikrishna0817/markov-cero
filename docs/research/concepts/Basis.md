@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Basis
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > m linearly independent columns of A — the coordinate system the simplex lives in, and the object every warm start hands to the next solve.
 
 ## Definition
@@ -28,12 +31,12 @@ For a canonical LP with rank m, a basis is an m×m nonsingular submatrix B of th
 - [[Warm Start]]
 - [[Sparse LU]]
 - [[Revised Simplex]]
-- [[SparseBasis-LU]]
+- SparseBasis-LU
 - [[Bartels-1969-Simplex-LU-Decomposition]]
 
 ## Referenced By
 
-- [[Research MOC|research/Research MOC]]
+- Research MOC
 - [[Revised Simplex|research/algorithms/Revised Simplex]]
 - [[Sparse LU|research/algorithms/Sparse LU]]
 - [[Basic Solution|research/concepts/Basic Solution]]

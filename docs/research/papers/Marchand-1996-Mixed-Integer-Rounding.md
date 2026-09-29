@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # The Mixed Integer Rounding Family of Inequalities / Computational Study of L&P Cuts
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > MIR inequalities generalize GMI to arbitrary rows and remain the workhorse cut family of modern MIP solvers.
 
 ## Metadata

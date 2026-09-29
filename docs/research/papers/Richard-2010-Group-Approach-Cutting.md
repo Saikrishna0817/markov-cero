@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # The Group Approach to Cutting Planes: Recent Developments
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Modern corner-polyhedron / group-cut theory: what GMI cuts really are, and how group structure yields stronger inequalities.
 
 ## Metadata

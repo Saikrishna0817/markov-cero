@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # QPLIB
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The standard QP instance library — the benchmark R19 names for the quadratic half of the scope.
 
 ## Definition
@@ -27,15 +30,15 @@ QPLIB is a curated library of convex and nonconvex quadratic programming instanc
 - [[ADMM]]
 - [[KKT Conditions]]
 - [[Relative Optimality Gap]]
-- [[QP-ADMM-Engine]]
+- QP-ADMM-Engine
 - [[Interior-Point Method]]
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Datasets MOC|research/Datasets MOC]]
-- [[Research MOC|research/Research MOC]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- 21-traceability
+- Datasets MOC
+- Research MOC
+- cross-paper-synthesis
 - [[Goldfarb-1983-Numerically-Stable-Dual|research/papers/Goldfarb-1983-Numerically-Stable-Dual]]
 - [[Goldfarb-1984-Dual-Primal-Dual-Methods|research/papers/Goldfarb-1984-Dual-Primal-Dual-Methods]]
 - [[Wright-1997-Primal-Dual-IPM|research/papers/Wright-1997-Primal-Dual-IPM]]

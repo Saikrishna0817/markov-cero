@@ -13,6 +13,9 @@ tags: [paper, milp]
 
 # General Mixed Integer Programming: Computational Issues for Branch-and-Cut Algorithms
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > How every component (presolve, cuts, heuristics, branching, LP) interacts at a single node — the systems view of a MIP solver.
 
 ## Metadata

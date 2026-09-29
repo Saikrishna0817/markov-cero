@@ -13,6 +13,9 @@ tags: [paper, branching]
 
 # How Important Are Branching Decisions: Fooling MIP Solvers
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Shows branching rules can be gamed: adversarial instances make supposedly strong rules behave arbitrarily badly — robustness evidence for default choices.
 
 ## Metadata

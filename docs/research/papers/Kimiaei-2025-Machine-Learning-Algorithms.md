@@ -11,6 +11,9 @@ status: standard
 tags: [paper, ml]
 ---
 # Machine Learning Algorithms for Improving Exact Classical Solvers in Mixed Integer Continuous Optimization
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Survey of where ML can attach to an exact MIP solver — branching, cut selection, heuristics, tuning — with the data and evaluation requirements each attachment implies.
 ## Metadata
 | Field | Value |

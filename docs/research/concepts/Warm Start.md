@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Warm Start
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Hand the node LP its parent's basis and most of the work is already done — this is where branch-and-bound actually wins.
 
 ## Definition
@@ -28,19 +31,19 @@ A warm start reuses the optimal basis (and preferably its factorization) of a cl
 - [[Dual Simplex]]
 - [[Branch and Bound]]
 - [[Crossover]]
-- [[DualSimplexEngine]]
+- DualSimplexEngine
 
 ## Referenced By
 
-- [[Research MOC|research/Research MOC]]
+- Research MOC
 - [[Branch and Bound|research/algorithms/Branch and Bound]]
 - [[Dual Simplex|research/algorithms/Dual Simplex]]
 - [[Strong Branching|research/algorithms/Strong Branching]]
 - [[Basis|research/concepts/Basis]]
 - [[Crossover|research/concepts/Crossover]]
 - [[No Crossover|research/limitations/No Crossover]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Bussieck-2026-mipfeas-Benchmark|research/papers/Bussieck-2026-mipfeas-Benchmark]]
 - [[COIN-OR-n.d.-CBC-Solver-Documentation|research/papers/COIN-OR-n.d.-CBC-Solver-Documentation]]
 - [[Canturk-2024-Scalable-Primal-Heuristics|research/papers/Canturk-2024-Scalable-Primal-Heuristics]]

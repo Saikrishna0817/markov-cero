@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Ruiz Scaling
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Iteratively multiply rows and columns by 1/√(norm) until everything is roughly size one — parameter-free equilibration.
 
 ## Definition
@@ -27,17 +30,17 @@ Ruiz–Torres equilibration scales a matrix so that both row and column 2-norms 
 - [[Scaling]]
 - [[Ill-Conditioning]]
 - [[Primal-Dual Hybrid Gradient]]
-- [[RuizScaling]]
+- RuizScaling
 - [[OLeary-1981-Equilibrating-Both-Matrices]]
 
 ## Referenced By
 
-- [[RuizScaling|codebase/components/RuizScaling]]
-- [[Solve-Pipeline|codebase/data-flow/Solve-Pipeline]]
-- [[Research MOC|research/Research MOC]]
+- RuizScaling
+- Solve-Pipeline
+- Research MOC
 - [[Primal-Dual Hybrid Gradient|research/algorithms/Primal-Dual Hybrid Gradient]]
 - [[Scaling|research/concepts/Scaling]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Achterberg-2020-Presolve-Reductions-Mixed|research/papers/Achterberg-2020-Presolve-Reductions-Mixed]]
 - [[Oren-1980-Automatic-Scaling-Matrices|research/papers/Oren-1980-Automatic-Scaling-Matrices]]
 - [[Diagonal Preconditioning|research/techniques/Diagonal Preconditioning]]

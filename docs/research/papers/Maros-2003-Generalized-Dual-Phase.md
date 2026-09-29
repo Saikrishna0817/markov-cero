@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # A Generalized Dual Phase-2 Simplex Algorithm (cross-ref #40)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Bound-flipping (BFRT) dual pivots that walk past a degenerate dual vertex in one iteration instead of stalling on it.
 
 > **Collision note:** list entry **#162** explicitly cross-references **#40** (Module 3, same paper/title). The canonical slug `Maros-2003-Generalized-Dual-Phase` is occupied by the Module 3 note. This file keeps Module 11's copy at a disambiguated slug (`Phase-2` kept as a compound) — merge candidate, see manifest.

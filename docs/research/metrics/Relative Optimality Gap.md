@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Relative Optimality Gap
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > (UB − LB)/|UB| — the only honest way to say "near-optimal" when the tree did not close.
 
 ## Definition
@@ -32,15 +35,15 @@ For a minimization problem with incumbent UB and best valid lower bound LB, the 
 
 ## Referenced By
 
-- [[16-testing-evaluation-strategy|audit/16-testing-evaluation-strategy]]
-- [[21-traceability|audit/21-traceability]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Evaluation MOC|research/Evaluation MOC]]
-- [[Research MOC|research/Research MOC]]
+- 16-testing-evaluation-strategy
+- 21-traceability
+- Architecture MOC
+- Evaluation MOC
+- Research MOC
 - [[Duality Gap|research/concepts/Duality Gap]]
 - [[MIPLIB|research/datasets/MIPLIB]]
 - [[QPLIB|research/datasets/QPLIB]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Achterberg-2005-General-Mixed-Integer|research/papers/Achterberg-2005-General-Mixed-Integer]]
 - [[Achterberg-2005-MIPLIB-2003|research/papers/Achterberg-2005-MIPLIB-2003]]
 - [[Achterberg-2007-Best-Estimate-Bound|research/papers/Achterberg-2007-Best-Estimate-Bound]]

@@ -11,6 +11,9 @@ status: standard
 tags: [paper, domain]
 ---
 # Carpentier (1962) origin of economic dispatch; Cohen & Wan (1983)
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Where power-system economic dispatch and unit commitment enter mathematical programming — the QP/LP and MILP roots of the PS's power-dispatch scope.
 ## Metadata
 | Field | Value |

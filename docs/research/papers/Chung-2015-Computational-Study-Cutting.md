@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # Computational Study of Cutting Planes for a Lot-Sizing Problem in Branch-and-Cut Algorithm
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Application-level head-to-head comparison of three cut families on lot-sizing, with the practical lesson that family choice is instance-structure dependent.
 
 ## Metadata

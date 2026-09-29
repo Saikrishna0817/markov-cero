@@ -5,7 +5,7 @@ install(TARGETS markov-cero-iis markov-cero-verify-mip markov-cero-solve markov-
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY include/markov_cero gpu/include/markov_cero
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(FILES LICENSE NOTICE PROVENANCE.md DESTINATION ${CMAKE_INSTALL_DATADIR}/markov-cero)
+install(FILES LICENSE NOTICE docs/project/PROVENANCE.md DESTINATION ${CMAKE_INSTALL_DATADIR}/markov-cero)
 configure_package_config_file(cmake/markov_ceroConfig.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/markov_ceroConfig.cmake
   INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/markov_cero)

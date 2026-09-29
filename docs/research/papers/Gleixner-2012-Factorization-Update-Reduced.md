@@ -12,6 +12,9 @@ tags: [paper, lp, sparse]
 ---
 
 # Factorization and Update of a Reduced Basis Matrix for the Revised Simplex Method
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Factorizes and updates a reduced basis matrix to improve stability and sparsity in the revised simplex.
 ## Metadata
 | Field | Value |

@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # No External Baseline
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Every timing in this repo is ours alone â€” so "faster" and "competitive" currently have no referent.
 
 ## Definition
@@ -32,13 +35,13 @@ An external baseline is timing (and accuracy) data from an established solver â€
 
 ## Referenced By
 
-- [[16-testing-evaluation-strategy|audit/16-testing-evaluation-strategy]]
-- [[17-sih-demo-strategy|audit/17-sih-demo-strategy]]
-- [[21-traceability|audit/21-traceability]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Evaluation MOC|research/Evaluation MOC]]
-- [[Research MOC|research/Research MOC]]
+- 16-testing-evaluation-strategy
+- 17-sih-demo-strategy
+- 21-traceability
+- Architecture MOC
+- Evaluation MOC
+- Research MOC
 - [[ED-001-comparison-harness-before-new-algorithms|research/engineering-decisions/ED-001-comparison-harness-before-new-algorithms]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Missing External Baseline Comparison|research/research-gaps/Missing External Baseline Comparison]]

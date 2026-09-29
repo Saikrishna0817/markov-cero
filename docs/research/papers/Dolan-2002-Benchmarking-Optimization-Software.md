@@ -11,6 +11,9 @@ status: standard
 tags: [paper, benchmark]
 ---
 # Benchmarking Optimization Software with Performance Profiles
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > The correct way to plot comparative solver results: one curve per solver, robust to outliers, showing both efficiency and robustness.
 ## Metadata
 | Field | Value |

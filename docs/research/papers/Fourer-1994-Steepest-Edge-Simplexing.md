@@ -12,6 +12,9 @@ tags: [paper, lp]
 ---
 
 # Steepest-Edge Simplexing for Network-Style Problems
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > BFRT and steepest-edge details specialized to network-style LP structures.
 ## Metadata
 | Field | Value |

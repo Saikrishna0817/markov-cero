@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # Outline of an Algorithm for Integer Solutions to Linear Programs
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Origin of cutting planes: derive an integer-invalid inequality from a fractional simplex tableau row and re-optimize.
 
 ## Metadata

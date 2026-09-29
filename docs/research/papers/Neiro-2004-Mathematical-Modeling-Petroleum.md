@@ -11,6 +11,9 @@ status: standard
 tags: [paper, domain]
 ---
 # Mathematical Modeling of Petroleum Refinery (incl. Samsioe linear blending LP)
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Refinery scheduling/crude-blending formulations — the MRPL-facing model family the PS names first.
 ## Metadata
 | Field | Value |

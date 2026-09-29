@@ -11,6 +11,9 @@ status: standard
 tags: [paper, minlp]
 ---
 # 50 Years of Mixed-Integer Nonlinear and Disjunctive Programming
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Half-century survey of MINLP and generalized disjunctive programming — the map of methods a sovereign solver would inherit when it crosses from MILP into nonlinear models.
 ## Metadata
 | Field | Value |

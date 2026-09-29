@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # Feasibility Jump
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > A fast local-repair heuristic: greedily flip/perturb variables to remove infeasibilities, no LP solves required.
 
 ## Metadata

@@ -63,8 +63,8 @@ def _load() -> dict:
     return {
         "date": ISO_DATE,
         "backlog_item": 7,
-        "roadmap_item": ("docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md section 14 "
-                         "item 7: freeze comparator versions, manifests, family splits "
+        "roadmap_item": ("historical roadmap item 7 (archived in Git history): "
+                         "freeze comparator versions, manifests, family splits "
                          "and timing definitions, then regenerate the baseline before tuning"),
         "purpose": "Frozen manifests, splits, timing definitions and the regenerated "
                    "pre-tuning baseline for this uncommitted worktree",

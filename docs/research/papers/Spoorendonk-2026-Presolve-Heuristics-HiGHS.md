@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # Presolve Heuristics in HiGHS: Implementation and Computational Study
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Reference implementations of modern cheap heuristics (Feasibility Jump, fix-propagate-repair, LocalMIP, Scylla) with a reported +23.7% primal-integral gain.
 
 ## Metadata

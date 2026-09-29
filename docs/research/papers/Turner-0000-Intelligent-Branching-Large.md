@@ -13,6 +13,9 @@ tags: [paper, branching]
 
 # Intelligent Branching / Large-Neighborhood Branching
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Branching designs that go beyond a single variable: decide *where* to split using neighborhood/large-scale structure rather than one fractional column.
 
 ## Metadata

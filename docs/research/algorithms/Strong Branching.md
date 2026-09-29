@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Strong Branching
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Probe a handful of candidates by actually solving their children — expensive, accurate, and the standard way to seed pseudo-costs.
 
 ## Definition
@@ -27,19 +30,19 @@ Strong branching temporarily branches on each candidate variable, solves the res
 - [[Pseudo-Cost Branching]]
 - [[Branch and Bound]]
 - [[Warm Start]]
-- [[BranchAndCut]]
+- BranchAndCut
 - [[Achterberg-2005-Branching-Rules-Revisited]]
 - [[Held-2006-Lookahead-Branching-Mixed]]
 
 ## Referenced By
 
-- [[BranchAndCut|codebase/components/BranchAndCut]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- BranchAndCut
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
 - [[Branch and Cut|research/algorithms/Branch and Cut]]
 - [[Pseudo-Cost Branching|research/algorithms/Pseudo-Cost Branching]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Achterberg-2005-Branching-Rules-Revisited|research/papers/Achterberg-2005-Branching-Rules-Revisited]]
 - [[Balas-1993-Lift-Project-Cutting|research/papers/Balas-1993-Lift-Project-Cutting]]
 - [[Berthold-2006-Hybrid-Branching|research/papers/Berthold-2006-Hybrid-Branching]]

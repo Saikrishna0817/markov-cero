@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Numerical Stability
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Backward stability is the property that lets you believe an answer at all; without it every downstream number is decoration.
 
 ## Definition
@@ -33,14 +36,14 @@ An algorithm is backward stable if the computed result is the exact solution of 
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- Architecture MOC
+- Research MOC
 - [[Iterative Refinement|research/algorithms/Iterative Refinement]]
 - [[Markowitz Pivoting|research/algorithms/Markowitz Pivoting]]
 - [[Ill-Conditioning|research/concepts/Ill-Conditioning]]
 - [[Scaling|research/concepts/Scaling]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- research-dependency-map
 - [[Numerical Error|research/metrics/Numerical Error]]
 - [[Andersen-1995-Presolving-Linear-Programming|research/papers/Andersen-1995-Presolving-Linear-Programming]]
 - [[Azulay-0000-Revised-Simplex-Method|research/papers/Azulay-0000-Revised-Simplex-Method]]

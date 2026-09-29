@@ -13,6 +13,9 @@ tags: [paper, ipm]
 
 # On the Implementation of a Primal-Dual Interior Point Algorithm
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Predictor-corrector IPM — the algorithmic kernel used, with variations, by essentially every modern commercial interior-point LP solver.
 
 ## Metadata

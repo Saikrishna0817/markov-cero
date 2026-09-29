@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # Heuristics of the Branch-Cut-and-Price-Framework SCIP
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The reference taxonomy of 23 primal heuristics (rounding, 6 diving variants, objective diving, LNS family) with a schedule for when to run each.
 
 ## Metadata

@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Mittelmann Benchmarks
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The live leaderboards SIH evaluators can check in one click — geometric means, matched hardware, updated continuously.
 
 ## Definition
@@ -33,12 +36,12 @@ Hans Mittelmann's benchmark pages (Arizona State University, plato.asu.edu) main
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Datasets MOC|research/Datasets MOC]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- Datasets MOC
+- Research MOC
 - [[Netlib LP Collection|research/datasets/Netlib LP Collection]]
 - [[No External Baseline|research/limitations/No External Baseline]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Geometric Mean Runtime|research/metrics/Geometric Mean Runtime]]
 - [[Relative Optimality Gap|research/metrics/Relative Optimality Gap]]
 - [[Mittelmann-n.d.-Benchmarks-Optimization-Software|research/papers/Mittelmann-n.d.-Benchmarks-Optimization-Software]]

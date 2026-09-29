@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Sparse LDL Factorization
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Symbolic then numeric factorization of a symmetric quasi-definite matrix — no pivot search, which is why the QP KKT path can be both sparse and safe.
 
 ## Definition
@@ -28,15 +31,15 @@ For a symmetric matrix K (here the KKT matrix of a convex QP), an LDLᵀ factori
 - [[Fill-Reducing Ordering]]
 - [[KKT Conditions]]
 - [[ADMM]]
-- [[LDL-Factorization]]
+- LDL-Factorization
 
 ## Referenced By
 
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
 - [[ADMM|research/algorithms/ADMM]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- research-dependency-map
 - [[Karmarkar-1984-New-Polynomial-Time-Algorithm|research/papers/Karmarkar-1984-New-Polynomial-Time-Algorithm]]
 - [[Kojima-1989-Primal-Dual-Interior-Point-Algorithm|research/papers/Kojima-1989-Primal-Dual-Interior-Point-Algorithm]]
 - [[Lustig-1992-Implementing-Mehrotras-Predictor-Corrector|research/papers/Lustig-1992-Implementing-Mehrotras-Predictor-Corrector]]

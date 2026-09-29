@@ -12,6 +12,9 @@ tags: [paper, lp, numerics]
 ---
 
 # A Stabilization of the Simplex Method
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > First rigorous rounding-error analysis of LU-based simplex, and a stabilization that follows from it.
 ## Metadata
 | Field | Value |

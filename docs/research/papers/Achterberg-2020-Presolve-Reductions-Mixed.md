@@ -13,6 +13,9 @@ tags: [paper, presolve]
 
 # Presolve Reductions in Mixed Integer Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Complete Gurobi presolve taxonomy — the most complete modern description of what a production MIP presolve does.
 
 ## Metadata

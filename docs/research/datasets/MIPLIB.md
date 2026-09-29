@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # MIPLIB
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The standard MIP library — collection for breadth, benchmark subset for the claims that get graded.
 
 ## Definition
@@ -33,12 +36,12 @@ MIPLIB is the community mixed-integer programming instance library; MIPLIB 2017 
 
 ## Referenced By
 
-- [[18-risk-register|audit/18-risk-register]]
-- [[21-traceability|audit/21-traceability]]
-- [[Datasets MOC|research/Datasets MOC]]
-- [[Research MOC|research/Research MOC]]
+- 18-risk-register
+- 21-traceability
+- Datasets MOC
+- Research MOC
 - [[No External Baseline|research/limitations/No External Baseline]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Geometric Mean Runtime|research/metrics/Geometric Mean Runtime]]
 - [[Relative Optimality Gap|research/metrics/Relative Optimality Gap]]
 - [[Achterberg-2005-MIPLIB-2003|research/papers/Achterberg-2005-MIPLIB-2003]]

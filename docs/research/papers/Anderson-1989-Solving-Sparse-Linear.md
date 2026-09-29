@@ -11,6 +11,9 @@ status: standard
 tags: [paper, parallel]
 ---
 # Solving Sparse Linear Systems on a Hypercube; Updating LU Factors (Hager)
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Parallel triangular solves and LU-update alternatives that attack the sequential core of every simplex FTRAN/BTRAN.
 ## Metadata
 | Field | Value |

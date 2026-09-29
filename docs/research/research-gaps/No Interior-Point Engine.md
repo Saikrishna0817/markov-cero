@@ -8,6 +8,9 @@ resolved_on: 2026-09-26
 
 # No Interior-Point Engine
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > R4 names interior-point methods alongside revised simplex; the repo has a first-order method instead — the hardest structural gap.
 
 ## Definition
@@ -55,15 +58,15 @@ Closed by the AP-1 implementation:
 
 ## Referenced By
 
-- [[18-risk-register|audit/18-risk-register]]
-- [[21-traceability|audit/21-traceability]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
+- 18-risk-register
+- 21-traceability
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
+- Research-Code Traceability MOC
 - [[Interior-Point Method|research/algorithms/Interior-Point Method]]
 - [[ED-003-interior-point-required-by-ps|research/engineering-decisions/ED-003-interior-point-required-by-ps]]
 - [[First-Order Accuracy Ceiling|research/limitations/First-Order Accuracy Ceiling]]
 - [[No Crossover|research/limitations/No Crossover]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map

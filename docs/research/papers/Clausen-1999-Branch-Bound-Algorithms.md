@@ -11,6 +11,9 @@ status: standard
 tags: [paper, milp]
 ---
 # Branch and Bound Algorithms — Principles and Examples
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Practical, example-driven treatment of branch-and-bound mechanics: node order, bounds, backtracking.
 ## Metadata
 | Field | Value |

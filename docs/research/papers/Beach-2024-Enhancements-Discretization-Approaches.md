@@ -11,6 +11,9 @@ status: standard
 tags: [paper, miqp]
 ---
 # Enhancements of Discretization Approaches for Non-Convex MIQCQP (Parts I & II)
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Two-part study of discretization-based global methods for non-convex quadratically constrained mixed-integer programs — the machinery needed if quadratic constraints ever enter our scope.
 ## Metadata
 | Field | Value |

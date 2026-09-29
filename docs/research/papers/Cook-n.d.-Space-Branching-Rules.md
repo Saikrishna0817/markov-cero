@@ -11,6 +11,9 @@ status: standard
 tags: [paper, milp]
 ---
 # The Space of Branching Rules for Branch-and-Cut
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Design space of branching rules: dimensions along which rules vary and how to compare them.
 ## Metadata
 | Field | Value |

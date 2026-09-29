@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Rounding Heuristic
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Round the fractional LP point to integers and check — the cheapest possible source of incumbents.
 
 ## Definition
@@ -27,16 +30,16 @@ A rounding heuristic takes the LP relaxation's optimal point and maps it to an i
 - [[LP Relaxation]]
 - [[Feasibility Pump]]
 - [[Diving]]
-- [[PrimalHeuristics]]
+- PrimalHeuristics
 - [[Achterberg-2011-Rounding-Propagation-Heuristics]]
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[Research MOC|research/Research MOC]]
+- 15-roadmap
+- Research MOC
 - [[Feasibility Pump|research/algorithms/Feasibility Pump]]
 - [[LP Relaxation|research/concepts/LP Relaxation]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Achterberg-2007-Improving-Feasibility-Pump|research/papers/Achterberg-2007-Improving-Feasibility-Pump]]
 - [[Achterberg-2011-Rounding-Propagation-Heuristics|research/papers/Achterberg-2011-Rounding-Propagation-Heuristics]]
 - [[Applegate-2006-Traveling-Salesman-Problem|research/papers/Applegate-2006-Traveling-Salesman-Problem]]

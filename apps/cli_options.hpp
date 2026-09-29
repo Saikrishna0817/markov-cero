@@ -22,7 +22,7 @@ struct CliOptions {
     std::size_t num_threads = 4;
     // True only when the user passed --threads on the command line. The W6
     // auto-dispatch upgrade milp->parallel keys on an explicit request, not on
-    // the compiled-in default (see docs/engine_selection.md rule 3).
+    // the compiled-in default.
     bool threads_explicit = false;
     std::string warm_start_path;
     std::string save_basis_path;

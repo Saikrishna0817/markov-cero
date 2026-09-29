@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Fill-Reducing Ordering
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Permute before you eliminate: the single biggest lever on sparse factorization cost, and one this solver does not pull.
 
 ## Definition
@@ -33,17 +36,17 @@ A fill-reducing ordering is a permutation of rows/columns chosen before eliminat
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[21-traceability|audit/21-traceability]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 15-roadmap
+- 21-traceability
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
 - [[Markowitz Pivoting|research/algorithms/Markowitz Pivoting]]
 - [[Sparse LDL Factorization|research/algorithms/Sparse LDL Factorization]]
 - [[Sparse LU|research/algorithms/Sparse LU]]
 - [[CSC Sparse Model|research/architectures/CSC Sparse Model]]
 - [[Sparsity|research/concepts/Sparsity]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Amestoy-1996-Approximate-Minimum-Degree|research/papers/Amestoy-1996-Approximate-Minimum-Degree]]
 - [[Davis-2004-Column-Approximate-Minimum|research/papers/Davis-2004-Column-Approximate-Minimum]]
 - [[Duff-1986-Direct-Methods-Sparse|research/papers/Duff-1986-Direct-Methods-Sparse]]

@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # Local Branching
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Encodes a Hamming-distance ball around the incumbent as extra cuts and solves the restricted sub-MIP — local search as integer programming.
 
 ## Metadata

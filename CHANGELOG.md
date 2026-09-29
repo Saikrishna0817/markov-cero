@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### 2026-09-29 repository layout and documentation
+
+- Consolidated current guides under `docs/guides/`, status and provenance under
+  `docs/project/`, the visual app under `web/`, and the qualification script
+  under `scripts/`; updated CMake, package, Docker, CI and source links. Added
+  a bounded Docker build context and a docs/web CI check.
+- Replaced stale short guides with a detailed project README, current status
+  summary, documentation index and example context. Dated research and evidence
+  remain explicitly marked as historical records.
+- Earlier cleanup removed obsolete audit/navigation material, orphan fixtures,
+  an unused image and an unwired measurement source. The sparse-LU deadline
+  regression is now registered and its cooperative deadline path compiles.
+
 ### Industry roadmap: solve-wide resource contract (backlog item 5)
 
 - **Solve-wide limits** (`include/markov_cero/api/solve.hpp`, `src/api/`):
@@ -211,7 +224,7 @@
   from `crossover_study.csv` (13 rows; three previously quoted rows had no CSV backing), all
   ">50,000×" undefined-ratio rows removed, and the headline now leads with the engine-matched
   verdict (GPU loses 13/13 end-to-end, 0.34–0.87×).
-- **RW-10 (claims layer)**: added the R1–R20 coverage matrix to `STATUS.md` (12 MET / 8 PARTIAL,
+- **RW-10 (claims layer)**: added the R1–R20 coverage matrix to `docs/project/STATUS.md` (12 MET / 8 PARTIAL,
   every PARTIAL naming its gap); rewrote `VERIFY.md` to describe what `verify-release.sh`
   actually does; added the shared hardware manifest `evidence/hardware.md` (PS-GAP-05).
 - Fixed `src/api/api.cpp` missing from `CMakeLists.txt` (broke `markov-cero-solve` linking).
@@ -246,7 +259,7 @@
 - **AP-11/AP-12: hygiene** — `docs/history.md` archived behind the CHANGELOG; dead options,
   duplicate runners and unwired fuzz targets removed; the RW-2 scaling script moved out of
   `benchmarks/runners/`.
-- **Docs/claims layer** — `STATUS.md` gains the AP-1–AP-12 closure register and R4 moves to
+- **Docs/claims layer** — `docs/project/STATUS.md` gains the AP-1–AP-12 closure register and R4 moves to
   **MET** (register now 13 MET / 7 PARTIAL); README documents the IPM engine; the research
   vault's `No Interior-Point Engine`, `No Crossover` and `Interior-Point Method` notes record
   their resolution. Full CTest sweep: **46/46 passing**.
@@ -311,7 +324,7 @@
 - Stopped tracking CMake `_m5-*` build trees; added `.gitignore`.
 - Tightened `no_solver_guard.py` (forbids external solvers; allows clean-room lp).
 - Reformatted M3/M4 simplex sources; renamed dual pricing `tableau_norm`.
-- Added `markov-cero-solve`, refinery qualification models, and `run-qualification-demo.sh`.
+- Added `markov-cero-solve`, refinery qualification models, and `scripts/run-qualification-demo.sh`.
 - Documented current M5 capability vs planned M6–M11.
 
 ## 0.0.1 — 2026-09-13

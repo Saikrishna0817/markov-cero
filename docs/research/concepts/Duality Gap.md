@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Duality Gap
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The distance between what the primal achieves and what the dual proves — every "optimality" claim in this repo is a statement about this number.
 
 ## Definition

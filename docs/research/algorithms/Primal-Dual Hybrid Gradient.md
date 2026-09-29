@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Primal-Dual Hybrid Gradient
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > A first-order saddle-point method whose only kernels are SpMV and axpy — the reason a GPU can compete on large LPs at all.
 
 ## Definition
@@ -28,23 +31,23 @@ PDHG (Chambolle–Pock 2011) solves a saddle-point problem min_x max_y L(x, y) b
 - [[Diagonal Preconditioning]]
 - [[GPU CSR SpMV]]
 - [[Ruiz Scaling]]
-- [[PDLP-Engine]]
+- PDLP-Engine
 - [[Lu-2025-cuPDLP-GPU-Implementation]]
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[GPU-PDHG-Engine|codebase/components/GPU-PDHG-Engine]]
-- [[PDLP-Engine|codebase/components/PDLP-Engine]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- GPU-PDHG-Engine
+- PDLP-Engine
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
 - [[ADMM|research/algorithms/ADMM]]
 - [[Interior-Point Method|research/algorithms/Interior-Point Method]]
 - [[Scaling|research/concepts/Scaling]]
 - [[ED-002-keep-simplex-core-add-first-order-not-replace|research/engineering-decisions/ED-002-keep-simplex-core-add-first-order-not-replace]]
 - [[First-Order Accuracy Ceiling|research/limitations/First-Order Accuracy Ceiling]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- research-dependency-map
 - [[Primal Residual|research/metrics/Primal Residual]]
 - [[Lu-2025-cuPDLP-GPU-Implementation|research/papers/Lu-2025-cuPDLP-GPU-Implementation]]
 - [[Unknown-2025-Overview-GPU-Based-First|research/papers/Unknown-2025-Overview-GPU-Based-First]]

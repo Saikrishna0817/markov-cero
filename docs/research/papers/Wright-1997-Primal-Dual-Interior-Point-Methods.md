@@ -13,6 +13,9 @@ tags: [paper, ipm]
 
 # Primal-Dual Interior-Point Methods
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Book-length specification of LP interior-point methods: algorithm, sparse linear algebra, tolerances and stopping criteria.
 
 ## Metadata

@@ -11,6 +11,9 @@ status: standard
 tags: [paper, ipm]
 ---
 # Multiple Centrality Corrections in a Primal-Dual Method
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Repeated centrality corrections restore iterates to the central path after aggressive steps — robustness at low extra cost.
 ## Metadata
 | Field | Value |

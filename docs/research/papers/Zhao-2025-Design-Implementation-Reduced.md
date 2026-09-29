@@ -12,6 +12,9 @@ tags: [paper, sparse]
 ---
 
 # Design and Implementation of a Reduced-Space SQP Solver with Column Reordering for Large-Scale Process Optimization
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Shows column reordering plus sparse kernels inside a practical large-scale process-optimization solver.
 ## Metadata
 | Field | Value |

@@ -13,6 +13,9 @@ tags: [paper, branching]
 
 # Learning to Select Nodes in Branch and Bound with Sufficient Tree Representation
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > TRGNN: represent the search tree as a tripartite graph (nodes, variables, constraints) and learn node selection with a GNN — ICLR 2025.
 
 ## Metadata

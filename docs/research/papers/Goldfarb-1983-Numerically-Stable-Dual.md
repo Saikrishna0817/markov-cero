@@ -13,6 +13,9 @@ tags: [paper, qp]
 
 # A Numerically Stable Dual Method for Solving Strictly Convex Quadratic Programs
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Reference dual active-set QP algorithm: Cholesky + QR updates, no Phase I, numerical stability by construction.
 
 ## Metadata

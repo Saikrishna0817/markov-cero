@@ -13,6 +13,9 @@ tags: [paper, branching]
 
 # The Impact of Branch-and-Bound Procedures on the Complexity of Integer Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Disentangles node count from LP cost: the procedure that minimizes nodes is often not the one that minimizes time.
 
 ## Metadata

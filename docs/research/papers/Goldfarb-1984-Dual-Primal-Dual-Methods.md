@@ -13,6 +13,9 @@ tags: [paper, qp]
 
 # Dual and Primal-Dual Methods for Solving Strictly Convex Quadratic Programs
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Implementation companion to Goldfarb-Idnani: algorithm variants plus a ready-to-use subroutine (with Panton's 1985 analysis).
 
 ## Metadata

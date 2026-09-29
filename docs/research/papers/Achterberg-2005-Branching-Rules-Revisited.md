@@ -13,6 +13,9 @@ tags: [paper, branching]
 
 # Branching Rules Revisited
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Systematic comparison of branching rules — most-infeasible, pseudo-cost, strong, reliability — with the reliability parameters (η_rel = 8, λ = 4) now standard in every solver.
 
 ## Metadata

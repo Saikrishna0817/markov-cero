@@ -13,6 +13,9 @@ tags: [paper, ipm]
 
 # On Implementing Mehrotra's Predictor-Corrector IPM for LP
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Catalogue of the implementation pitfalls of Mehrotra's algorithm: free variables, bound handling, dense columns and Schur-complement instability.
 
 ## Metadata

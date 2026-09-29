@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Degeneracy
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > More columns want to enter than the vertex can move — the default state of industrial LPs and the reason pivot rules decide whether a solver converges.
 
 ## Definition
@@ -33,14 +36,14 @@ Primal degeneracy: a basic feasible solution in which at least one basic variabl
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[21-traceability|audit/21-traceability]]
-- [[Research MOC|research/Research MOC]]
+- 15-roadmap
+- 21-traceability
+- Research MOC
 - [[Steepest Edge|research/algorithms/Steepest Edge]]
 - [[Basic Solution|research/concepts/Basic Solution]]
 - [[Ill-Conditioning|research/concepts/Ill-Conditioning]]
 - [[Bland-Only Pricing|research/limitations/Bland-Only Pricing]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Achterberg-2020-Presolve-Reductions-Mixed|research/papers/Achterberg-2020-Presolve-Reductions-Mixed]]
 - [[Andersen-1995-Presolving-Linear-Programming|research/papers/Andersen-1995-Presolving-Linear-Programming]]
 - [[Berthold-2013-Cloud-Branching|research/papers/Berthold-2013-Cloud-Branching]]

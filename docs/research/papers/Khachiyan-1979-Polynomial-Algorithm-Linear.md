@@ -13,6 +13,9 @@ tags: [paper, ipm]
 
 # A Polynomial Algorithm in Linear Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > First proof that LP is solvable in polynomial time via the ellipsoid method.
 
 ## Metadata

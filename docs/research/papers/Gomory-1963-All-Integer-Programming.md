@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # All-Integer Programming Algorithm / mixed-integer version
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The GMI cut: a mixed-integer rounding inequality derived from one LP row, still the workhorse cut family in modern solvers.
 
 ## Metadata

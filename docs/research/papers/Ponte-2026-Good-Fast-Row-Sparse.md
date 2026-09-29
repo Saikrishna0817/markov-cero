@@ -12,6 +12,9 @@ tags: [paper, sparse]
 ---
 
 # Good and Fast Row-Sparse AH-Symmetric Reflexive Generalized Inverses
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Constructs sparse generalized inverses quickly — adjacent to how singular systems and bases are handled.
 ## Metadata
 | Field | Value |

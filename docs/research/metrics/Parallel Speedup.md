@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Parallel Speedup
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > S_p = T_1/T_p — the number that is supposed to go up with threads, and currently does not.
 
 ## Definition
@@ -32,13 +35,13 @@ Parallel speedup compares the wall-clock time of a serial run T_1 against the sa
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[16-testing-evaluation-strategy|audit/16-testing-evaluation-strategy]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Evaluation MOC|research/Evaluation MOC]]
-- [[Research MOC|research/Research MOC]]
+- 15-roadmap
+- 16-testing-evaluation-strategy
+- Architecture MOC
+- Evaluation MOC
+- Research MOC
 - [[Negative Parallel Scaling|research/limitations/Negative Parallel Scaling]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Geometric Mean Runtime|research/metrics/Geometric Mean Runtime]]
 - [[Parallel Efficiency|research/metrics/Parallel Efficiency]]
 - [[Achterberg-2007-Best-Estimate-Bound|research/papers/Achterberg-2007-Best-Estimate-Bound]]

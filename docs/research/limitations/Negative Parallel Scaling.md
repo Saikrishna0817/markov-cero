@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Negative Parallel Scaling
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Four threads made it slower than one — 0.56× speedup, 14% efficiency — parallelization that subtracts.
 
 ## Definition
@@ -33,12 +36,12 @@ Negative parallel scaling means adding workers increases wall-clock time: S_p < 
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- Architecture MOC
+- Research MOC
 - [[ED-006-load-balanced-parallel-or-demote|research/engineering-decisions/ED-006-load-balanced-parallel-or-demote]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Parallel Efficiency|research/metrics/Parallel Efficiency]]
 - [[Parallel Speedup|research/metrics/Parallel Speedup]]
 - [[Parallel Scalability Gap|research/research-gaps/Parallel Scalability Gap]]

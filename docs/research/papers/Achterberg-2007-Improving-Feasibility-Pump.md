@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # Improving the Feasibility Pump
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Objective Feasibility Pump: bias the projection with the LP objective, cutting the reported mean gap from 55% to 29.5%.
 
 ## Metadata

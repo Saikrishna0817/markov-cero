@@ -11,6 +11,9 @@ status: standard
 tags: [paper, ipm]
 ---
 # Interior Point Methods for LP: Computational State of the Art
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Survey + OB1 implementation report: presolve, ordering and factorization choices that decide whether an IPM is fast.
 ## Metadata
 | Field | Value |

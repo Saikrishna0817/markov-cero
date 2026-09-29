@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Mixed Integer Rounding Cut
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The rounding-based workhorse inequality family: aggregate rows, then round fractional remainders into one valid cut.
 
 ## Definition
@@ -27,18 +30,18 @@ Mixed-integer rounding (MIR) inequalities come from taking a valid inequality fo
 - [[Gomory Mixed Integer Cut]]
 - [[Cut Validity]]
 - [[Weak Relaxation]]
-- [[CutGenerators]]
+- CutGenerators
 - [[Marchand-1996-Mixed-Integer-Rounding]]
 - [[Cornuejols-2008-Valid-Inequalities-Mixed]]
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[CutGenerators|codebase/components/CutGenerators]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
+- 15-roadmap
+- CutGenerators
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
+- Research-Code Traceability MOC
 - [[Gomory Mixed Integer Cut|research/algorithms/Gomory Mixed Integer Cut]]
 - [[Cut Validity|research/concepts/Cut Validity]]
 - [[Weak Relaxation|research/concepts/Weak Relaxation]]

@@ -13,6 +13,9 @@ tags: [paper, parallel]
 
 # Improving Branch-and-Cut Performance by Random Sampling
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Randomly samples alternative optima of the LP relaxation to harvest integer solutions fast — a cheap, embarrassingly parallel primal-heuristic boost for branch-and-cut.
 
 ## Metadata

@@ -11,6 +11,9 @@ status: standard
 tags: [paper, gpu]
 ---
 # Efficient Sparse Matrix-Vector Multiplication on CUDA
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > The canonical GPU SpMV kernel-design report: format selection, per-row load balancing, and the memory-bound reality behind every CUDA PDHG step.
 ## Metadata
 | Field | Value |

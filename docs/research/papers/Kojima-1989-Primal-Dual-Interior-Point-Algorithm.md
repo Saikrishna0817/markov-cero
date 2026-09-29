@@ -13,6 +13,9 @@ tags: [paper, ipm]
 
 # A Primal-Dual Interior-Point Algorithm for Linear Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Path-following primal-dual framework with polynomial complexity — the direct ancestor of every modern LP interior-point solver.
 
 ## Metadata

@@ -12,6 +12,9 @@ tags: [paper, sparse]
 ---
 
 # Sympiler: Transforming Sparse Matrix Codes by Decoupling Symbolic Analysis
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > A compiler that separates symbolic analysis from numeric kernels so sparse codes can be specialized and optimized once per pattern.
 ## Metadata
 | Field | Value |

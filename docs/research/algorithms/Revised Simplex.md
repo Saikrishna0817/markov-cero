@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Revised Simplex
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The simplex that never forms B⁻¹ — factor the basis, solve, pivot — and the LP method R4 names first.
 
 ## Definition
@@ -28,22 +31,22 @@ The revised simplex maintains a basis factorization instead of the full tableau:
 - [[Reduced Cost]]
 - [[Dual Simplex]]
 - [[Bland Anti-Cycling]]
-- [[RevisedSimplexEngine]]
+- RevisedSimplexEngine
 - [[Dantzig-1963-Linear-Programming-Extensions]]
 
 ## Referenced By
 
-- [[Canonicalizer|codebase/components/Canonicalizer]]
-- [[IndependentVerifiers|codebase/components/IndependentVerifiers]]
-- [[RevisedSimplexEngine|codebase/components/RevisedSimplexEngine]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- Canonicalizer
+- IndependentVerifiers
+- RevisedSimplexEngine
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
 - [[Dual Simplex|research/algorithms/Dual Simplex]]
 - [[Basic Solution|research/concepts/Basic Solution]]
 - [[Basis|research/concepts/Basis]]
 - [[ED-002-keep-simplex-core-add-first-order-not-replace|research/engineering-decisions/ED-002-keep-simplex-core-add-first-order-not-replace]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Azulay-0000-Revised-Simplex-Method|research/papers/Azulay-0000-Revised-Simplex-Method]]
 - [[Bartels-1968-Numerical-Investigation-Simplex|research/papers/Bartels-1968-Numerical-Investigation-Simplex]]
 - [[Bland-1977-Anti-Cycling-Rule|research/papers/Bland-1977-Anti-Cycling-Rule]]

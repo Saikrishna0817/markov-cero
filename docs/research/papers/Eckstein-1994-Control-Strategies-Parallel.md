@@ -13,6 +13,9 @@ tags: [paper, parallel]
 
 # Control Strategies for Parallel Mixed Integer Branch and Bound
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Classifies centralized vs. decentralized work distribution for parallel branch-and-bound and shows the control policy — not the processor count — decides whether parallelism pays.
 
 ## Metadata

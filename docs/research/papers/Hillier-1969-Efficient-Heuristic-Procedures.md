@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # Efficient Heuristic Procedures for Integer LP with an Interior
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Ancestor of modern rounding heuristics: exploit an interior (bounded polytope) to derive near-feasible integer points by bounds-based rounding.
 
 ## Metadata

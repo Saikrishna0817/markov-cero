@@ -59,6 +59,9 @@ reports/
 
 # Internal agent dispatch logs are local work artifacts.
 .agents/
+.cursor/agents/
+.opencode/plans/
+**/.obsidian/
 
 # Local CMake build trees (including readiness qualification).
 build_*/

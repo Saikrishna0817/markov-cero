@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # Optimality and Multi-Valuedness in LP (perturbation method)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Perturb b and c slightly to destroy degeneracy, then take limits — Charnes' 1954 idea with Megiddo's polynomial ε-bound.
 
 ## Metadata

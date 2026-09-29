@@ -12,6 +12,9 @@ tags: [paper, milp]
 ---
 
 # Improving LP-Representations of Zero-One Linear Programs for Branch-and-Cut
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Tightens 0-1 LP relaxations before branch-and-cut so weak root bounds become usable.
 ## Metadata
 | Field | Value |

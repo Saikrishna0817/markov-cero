@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # Investigating the Exact Effectiveness of Cutting Planes over Branch-and-Bound in Integer Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Shows, for 3D convex 0/1 IPs, that branch-and-cut proof trees can be reduced to pure cutting-plane trees — a structural case for cuts over branching.
 
 ## Metadata

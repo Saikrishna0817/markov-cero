@@ -1,3 +1,5 @@
-# Third-party licenses
+# External dependency record
 
-M0 distributes no third-party source or binary dependency. Build tools are supplied by the verifier's environment and are not redistributed in this archive.
+The tracked native solver source does not vendor a third-party optimization solver or linear-algebra implementation in `third_party/`. CPU builds use the C++ toolchain and standard library. Optional CUDA builds need the CUDA toolkit; the Python extension needs pybind11 at build time; the web app installs its dependencies from `web/package-lock.json`. External solvers used by benchmark scripts are separate comparison processes, not linked into the runtime core.
+
+This file records the source-tree boundary; it is not a complete license inventory of tools installed on a contributor's computer or of a deployed web bundle. Before distributing binaries or a bundled frontend, generate an inventory from the actual dependency versions in that artifact and review the applicable notices. The repository's own [LICENSE](../../LICENSE), [NOTICE](../../NOTICE), and [provenance record](../../docs/project/PROVENANCE.md) are separate project records. The license label in `pyproject.toml` currently conflicts with `LICENSE` and needs an owner decision before publishing a package.

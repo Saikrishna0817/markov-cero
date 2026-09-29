@@ -11,6 +11,9 @@ status: standard
 tags: [paper, gpu]
 ---
 # Accelerating Optimization Solvers on GPUs
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Survey of GPU acceleration beyond first-order methods — second-order/interior-point kernels and vendor sparse direct libraries (e.g. NVIDIA cuDSS for sparse LU/Cholesky).
 ## Metadata
 | Field | Value |

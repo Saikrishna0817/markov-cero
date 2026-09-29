@@ -8,6 +8,9 @@ tags: [engineering-decision, evaluation, r16, p0, baseline]
 
 # ED-001 — Comparison Harness Before New Algorithms
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Build the external-solver comparison harness first; every later algorithmic claim is measured against it.
 
 ## Context (Observed fact)
@@ -46,9 +49,9 @@ tags: [engineering-decision, evaluation, r16, p0, baseline]
 
 ## Linked Requirements
 
-- R16, R20 (and the R15 presentation format) → [[sih26119_problem_statement]]
+- R16, R20 (and the R15 presentation format) → sih26119_problem_statement
 
 ## Related
 
-- [[09-research-code-alignment]] · [[12-keep-remove-rebuild]] (RW-3) · [[13-restart-point]] (step 1) · [[21-traceability]] §21.2
+- 09-research-code-alignment · 12-keep-remove-rebuild (RW-3) · 13-restart-point (step 1) · 21-traceability §21.2
 - [[ED-007-honest-gpu-scoping]] (reuses the harness) · [[ED-008-retain-zero-trust-verifiers]] (certificate columns in the table)

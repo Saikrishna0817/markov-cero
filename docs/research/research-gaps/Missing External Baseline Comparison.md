@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Missing External Baseline Comparison
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > R16 asks for one established solver to compare against; there is none — the highest-priority evaluator-facing gap.
 
 ## Definition
@@ -32,14 +35,14 @@ The gap between "we have results" and "we have *comparative* results": no artifa
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Evaluation MOC|research/Evaluation MOC]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- Algorithms MOC
+- Evaluation MOC
+- Research MOC
 - [[MIPLIB|research/datasets/MIPLIB]]
 - [[Mittelmann Benchmarks|research/datasets/Mittelmann Benchmarks]]
 - [[ED-001-comparison-harness-before-new-algorithms|research/engineering-decisions/ED-001-comparison-harness-before-new-algorithms]]
 - [[No External Baseline|research/limitations/No External Baseline]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Geometric Mean Runtime|research/metrics/Geometric Mean Runtime]]

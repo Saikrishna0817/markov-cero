@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Adaptive Restart
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Restart first-order methods (PDHG/PDHG-style) when momentum/over-smoothing degrades progress.
 
 ## Definition

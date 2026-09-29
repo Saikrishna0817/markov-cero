@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Geometric Mean Runtime
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > exp(mean(ln t)) — the aggregate that keeps one 1000-second instance from erasing every other result.
 
 ## Definition
@@ -32,21 +35,21 @@ The geometric mean of n positive runtimes t_i is GM = exp((1/n)·Σ ln t_i) = (�
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[16-testing-evaluation-strategy|audit/16-testing-evaluation-strategy]]
-- [[21-traceability|audit/21-traceability]]
-- [[missing-hardware-metadata-in-evidence|codebase/technical-debt/missing-hardware-metadata-in-evidence]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Datasets MOC|research/Datasets MOC]]
-- [[Evaluation MOC|research/Evaluation MOC]]
-- [[Research MOC|research/Research MOC]]
+- 15-roadmap
+- 16-testing-evaluation-strategy
+- 21-traceability
+- missing-hardware-metadata-in-evidence
+- Architecture MOC
+- Datasets MOC
+- Evaluation MOC
+- Research MOC
 - [[MIPLIB|research/datasets/MIPLIB]]
 - [[Mittelmann Benchmarks|research/datasets/Mittelmann Benchmarks]]
 - [[Netlib LP Collection|research/datasets/Netlib LP Collection]]
 - [[ED-001-comparison-harness-before-new-algorithms|research/engineering-decisions/ED-001-comparison-harness-before-new-algorithms]]
 - [[No External Baseline|research/limitations/No External Baseline]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[Parallel Speedup|research/metrics/Parallel Speedup]]
 - [[Achterberg-2005-Branching-Rules-Revisited|research/papers/Achterberg-2005-Branching-Rules-Revisited]]
 - [[Achterberg-2007-Best-Estimate-Bound|research/papers/Achterberg-2007-Best-Estimate-Bound]]

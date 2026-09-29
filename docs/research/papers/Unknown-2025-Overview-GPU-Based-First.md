@@ -11,6 +11,9 @@ status: standard
 tags: [paper, gpu]
 ---
 # An Overview of GPU-based First-Order Methods for LP and Extensions
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Survey mapping the family of GPU first-order LP solvers (PDHG variants, restarted schemes, augmented-Lagrangian and ADMM-style methods) and how they relate.
 ## Metadata
 | Field | Value |

@@ -13,6 +13,9 @@ tags: [paper, branching]
 
 # Cloud Branching
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Branches over the *set* of alternative LP optima ("the cloud") instead of one chosen vertex — turning degeneracy from a nuisance into information.
 
 ## Metadata

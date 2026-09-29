@@ -11,6 +11,9 @@ status: standard
 tags: [paper, ml]
 ---
 # Scalable Primal Heuristics Using Graph Neural Networks for Combinatorial Optimization
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > GNN primal heuristics with inductive bias that transfer across instance sizes — learned feasibility finding as a complement (not a replacement) for classical heuristics.
 ## Metadata
 | Field | Value |

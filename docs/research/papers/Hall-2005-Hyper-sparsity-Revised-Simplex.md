@@ -12,6 +12,9 @@ tags: [paper, lp, sparse]
 ---
 
 # Hyper-sparsity in the Revised Simplex Method and How to Exploit It
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > FTRAN/BTRAN/PRICE exploit hyper-sparsity — reported 5.2× speedup on the operations that dominate each iteration.
 ## Metadata
 | Field | Value |

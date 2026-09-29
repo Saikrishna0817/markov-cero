@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # A Practical Anti-Degeneracy Row Selection Technique in Network LP
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Choose *which* leaving row to prefer when several are degenerate — a cheap pivot-selection fix, demonstrated on network LPs (a common structure in logistics/planning).
 
 ## Metadata

@@ -13,6 +13,9 @@ tags: [paper, sparse]
 
 # Sparse Partial Pivoting in Time Proportional to Arithmetic Operations
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Sparse triangular solve (FTRAN/BTRAN) that costs time proportional to the entries actually touched.
 
 ## Metadata

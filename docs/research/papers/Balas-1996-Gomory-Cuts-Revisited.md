@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # Gomory Cuts Revisited
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Revived Gomory cuts from LP bases show that old cuts, correctly cut off the current relaxation, solve 86% of test problems vs. 55% without them.
 
 ## Metadata

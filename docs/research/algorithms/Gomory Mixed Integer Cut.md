@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Gomory Mixed Integer Cut
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Read a fractional tableau row and turn its remainders into an inequality no integer point can violate — the classical cut that modern solvers still run at the root.
 
 ## Definition
@@ -27,18 +30,18 @@ For a basic variable with fractional value, take its tableau row x_{n+1} + Σ ā
 - [[Mixed Integer Rounding Cut]]
 - [[Cut Validity]]
 - [[Weak Relaxation]]
-- [[CutGenerators]]
+- CutGenerators
 - [[Gomory-1963-All-Integer-Programming]]
 - [[Balas-1996-Gomory-Cuts-Revisited]]
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[CutGenerators|codebase/components/CutGenerators]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
+- 15-roadmap
+- CutGenerators
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
+- Research-Code Traceability MOC
 - [[Branch and Cut|research/algorithms/Branch and Cut]]
 - [[Mixed Integer Rounding Cut|research/algorithms/Mixed Integer Rounding Cut]]
 - [[Cut Validity|research/concepts/Cut Validity]]

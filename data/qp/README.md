@@ -1,47 +1,14 @@
-# QPLIB Dataset Ingestion (Requirement R19)
+# QPLIB quadratic-program examples
 
-## 1. Overview & Provenance
-QPLIB is the international standard library of quadratic programming benchmark instances (Furini et al., *Mathematical Programming Computation*, 2019). The instances in this directory represent standard convex continuous quadratic programs spanning box-constrained problems (QBL) and linearly constrained problems (QCL), including classical Markowitz mean-variance portfolio selection and chemical/refinery flow distribution.
+Four small QPLIB inputs are tracked in raw `.qplib` form and as converted MPS with `QUADOBJ`: `QPLIB_0001`, `QPLIB_0002`, `QPLIB_0010` and `QPLIB_0025`. Their `.provenance.json` sidecars record input/conversion metadata. Other named QPLIB instances have provenance records but their larger materialized files are optional; see the [dataset manifest](../optional-datasets.json). The local collection is not the full upstream QPLIB library.
 
-Each instance is ingested from native `.qplib` format into standard MPS format with `QUADOBJ` extensions using the sovereign script `scripts/import_qplib.py`.
+[`scripts/import_qplib.py`](../../scripts/import_qplib.py) performs conversion. It parses objective sense, bounds, rows and quadratic terms, then writes MPS and provenance metadata. Converted MPS is a **derived input**, so verify raw hashes and conversion settings before comparing a new run with a historical one.
 
-Every MPS model is paired with a `.provenance.json` artifact capturing cryptographic SHA-256 integrity hashes, problem class, variable and constraint dimensions, objective direction, and nonzero counts.
+From the repository root:
 
----
+```sh
+./build/markov-cero-solve data/qp/QPLIB_0001.mps --engine qp
+python3 scripts/datasets.py --list
+```
 
-## 2. Ingested Instances
-
-| Instance | Problem Class | Variables ($n$) | Constraints ($m$) | Hessian Nonzeros ($H_{\text{nnz}}$) | Linear Nonzeros ($A_{\text{nnz}}$) | SHA-256 Hash |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **QPLIB_0001** | QBL | 5 | 0 | 5 | 0 | `f8e04b1598...` |
-| **QPLIB_0002** | QCL | 4 | 2 | 4 | 6 | `66874ebfec...` |
-| **QPLIB_0010** | QCL | 6 | 2 | 11 | 12 | `3c87e6fa50...` |
-| **QPLIB_0025** | QCL | 6 | 3 | 6 | 12 | `b539c3ea1a...` |
-
----
-
-## 3. Conversion Pipeline
-- **Importer Script**: `scripts/import_qplib.py`
-  - Parses native positional QPLIB syntax, headers, objective sense, and bounds.
-  - Generates MPS `NAME`, `OBJSENSE`, `ROWS`, `COLUMNS`, `RHS`, `RANGES`, `BOUNDS`, and `QUADOBJ` records.
-  - Emits JSON provenance metadata.
-- **Generator / Suite Harness**: `scripts/generate_qplib_suite.py`
-
----
-
-## 4. Solve Performance & Verification
-
-All 4 instances were solved to optimality using **markov-cero**'s sovereign QP ADMM engine (`--engine qp`) and independently verified against KKT stationarity, primal feasibility, and dual feasibility (`QP KKT certificate verified`):
-
-| Instance | Status | KKT Verified | Objective Value | Iterations | Runtime (ms) |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `QPLIB_0001` | **Optimal** | **YES** | `-3.500000` | 25 | 0.10 ms |
-| `QPLIB_0002` | **Optimal** | **YES** | `-2.107145` | 32 | 0.10 ms |
-| `QPLIB_0010` | **Optimal** | **YES** | `-0.102160` | 26 | 0.11 ms |
-| `QPLIB_0025` | **Optimal** | **YES** | `2680.99752` | 31 | 0.10 ms |
-
----
-
-## 5. License & Compatibility
-- **Source**: QPLIB (Zuse Institute Berlin / University of Bologna).
-- **License**: Publicly available benchmark dataset for academic and open-source scientific evaluation. Unrestricted redistribution of mathematical model coordinates.
+Earlier runs of these four examples reported optimal solutions with QP KKT verification. Those objectives and runtimes are dated results, not a guarantee for every QPLIB problem or for a changed binary. The [evidence index](../../evidence/INDEX.md) and [status register](../../docs/project/STATUS.md) describe current verification and benchmark coverage. Consult the upstream collection terms before redistributing source models.

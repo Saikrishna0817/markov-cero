@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Branch and Cut
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Branch-and-bound with cutting planes separated at nodes — the standard framework, and where this solver currently stops at the root.
 
 ## Definition
@@ -28,21 +31,21 @@ Branch-and-cut interleaves cut separation with the branch-and-bound tree: at sel
 - [[Cut Validity]]
 - [[Gomory Mixed Integer Cut]]
 - [[Strong Branching]]
-- [[BranchAndCut]]
+- BranchAndCut
 - [[Padberg-1991-Branch-and-Cut-Algorithm]]
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[BranchAndCut|codebase/components/BranchAndCut]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
-- [[Research-Code Traceability MOC|research/Research-Code Traceability MOC]]
+- 21-traceability
+- BranchAndCut
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
+- Research-Code Traceability MOC
 - [[Branch and Bound|research/algorithms/Branch and Bound]]
 - [[MIPLIB|research/datasets/MIPLIB]]
 - [[Root-Only Cuts|research/limitations/Root-Only Cuts]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Achterberg-2005-General-Mixed-Integer|research/papers/Achterberg-2005-General-Mixed-Integer]]
 - [[Applegate-2006-Traveling-Salesman-Problem|research/papers/Applegate-2006-Traveling-Salesman-Problem]]
 - [[Atamturk-2008-Integer-Programming-Software|research/papers/Atamturk-2008-Integer-Programming-Software]]

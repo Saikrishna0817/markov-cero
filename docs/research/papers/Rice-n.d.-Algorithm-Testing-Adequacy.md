@@ -11,6 +11,9 @@ status: standard
 tags: [paper, benchmark]
 ---
 # A Algorithm for Testing the Adequacy of Algorithms / Decision Tree for Optimization Software
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Two pieces of benchmark tooling: a formal framework for deciding whether an algorithm is adequate for a problem class, and a decision-tree service that routes users to suitable optimization software.
 ## Metadata
 | Field | Value |

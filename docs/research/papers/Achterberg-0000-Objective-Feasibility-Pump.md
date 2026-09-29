@@ -13,6 +13,9 @@ tags: [paper, heuristics]
 
 # Objective Feasibility Pump / crossover heuristics
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Cross-reference row: the objective FP lives in #112 and the crossover/dive heuristics in #115 — recorded so the module list has no orphan entries.
 
 ## Metadata

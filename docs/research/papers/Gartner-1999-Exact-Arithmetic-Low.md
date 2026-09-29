@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # Exact Arithmetic at Low Cost — A Case Study in Linear Programming
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Hybrid exact/floating-point simplex: do the work in double, verify/repair only where it matters — exactness for a fraction of the cost when m ≪ n.
 
 ## Metadata

@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # Practical Anti-Cycling Procedure (EXPAND)
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Expanding working tolerances (EXPAND) prevent the simplex from stalling on degenerate vertices without Bland's prohibitively slow rule.
 
 > **Collision note:** the canonical slug `Gill-1989-Practical-Anti-Cycling` is occupied by the Module 3 note for list entry **#44** (same paper, full title "A Practical Anti-Cycling Procedure for Linearly Constrained Optimization"). This file covers Module 11 entry **#143**. Merge candidate — see manifest.

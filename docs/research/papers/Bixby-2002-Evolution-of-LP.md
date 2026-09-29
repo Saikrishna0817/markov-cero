@@ -13,6 +13,9 @@ tags: [paper, survey, lp]
 
 # Computational Linear Programming: The Evolution of LP Solvers
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Decomposes four decades of LP speedups into attributable contributions of presolve, sparse factorization, dual simplex and steepest-edge pricing.
 
 ## Metadata

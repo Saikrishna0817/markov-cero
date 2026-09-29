@@ -13,6 +13,9 @@ tags: [paper, milp]
 
 # Valid Inequalities for Mixed Integer Linear Sets
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Unified treatment of split, GMI, lift-and-project and intersection cuts and the relationships between them.
 
 ## Metadata

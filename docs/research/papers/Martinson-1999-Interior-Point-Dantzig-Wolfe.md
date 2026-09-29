@@ -11,6 +11,9 @@ status: standard
 tags: [paper, ipm]
 ---
 # An Interior Point Method in Dantzig-Wolfe Decomposition
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Interior-point method that follows the block-angular structure of Dantzig-Wolfe decompositions instead of destroying it.
 ## Metadata
 | Field | Value |

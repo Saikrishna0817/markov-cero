@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # An Estimate for the Condition Number of a Matrix
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > O(n²) estimator of ‖A‖·‖A⁻¹‖ using a few solves with A and Aᵀ — cheap enough to run on every basis, so ill-conditioning is *detected* instead of discovered as garbage output.
 
 ## Metadata

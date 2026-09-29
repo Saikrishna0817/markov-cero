@@ -13,6 +13,9 @@ tags: [paper, benchmark]
 
 # NETLIB LP Test Set; Solving Linear Systems on Backward Stable Computers
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The classic Netlib LP collection (AFIRO, E226, PILOT, DFL001 …) — the correctness and performance substrate every LP solver is judged on, paired here with a backward-stability reference for the linear algebra underneath.
 
 ## Metadata

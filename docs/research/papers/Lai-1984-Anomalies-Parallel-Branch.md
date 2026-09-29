@@ -11,6 +11,9 @@ status: standard
 tags: [paper, parallel]
 ---
 # Anomalies in Parallel Branch-and-Bound Algorithms
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Proves that adding processors can *increase* total work and wall-clock time in branch-and-bound — the theoretical reason a parallel solver can be slower than serial.
 ## Metadata
 | Field | Value |

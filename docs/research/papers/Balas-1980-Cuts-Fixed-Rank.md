@@ -13,6 +13,9 @@ tags: [paper, cuts]
 
 # Cuts of Fixed Rank in Zero-One Matrices
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Knapsack cover cuts: inequalities of fixed Chvátal rank that are among the most effective cuts for binary packing/covering rows.
 
 ## Metadata

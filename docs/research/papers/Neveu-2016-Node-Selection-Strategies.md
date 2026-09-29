@@ -13,6 +13,9 @@ tags: [paper, branching]
 
 # Node Selection Strategies in Interval Branch and Bound Algorithms
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Comparative study of node-selection policies in *interval* B&B, with explicit treatment of how upper bounds (incumbents) should influence which node opens next.
 
 ## Metadata

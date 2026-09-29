@@ -11,6 +11,9 @@ status: standard
 tags: [paper, presolve]
 ---
 # Enhancing Presolve in Mixed Integer Programming by Combining Probing and Dual Fixing
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Joint probing + dual fixing: use LP duals to pick probing candidates and probing results to strengthen fixing.
 ## Metadata
 | Field | Value |

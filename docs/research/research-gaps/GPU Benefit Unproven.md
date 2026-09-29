@@ -7,6 +7,9 @@ verified_on: 2026-09-28
 
 # GPU Benefit Unproven
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > RTX 2050 hardware validation completed on 2026-09-27: GPU PDLP verified on four cases, but was 2.60–8.64× slower end-to-end than CPU PDLP in all four. No GPU benefit is demonstrated on the measured scales.
 
 ## Definition
@@ -32,10 +35,10 @@ R8 is conditional: GPU acceleration is justified "where it provides measurable b
 
 ## Referenced By
 
-- [[21-traceability|audit/21-traceability]]
-- [[Research MOC|research/Research MOC]]
+- 21-traceability
+- Research MOC
 - [[Primal-Dual Hybrid Gradient|research/algorithms/Primal-Dual Hybrid Gradient]]
 - [[ED-007-honest-gpu-scoping|research/engineering-decisions/ED-007-honest-gpu-scoping]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
-- [[research-dependency-map|research/maps/research-dependency-map]]
+- cross-paper-synthesis
+- research-dependency-map
 - [[GPU CSR SpMV|research/techniques/GPU CSR SpMV]]

@@ -11,6 +11,9 @@ status: standard
 tags: [paper, ipm]
 ---
 # An Implementation of a Primal-Dual Interior Point Method for Linear Programming
+
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
 > Early full implementation report of primal-dual IPM (pre-Mehrotra): initialization, tolerances and sparse linear algebra lessons.
 ## Metadata
 | Field | Value |

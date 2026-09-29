@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Iterative Refinement
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Solve, measure the residual in higher precision, solve the correction — recover digits a single-precision factorization cannot hold.
 
 ## Definition
@@ -33,15 +36,15 @@ Iterative refinement factorizes the matrix once in working precision, then repea
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[21-traceability|audit/21-traceability]]
-- [[Algorithms MOC|research/Algorithms MOC]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 15-roadmap
+- 21-traceability
+- Algorithms MOC
+- Architecture MOC
+- Research MOC
 - [[Ill-Conditioning|research/concepts/Ill-Conditioning]]
 - [[Numerical Stability|research/concepts/Numerical Stability]]
 - [[First-Order Accuracy Ceiling|research/limitations/First-Order Accuracy Ceiling]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[KKT Residual|research/metrics/KKT Residual]]
 - [[Numerical Error|research/metrics/Numerical Error]]
 - [[Azulay-0000-Revised-Simplex-Method|research/papers/Azulay-0000-Revised-Simplex-Method]]

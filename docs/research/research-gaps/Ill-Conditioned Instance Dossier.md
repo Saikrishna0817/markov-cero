@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # Ill-Conditioned Instance Dossier
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > R17 asks for a *clear demonstration* of numerical robustness; tests exist, but no curated dossier of hard instances with before/after evidence does.
 
 ## Definition
@@ -33,10 +36,10 @@ The gap between having robustness mechanisms (tolerances, verifiers, scaling, ce
 
 ## Referenced By
 
-- [[16-testing-evaluation-strategy|audit/16-testing-evaluation-strategy]]
-- [[21-traceability|audit/21-traceability]]
-- [[Research MOC|research/Research MOC]]
+- 16-testing-evaluation-strategy
+- 21-traceability
+- Research MOC
 - [[Iterative Refinement|research/algorithms/Iterative Refinement]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Numerical Error|research/metrics/Numerical Error]]
 - [[Degeneracy Handling Gap|research/research-gaps/Degeneracy Handling Gap]]

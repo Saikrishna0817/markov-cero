@@ -13,6 +13,9 @@ tags: [paper, lp]
 
 # The Dual Simplex Method: Techniques for a Fast and Stable Implementation
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The definitive dual-simplex implementation reference: Harris tolerances, BFRT, hypersparse solves and pricing loops.
 
 ## Metadata

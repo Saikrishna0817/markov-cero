@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # KKT Residual
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > The maximum violation of stationarity, feasibility and complementarity — one number that decides whether a solution may be called optimal.
 
 ## Definition
@@ -28,21 +31,21 @@ The KKT residual aggregates the violations of the Karush–Kuhn–Tucker conditi
 - [[Primal Residual]]
 - [[Numerical Error]]
 - [[Iterative Refinement]]
-- [[IndependentVerifiers]]
+- IndependentVerifiers
 
 ## Referenced By
 
-- [[16-testing-evaluation-strategy|audit/16-testing-evaluation-strategy]]
-- [[21-traceability|audit/21-traceability]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Evaluation MOC|research/Evaluation MOC]]
-- [[Research MOC|research/Research MOC]]
+- 16-testing-evaluation-strategy
+- 21-traceability
+- Architecture MOC
+- Evaluation MOC
+- Research MOC
 - [[Iterative Refinement|research/algorithms/Iterative Refinement]]
 - [[KKT Conditions|research/concepts/KKT Conditions]]
 - [[Netlib LP Collection|research/datasets/Netlib LP Collection]]
 - [[ED-008-retain-zero-trust-verifiers|research/engineering-decisions/ED-008-retain-zero-trust-verifiers]]
 - [[First-Order Accuracy Ceiling|research/limitations/First-Order Accuracy Ceiling]]
-- [[cross-paper-synthesis|research/maps/cross-paper-synthesis]]
+- cross-paper-synthesis
 - [[Numerical Error|research/metrics/Numerical Error]]
 - [[Primal Residual|research/metrics/Primal Residual]]
 - [[Relative Optimality Gap|research/metrics/Relative Optimality Gap]]

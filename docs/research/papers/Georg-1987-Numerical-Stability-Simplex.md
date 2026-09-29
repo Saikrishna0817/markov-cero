@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # On Numerical Stability of Simplex Algorithms
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > Argues Bartels–Golub updating is stable **iff** the tolerances are chosen from error estimates — stability is a tolerance policy, not a pivot rule.
 
 ## Metadata

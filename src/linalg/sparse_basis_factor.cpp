@@ -27,7 +27,8 @@ SparseLuSymbolicAnalysis SparseLu::analyze_sparsity(const SparseCsc& matrix, boo
 SparseLu SparseLu::factorize_numeric(const SparseCsc& matrix,
                                      const SparseLuSymbolicAnalysis& symbolic,
                                      double singular_tolerance,
-                                     std::size_t maximum_factor_nonzeros) {
+                                     std::size_t maximum_factor_nonzeros,
+                                     std::optional<std::chrono::steady_clock::time_point> deadline) {
     matrix.validate();
     require_finite(singular_tolerance, "non-finite sparse singular tolerance");
     if (singular_tolerance <= 0)
@@ -72,6 +73,8 @@ SparseLu SparseLu::factorize_numeric(const SparseCsc& matrix,
         matrix.rows ? std::numeric_limits<double>::infinity() : 0;
     double maximum_factor = maximum_original;
     for (std::size_t k = 0; k < matrix.rows; ++k) {
+        if (deadline && k % 64 == 0 && std::chrono::steady_clock::now() >= *deadline)
+            throw std::runtime_error("sparse LU deadline reached");
         // Step 1: Find column maximum magnitude among rows i >= k
         double max_col_abs = 0;
         for (std::size_t i = k; i < matrix.rows; ++i) {
@@ -202,8 +205,9 @@ SparseLu SparseLu::factorize_numeric(const SparseCsc& matrix,
     return out;
 }
 SparseLu SparseLu::factorize(const SparseCsc& matrix, double singular_tolerance,
-                             std::size_t maximum_factor_nonzeros, bool reduce_fill) {
+                             std::size_t maximum_factor_nonzeros, bool reduce_fill,
+                             std::optional<std::chrono::steady_clock::time_point> deadline) {
     const auto symbolic = analyze_sparsity(matrix, reduce_fill);
-    return factorize_numeric(matrix, symbolic, singular_tolerance, maximum_factor_nonzeros);
+    return factorize_numeric(matrix, symbolic, singular_tolerance, maximum_factor_nonzeros, deadline);
 }
 }

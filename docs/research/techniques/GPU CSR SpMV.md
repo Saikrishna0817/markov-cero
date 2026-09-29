@@ -7,6 +7,9 @@ verified_on: 2026-09-25
 
 # GPU CSR SpMV
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > y = A·x with A in compressed-sparse-row on the device — the one kernel every first-order GPU method lives or dies on.
 
 ## Definition
@@ -33,10 +36,10 @@ Sparse matrix-vector multiplication in CSR format stores values contiguously per
 
 ## Referenced By
 
-- [[15-roadmap|audit/15-roadmap]]
-- [[csc-sparse-storage|codebase/decisions/csc-sparse-storage]]
-- [[Architecture MOC|research/Architecture MOC]]
-- [[Research MOC|research/Research MOC]]
+- 15-roadmap
+- csc-sparse-storage
+- Architecture MOC
+- Research MOC
 - [[Primal-Dual Hybrid Gradient|research/algorithms/Primal-Dual Hybrid Gradient]]
 - [[Sparsity|research/concepts/Sparsity]]
 - [[ED-007-honest-gpu-scoping|research/engineering-decisions/ED-007-honest-gpu-scoping]]

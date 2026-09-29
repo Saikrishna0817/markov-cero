@@ -13,6 +13,9 @@ tags: [paper, numerics]
 
 # Positive-Edge Pricing Rule for the Dual Simplex
 
+> **Research snapshot:** This note records an earlier literature/code reading. Check the [current capability register](../../project/STATUS.md) and [dated evidence](../../../evidence/INDEX.md) before treating its implementation or performance statements as current.
+
+
 > A practical anti-degeneracy pricing rule for the dual simplex: prefer edges whose reduced-cost ratios keep the iterate strictly improving.
 
 ## Metadata
