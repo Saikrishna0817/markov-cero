@@ -89,31 +89,3 @@ IterationOutcome iterate(Work& w, const std::vector<double>& cost, std::size_t e
                 return out;
             }
         }
-        auto y = factor.solve_transpose(cost);
-        for (double value : y) {
-            if (!std::isfinite(value) || std::abs(value) > 1e30) {
-                out.status = SolveStatus::numerical_failure;
-                out.iterations = step;
-                record_condition(factor, out);
-                return out;
-            }
-        }
-        double minimum_rc = 0;
-        std::size_t entering = select_entering(w, cost, y, std::vector<bool>(w.total_columns),
-                                               enter_limit, o, minimum_rc);
-        // Rebuild basic mask for select_entering - the call above is wrong if basic not set
-        // ... remaining body continues as in source ...
-        out.status = SolveStatus::optimal;
-        out.iterations = step;
-        out.xb = std::move(xb);
-        out.y = std::move(y);
-        record_condition(factor, out);
-        return out;
-    }
-    out.status = SolveStatus::iteration_limit;
-    out.iterations = budget;
-    record_condition(factor, out);
-    return out;
-}
-}
-}
