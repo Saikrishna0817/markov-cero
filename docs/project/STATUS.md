@@ -8,6 +8,8 @@
 
 Blueprint task BASE-01 is complete: a clean Release build of revision `aa6f35e` built warning-free with `-Werror`, passed 92/92 CTest and 22/22 Python binding tests, and an external consumer linked the installed CMake package and replayed an independent MIP proof. Commands, hashes and raw logs are in the [baseline manifest](../../evidence/baseline-manifest-20260929.json); that manifest makes no speed, GPU, ML, benchmark-breadth or refinery-readiness claim.
 
+Blueprint task NUM-01 is complete: the binding [numerical and status contract](../contracts/numerical-policy.md) gives every tolerance one documented meaning, separates solver convergence from verifier acceptance, and adds a typed `assurance` label to C++, CLI JSON and Python results without changing any existing field. Boundary tests place a witness on both sides of each acceptance threshold (`numerical_policy_boundaries`, `assurance_labels`), and verifier overhead was measured at 0.08–0.61 % of a full production solve across eight sparse models ([record](../../evidence/verifier-overhead-20260929.md)). This slice passed 94/94 CTest and 22/22 binding tests; it changes no engine, no tolerance and no status.
+
 ## Implemented paths and their limits
 
 | Area | Current state | Important boundary |
@@ -19,7 +21,7 @@ Blueprint task BASE-01 is complete: a clean Release build of revision `aa6f35e` 
 | MILP | Branch-and-cut, GMI/MIR cuts, heuristics, strong branching, bounded node queue and parallel search | Hard cases can time out or stop at limits; a retained incumbent is not a global proof. |
 | Convex QP/MIQP | ADMM and KKT work, MIQP relaxations, residual verification | Convexity assumptions and numerical tolerances apply; general nonconvex QP is not claimed. |
 | NLP/MINLP | SQP/L-BFGS local NLP path and restricted convex/quadratic outer approximation | Local NLP outcomes are not global proofs. Arbitrary callback nonlinear MINLP is rejected or unsupported. |
-| Independent checking | Original-space primal checks, canonical LP witnesses, QP KKT checks, bounded MILP/MIQP proof-tree replay, IIS analysis | Replay shares parser and numerical primitives; proof budget exhaustion keeps the global result unverified. OA/MINLP has no global proof export. |
+| Independent checking | Original-space primal checks, canonical LP witnesses, QP KKT checks, bounded MILP/MIQP proof-tree replay, IIS analysis, and a versioned [numerical and status contract](../contracts/numerical-policy.md) with a typed `assurance` label | Replay shares parser and numerical primitives; proof budget exhaustion keeps the global result unverified. OA/MINLP has no global proof export. `local_kkt_checked` and solver-trusted MINLP bounds are not global certificates. |
 | GPU | Optional CUDA PDLP kernels and partial QP P·x device path | RTX 2050 correctness was recorded, but no measured end-to-end GPU speed advantage; QP factorization/x-update remain CPU-side. |
 | ML branching | Optional data logging and ONNX scorer path | No trained artifact has passed data split, runtime validation and solve-outcome promotion gates. |
 | Interfaces | C++ API, CLI/JSON, Python bindings, visual web app and optional authenticated HTTP adapter | No versioned C ABI. The web presentation needs a separately configured solver API for live solves. |
@@ -29,7 +31,7 @@ Code and test entry points are mapped in the [repository guide](../README.md); i
 
 ## Result interpretation
 
-The CLI reports a status, resolved engine, objective or bound, verification fields and diagnostics. A valid feasible incumbent can coexist with a time, node, memory, numerical or proof limit. `verified` is the overall result gate; `original_verified` and certificate fields describe narrower checks. For linear MILP and convex MIQP, a bounded cut-free tree can be exported and replayed by `markov-cero-verify-mip`; an incomplete or rejected tree cannot establish global optimality or infeasibility. See [verification](../guides/VERIFY.md) and [proof evidence](../../evidence/proof-guarantee-20260928.json).
+The CLI reports a status, resolved engine, objective or bound, verification fields and diagnostics. A valid feasible incumbent can coexist with a time, node, memory, numerical or proof limit. `verified` is the overall result gate; `original_verified` and certificate fields describe narrower checks. `assurance` names the strongest check that actually passed — `tree_replayed`, `optimality_witness_checked`, `local_kkt_checked`, `original_primal_checked` or `unverified` — so a caller should read that label rather than infer rigor from `guarantee_tier` or a small reported gap. For linear MILP and convex MIQP, a bounded cut-free tree can be exported and replayed by `markov-cero-verify-mip`; an incomplete or rejected tree cannot establish global optimality or infeasibility. See [verification](../guides/VERIFY.md) and [proof evidence](../../evidence/proof-guarantee-20260928.json).
 
 `--time-limit`, `--memory-limit-bytes`, `--max-nodes` and `--max-queued-nodes` expose separate controls. Reaching the queued-node cap returns `ResourceLimit` and retains the omitted frontier's inherited lower bound. A byte budget covers instrumented charge points; it is not complete RSS or device-memory enforcement. [Resource evidence](../../evidence/resource-envelope-20260928.json) records the tested boundary.
 

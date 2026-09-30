@@ -10,6 +10,7 @@ reports and frozen baselines intact so their original run context remains audita
 | Question | Primary record | Scope |
 |---|---|---|
 | What is the reproducible source/binary baseline? | [BASE-01 baseline manifest](baseline-manifest-20260929.json) with [raw logs](baseline-manifest-20260929/) | Clean Release build of revision `aa6f35e`: 92/92 CTest, 22/22 binding tests, installed consumer PASS, artifact hashes. No speed or breadth claim. |
+| What does independent verification cost? | [Verifier overhead](verifier-overhead-20260929.md) | NUM-01 measurement on eight sparse models: both boundaries accepted every reference witness; together they cost 0.08–0.61 % of a full production solve. No speed target. |
 | What release gates remain open? | [Gate status](gate-status-20260929.json), [readiness checkpoint](readiness-checkpoint.json), [defect closure register](defect-closure-register.csv) | Dated status and explicitly open items. |
 | Which instances and comparators were frozen? | [Instance manifest](frozen-instances-20260928.json), [comparator manifest](frozen-comparators-20260928.json), [baseline freeze](baseline-freeze-20260928.json) | Pinned benchmark setup; optional large datasets are separately listed in [`data/optional-datasets.json`](../data/optional-datasets.json). |
 | How did the broad local suites run? | [Netlib/MIPLIB/Mittelmann 15-second run](benchmarks/current_full_15s_20260928), [QPLIB fill-limit run](benchmarks/current_qplib_filllimit_20260928) | Solver-side 15-second cap; failures and timeouts remain in the denominator. |

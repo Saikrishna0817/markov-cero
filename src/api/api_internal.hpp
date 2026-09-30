@@ -58,6 +58,12 @@ void fill_complementarity_gap(NumericalDiagnostic&, const std::vector<double>&,
                               const std::vector<double>&, const std::vector<double>&,
                               const std::vector<double>&);
 
+/// Contract v1 (docs/contracts/numerical-policy.md section 2): the strongest
+/// check that actually passed. Derived from status, the verification flags,
+/// certificate_type and guarantee_tier; called exactly once by finalize()
+/// after the resource-stop invariant has been applied. Engines never set it.
+std::string derive_assurance(const SolveResult& out);
+
 /// Earliest solve-wide instant implied by the caller's options, measured from
 /// API entry: an already-set engine deadline, the LP wall-clock limit and the
 /// new solve-wide total limit all intersect here. The MILP duration limit is

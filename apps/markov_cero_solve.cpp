@@ -40,6 +40,7 @@ markov_cero::apps::JsonOutputData to_json_data(const markov_cero::api::SolveResu
                                               const markov_cero::api::SolveOptions& options) {
     markov_cero::apps::JsonOutputData data;
     data.certificate_type = res.certificate_type;
+    data.assurance = res.assurance;
     data.guarantee_tier = res.guarantee_tier;
     data.proof_status = res.proof_status;
     data.proof_budget_exhausted = res.proof_budget_exhausted;

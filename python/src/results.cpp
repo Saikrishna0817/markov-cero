@@ -32,6 +32,7 @@ py::dict to_python(api::SolveResult res) {
     out["original_verified"] = res.original_verified;
     out["canonical_verified"] = res.canonical_verified;
     out["certificate_type"] = res.certificate_type;
+    out["assurance"] = res.assurance;
     out["guarantee_tier"] = res.guarantee_tier;
     out["proof_status"] = res.proof_status;
     out["proof_budget_exhausted"] = res.proof_budget_exhausted;

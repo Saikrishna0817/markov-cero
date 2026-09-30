@@ -121,6 +121,13 @@ struct SolveResult {
 
     // Global verification is distinct from a checked incumbent or local KKT point.
     std::string certificate_type{"none"};
+    // Contract v1 (docs/contracts/numerical-policy.md section 2): the strongest
+    // check that actually passed, derived once in api::detail::finalize from
+    // status, the verification flags, certificate_type and guarantee_tier.
+    // Engines never set it. Values: tree_replayed, optimality_witness_checked,
+    // local_kkt_checked, original_primal_checked, unverified. Additive: no
+    // existing field changes meaning.
+    std::string assurance{"unverified"};
     // Proof assurance is separate from verified: an accepted gap certificate
     // bounds suboptimality but does not establish exact optimality.
     std::string guarantee_tier{"unverified"};

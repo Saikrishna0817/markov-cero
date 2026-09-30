@@ -156,6 +156,9 @@ void finalize(SolveResult& out, core::SolveContext& ctx) {
     // engine performed no factorization (matrix-free PDLP / SQP), which is
     // reported as-is rather than replaced by a fake "perfectly conditioned".
     apply_resource_stop(out, ctx);
+    // Derived last so the label reflects the post-stop status and flags: a
+    // resource stop downgrades the status before the label is computed.
+    out.assurance = derive_assurance(out);
 }
 
 

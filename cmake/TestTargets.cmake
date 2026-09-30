@@ -139,6 +139,9 @@ add_executable(node_frontier_memory_benchmark scripts/bench_node_frontier_memory
 target_link_libraries(node_frontier_memory_benchmark PRIVATE markov_cero_core)
 add_executable(solve_frontier_memory_benchmark scripts/bench_solve_frontier_memory.cpp)
 target_link_libraries(solve_frontier_memory_benchmark PRIVATE markov_cero_core)
+# Contract v1: verifier overhead against a full production solve (NUM-01).
+add_executable(verifier_overhead_benchmark scripts/bench_verifier_overhead.cpp)
+target_link_libraries(verifier_overhead_benchmark PRIVATE markov_cero_core)
 # W02/W01 contracts: shared SolveContext, ModelSnapshot and NodeView.
 add_executable(solve_context_test tests/solve_context_test.cpp)
 target_link_libraries(solve_context_test PRIVATE markov_cero_core)
@@ -155,6 +158,12 @@ add_executable(worker_context_test tests/worker_context_test.cpp)
 target_link_libraries(worker_context_test PRIVATE markov_cero_core)
 add_executable(resource_failure_test tests/resource_failure_test.cpp)
 target_link_libraries(resource_failure_test PRIVATE markov_cero_core)
+# Contract v1 (docs/contracts/numerical-policy.md): tolerance boundaries and
+# the SolveResult::assurance label derivation.
+add_executable(numerical_policy_boundary_test tests/numerical_policy_boundary_test.cpp)
+target_link_libraries(numerical_policy_boundary_test PRIVATE markov_cero_core)
+add_executable(assurance_label_test tests/assurance_label_test.cpp)
+target_link_libraries(assurance_label_test PRIVATE markov_cero_core)
 # Test executables must keep assert() checks alive in EVERY build type:
 # Release/RelWithDebInfo define NDEBUG, which compiles assert() to a no-op and
 # silently disables the assert-based test files (CI's ASan/UBSan and TSan jobs

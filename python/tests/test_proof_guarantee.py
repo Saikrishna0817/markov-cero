@@ -23,6 +23,9 @@ def test_milp_proof_guarantee_fields():
     assert accepted["mip_proof_verify_ms"] >= 0
     assert accepted["proof_format_version"] >= 2
     assert accepted["proof_model_fingerprint"] == str(accepted["model_fingerprint"])
+    # Contract v1 (docs/contracts/numerical-policy.md): the derived label is a
+    # public result key, and an accepted replay is its strongest form.
+    assert accepted["assurance"] == "tree_replayed"
 
     exhausted = m.solve(engine="milp", proof_max_nodes=1)
     # Blueprint §5: proof exhaustion must never be converted to Optimal.
@@ -35,3 +38,5 @@ def test_milp_proof_guarantee_fields():
     assert exhausted["proof_status"] == "exhausted"
     assert exhausted["proof_budget_exhausted"] is True
     assert exhausted["proof_budget_kind"] == "node_limit"
+    # A proof that never completed may only claim the original primal check.
+    assert exhausted["assurance"] == "original_primal_checked"

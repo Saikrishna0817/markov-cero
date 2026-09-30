@@ -10,6 +10,9 @@ add_test(NAME node_view_reference_identity COMMAND node_view_reference_identity_
 add_test(NAME worker_context COMMAND worker_context_test)
 add_test(NAME resource_failure COMMAND resource_failure_test)
 set_tests_properties(resource_failure PROPERTIES TIMEOUT 120 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+# Contract v1: tolerance boundaries and assurance labels.
+add_test(NAME numerical_policy_boundaries COMMAND numerical_policy_boundary_test)
+add_test(NAME assurance_labels COMMAND assurance_label_test)
 add_test(NAME mps_parser COMMAND mps_parser_test)
 add_test(NAME lp_parser COMMAND lp_parser_test)
 # W5: Milestone 1 — numerical accuracy
@@ -113,6 +116,7 @@ set_tests_properties(
   cli_case_crude_oil cli_case_multiperiod cli_case_supply_chain
   api_demo
   api_test
+  numerical_policy_boundaries assurance_labels
   PROPERTIES
     TIMEOUT 60
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}

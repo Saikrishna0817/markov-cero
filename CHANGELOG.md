@@ -2,6 +2,39 @@
 
 ## Unreleased
 
+### 2026-09-29 blueprint NUM-01 — numerical and status contract (v1)
+
+- Added the binding contract `docs/contracts/numerical-policy.md`: one
+  documented meaning (quantity, units, formula, default, valid range, producer,
+  checker) for every tolerance across simplex, IPM, PDLP, ADMM, SQP, MILP,
+  presolve/scaling and the independent verifiers; the two verification
+  boundaries (original model vs class-specific witness); the status-to-witness
+  table; nine recorded divergences; the change procedure and the contract-v1
+  migration note.
+- Added a typed `SolveResult::assurance` label (C++, CLI JSON key `assurance`,
+  Python dict key `assurance`) derived once in `api::detail::finalize` after the
+  resource-stop rule: `tree_replayed`, `optimality_witness_checked`,
+  `local_kkt_checked`, `original_primal_checked`, `unverified`. Additive only —
+  no existing field, status, tolerance or default changed, and engines never
+  write it.
+- Added boundary tests `tests/numerical_policy_boundary_test.cpp` and
+  `tests/assurance_label_test.cpp`: each accepted witness is mutated to both
+  sides of the threshold it is checked against (original row, objective,
+  integrality, canonical LP primal and duality gap, QP stationarity and PSD
+  gate, curvature classification, NLP feasibility, KKT stationarity and dual
+  sign), and the fail-closed label cases are asserted directly.
+- Measured verifier overhead on eight sparse models with
+  `scripts/bench_verifier_overhead.cpp`: both boundaries accepted every
+  reference witness, at 1.5–99 µs per acceptance and 0.08–0.61 % of a full
+  production solve. No speed target. Record:
+  `evidence/verifier-overhead-20260929.md`.
+- Verified this slice: 94/94 CTest, 22/22 binding tests, and clean JSON, docs,
+  source-limit and backlink guards. Observations recorded for later tasks:
+  `data/netlib/e226.mps` hits an unsupported objective-row RHS in the parser;
+  `data/netlib/bore3d.mps` reports `NumericalFailure` on the production LP path
+  (LP-01); `web/backend/server.py` still whitelists old result keys and does not
+  pass `assurance` (REL-01).
+
 ### 2026-09-29 blueprint BASE-01 — frozen source, claims and release metadata
 
 - Resolved the license conflict (owner decision D18): `pyproject.toml` now

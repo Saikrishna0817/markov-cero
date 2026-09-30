@@ -4,6 +4,7 @@ find_package(Threads REQUIRED)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(markov_cero_core STATIC
   src/api/api.cpp
+  src/api/assurance.cpp
   src/api/mip_certificate.cpp
   src/verify/mip_proof.cpp src/verify/mip_proof_relaxation.cpp
   src/verify/mip_proof_io.cpp

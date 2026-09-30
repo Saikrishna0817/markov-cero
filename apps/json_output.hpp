@@ -101,7 +101,7 @@ inline std::string json_array(const std::vector<std::string>& values) {
 }
 struct JsonOutputData {
     std::string certificate_type;
-    std::string guarantee_tier, proof_status, proof_budget_kind, proof_model_fingerprint;
+    std::string guarantee_tier, assurance, proof_status, proof_budget_kind, proof_model_fingerprint;
     bool proof_budget_exhausted = false; double proof_budget_time_ms = 0.0;
     std::size_t proof_nodes_used = 0, proof_checked_nodes = 0, proof_witness_values_used = 0, proof_checked_witness_values = 0;
     std::uint32_t proof_format_version = 0; std::uint64_t model_fingerprint = 0;
@@ -181,7 +181,7 @@ inline bool emit_json_output(const JsonOutputData& data) {
          << "\"rows\":" << data.model_rows << ","
          << "\"cols\":" << data.model_cols << ","
          << "\"nonzeros\":" << data.model_nnz << ","
-         << "\"certificate_type\":\"" << json_escape(data.certificate_type) << "\","
+         << "\"certificate_type\":\"" << json_escape(data.certificate_type) << "\",\"assurance\":\"" << json_escape(data.assurance) << "\","
          << "\"model_fingerprint\":" << data.model_fingerprint << ",\"guarantee_tier\":\"" << json_escape(data.guarantee_tier) << "\","
          << "\"proof_status\":\"" << json_escape(data.proof_status) << "\",\"proof_budget_exhausted\":" << (data.proof_budget_exhausted ? "true" : "false") << ","
          << "\"proof_budget_kind\":\"" << json_escape(data.proof_budget_kind) << "\",\"proof_nodes_used\":" << data.proof_nodes_used << ",\"proof_checked_nodes\":" << data.proof_checked_nodes << ","
