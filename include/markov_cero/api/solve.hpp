@@ -88,6 +88,12 @@ struct SolveResult {
     std::string problem_class = "LP";
     std::string classification_reason;
     std::string recommended_backend = "cpu";
+    // QP-01 (convex-qp.md §5): what actually executed for this solve, as
+    // opposed to `backend` (the request) and `recommended_backend` (the
+    // threshold recommendation): "cpu", "cuda", or "cpu_fallback" (GPU was
+    // requested but the activation gate failed). Set by engines that own a
+    // GPU path (QP, PDLP); "cpu" everywhere else.
+    std::string backend_actually_used = "cpu";
     NumericalDiagnostic diagnostic;
 
     // D-15: set when an engine terminated for a reason that is not a hard

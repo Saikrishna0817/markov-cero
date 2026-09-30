@@ -2,6 +2,51 @@
 
 ## Unreleased
 
+### 2026-09-30 blueprint QP-01 — convex QP contract, disclosure and KKT attack suite
+
+- Added the binding library contract
+  [`docs/contracts/convex-qp.md`](docs/contracts/convex-qp.md) (v1): the
+  frozen Hessian/canonical convention (upper-tri CSC, full-symmetric
+  energy), the three-outcome convexity classification with its factorization
+  caps, KKT/ADMM/verification/symbolic-cache rules, the §4
+  status–certificate–`failure_site` mapping, the §5 disclosure trio, and the
+  §6 test/benchmark obligations (executed findings recorded in §6).
+- Added the `backend_actually_used` disclosure (`cpu` / `cuda` /
+  `cpu_fallback`) next to `recommended_backend`: `SolveResult` field,
+  `engine_qp` set from the solver's own `gpu_path_active` gate, `engine_pdlp`
+  passthrough of the PDLP result, and emission in CLI JSON and the Python
+  results. The CLI payload struct moved from `apps/json_output.hpp` into
+  `apps/json_data.hpp` so the 300-line limit stays green.
+- Made the QP witness name conditional under contract §4:
+  `certificate_type = convex_qp_kkt` is published only when the independent
+  verifier accepted the witness (KKT verifier for `optimal`, Farkas witness
+  for `primal_infeasible`, recession ray for `dual_infeasible`); rejected
+  witnesses report `none` instead of an unconditional label. Infeasible and
+  unbounded QP results now publish the same accepted-witness name as
+  optimal ones, mirroring `canonical_lp_witness`.
+- Added `tests/qp_kkt_attack_test.cpp` (with fixtures in
+  `tests/qp_kkt_attack_models.hpp`, ctest `qp_kkt_attack`): altered, scaled,
+  sign-flipped, missing and NaN multipliers, perturbed primal points,
+  altered objectives, wrong active side, complementarity breaches and
+  non-PSD `P` are all rejected by the independent verifier; edge statuses
+  (zero Hessian, singular PSD, equality bounds, empty row, unbounded
+  recession) carry the §4 certificates through `api::solve`; the GPU-request
+  disclosure reports `cpu` vs `cpu_fallback`; identical pattern with
+  different `P` values reuses the symbolic factorization
+  (`symbolic_factorizations()==1`, `kkt_symbolic_reuse>=1`) and yields
+  independently verified, differing objectives.
+- Added the §6 benchmark: `scripts/bench_qp_kkt.cpp` measures convexity
+  classification, KKT `L` fill at the initial penalties, ADMM iterations and
+  ρ refactorizations per instance; `scripts/run_qp_compare.py` +
+  `scripts/qp_compare_lib.py` compare against OSQP 1.1.3 and HiGHS 1.15.1
+  with primal checks and 1e-4 objective agreement. Executed on the four
+  tracked QPLIB instances: 4/4 markov `Optimal` + verified, 8/8 agreements
+  (worst relative difference 2.1e-6), KKT fill 5–57 nnz over 17–49 ADMM
+  iterations ([record](evidence/qp-kkt-bench-20260930.json), indexed from
+  `evidence/INDEX.md`). The small tracked subset only — no breadth or speed
+  claim.
+- This slice passed 99/99 CTest and 22/22 Python binding tests.
+
 ### 2026-09-30 blueprint LP-01 — sparse-first LP path
 
 - Added the binding library contract

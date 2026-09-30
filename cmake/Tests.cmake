@@ -21,6 +21,8 @@ add_test(NAME lp_parser COMMAND lp_parser_test)
 add_test(NAME ipm_large COMMAND ipm_large_test)
 add_test(NAME pdlp_crossover COMMAND pdlp_crossover_test)
 add_test(NAME qp_adaptive_rho COMMAND qp_adaptive_rho_test)
+# QP-01 contract §6: witness attacks, edge statuses, cache reuse, disclosure.
+add_test(NAME qp_kkt_attack COMMAND qp_kkt_attack_test)
 add_test(NAME numerical_diagnostic COMMAND numerical_diagnostic_test)
 add_test(NAME mps_fuzz_smoke COMMAND mps_fuzz_smoke)
 add_test(NAME model_properties COMMAND model_property_test)
@@ -124,7 +126,7 @@ set_tests_properties(
   gpu_pdhg_step gpu_pdhg_restart gpu_pdhg_adaptive gpu_pdhg_kkt gpu_pdhg_timing
   gpu_admm gpu_fallback gpu_qp
   qp json_records sovereignty_guard
-  ipm_large pdlp_crossover qp_adaptive_rho numerical_diagnostic
+  ipm_large pdlp_crossover qp_adaptive_rho qp_kkt_attack numerical_diagnostic
   e2e_tier1_m1_features e2e_tier2_m1_boundaries e2e_tier3_m1_combinations e2e_tier4_m1_scenarios e2e_runner_harness hosted_os_limits
   cli_blend_optimal cli_refinery_feasible cli_refinery_infeasible
   cli_refinery_malformed cli_refinery_limited

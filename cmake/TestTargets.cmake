@@ -125,6 +125,10 @@ add_executable(pdlp_crossover_test tests/pdlp_crossover_test.cpp)
 target_link_libraries(pdlp_crossover_test PRIVATE markov_cero_core)
 add_executable(qp_adaptive_rho_test tests/qp_adaptive_rho_test.cpp)
 target_link_libraries(qp_adaptive_rho_test PRIVATE markov_cero_core)
+# QP-01 contract §6: attack suite, edge statuses, symbolic-cache reuse and
+# CPU/GPU disclosure (docs/contracts/convex-qp.md).
+add_executable(qp_kkt_attack_test tests/qp_kkt_attack_test.cpp)
+target_link_libraries(qp_kkt_attack_test PRIVATE markov_cero_core)
 add_executable(numerical_diagnostic_test tests/numerical_diagnostic_test.cpp)
 target_link_libraries(numerical_diagnostic_test PRIVATE markov_cero_core)
 add_executable(e2e_tier1_m1_features tests/e2e/test_tier1_m1_features.cpp tests/e2e/test_tier1_m1_features_t1_f03_01_pdlpprimalfeasibilityverification.cpp tests/e2e/test_tier1_m1_features_t1_f06_03_sparsebasisstatisticstracking.cpp)
@@ -149,6 +153,10 @@ target_link_libraries(verifier_overhead_benchmark PRIVATE markov_cero_core)
 # LP-01 contract §5: retired dense dispatch shape vs sparse-first peak RSS.
 add_executable(lp_rss_benchmark scripts/bench_lp_rss.cpp)
 target_link_libraries(lp_rss_benchmark PRIVATE markov_cero_core)
+# QP-01 contract §6: convexity classification, KKT fill and ADMM iteration
+# behavior on the tracked QPLIB subset.
+add_executable(qp_kkt_benchmark scripts/bench_qp_kkt.cpp)
+target_link_libraries(qp_kkt_benchmark PRIVATE markov_cero_core)
 # W02/W01 contracts: shared SolveContext, ModelSnapshot and NodeView.
 add_executable(solve_context_test tests/solve_context_test.cpp)
 target_link_libraries(solve_context_test PRIVATE markov_cero_core)

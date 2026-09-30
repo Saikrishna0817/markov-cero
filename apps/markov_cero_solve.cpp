@@ -98,6 +98,7 @@ markov_cero::apps::JsonOutputData to_json_data(const markov_cero::api::SolveResu
     data.pdlp_res_dual_infeas = res.pdlp_dual_infeasibility;
     data.pdlp_res_gap = res.pdlp_duality_gap;
     data.backend_name = options.backend;
+    data.backend_actually_used = res.backend_actually_used;
     data.pdlp_h2d_ms = res.pdlp_h2d_ms;
     data.pdlp_kernel_ms = res.pdlp_kernel_ms;
     data.pdlp_d2h_ms = res.pdlp_d2h_ms;

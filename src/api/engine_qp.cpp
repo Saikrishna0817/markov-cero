@@ -31,6 +31,10 @@ void run_qp(const model::Model& model, const SolveOptions& options, SolveResult&
             stage.set_count(solved.iterations);
             return solved;
         }();
+        // QP-01 contract §5: disclose the path that actually ran — cuda only
+        // when the solver's own gate (request + NNZ(P) + device) activated.
+        out.backend_actually_used = qpres.gpu_path_active ? "cuda"
+                                      : gpu_requested ? "cpu_fallback" : "cpu";
         if (stop_after_deadline(ctx, options, out, result, "QP solve")) return;
         core::StageScope verify_stage(ctx, "verify");
         out.lp_iterations = qpres.iterations;
@@ -51,7 +55,9 @@ void run_qp(const model::Model& model, const SolveOptions& options, SolveResult&
             out.original_objective = qpres.objective_value;
             const auto rep = qp::verify_qp_solution(qp_model, qpres, 1e-4);
             out.original_verified = rep.passed;
-            out.certificate_type = "convex_qp_kkt";
+            // Contract §4: the witness name is published only when the
+            // independent verifier accepted it (same rule as the LP engine).
+            out.certificate_type = rep.passed ? "convex_qp_kkt" : "none";
             if (rep.passed) {
                 const double sign = model.objective_sense == model::ObjectiveSense::maximize ? -1.0 : 1.0;
                 out.row_duals.resize(model.matrix.row_count);
@@ -71,6 +77,9 @@ void run_qp(const model::Model& model, const SolveOptions& options, SolveResult&
             }
         } else if (qpres.status == qp::QpStatus::primal_infeasible) {
             out.canonical_verified = qp::verify_qp_infeasibility(qp_model, qpres);
+            // Contract §4: one accepted QP witness name across optimal,
+            // infeasible and unbounded — but only when the witness passed.
+            out.certificate_type = out.canonical_verified ? "convex_qp_kkt" : "none";
             result.status = out.canonical_verified ? lp::reference::SolveStatus::infeasible : lp::reference::SolveStatus::numerical_failure;
             result.certificate = qpres.infeasibility_certificate;
             result.message = out.canonical_verified ? "QP Farkas certificate verified" : "QP infeasibility witness rejected";
@@ -79,6 +88,7 @@ void run_qp(const model::Model& model, const SolveOptions& options, SolveResult&
             out.diagnostic.suggested_recovery = "relax_incompatible_row_or_variable_bounds";
         } else if (qpres.status == qp::QpStatus::dual_infeasible) {
             out.canonical_verified = qp::verify_qp_unbounded(qp_model, qpres);
+            out.certificate_type = out.canonical_verified ? "convex_qp_kkt" : "none";
             result.status = out.canonical_verified ? lp::reference::SolveStatus::unbounded : lp::reference::SolveStatus::numerical_failure;
             result.ray = qpres.unbounded_ray;
             result.message = out.canonical_verified ? "QP feasible anchor and recession ray verified" : "QP unboundedness witness rejected";

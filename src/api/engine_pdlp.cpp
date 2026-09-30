@@ -19,6 +19,9 @@ void run_pdlp(const model::Model& model, const SolveOptions& options, SolveResul
             stage.set_count(solved.iterations);
             return solved;
         }();
+        // QP-01 contract §5: PDLP publishes the executed path from its own
+        // result (cpu / cuda / cpu_fallback) alongside the QP engine.
+        out.backend_actually_used = pdlp_res.backend_actually_used;
         if (stop_after_deadline(ctx, options, out, result, "PDLP solve")) return;
         core::StageScope verify_stage(ctx, "verify");
         out.lp_iterations = pdlp_res.iterations;

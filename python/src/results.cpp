@@ -14,6 +14,8 @@ py::dict to_python(api::SolveResult res) {
     out["classification_reason"] = res.classification_reason;
     out["stop_reason"] = res.stop_reason;
     out["memory_charged_peak_bytes"] = res.memory_charged_peak_bytes;
+    // QP-01 contract §5: request vs executed path (cpu / cuda / cpu_fallback).
+    out["backend_actually_used"] = res.backend_actually_used;
     // W01/D16: stable identity of the validated model that produced this
     // result (mix of structural and numeric content hashes).
     out["model_fingerprint"] = res.model_fingerprint;
