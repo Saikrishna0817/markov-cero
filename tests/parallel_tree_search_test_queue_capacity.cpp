@@ -83,8 +83,9 @@ void test_queue_lazy_prune_batch() {
     }
 
     bool became_active = false;
-    // Cutoff 10.0 discards bounds 10..19 lazily and returns the 10 best.
-    auto batch = queue.pop_batch(false, 10.0, became_active, 16);
+    // Cutoff 9.5 (strictly between the guarded bounds of 9 and 10; §3.1
+    // prune_guard) discards bounds 10..19 lazily and returns the 10 best.
+    auto batch = queue.pop_batch(false, 9.5, became_active, 16);
     assert(batch.size() == 10);
     assert(batch.front()->lower_bound <= batch.back()->lower_bound + 1e-12);
     for (const auto& n : batch) {
@@ -94,7 +95,7 @@ void test_queue_lazy_prune_batch() {
     // Next batch drains the remainder (empty -> only when quiescent or stopped;
     // here one worker was activated then deactivated by the next call chain).
     queue.deactivate_worker();
-    auto empty_batch = queue.pop_batch(false, 10.0, became_active);
+    auto empty_batch = queue.pop_batch(false, 9.5, became_active);
     assert(empty_batch.empty()); // heap only holds pruned nodes; quiescent => stopped
 
     std::cout << "[+] test_queue_lazy_prune_batch passed\n";

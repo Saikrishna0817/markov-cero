@@ -75,6 +75,20 @@ Hard invariants (blueprint §5, enforced by tests):
 - `gap_satisfied` and `optimal` remain distinct statuses.
 - An indeterminate PSD result is `Unsupported`/`NonConvex`, never `Optimal`.
 
+**MIP proof scope and the four labels** (authority:
+[milp-node-bounds.md](milp-node-bounds.md) §6). `Optimal` needs a proven
+search **and** an accepted independent proof replayed unchanged; without the
+replay the engine downgrades to `Feasible`. `GapSatisfied` keeps an accepted
+proof at a non-zero requested gap — the bound, not exactness, is certified.
+`Feasible` certifies the incumbent only; the global conclusion stays
+unverified. `Unverified` (an `assurance` value, not a status) means no
+checker accepted at all, so the result is never presented as a solution.
+Budget-limited proof builds and replays report `exhausted`, never
+`accepted`; a resource-stopped search carries no proof beyond the portion it
+actually closed. Optimizer cut/propagation notes ride on the proof as audit
+annotations; the tree itself is cut-free and re-derives every domain,
+partition and leaf witness without calling a solver.
+
 ---
 
 ## 4. Residual formulas

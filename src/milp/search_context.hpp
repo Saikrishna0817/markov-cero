@@ -43,6 +43,9 @@ inline void record_optimizer_cut_notes(Result& result, std::size_t node,
         double lhs = 0.0;
         for (std::size_t j = 0; j < primal.size(); ++j)
             lhs += cut.coefficients[j] * primal[j];
+        // §5.4: a recorded obligation must be a finite row violated at the
+        // point it was recorded against; anything else is not evidence.
+        if (!std::isfinite(lhs) || !std::isfinite(cut.rhs) || lhs >= cut.rhs) continue;
         verify::MipObligation note;
         note.kind = verify::MipObligationKind::cut;
         note.node = node;
@@ -140,6 +143,7 @@ std::vector<markov_cero::milp::Cut> root_cut_list{};
 NodeFrontier queue {NodeSelection::best_bound};
 std::size_t unsolved_node_lps{};
 double min_unsolved_bound{};
+std::size_t empty_domain_nodes{};
 std::basic_string<char> stop_reason{};
 std::shared_ptr<BranchNode> node;
 NodeLpResult node_lp_res;

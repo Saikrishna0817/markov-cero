@@ -89,6 +89,9 @@ struct Result {
     std::size_t lp_iterations{0};
     std::size_t cuts_generated{0};
     std::size_t heuristics_found{0};
+    /// MIP-01 §4.2: nodes whose split gates proved the integer domain empty.
+    /// Conclusive emptiness (never a bound claim, never silent).
+    std::size_t empty_domain_nodes{0};
     // Optimizer event notes for later proof-artifact attachment. Node IDs refer
     // to the optimizer search tree, not the independent cut-free replay tree.
     std::vector<verify::MipObligation> obligations;

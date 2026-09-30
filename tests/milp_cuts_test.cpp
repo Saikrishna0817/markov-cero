@@ -3,8 +3,10 @@
 #include "markov_cero/milp/node_propagation.hpp"
 #include "markov_cero/milp/milp_solver.hpp"
 #include "markov_cero/transform/sparse_canonical_model.hpp"
+#include "support/tiny_exact.hpp"
 
 #include <cassert>
+#include <cmath>
 #include <iostream>
 #include <stdexcept>
 
@@ -121,15 +123,17 @@ void test_gomory_cut_generation() {
     const auto basis_state = markov_cero::lp::dual::make_basis_state(dense, lpres.basis);
 
     const auto cuts = markov_cero::milp::generate_gomory_cuts(model, primal, canon, basis_state, 5);
-    if (!cuts.empty()) {
-        for (const auto& cut : cuts) {
-            assert(cut.violation > 0.0); // Strictly cuts off fractional LP point
-            // Verify integer feasible points satisfy the cut:
-            // e.g. x = (1, 1, 0)
-            double lhs =
-                cut.coefficients[0] * 1.0 + cut.coefficients[1] * 1.0 + cut.coefficients[2] * 0.0;
-            assert(lhs >= cut.rhs - 1e-6); // Must not cut off valid integer optimum
-        }
+    for (const auto& cut : cuts) {
+        assert(cut.violation > 0.0); // Strictly cuts off fractional LP point
+        // Contract §7.5: enumerate every integer-feasible point of the box
+        // (4 x1 + 6 x2 + 5 x3 <= 10) and require the row to keep all of them.
+        markov_cero::test_support::enumerate_integer_box(
+            {0, 0, 0}, {1, 1, 1}, [&](const std::vector<int>& p) {
+                if (4.0 * p[0] + 6.0 * p[1] + 5.0 * p[2] > 10.0 + 1e-9) return;
+                const double lhs = cut.coefficients[0] * p[0] +
+                                   cut.coefficients[1] * p[1] + cut.coefficients[2] * p[2];
+                assert(lhs >= cut.rhs - 1e-6);
+            });
     }
 
     auto augmented_model = model;
@@ -140,10 +144,17 @@ void test_gomory_cut_generation() {
     options.enable_heuristics = false;
     options.enable_strong_branching = false;
     const auto solved = markov_cero::milp::solve(model, options);
-    require(solved.cuts_generated > 0, "solver applies a verified cut");
+    require(solved.cuts_generated > 0, "solver applies cuts during search");
     std::size_t cut_notes = 0;
-    for (const auto& note : solved.obligations)
-        cut_notes += note.kind == markov_cero::verify::MipObligationKind::cut;
+    for (const auto& note : solved.obligations) {
+        if (note.kind != markov_cero::verify::MipObligationKind::cut) continue;
+        ++cut_notes;
+        // Every applied cut's obligation must be a finite row violated at the
+        // pre-cut separation point it was recorded against (contract §5.4).
+        require(std::isfinite(note.rhs) && std::isfinite(note.observed_lhs) &&
+                    note.observed_lhs < note.rhs,
+                "cut obligation is a violated finite row at the pre-cut point");
+    }
     require(cut_notes == solved.cuts_generated,
             "every applied serial cut emits an audit obligation");
 }
@@ -183,9 +194,15 @@ void test_cover_cut_generation() {
     assert(!cuts.empty());
     for (const auto& cut : cuts) {
         assert(cut.violation > 0.0);
-        // Valid binary points satisfy the cut: e.g. (1, 0, 0)
-        double lhs = cut.coefficients[0] * 1.0 + cut.coefficients[1] * 0.0 + cut.coefficients[2] * 0.0;
-        assert(lhs >= cut.rhs - 1e-6);
+        // Contract §7.5: enumerate every integer point of the box and require
+        // the row to keep all that satisfy 3 x1 + 3 x2 + 3 x3 <= 5.
+        markov_cero::test_support::enumerate_integer_box(
+            {0, 0, 0}, {1, 1, 1}, [&](const std::vector<int>& p) {
+                if (3.0 * p[0] + 3.0 * p[1] + 3.0 * p[2] > 5.0 + 1e-9) return;
+                const double lhs = cut.coefficients[0] * p[0] +
+                                   cut.coefficients[1] * p[1] + cut.coefficients[2] * p[2];
+                assert(lhs >= cut.rhs - 1e-6);
+            });
     }
     std::cout << "[+] test_cover_cut_generation passed (" << cuts.size() << " cover cuts generated)\n";
 }

@@ -230,6 +230,7 @@ void test_parallel_cut_helper_worker_isolation() {
     options.enable_heuristics = false;
     std::atomic<std::size_t> iterations{0}, cuts{0};
     std::atomic<bool> failed{false};
+    milp::detail_parallel_tree_search::ProofEventCollector proof_events(4);
     std::vector<std::thread> workers;
     for (std::size_t worker = 0; worker < 4; ++worker) {
         workers.emplace_back([&, worker] {
@@ -237,7 +238,7 @@ void test_parallel_cut_helper_worker_isolation() {
             node.id = worker + 1;
             const auto result = milp::detail_parallel_tree_search::solve_parallel_node_with_cuts(
                 node, model, options, std::nullopt, model.variable_lower,
-                model.variable_upper, worker + 1, iterations, cuts);
+                model.variable_upper, worker + 1, iterations, cuts, proof_events, worker);
             if (result.status != lp::reference::SolveStatus::optimal ||
                 result.primal.size() != model.matrix.column_count) failed.store(true);
         });

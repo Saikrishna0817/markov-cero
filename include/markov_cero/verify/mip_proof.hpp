@@ -19,7 +19,9 @@ enum class MipProofBudgetKind { none, time_limit, node_limit, witness_limit };
 enum class MipProofStatus { accepted, exhausted, rejected, unsupported };
 enum class MipObligationKind { cut, propagation };
 // Audit note from an optimizer event. Replay deliberately ignores these notes:
-// it verifies the original-domain, cut-free tree independently.
+// it verifies the original-domain, cut-free tree independently. Their
+// structure is still validated at replay (domain and finiteness), so a
+// tampered artifact cannot carry malformed rows (contract §7.1).
 struct MipObligation {
     MipObligationKind kind{MipObligationKind::cut};
     std::size_t node{};

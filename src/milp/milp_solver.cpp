@@ -37,8 +37,11 @@ if (!initialize() || !root_relaxation() || !root_branching()) {
         node = queue.top();
         queue.pop();
 
-        // Bound pruning
-        if (node->lower_bound >= best_upper_bound - options.absolute_gap_tolerance) {
+        // Bound pruning (MIP-01 contract §1 F1 + §3: only a finite bound
+        // prunes, and it prunes through the downward guard; the inherited
+        // bound carries the parent's certification.)
+        if (std::isfinite(node->lower_bound) &&
+            prune_guard(node->lower_bound) >= best_upper_bound - options.absolute_gap_tolerance) {
             continue;
         }
 

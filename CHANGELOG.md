@@ -2,6 +2,56 @@
 
 ## Unreleased
 
+### 2026-10-01 blueprint MIP-01 — certified MILP node bounds, partition and proof obligations
+
+- Added the binding library contract
+  [`docs/contracts/milp-node-bounds.md`](docs/contracts/milp-node-bounds.md):
+  the prune-reason witness table (F1–F3, P1–P12), certified bound provenance
+  with the downward/absolute prune guard, the exhaustive branch-partition
+  rule with `evaluate_split`/`push_branch_children` as the one shared
+  construction for both engines, lattice-preserving cut-derivation rules,
+  and the §6/§7 proof-obligation and test obligations.
+- Certified every bound prune (F1): `certified_dual_bound` derives node
+  lower bounds from the canonical dual with an absorbing downward guard;
+  unknown/non-finite bounds never prune, and both engines prune queue/bound
+  comparisons through `milp::prune_guard()` so large-magnitude objectives
+  cannot manufacture a false prune.
+- Proved the branch partition (P6/P12): production child construction is one
+  shared module (`src/milp/branch_partition.cpp`) used by the serial search
+  and both parallel push sites; degenerate or unselectable splits count
+  unresolved (counter surfaced in the stop message, `proven` blocked, held
+  bound never overstated); both-gate rejections record
+  `Result::empty_domain_nodes` in both engines and at the parallel root.
+- Guarded cut obligations (M4): GMI/MIR rows pass
+  `cut_row_lattice_preserving` (fractional basic/contributor columns skip
+  generation), per-round pre-cut separation solutions are recorded in the
+  parallel proof collector, and optimizer cut notes with non-finite or
+  non-binding values are dropped before a replay can see them.
+- Hardened proof replay: `verify_mip_proof` validates cut/propagation
+  obligation structure (row/column domain, finiteness) after the fingerprint
+  check; budgets report `exhausted`, never `accepted`; a stripped
+  fingerprint downgrades an accepted artifact to `replayed_tree`, a
+  mismatched one is rejected.
+- Added the test suite: `milp_branch_partition` (partition exhaustiveness,
+  push-vs-replay domains, P6 proven-blocking, both engines' empty-domain
+  counters), `milp_cut_validity` (fully enumerated integer points including
+  a non-integral lower bound and an upper-bound-only integer), adversarial
+  proof attacks and §6 fingerprint tiers (`mip_adversarial`), brute-force
+  enumeration cross-check (`milp_bruteforce`), and the §7.3 edge cases
+  (`milp_edge_cases`: resource stop with a verified incumbent, nonzero-gap
+  proof, infeasible-vs-resource, PDLP F1 bound, P3 nearly-integral, P10 cut
+  revert).
+- Added the §7.6 benchmark: `scripts/run_milp01_benchmark.py` runs the 15
+  checked-in MIPLIB MILP models through the production CLI at a 60 s cap —
+  2 Optimal, 1 Feasible, 11 ResourceLimit, 1 NumericalFailure, 0
+  process-level complete failures
+  ([record](evidence/milp01-miplib-2026-10-01.json), indexed from
+  `evidence/INDEX.md`). Statuses as measured; no speed claim.
+- Documented MIP proof scope and the `Feasible` / `GapSatisfied` /
+  `Optimal` / `Unverified` difference in
+  [`docs/contracts/numerical-policy.md`](docs/contracts/numerical-policy.md)
+  §3 (labels and statuses unchanged — no version bump).
+
 ### 2026-09-30 blueprint QP-01 — convex QP contract, disclosure and KKT attack suite
 
 - Added the binding library contract

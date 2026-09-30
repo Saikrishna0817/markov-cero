@@ -1,4 +1,5 @@
 #include "markov_cero/milp/gomory.hpp"
+#include "markov_cero/milp/cut_lattice.hpp"
 
 #include "markov_cero/linalg/sparse_basis.hpp"
 
@@ -90,6 +91,12 @@ std::vector<Cut> generate_gomory_cuts(const model::Model& model,
         if (orig_var < 0 || model.variable_type[orig_var] == model::VariableType::continuous) {
             continue;
         }
+        // §5.3: f0 is original-unit; a fractional canonical shift of the basic
+        // variable would mix units — skip the row instead of emitting it.
+        const double basic_shift = canonical.record.variables[orig_var].offset;
+        if (std::abs(basic_shift - std::round(basic_shift)) > 1e-9) {
+            continue;
+        }
 
         const double x_val = original_primal[orig_var];
         const double f0 = x_val - std::floor(x_val);
@@ -167,6 +174,11 @@ std::vector<Cut> generate_gomory_cuts(const model::Model& model,
         }
 
         if (!slack_substitution_success) {
+            continue;
+        }
+        // §5.3: every integer column the row touches must sit on the original
+        // lattice (integral shift, unit scale) or the derivation is skipped.
+        if (!cut_row_lattice_preserving(canonical, model, alpha_struct, struct_count)) {
             continue;
         }
 

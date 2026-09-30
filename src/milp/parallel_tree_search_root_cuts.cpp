@@ -64,7 +64,8 @@ NodeLpResult solve_parallel_node_with_cuts(
     const std::optional<lp::dual::BasisState>& warm_basis,
     const std::vector<model::Bound>& lower, const std::vector<model::Bound>& upper,
     std::size_t explored_count, std::atomic<std::size_t>& total_lp_iterations,
-    std::atomic<std::size_t>& total_cuts_generated) {
+    std::atomic<std::size_t>& total_cuts_generated,
+    ProofEventCollector& proof_events, std::size_t thread_id) {
     // Each worker owns its popped node and this model copy. Only counters are shared.
     model::Model local_model;
     NodeLpResult solution;
@@ -139,6 +140,10 @@ NodeLpResult solve_parallel_node_with_cuts(
                 node.local_cuts.truncate(policy.max_pool_cuts);
             }
             total_cuts_generated.fetch_add(fresh.size(), std::memory_order_relaxed);
+            // §5.2: record against the separation point — solution.primal is
+            // still the pre-cut primal until the re-solve is committed below.
+            proof_events.record_cuts(proof_events.workers[thread_id], node.id, fresh,
+                                     solution.primal);
             local_model = std::move(candidate_model);
             solution = cut_lp;
             if (static_cast<double>(cut_lp.iterations) >

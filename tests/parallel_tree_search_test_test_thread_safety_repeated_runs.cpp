@@ -54,8 +54,9 @@ void test_persistent_node_bounds() {
     basis->columns = 3;
     basis->basic_variables = {0, 2};
     std::atomic<std::size_t> next_id{42};
-    queue.push_branch_children(parent_node, 0, 0.5, 0.0,
+    const auto push_status = push_branch_children(queue, parent_node, 0, 0.5, 0.0,
         {Bound::finite(0)}, {Bound::finite(1)}, basis, next_id);
+    assert(push_status == markov_cero::milp::ChildPushStatus::accepted);
     bool became_active = false;
     const auto children = queue.pop_batch(false, 1.0, became_active);
     assert(children.size() == 2 && became_active);

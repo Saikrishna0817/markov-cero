@@ -5,6 +5,7 @@ Result Search::finish() {
     result.runtime_ms = std::chrono::duration<double, std::milli>(end_time - start_time).count();
     result.search_ms = std::max(0.0, result.runtime_ms - result.lp_bound_ms - result.incumbent_ms);
     result.max_queued_nodes = queue.peak_size();
+    result.empty_domain_nodes = empty_domain_nodes;
 
     bool gap_closed = false;
     if (best_lower_bound > -std::numeric_limits<double>::infinity()) {

@@ -69,6 +69,26 @@ add_executable(milp_heuristics_test tests/milp_heuristics_test.cpp)
 target_link_libraries(milp_heuristics_test PRIVATE markov_cero_core)
 add_executable(milp_cuts_test tests/milp_cuts_test.cpp)
 target_link_libraries(milp_cuts_test PRIVATE markov_cero_core)
+# MIP-01 contract §5.3/§7.5: cut-row lattice guards and enumerated-point
+# validity for GMI/MIR/cover rows.
+add_executable(milp_cut_validity_test tests/milp_cut_validity_test.cpp)
+target_link_libraries(milp_cut_validity_test PRIVATE markov_cero_core)
+# MIP-01 contract §7.1/§7.4: adversarial proof suite and production-vs-replay
+# partition cross-check.
+add_executable(mip_adversarial_test tests/mip_adversarial_test.cpp)
+target_link_libraries(mip_adversarial_test PRIVATE markov_cero_core)
+# MIP-01 contract §7.2: production solves matched against brute-force
+# enumeration on fixed and seeded small integer programs.
+add_executable(milp_bruteforce_test tests/milp_bruteforce_test.cpp)
+target_link_libraries(milp_bruteforce_test PRIVATE markov_cero_core)
+# MIP-01 contract §7.3: resource stop, nonzero-gap proof, infeasible-vs-
+# resource, F1/P3/P10 edge cases.
+add_executable(milp_edge_cases_test tests/milp_edge_cases_test.cpp)
+target_link_libraries(milp_edge_cases_test PRIVATE markov_cero_core)
+# MIP-01 contract §4: exhaustive branch-partition certificate, split statuses
+# and empty-domain records for both engines.
+add_executable(milp_branch_partition_test tests/milp_branch_partition_test.cpp)
+target_link_libraries(milp_branch_partition_test PRIVATE markov_cero_core)
 add_executable(strong_branching_test tests/strong_branching_test.cpp tests/strong_branching_test_test_strong_branching_and_domain_reduction.cpp)
 target_link_libraries(strong_branching_test PRIVATE markov_cero_core)
 add_executable(pdlp_test tests/pdlp_test.cpp)

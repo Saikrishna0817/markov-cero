@@ -19,6 +19,7 @@ Start with the [project README](../README.md) for the problem, architecture, dem
 | [Resource limits contract](contracts/resource-limits.md) | Binding stop reasons, attribution rules and non-guarantees for cooperative resource stops (library, v1) |
 | [Sparse LP path contract](contracts/sparse-lp-path.md) | Sparse-first LP dispatch rule, dimension envelope, shared fingerprints and the dense/sparse differential obligation (library, v1) |
 | [Convex QP path contract](contracts/convex-qp.md) | Frozen Hessian convention, three-outcome PSD classification, KKT/verification tolerances, status mapping and CPU/GPU path disclosure (library, v1) |
+| [MILP node bounds contract](contracts/milp-node-bounds.md) | Prune-reason/witness table, node lower-bound guards, branch-partition rules, cut obligations and proof/label semantics (library, v1) |
 | [Hosted limits contract](contracts/hosted-limits.md) | Kernel-enforced CPU, address-space, file, output and wall limits for each hosted solve child (service, v1) |
 | [Provenance](project/PROVENANCE.md) | Source history, review limits and attributed inputs |
 | [Original request](project/ORIGINAL_REQUEST.md) | Historical SIH scope and roadmap, not a completion certificate |

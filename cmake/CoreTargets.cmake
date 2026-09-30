@@ -64,6 +64,7 @@ add_library(markov_cero_core STATIC
   src/lp/first_order/pdlp.cpp src/lp/first_order/pdlp_degenerate.cpp src/lp/first_order/pdlp_try_dual_simplex_crossover.cpp src/lp/first_order/pdlp_iterate_pdlp.cpp src/lp/first_order/pdlp_solve_pdlp.cpp
   src/milp/branch_selector.cpp
   src/milp/branch_selector_features.cpp
+  src/milp/branch_partition.cpp
   src/milp/cut_pool.cpp
   src/milp/gomory.cpp
   src/milp/heuristics.cpp

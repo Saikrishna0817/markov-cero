@@ -113,6 +113,23 @@ find_fractional_variables(const std::vector<double>& primal,
                           const std::vector<model::VariableType>& types,
                           double integrality_tol = 1e-6);
 
+// MIP-01 contract §4: the branch-partition certificate for one split value.
+// floor/ceil bound the two children; a child is valid only when its tightened
+// bound still overlaps the parent domain (1e-9 production slack, matching the
+// serial gates). floor >= ceil is a degenerate split and must be rejected
+// rather than pushed; both gates invalid means the parent holds no integer
+// point in this variable (conclusive emptiness, recorded never pruned).
+struct SplitPartition {
+    double floor_value{0.0};
+    double ceil_value{0.0};
+    bool down_valid{false};
+    bool up_valid{false};
+};
+
+[[nodiscard]] SplitPartition evaluate_split(double branch_val,
+                                            const model::Bound& parent_lower,
+                                            const model::Bound& parent_upper);
+
 [[nodiscard]] BipartiteGraphFeatures extract_bipartite_features(
     const std::vector<double>& primal,
     const std::vector<model::VariableType>& types,

@@ -202,11 +202,18 @@ Result solve_integer_parallel(const model::Model& model, const ParallelOptions& 
     if (options.context && !options.context->charge_or_stop(2U * sizeof(BranchNode)))
         return fail_early(lp::reference::SolveStatus::resource_limit,
                           "memory budget exhausted at parallel root queue");
-    (void)queue.push_branch_children(
-                               root_node, root_branch_var, current_primal[root_branch_var],
-                               best_lower_bound, root_model.variable_lower,
-                               root_model.variable_upper,
-                               current_basis, next_node_id);
+    const auto root_push = push_branch_children(
+        queue, root_node, root_branch_var, current_primal[root_branch_var],
+        best_lower_bound, root_model.variable_lower,
+        root_model.variable_upper, current_basis, next_node_id);
+    if (root_push == ChildPushStatus::split_rejected)
+        return fail_early(lp::reference::SolveStatus::numerical_failure,
+                          "degenerate split at parallel root");
+    if (root_push == ChildPushStatus::empty_integer_domain) {
+        result.empty_domain_nodes = queue.empty_domain_count();
+        return fail_early(lp::reference::SolveStatus::infeasible,
+                          "root integer domain is empty");
+    }
     if (queue.capacity_exhausted() && options.context)
         (void)options.context->note_stop(core::StopReason::queue_capacity_exhausted);
 
@@ -250,6 +257,7 @@ Result solve_integer_parallel(const model::Model& model, const ParallelOptions& 
 
     result.runtime_ms = elapsed_ms();
     result.max_queued_nodes = queue.peak_size();
+    result.empty_domain_nodes = queue.empty_domain_count();
     fill_search_counters(result, total_nodes_explored, total_lp_iterations,
                          total_cuts_generated, total_heuristics_found, root_cuts_generated);
     proof_events.append_to(result);

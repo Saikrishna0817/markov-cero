@@ -8,6 +8,7 @@
 #include "markov_cero/qp/verifier.hpp"
 #include <cmath>
 #include <algorithm>
+#include <limits>
 #include "markov_cero/qp/model.hpp"
 #include "markov_cero/transform/sparse_canonical_model.hpp"
 
@@ -47,6 +48,30 @@ void certify_result(const transform::SparseCanonicalModel& model,
     }
     if (!std::all_of(out.begin(), out.end(), [](double y) { return std::isfinite(y); })) return {};
     return out;
+}
+
+// MIP-01 contract §3: the certified dual objective (offset + rhs^T y) of the
+// verifier-checked canonical dual solution is the weak-dual bound — the same
+// quantity the independent verifier compares at sparse_lp_verifier.cpp. It is
+// mapped into search space like the primal objective; the downward guard that
+// absorbs summation error is applied at each prune comparison (gap.hpp
+// prune_guard), so gap decisions and reported bounds see the certified value
+// itself. Non-finite input, a mismatched dimension, or a non-minimization
+// canonicalization yields -inf ("unknown"), which never prunes; the primal
+// objective never stands in here.
+[[nodiscard]] double certified_dual_bound(const transform::SparseCanonicalModel& canon,
+                                          const std::vector<double>& canonical_dual) {
+    if (canon.rhs.size() != canonical_dual.size()) return -std::numeric_limits<double>::infinity();
+    if (!(canon.record.objective_sign > 0.0)) return -std::numeric_limits<double>::infinity();
+    long double sum = canon.objective_offset;
+    for (std::size_t i = 0; i < canon.rhs.size(); ++i) {
+        if (!std::isfinite(canon.rhs[i]) || !std::isfinite(canonical_dual[i]))
+            return -std::numeric_limits<double>::infinity();
+        sum += static_cast<long double>(canon.rhs[i]) * canonical_dual[i];
+    }
+    const double dual_objective = static_cast<double>(sum);
+    if (!std::isfinite(dual_objective)) return -std::numeric_limits<double>::infinity();
+    return transform::reconstruct_objective(canon, dual_objective);
 }
 
 
@@ -148,7 +173,7 @@ NodeLpResult solve_node_relaxation(
                 res.primal = transform::reconstruct_primal(canon, dres.solution.primal);
                     res.objective =
                         transform::reconstruct_objective(canon, dres.solution.objective);
-                res.lower_bound = res.objective;
+                res.lower_bound = certified_dual_bound(canon, dres.solution.dual);
                 res.basis = dres.basis_state;
                 res.row_dual = reconstruct_row_duals(canon, dres.solution.dual);
             } else if (res.status == lp::reference::SolveStatus::numerical_failure) {
@@ -170,7 +195,7 @@ NodeLpResult solve_node_relaxation(
                     res.status = lp::reference::SolveStatus::optimal;
                     res.primal = transform::reconstruct_primal(canon, rres.primal);
                     res.objective = transform::reconstruct_objective(canon, rres.objective);
-                    res.lower_bound = res.objective;
+                    res.lower_bound = certified_dual_bound(canon, rres.dual);
                     res.row_dual = reconstruct_row_duals(canon, rres.dual);
                     res.basis.reset();
                     if (small_basis && rres.basis.size() == dense.matrix.rows) {
@@ -203,7 +228,7 @@ NodeLpResult solve_node_relaxation(
             if (res.status == lp::reference::SolveStatus::optimal) {
                     res.primal = transform::reconstruct_primal(canon, rres.primal);
                     res.objective = transform::reconstruct_objective(canon, rres.objective);
-                    res.lower_bound = res.objective;
+                    res.lower_bound = certified_dual_bound(canon, rres.dual);
                     res.row_dual = reconstruct_row_duals(canon, rres.dual);
                     if (small_basis && rres.basis.size() == dense.matrix.rows) {
                         try {

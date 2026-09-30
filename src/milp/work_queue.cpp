@@ -1,4 +1,5 @@
 #include "markov_cero/milp/work_queue.hpp"
+#include "markov_cero/milp/gap.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -89,57 +90,6 @@ bool ThreadSafeNodeQueue::push_children(std::shared_ptr<BranchNode> left,
     return true;
 }
 
-bool ThreadSafeNodeQueue::push_branch_children(
-    const BranchNode& parent, std::size_t branch_var, double branch_val, double lower_bound,
-    const std::vector<model::Bound>& parent_lower,
-    const std::vector<model::Bound>& parent_upper,
-    const std::optional<lp::dual::BasisState>& warm_basis, std::atomic<std::size_t>& next_node_id) {
-
-    const double floor_val = std::floor(branch_val);
-    const double ceil_val = std::ceil(branch_val);
-
-    std::shared_ptr<BranchNode> down_child;
-    std::shared_ptr<BranchNode> up_child;
-    const auto shared_warm_basis = warm_basis
-        ? std::make_shared<const lp::dual::BasisState>(*warm_basis)
-        : std::shared_ptr<const lp::dual::BasisState>{};
-
-    if (branch_var >= parent_lower.size() || branch_var >= parent_upper.size()) {
-        throw std::invalid_argument("branch variable index is outside node bounds");
-    }
-    if (!parent_lower[branch_var].is_finite() ||
-        floor_val >= parent_lower[branch_var].value - 1e-9) {
-        down_child = std::make_shared<BranchNode>();
-        down_child->id = next_node_id.fetch_add(1, std::memory_order_relaxed);
-        down_child->parent_id = parent.id;
-        down_child->depth = parent.depth + 1;
-        down_child->lower_bound = lower_bound;
-        down_child->branch_variable = branch_var;
-        down_child->branch_value = branch_val;
-        down_child->is_down_branch = true;
-        down_child->bounds = parent.bounds.with_upper(branch_var, model::Bound::finite(floor_val));
-        down_child->warm_basis = shared_warm_basis;
-        down_child->local_cuts = parent.local_cuts;
-    }
-
-    if (!parent_upper[branch_var].is_finite() ||
-        ceil_val <= parent_upper[branch_var].value + 1e-9) {
-        up_child = std::make_shared<BranchNode>();
-        up_child->id = next_node_id.fetch_add(1, std::memory_order_relaxed);
-        up_child->parent_id = parent.id;
-        up_child->depth = parent.depth + 1;
-        up_child->lower_bound = lower_bound;
-        up_child->branch_variable = branch_var;
-        up_child->branch_value = branch_val;
-        up_child->is_down_branch = false;
-        up_child->bounds = parent.bounds.with_lower(branch_var, model::Bound::finite(ceil_val));
-        up_child->warm_basis = shared_warm_basis;
-        up_child->local_cuts = parent.local_cuts;
-    }
-
-    return push_children(std::move(down_child), std::move(up_child));
-}
-
 std::vector<std::shared_ptr<BranchNode>>
 ThreadSafeNodeQueue::pop_batch(bool was_active, double prune_cutoff, bool& became_active,
                                std::size_t max_batch) {
@@ -162,7 +112,7 @@ ThreadSafeNodeQueue::pop_batch(bool was_active, double prune_cutoff, bool& becam
             std::pop_heap(heap_.begin(), heap_.end(), comparator_);
             auto node = std::move(heap_.back());
             heap_.pop_back();
-            if (!node || node->lower_bound >= prune_cutoff) {
+            if (!node || prune_guard(node->lower_bound) >= prune_cutoff) {
                 ++prune_lazily_discarded_;
                 continue;
             }
@@ -206,7 +156,7 @@ void ThreadSafeNodeQueue::prune_locked(double cutoff) {
     }
     auto it = std::remove_if(heap_.begin(), heap_.end(),
                              [cutoff](const std::shared_ptr<BranchNode>& node) {
-                                 return !node || node->lower_bound >= cutoff;
+                                 return !node || prune_guard(node->lower_bound) >= cutoff;
                              });
     if (it != heap_.end()) {
         heap_.erase(it, heap_.end());
@@ -241,6 +191,12 @@ void ThreadSafeNodeQueue::request_stop() {
         stopped_ = true;
     }
     cv_.notify_all();
+}
+
+void ThreadSafeNodeQueue::note_dropped_bound(double bound) {
+    if (std::isnan(bound)) return;
+    std::lock_guard<std::mutex> lock(mutex_);
+    minimum_dropped_bound_ = std::min(minimum_dropped_bound_, bound);
 }
 
 bool ThreadSafeNodeQueue::is_stopped() const {

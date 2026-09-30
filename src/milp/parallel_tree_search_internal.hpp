@@ -48,6 +48,11 @@ struct ProofEventCollector {
             note.rhs = cut.rhs;
             for (std::size_t j = 0; j < primal.size(); ++j)
                 note.observed_lhs += cut.coefficients[j] * primal[j];
+            // §5.4: a recorded obligation must be a finite row violated at the
+            // point it was recorded against; anything else is not evidence.
+            if (!std::isfinite(note.observed_lhs) || !std::isfinite(note.rhs) ||
+                note.observed_lhs >= note.rhs)
+                continue;
             destination.push_back(std::move(note));
         }
     }
@@ -105,7 +110,8 @@ namespace detail_parallel_tree_search { NodeLpResult solve_parallel_node_with_cu
     const std::optional<lp::dual::BasisState>& warm_basis,
     const std::vector<model::Bound>& lower, const std::vector<model::Bound>& upper,
     std::size_t explored_count, std::atomic<std::size_t>& total_lp_iterations,
-    std::atomic<std::size_t>& total_cuts_generated); }
+    std::atomic<std::size_t>& total_cuts_generated,
+    ProofEventCollector& proof_events, std::size_t thread_id); }
 namespace detail_parallel_tree_search { void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
                   const model::Model& root_model, const ParallelOptions& options,
                   ThreadSafeNodeQueue& queue, IncumbentManager& incumbent,

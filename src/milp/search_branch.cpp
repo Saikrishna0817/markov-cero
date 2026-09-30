@@ -132,26 +132,45 @@ bool Search::branch() {
         }
 
         if (branch_var >= root_model.matrix.column_count) {
+            // MIP-01 contract §2 P6: a fractional point with no selectable
+            // branch variable is an internal failure, not a prune. Count it
+            // unresolved and keep its bound so neither optimality nor
+            // infeasibility can be claimed over the dropped subtree.
+            ++unsolved_node_lps;
+            min_unsolved_bound = std::min(min_unsolved_bound, node->lower_bound);
             return false;
         }
 
         const double branch_val = node_lp_res.primal[branch_var];
-        const double floor_val = std::floor(branch_val);
-        const double ceil_val = std::ceil(branch_val);
+        const SplitPartition split = evaluate_split(
+            branch_val, current_node_model.variable_lower[branch_var],
+            current_node_model.variable_upper[branch_var]);
+        if (!(split.floor_value < split.ceil_value)) {
+            // MIP-01 contract §2 P6 + §4.2: a degenerate split is an internal
+            // failure, never a prune — count it unresolved and hold the bound.
+            ++unsolved_node_lps;
+            min_unsolved_bound = std::min(min_unsolved_bound, node->lower_bound);
+            return false;
+        }
+        if (!split.down_valid && !split.up_valid) {
+            // §4.2: both gates reject, so the node holds no integer point;
+            // emptiness is conclusive and is recorded, not silently dropped.
+            ++empty_domain_nodes;
+            return false;
+        }
         const auto shared_warm_basis = node_lp_res.basis
             ? std::make_shared<const lp::dual::BasisState>(*node_lp_res.basis)
             : std::shared_ptr<const lp::dual::BasisState>{};
 
-        // Child 1 (Down Branch): x_k <= floor_val
-        bool down_valid = true;
-        if (current_node_model.variable_lower[branch_var].is_finite() &&
-            floor_val < current_node_model.variable_lower[branch_var].value - 1e-9) {
-            down_valid = false;
-        }
-        if (down_valid) {
+        // Child 1 (Down Branch): x_k <= floor(split)
+        if (split.down_valid) {
             // RES-01: charge the shared budget before allocating a queue node
             // (mirrors the parallel worker's per-push charge).
             if (options.context && !options.context->charge_or_stop(sizeof(BranchNode))) {
+                // MIP-01 contract §2 P8: return the still-unexplored parent to
+                // the frontier so a refused charge on the final live node can
+                // never empty the queue and masquerade as a proven tree.
+                queue.push(node);
                 stop_reason = "memory budget refused a node allocation";
                 return false;
             }
@@ -164,21 +183,19 @@ bool Search::branch() {
             down_child->branch_variable = branch_var;
             down_child->branch_value = branch_val;
             down_child->is_down_branch = true;
-            down_child->bounds = node->bounds.with_upper(branch_var, model::Bound::finite(floor_val));
+            down_child->bounds = node->bounds.with_upper(branch_var, model::Bound::finite(split.floor_value));
             down_child->warm_basis = shared_warm_basis;
             down_child->local_cuts = node->local_cuts;
             queue.push(down_child);
             if (queue.capacity_exhausted()) stop_reason = "queued-node capacity reached";
         }
 
-        // Child 2 (Up Branch): x_k >= ceil_val
-        bool up_valid = true;
-        if (current_node_model.variable_upper[branch_var].is_finite() &&
-            ceil_val > current_node_model.variable_upper[branch_var].value + 1e-9) {
-            up_valid = false;
-        }
-        if (up_valid) {
+        // Child 2 (Up Branch): x_k >= ceil(split)
+        if (split.up_valid) {
             if (options.context && !options.context->charge_or_stop(sizeof(BranchNode))) {
+                // Same P8 rule as the down-child refusal: keep the parent's
+                // unexplored remainder (the up subtree) on the frontier.
+                queue.push(node);
                 stop_reason = "memory budget refused a node allocation";
                 return false;
             }
@@ -190,7 +207,7 @@ bool Search::branch() {
             up_child->branch_variable = branch_var;
             up_child->branch_value = branch_val;
             up_child->is_down_branch = false;
-            up_child->bounds = node->bounds.with_lower(branch_var, model::Bound::finite(ceil_val));
+            up_child->bounds = node->bounds.with_lower(branch_var, model::Bound::finite(split.ceil_value));
             up_child->warm_basis = shared_warm_basis;
             up_child->local_cuts = node->local_cuts;
             queue.push(up_child);

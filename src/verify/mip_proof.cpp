@@ -26,6 +26,27 @@ MipProofReport verify_mip_proof(const model::Model& source, const MipProof& proo
                 std::to_string(kMipProofFormatVersion) + ")");
         if (!proof.model_fingerprint.empty() && proof.model_fingerprint != bound_fingerprint(source))
             throw std::invalid_argument("proof model fingerprint does not match the verified model");
+        // Contract §7.1: obligations stay audit annotations (the tree replay
+        // is cut-free), but a tampered artifact must not carry structurally
+        // invalid rows — wrong domain or non-finite values — past replay.
+        for (const auto& obligation : proof.obligations) {
+            if (obligation.kind == MipObligationKind::cut) {
+                bool finite_row = std::isfinite(obligation.rhs) &&
+                                  std::isfinite(obligation.observed_lhs);
+                for (double coefficient : obligation.coefficients)
+                    finite_row = finite_row && std::isfinite(coefficient);
+                if (obligation.coefficients.size() != source.matrix.column_count || !finite_row)
+                    throw std::invalid_argument(
+                        "invalid cut obligation row (out-of-domain or non-finite)");
+            } else if (obligation.source_row >= source.matrix.row_count ||
+                       obligation.variable >= source.matrix.column_count ||
+                       !std::isfinite(obligation.source_coefficient) ||
+                       !std::isfinite(obligation.source_rhs) ||
+                       !std::isfinite(obligation.derived_bound)) {
+                throw std::invalid_argument(
+                    "invalid propagation obligation (out-of-domain or non-finite)");
+            }
+        }
         if (proof.budget_exhausted)
             throw budget_exhausted_error(proof.exhausted_budget,
                 "proof build exhausted " + budget_label(proof.exhausted_budget));

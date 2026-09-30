@@ -45,6 +45,16 @@ add_test(NAME ruiz_scaling COMMAND ruiz_scaling_test)
 add_test(NAME milp COMMAND milp_test)
 add_test(NAME milp_heuristics COMMAND milp_heuristics_test)
 add_test(NAME milp_cuts COMMAND milp_cuts_test)
+# MIP-01 contract §5.3/§7.5: cut-row lattice guards and enumerated points.
+add_test(NAME milp_cut_validity COMMAND milp_cut_validity_test)
+# MIP-01 contract §7.1/§7.4: adversarial proof suite and replay cross-check.
+add_test(NAME mip_adversarial COMMAND mip_adversarial_test)
+# MIP-01 contract §7.2: brute-force enumeration cross-check.
+add_test(NAME milp_bruteforce COMMAND milp_bruteforce_test)
+# MIP-01 contract §7.3: blueprint edge cases (stop/gap/PDLP/P3/P10).
+add_test(NAME milp_edge_cases COMMAND milp_edge_cases_test)
+# MIP-01 contract §4: branch-partition certificate and empty-domain records.
+add_test(NAME milp_branch_partition COMMAND milp_branch_partition_test)
 add_test(NAME strong_branching COMMAND strong_branching_test)
 add_test(NAME pdlp COMMAND pdlp_test)
 add_test(NAME ipm COMMAND ipm_test)
@@ -121,7 +131,8 @@ set_tests_properties(
   classifier nlp_sqp nlp_rosenbrock nlp_constrained minlp_basic nlobj_parser
   dense_lu primal_simplex primal_simplex_properties dual_simplex
   warm_start_properties sparse_basis sparse_fill_limit sparse_update_properties audit_regressions
-  sparse_canonicalize presolve ruiz_scaling milp milp_heuristics milp_cuts
+  sparse_canonicalize presolve ruiz_scaling milp milp_heuristics   milp_cuts milp_cut_validity mip_adversarial milp_bruteforce milp_edge_cases
+  milp_branch_partition
   strong_branching pdlp parallel_tree_search gpu_buffer equivalence gpu_reduction
   gpu_pdhg_step gpu_pdhg_restart gpu_pdhg_adaptive gpu_pdhg_kkt gpu_pdhg_timing
   gpu_admm gpu_fallback gpu_qp

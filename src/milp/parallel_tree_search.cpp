@@ -40,8 +40,8 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
                   const std::function<void()>& clear_bound,
                   ProofEventCollector& proof_events) {
     worker_bounds[thread_id].store(node->lower_bound, std::memory_order_relaxed);
-
-    if (node->lower_bound >=
+    // MIP-01 contract §1 F1 + §3: only a finite bound may prune, through the guard.
+    if (std::isfinite(node->lower_bound) && prune_guard(node->lower_bound) >=
         incumbent.best_incumbent_objective.load(std::memory_order_relaxed) -
             options.absolute_gap_tolerance) {
         clear_bound();
@@ -50,40 +50,35 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
 
     node->bounds.materialize(root_model.variable_lower, root_model.variable_upper,
                              node_lower, node_upper, bounds_scratch);
-    // Derive audit-only singleton implications from a private copy of the
-    // bounds. The search LP keeps its original domain and branching policy.
+    // Audit-only singleton implications from a private bounds copy (§5).
     proof_events.record_propagations(thread_id, *node, root_model, node_lower, node_upper);
 
     const auto warm_basis = node->warm_basis
         ? std::optional<lp::dual::BasisState>(*node->warm_basis)
         : std::nullopt;
     const auto explored_count = total_nodes_explored.fetch_add(1, std::memory_order_relaxed) + 1;
-    const auto prior_cuts = node->local_cuts.size();
+    // Cut obligations are recorded inside the with-cuts solve, per round,
+    // against each round's pre-cut separation primal (contract §5.2).
     const auto node_lp_res = solve_parallel_node_with_cuts(
         *node, root_model, options, warm_basis, node_lower, node_upper, explored_count,
-        total_lp_iterations, total_cuts_generated);
-    if (node->local_cuts.size() > prior_cuts) {
-        const auto& cuts = node->local_cuts.values();
-        std::vector<Cut> applied(cuts.begin() + prior_cuts, cuts.end());
-        proof_events.record_cuts(proof_events.workers[thread_id], node->id,
-                                 applied, node_lp_res.primal);
-    }
+        total_lp_iterations, total_cuts_generated, proof_events, thread_id);
 
     if (node_lp_res.status == lp::reference::SolveStatus::infeasible) {
         clear_bound();
         return;
     }
     if (node_lp_res.status != lp::reference::SolveStatus::optimal) {
+        // §2 P5: unresolved — hold the bound back; never prunable.
         unresolved_node_lps.fetch_add(1, std::memory_order_relaxed);
+        queue.note_dropped_bound(node->lower_bound);
         clear_bound();
         return;
     }
-
     const double parent_bound = node->lower_bound;
     node->lower_bound = std::max(node->lower_bound, node_lp_res.lower_bound);
     worker_bounds[thread_id].store(node->lower_bound, std::memory_order_relaxed);
 
-    if (node_lp_res.lower_bound >=
+    if (std::isfinite(node_lp_res.lower_bound) && prune_guard(node_lp_res.lower_bound) >=
         incumbent.best_incumbent_objective.load(std::memory_order_relaxed) -
             options.absolute_gap_tolerance) {
         clear_bound();
@@ -124,6 +119,7 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
         if (find_fractional_variables(node_lp_res.primal,
                 root_model.variable_type, 0.0).empty()) {
             unresolved_node_lps.fetch_add(1, std::memory_order_relaxed);
+            queue.note_dropped_bound(node->lower_bound);
             clear_bound();
             return;
         }
@@ -131,9 +127,8 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
 
     if (options.enable_heuristics &&
         total_nodes_explored.load(std::memory_order_relaxed) % 10 == 0) {
-        const auto hr = simple_rounding(root_model, node_lower, node_upper,
-                                        node_lp_res.primal, options.feasibility_tolerance,
-                                        options.integrality_tolerance);
+        const auto hr = simple_rounding(root_model, node_lower, node_upper, node_lp_res.primal,
+                                        options.feasibility_tolerance, options.integrality_tolerance);
         if (hr.found && incumbent.update_if_better(hr.objective, hr.primal,
                                                    options.absolute_gap_tolerance)) {
             total_heuristics_found.fetch_add(1, std::memory_order_relaxed);
@@ -153,18 +148,34 @@ void process_node(std::shared_ptr<BranchNode>&& node, std::size_t thread_id,
                                   near_integral ? 0.0 : options.integrality_tolerance);
 
     if (branch_var >= root_model.matrix.column_count) {
+        // §2 P6: internal failure, not a prune — count and hold bound.
+        unresolved_node_lps.fetch_add(1, std::memory_order_relaxed);
+        queue.note_dropped_bound(node->lower_bound);
         clear_bound();
         return;
     }
 
     if (options.context && !options.context->charge_or_stop(2U * sizeof(BranchNode))) {
+        // §2 P8: refusal stops the subtree; keep its bound in the frontier.
+        queue.note_dropped_bound(node->lower_bound);
         queue.request_stop();
         clear_bound();
         return;
     }
-    (void)queue.push_branch_children(*node, branch_var, node_lp_res.primal[branch_var],
-                               node->lower_bound, node_lower, node_upper,
-                               node_lp_res.basis, next_node_id);
+    const auto push_status = push_branch_children(
+        queue, *node, branch_var, node_lp_res.primal[branch_var], node->lower_bound,
+        node_lower, node_upper, node_lp_res.basis, next_node_id);
+    if (push_status == ChildPushStatus::split_rejected) {
+        // §2 P6 + §4.2: degenerate split — unresolved, hold the bound.
+        unresolved_node_lps.fetch_add(1, std::memory_order_relaxed);
+        queue.note_dropped_bound(node->lower_bound);
+        clear_bound();
+        return;
+    }
+    if (push_status == ChildPushStatus::empty_integer_domain) {
+        clear_bound();  // §4.2: emptiness already recorded by the push
+        return;
+    }
     if (queue.capacity_exhausted() && options.context)
         (void)options.context->note_stop(core::StopReason::queue_capacity_exhausted);
     clear_bound();
@@ -183,8 +194,6 @@ void worker_loop(
     std::size_t num_threads, SharedPseudoCosts& shared_pseudo_costs,
     const std::chrono::steady_clock::time_point start_time, std::stop_token stop_token,
     ProofEventCollector& proof_events) {
-
-
     std::optional<core::WorkerContext> worker;
     if (options.context) worker.emplace(*options.context, thread_id);
     bool was_active = false;
@@ -205,8 +214,7 @@ void worker_loop(
         }
         const auto now = std::chrono::steady_clock::now();
         const auto time_spent = std::chrono::duration<double>(now - start_time).count();
-        const bool timed_out = time_spent > options.time_limit_seconds ||
-                               (options.deadline && now >= *options.deadline);
+        const bool timed_out = time_spent > options.time_limit_seconds || (options.deadline && now >= *options.deadline);
         const bool node_quota = total_nodes_explored.load(std::memory_order_relaxed) >= options.max_nodes;
         if (timed_out || node_quota) {
             const auto reason = timed_out ? core::StopReason::deadline_exceeded
@@ -230,7 +238,6 @@ void worker_loop(
                 const double gap =
                     std::abs(current_inc - tree_lb) / std::max(1.0, std::abs(current_inc));
                 if (gap <= options.relative_gap_tolerance) {
-                    ;
                     interrupted_search.store(true, std::memory_order_relaxed);
                     queue.request_stop();
                     break;
@@ -238,21 +245,15 @@ void worker_loop(
             }
         }
 
-        // RW-2: one lock acquisition hands this worker a whole best-bounded batch
-        // (interleaved order: best, worst, 2nd-best, ...). Processing the batch
-        // locally removes the per-node mutex round-trip and the per-pop O(n)
-        // heap prune that serialized all workers in the old design.
+        // RW-2: one lock acquisition hands this worker a whole best-bounded
+        // batch instead of a per-node mutex round-trip.
         bool became_active = false;
         auto batch = queue.pop_batch(was_active, prune_cutoff, became_active);
         was_active = became_active;
 
-        if (batch.empty()) {
-            ;
-            break;
-        }
+        if (batch.empty()) break;
 
-        // Interleave the batch so concurrent workers explore different subtree
-        // regions first (soft work stealing): b0, b_{n-1}, b1, b_{n-2}, ...
+        // Interleave the batch so concurrent workers explore different regions.
         if (batch.size() > 2) {
             std::vector<std::shared_ptr<BranchNode>> interleaved;
             interleaved.reserve(batch.size());

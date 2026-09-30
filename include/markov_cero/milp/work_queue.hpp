@@ -15,6 +15,14 @@
 
 namespace markov_cero::milp {
 
+/// MIP-01 contract §4: outcome of evaluating one branch partition at push time.
+enum class ChildPushStatus {
+    accepted,               ///< at least one child enqueued (or the queue
+                            ///< stopped/capped exactly as push_children reports)
+    split_rejected,         ///< floor(v) >= ceil(v): degenerate split (§2 P6)
+    empty_integer_domain    ///< both gates reject: §4.2 conclusive emptiness
+};
+
 /// Thread-safe min-heap priority queue of BranchNodes prioritizing lowest lower bound.
 ///
 /// RW-2 rework notes:
@@ -51,14 +59,6 @@ class ThreadSafeNodeQueue {
     bool push_children(std::shared_ptr<BranchNode> left,
                        std::shared_ptr<BranchNode> right);
 
-    bool push_branch_children(const BranchNode& parent,
-                              std::size_t branch_var, double branch_val,
-                              double lower_bound,
-                              const std::vector<model::Bound>& parent_lower,
-                              const std::vector<model::Bound>& parent_upper,
-                              const std::optional<lp::dual::BasisState>& warm_basis,
-                              std::atomic<std::size_t>& next_node_id);
-
     /// Pop up to max_batch best-bounded nodes above the prune cutoff in one lock
     /// acquisition. Returns an empty vector only when the queue is drained-and-
     /// quiescent or stopped (the worker should then exit).
@@ -69,6 +69,21 @@ class ThreadSafeNodeQueue {
     void deactivate_worker();
     void prune(double cutoff);
     void request_stop();
+    /// MIP-01 contract §1 F3: fold the bound of a node removed from the live
+    /// set without proof (unresolved relaxation, refused allocation, failed
+    /// branch selection) into the frontier minimum, so the reported tree
+    /// bound can never overstate progress. Mirrors the capacity-drop fold.
+    void note_dropped_bound(double bound);
+    /// MIP-01 contract §4.2: record a node whose split gates proved the integer
+    /// domain empty (conclusive emptiness; never a bound claim, never silent).
+    void note_empty_domain() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        ++empty_domain_nodes_;
+    }
+    [[nodiscard]] std::size_t empty_domain_count() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return empty_domain_nodes_;
+    }
     [[nodiscard]] bool is_stopped() const;
     [[nodiscard]] bool empty() const;
     [[nodiscard]] std::size_t size() const;
@@ -95,10 +110,23 @@ class ThreadSafeNodeQueue {
     bool stopped_{false};
     bool capacity_exhausted_{false};
     std::size_t prune_lazily_discarded_{0};
+    std::size_t empty_domain_nodes_{0};
     std::size_t peak_size_{0};
     std::atomic<bool> need_notify_{false};
 };
 
 using WorkQueue = ThreadSafeNodeQueue;
+
+/// MIP-01 contract §4: build the down/up children of one split. Degenerate
+/// splits and empty integer domains are reported as statuses instead of
+/// pushing, so no node can die silently. Implementation lives in
+/// branch_partition.cpp alongside the shared evaluate_split certificate.
+[[nodiscard]] ChildPushStatus
+push_branch_children(ThreadSafeNodeQueue& queue, const BranchNode& parent,
+                     std::size_t branch_var, double branch_val, double lower_bound,
+                     const std::vector<model::Bound>& parent_lower,
+                     const std::vector<model::Bound>& parent_upper,
+                     const std::optional<lp::dual::BasisState>& warm_basis,
+                     std::atomic<std::size_t>& next_node_id);
 
 } // namespace markov_cero::milp

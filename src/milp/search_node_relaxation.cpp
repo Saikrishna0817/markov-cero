@@ -87,8 +87,11 @@ bool Search::node_relaxation() {
             const double parent_bound = node->lower_bound;
             node->lower_bound = std::max(node->lower_bound, node_lp_res.lower_bound);
 
-            // Bound pruning after solving node LP
-            if (node_lp_res.lower_bound >= best_upper_bound - options.absolute_gap_tolerance) {
+            // Bound pruning after solving node LP (MIP-01 contract §1 F1:
+            // a non-finite bound is "unknown" and may never prune; §3 guard).
+            if (std::isfinite(node_lp_res.lower_bound) &&
+                prune_guard(node_lp_res.lower_bound) >=
+                    best_upper_bound - options.absolute_gap_tolerance) {
                 return false;
             }
 

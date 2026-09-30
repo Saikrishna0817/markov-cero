@@ -5,6 +5,14 @@
 #include <limits>
 
 namespace markov_cero::milp {
+// MIP-01 contract §3: prune-time downward guard on a certified node bound.
+// Applied only where a bound may kill a subtree, so gap decisions and
+// reported bounds keep the certified value itself (an absolute gap tolerance
+// of 1e-6 must not be silently consumed by a relative storage guard).
+// NaN and -inf pass through unchanged and never satisfy a prune.
+inline double prune_guard(double certified_bound) {
+    return certified_bound - 1e-10 * (1.0 + std::abs(certified_bound));
+}
 // Minimization-space bound ordering. Unknown or contradictory bounds must not
 // turn into zero gaps. Maximization callers normalize before using this helper.
 inline double relative_gap(double incumbent, double lower_bound) {
