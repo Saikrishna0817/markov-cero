@@ -24,6 +24,13 @@ struct SparseCanonicalModel {
     [[nodiscard]] CanonicalModel to_dense() const;
 };
 
+/// Dense-adapter conversion: dense canonical cells → CSC, skipping structural
+/// zeros, column-major with ascending row indices inside each column. This is
+/// the single definition shared by every dense overload that forwards into a
+/// sparse primary (lp::reference, lp::dual, lp::interior); its output for
+/// equivalent content is byte-identical across those adapters.
+[[nodiscard]] SparseCanonicalModel sparse_from_dense(const CanonicalModel& model);
+
 [[nodiscard]] SparseCanonicalModel sparse_canonicalize(const model::Model& input,
                                                        bool relax_integrality = false);
 /// Canonicalize against per-solve bound overlays without copying the complete

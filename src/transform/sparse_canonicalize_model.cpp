@@ -80,6 +80,28 @@ std::vector<double> SparseCanonicalModel::multiply_transpose(const std::vector<d
     }
     return x;
 }
+SparseCanonicalModel sparse_from_dense(const CanonicalModel& model) {
+    model.validate();
+    SparseCanonicalModel out;
+    out.matrix.rows = model.matrix.rows;
+    out.matrix.columns = model.matrix.columns;
+    out.matrix.column_offsets.assign(model.matrix.columns + 1, 0);
+    out.rhs = model.rhs;
+    out.objective = model.objective;
+    out.objective_offset = model.objective_offset;
+    out.record = model.record;
+    for (std::size_t j = 0; j < model.matrix.columns; ++j) {
+        for (std::size_t i = 0; i < model.matrix.rows; ++i) {
+            const double v = model.matrix(i, j);
+            if (v == 0.0) continue;
+            out.matrix.row_indices.push_back(i);
+            out.matrix.values.push_back(v);
+        }
+        out.matrix.column_offsets[j + 1] = out.matrix.values.size();
+    }
+    out.validate();
+    return out;
+}
 CanonicalModel SparseCanonicalModel::to_dense() const {
     // RW-5 (R12): the dense fast path covers small/medium models; anything above
     // it needs a genuinely sparse LP solve path (tracked as P1 work, since the

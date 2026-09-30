@@ -75,6 +75,8 @@ add_executable(pdlp_test tests/pdlp_test.cpp)
 target_link_libraries(pdlp_test PRIVATE markov_cero_core)
 add_executable(ipm_test tests/ipm_test.cpp)
 target_link_libraries(ipm_test PRIVATE markov_cero_core)
+add_executable(lp_sparse_differential_test tests/lp_sparse_differential_test.cpp)
+target_link_libraries(lp_sparse_differential_test PRIVATE markov_cero_core)
 add_executable(parallel_tree_search_test tests/parallel_tree_search_test.cpp
   tests/parallel_tree_search_test_test_thread_safety_repeated_runs.cpp
   tests/parallel_tree_search_test_queue_capacity.cpp)
@@ -144,6 +146,9 @@ target_link_libraries(solve_frontier_memory_benchmark PRIVATE markov_cero_core)
 # Contract v1: verifier overhead against a full production solve (NUM-01).
 add_executable(verifier_overhead_benchmark scripts/bench_verifier_overhead.cpp)
 target_link_libraries(verifier_overhead_benchmark PRIVATE markov_cero_core)
+# LP-01 contract §5: retired dense dispatch shape vs sparse-first peak RSS.
+add_executable(lp_rss_benchmark scripts/bench_lp_rss.cpp)
+target_link_libraries(lp_rss_benchmark PRIVATE markov_cero_core)
 # W02/W01 contracts: shared SolveContext, ModelSnapshot and NodeView.
 add_executable(solve_context_test tests/solve_context_test.cpp)
 target_link_libraries(solve_context_test PRIVATE markov_cero_core)

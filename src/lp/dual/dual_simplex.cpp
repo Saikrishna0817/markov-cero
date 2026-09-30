@@ -52,16 +52,26 @@ double dot(const std::vector<double>& a, const std::vector<double>& b) {
 }
 
 namespace detail_dual_simplex {
-linalg::SparseCsc sparse_basis_matrix(const transform::CanonicalModel& m,
+linalg::SparseCsc sparse_basis_matrix(const transform::SparseCanonicalModel& m,
                                       const std::vector<std::size_t>& basis) {
-    std::vector<std::vector<double>> columns;
-    columns.reserve(basis.size());
-    for (auto j : basis) {
-        std::vector<double> column(m.matrix.rows);
-        for (std::size_t i = 0; i < m.matrix.rows; ++i) column[i] = m.matrix(i, j);
-        columns.push_back(std::move(column));
+    // Basis columns are distinct (validate_basis_metadata rejects duplicates),
+    // so copying each CSC slice yields a valid column-sorted basis matrix
+    // without any dense intermediate.
+    linalg::SparseCsc out;
+    out.rows = m.matrix.rows;
+    out.columns = basis.size();
+    out.column_offsets.assign(basis.size() + 1, 0);
+    std::size_t nnz = 0;
+    for (std::size_t c = 0; c < basis.size(); ++c) {
+        const std::size_t j = basis[c];
+        for (std::size_t p = m.matrix.column_offsets[j]; p < m.matrix.column_offsets[j + 1]; ++p) {
+            out.row_indices.push_back(m.matrix.row_indices[p]);
+            out.values.push_back(m.matrix.values[p]);
+        }
+        nnz = out.values.size();
+        out.column_offsets[c + 1] = nnz;
     }
-    return linalg::SparseCsc::from_columns(m.matrix.rows, columns);
+    return out;
 }
 }
 
@@ -80,11 +90,12 @@ linalg::SparseBasisOptions sparse_options(const Options& o) {
 }
 
 namespace detail_dual_simplex {
-bool significant_negative_reduced_cost(const transform::CanonicalModel& m, std::size_t j,
+bool significant_negative_reduced_cost(const transform::SparseCanonicalModel& m, std::size_t j,
                                        const std::vector<double>& y, double rc, double tol) {
     long double scale = std::abs(static_cast<long double>(m.objective[j]));
-    for (std::size_t i = 0; i < m.matrix.rows; ++i) {
-        scale += std::abs(static_cast<long double>(m.matrix(i, j)) * y[i]);
+    for (std::size_t p = m.matrix.column_offsets[j]; p < m.matrix.column_offsets[j + 1]; ++p) {
+        scale += std::abs(static_cast<long double>(m.matrix.values[p]) *
+                          y[m.matrix.row_indices[p]]);
     }
     const double z = static_cast<double>(scale);
     const double allowed =
@@ -118,7 +129,7 @@ void validate_options(const Options& o) {
 }
 
 namespace detail_dual_simplex {
-void validate_basis_metadata(const transform::CanonicalModel& m, const BasisState& s) {
+void validate_basis_metadata(const transform::SparseCanonicalModel& m, const BasisState& s) {
     if (s.rows != m.matrix.rows || s.columns != m.matrix.columns ||
         s.model_fingerprint != fingerprint(m) || s.basic_variables.size() != m.matrix.rows) {
         throw std::invalid_argument("warm basis metadata mismatch");
@@ -136,7 +147,7 @@ void validate_basis_metadata(const transform::CanonicalModel& m, const BasisStat
 }
 
 namespace detail_dual_simplex {
-void validate_basis(const transform::CanonicalModel& m, const BasisState& s) {
+void validate_basis(const transform::SparseCanonicalModel& m, const BasisState& s) {
     validate_basis_metadata(m, s);
     try {
         (void)linalg::SparseLu::factorize(sparse_basis_matrix(m, s.basic_variables));
@@ -147,7 +158,7 @@ void validate_basis(const transform::CanonicalModel& m, const BasisState& s) {
 }
 
 namespace detail_dual_simplex {
-Result cold(const transform::CanonicalModel& m, const Options& o, const std::string& why) {
+Result cold(const transform::SparseCanonicalModel& m, const Options& o, const std::string& why) {
     Result out;
     reference::Options ro;
     ro.iteration_limit = o.iteration_limit;
@@ -173,7 +184,7 @@ Result cold(const transform::CanonicalModel& m, const Options& o, const std::str
 }
 
 namespace detail_dual_simplex {
-std::vector<double> compute_exact_dse_weights(const transform::CanonicalModel& m,
+std::vector<double> compute_exact_dse_weights(const transform::SparseCanonicalModel& m,
                                               linalg::SparseBasisFactorization& factor) {
     std::vector<double> gamma(m.matrix.rows, 1.0);
     for (std::size_t i = 0; i < m.matrix.rows; ++i) {
@@ -187,7 +198,7 @@ std::vector<double> compute_exact_dse_weights(const transform::CanonicalModel& m
 }
 
 namespace detail_dual_simplex {
-std::size_t select_leaving_row(const transform::CanonicalModel& m,
+std::size_t select_leaving_row(const transform::SparseCanonicalModel& m,
                                linalg::SparseBasisFactorization& factor,
                                const std::vector<double>& xb, const std::vector<std::size_t>& basis,
                                const std::vector<double>& dse_weights,
@@ -219,7 +230,7 @@ std::size_t select_leaving_row(const transform::CanonicalModel& m,
         std::vector<double> e(m.matrix.rows);
         e[i] = 1;
         auto pi = factor.solve_transpose(e);
-        auto row = linalg::multiply_transpose(m.matrix, pi);
+        auto row = m.multiply_transpose(pi);
         const double weight = dot(row, row);
         const double score =
             (-xb[i]) / std::sqrt(std::max(weight, std::numeric_limits<double>::min()));
@@ -238,7 +249,7 @@ std::size_t select_leaving_row(const transform::CanonicalModel& m,
 // that cannot certify a fresh optimal basis (infeasible, iteration limit,
 // rejected verification, degenerate basis) drops both, so the next resolve is
 // a cold solve.
-Result Session::resolve(const transform::CanonicalModel& m, const Options& o) {
+Result Session::resolve(const transform::SparseCanonicalModel& m, const Options& o) {
     ++resolve_count_;
     auto out = solve_verified(m, o, basis_, &cache_);
     last_verified_ = out.verified;
@@ -259,6 +270,10 @@ Result Session::resolve(const transform::CanonicalModel& m, const Options& o) {
         cache_.valid = false;
     }
     return out;
+}
+
+Result Session::resolve(const transform::CanonicalModel& m, const Options& o) {
+    return resolve(transform::sparse_from_dense(m), o);
 }
 
 Session make_session(const Options& defaults) {

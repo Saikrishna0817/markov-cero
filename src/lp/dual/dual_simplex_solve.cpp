@@ -1,7 +1,7 @@
 #include "dual_simplex_internal.hpp"
 namespace markov_cero::lp::dual {
 using namespace detail_dual_simplex;
-Result solve_impl(const transform::CanonicalModel& m, const Options& o,
+Result solve_impl(const transform::SparseCanonicalModel& m, const Options& o,
                   const std::optional<BasisState>& warm, FactorCache* cache) {
     Result out;
     if (cache) {
@@ -109,7 +109,7 @@ Result solve_impl(const transform::CanonicalModel& m, const Options& o,
                 is_basic[basis[i]] = true;
             }
             auto y = factor.solve_transpose(cb);
-            auto aty = linalg::multiply_transpose(m.matrix, y);
+            auto aty = m.multiply_transpose(y);
             std::vector<double> rc(m.matrix.columns);
             for (std::size_t j = 0; j < m.matrix.columns; ++j) {
                 rc[j] = m.objective[j] - aty[j];
@@ -143,7 +143,7 @@ Result solve_impl(const transform::CanonicalModel& m, const Options& o,
             std::vector<double> e(m.matrix.rows);
             e[leaving] = 1;
             auto pi = factor.solve_transpose(e);
-            auto alpha = linalg::multiply_transpose(m.matrix, pi);
+            auto alpha = m.multiply_transpose(pi);
             double best_ratio = 0;
             const std::size_t entering =
                 select_entering_column(m, alpha, rc, is_basic, o, best_ratio);
@@ -164,9 +164,13 @@ Result solve_impl(const transform::CanonicalModel& m, const Options& o,
             } else {
                 out.telemetry_truncated = true;
             }
-            std::vector<double> entering_column(m.matrix.rows);
-            for (std::size_t i = 0; i < m.matrix.rows; ++i) {
-                entering_column[i] = m.matrix(i, entering);
+            // Column extraction walks only the CSC slice of the entering
+            // column (O(nnz of column)), not the full model validation a
+            // generic dense_column() helper would redo every pivot.
+            std::vector<double> entering_column(m.matrix.rows, 0.0);
+            for (std::size_t p = m.matrix.column_offsets[entering];
+                 p < m.matrix.column_offsets[entering + 1]; ++p) {
+                entering_column[m.matrix.row_indices[p]] = m.matrix.values[p];
             }
             if (o.pricing == PricingPolicy::steepest_edge) {
                 // Forrest-Goldfarb update recurrence: O(m) update
@@ -227,13 +231,18 @@ Result solve_impl(const transform::CanonicalModel& m, const Options& o,
     }
 }
 
-Result solve_verified(const transform::CanonicalModel& m, const Options& o,
+Result solve_verified(const transform::SparseCanonicalModel& m, const Options& o,
                       const std::optional<BasisState>& warm, FactorCache* cache) {
     return verify_accepted(m, o, solve_impl(m, o, warm, cache));
 }
 
-Result solve(const transform::CanonicalModel& m, const Options& o,
+Result solve(const transform::SparseCanonicalModel& m, const Options& o,
              const std::optional<BasisState>& warm) {
     return solve_verified(m, o, warm, nullptr);
+}
+
+Result solve(const transform::CanonicalModel& m, const Options& o,
+             const std::optional<BasisState>& warm) {
+    return solve(transform::sparse_from_dense(m), o, warm);
 }
 }

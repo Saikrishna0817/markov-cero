@@ -46,6 +46,14 @@ add_test(NAME milp_cuts COMMAND milp_cuts_test)
 add_test(NAME strong_branching COMMAND strong_branching_test)
 add_test(NAME pdlp COMMAND pdlp_test)
 add_test(NAME ipm COMMAND ipm_test)
+# LP-01: sparse-first differential over the frozen netlib set
+# (docs/contracts/sparse-lp-path.md §5). Several full solves per frozen
+# instance, so it carries its own timeout instead of the shared 60s group.
+add_test(NAME lp_sparse_differential COMMAND lp_sparse_differential_test)
+set_tests_properties(lp_sparse_differential PROPERTIES
+  TIMEOUT 180
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  ENVIRONMENT "MARKOV_CERO_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
 add_test(NAME parallel_tree_search COMMAND parallel_tree_search_test)
 add_test(NAME gpu_buffer COMMAND gpu_buffer_test)
 add_test(NAME equivalence COMMAND equivalence_test)

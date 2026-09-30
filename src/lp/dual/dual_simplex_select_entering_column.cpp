@@ -2,7 +2,7 @@
 namespace markov_cero::lp::dual {
 using namespace detail_dual_simplex;
 namespace detail_dual_simplex {
-std::size_t select_entering_column(const transform::CanonicalModel& m,
+std::size_t select_entering_column(const transform::SparseCanonicalModel& m,
                                    const std::vector<double>& alpha, const std::vector<double>& rc,
                                    const std::vector<bool>& is_basic, const Options& o,
                                    double& best_ratio) {
@@ -48,7 +48,7 @@ std::size_t select_entering_column(const transform::CanonicalModel& m,
 }
 
 namespace detail_dual_simplex {
-Result certified_optimal(const transform::CanonicalModel& m, const std::vector<std::size_t>& basis,
+Result certified_optimal(const transform::SparseCanonicalModel& m, const std::vector<std::size_t>& basis,
                          const std::vector<double>& xb, const std::vector<double>& y,
                          const Options& o) {
     Result out;
@@ -63,7 +63,7 @@ Result certified_optimal(const transform::CanonicalModel& m, const std::vector<s
     } catch (...) {
         // Degenerate optimal basis: keep the solve result, drop the warm start.
     }
-    auto check = verify::verify_reference_result(
+    auto check = verify::verify_sparse_result(
         m, out.solution, std::max(o.feasibility_tolerance, o.dual_tolerance));
     if (!check.accepted) {
         out.solution.status = reference::SolveStatus::numerical_failure;
@@ -77,14 +77,14 @@ Result certified_optimal(const transform::CanonicalModel& m, const std::vector<s
 }
 
 namespace detail_dual_simplex {
-Result certified_farkas(const transform::CanonicalModel& m, const std::vector<double>& pi,
+Result certified_farkas(const transform::SparseCanonicalModel& m, const std::vector<double>& pi,
                         const Options& o) {
     Result out;
     out.solution.status = reference::SolveStatus::infeasible;
     out.solution.certificate.resize(m.matrix.rows);
     for (std::size_t i = 0; i < m.matrix.rows; ++i) out.solution.certificate[i] = -pi[i];
     out.solution.message = "dual simplex Farkas certificate";
-    auto check = verify::verify_reference_result(
+    auto check = verify::verify_sparse_result(
         m, out.solution, std::max(o.feasibility_tolerance, o.dual_tolerance));
     if (!check.accepted) {
         out.solution.status = reference::SolveStatus::numerical_failure;
@@ -97,23 +97,42 @@ Result certified_farkas(const transform::CanonicalModel& m, const std::vector<do
 }
 }
 
-std::string fingerprint(const transform::CanonicalModel& m) {
+// Basis fingerprint, defined once over the sparse canonical content
+// (contract docs/contracts/sparse-lp-path.md §4): dimensions, the
+// column-major stream of (column, row, double bits) for every nonzero, and
+// the objective coefficients. Dense adapters convert through
+// transform::sparse_from_dense first, so both entries hash the same stream
+// for equivalent content. Fingerprints written by builds that hashed the
+// dense value array no longer match: the warm start is rejected as stale and
+// the solve falls back to a cold basis.
+std::string fingerprint(const transform::SparseCanonicalModel& m) {
     m.validate();
     std::uint64_t h = 1469598103934665603ULL;
     h = mix(h, m.matrix.rows);
     h = mix(h, m.matrix.columns);
-    for (double v : m.matrix.values) {
-        h = mix(h, std::bit_cast<std::uint64_t>(v));
+    for (std::size_t j = 0; j < m.matrix.columns; ++j) {
+        h = mix(h, j);
+        for (std::size_t p = m.matrix.column_offsets[j]; p < m.matrix.column_offsets[j + 1]; ++p) {
+            h = mix(h, m.matrix.row_indices[p]);
+            h = mix(h, std::bit_cast<std::uint64_t>(m.matrix.values[p]));
+        }
     }
     for (double v : m.objective) {
         h = mix(h, std::bit_cast<std::uint64_t>(v));
     }
     return hex(h);
 }
-BasisState make_basis_state(const transform::CanonicalModel& m, const std::vector<std::size_t>& b) {
+std::string fingerprint(const transform::CanonicalModel& m) {
+    return fingerprint(transform::sparse_from_dense(m));
+}
+BasisState make_basis_state(const transform::SparseCanonicalModel& m,
+                            const std::vector<std::size_t>& b) {
     BasisState s{m.matrix.rows, m.matrix.columns, fingerprint(m), b};
     validate_basis(m, s);
     return s;
+}
+BasisState make_basis_state(const transform::CanonicalModel& m, const std::vector<std::size_t>& b) {
+    return make_basis_state(transform::sparse_from_dense(m), b);
 }
 void validate_basis_artifact(const BasisState& s) {
     if (s.rows > maximum_rows || s.columns > maximum_columns || s.rows > s.columns ||
@@ -180,10 +199,10 @@ bool accepted_status(reference::SolveStatus status) {
 namespace detail_dual_simplex {
 // Verification gate shared by every accepting path (cold, warm and reused
 // factorization): an accepted result is only returned when it re-passes
-// verify::verify_reference_result, and `verified` records that fact for tests
+// verify::verify_sparse_result, and `verified` records that fact for tests
 // and callers. Results already checked inside certified_optimal/certified_farkas
 // are not checked twice.
-Result verify_accepted(const transform::CanonicalModel& m, const Options& o, Result out) {
+Result verify_accepted(const transform::SparseCanonicalModel& m, const Options& o, Result out) {
     if (!accepted_status(out.solution.status)) {
         out.verified = false;
         return out;
@@ -191,7 +210,7 @@ Result verify_accepted(const transform::CanonicalModel& m, const Options& o, Res
     if (out.verified) {
         return out;
     }
-    const auto check = verify::verify_reference_result(
+    const auto check = verify::verify_sparse_result(
         m, out.solution, std::max(o.feasibility_tolerance, o.dual_tolerance));
     out.verified = check.accepted;
     if (!check.accepted) {

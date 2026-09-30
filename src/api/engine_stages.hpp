@@ -5,7 +5,6 @@
 #include "markov_cero/transform/sparse_canonical_model.hpp"
 
 #include <cstddef>
-#include <limits>
 
 namespace markov_cero::api::detail {
 
@@ -18,17 +17,6 @@ inline std::size_t canonical_model_bytes(const transform::SparseCanonicalModel& 
     const std::size_t nonzeros = model.matrix.values.size();
     return nonzeros * (sizeof(double) + sizeof(std::size_t)) +
            model.matrix.column_offsets.size() * sizeof(std::size_t) +
-           (model.rhs.size() + model.objective.size()) * sizeof(double) + 4096U;
-}
-
-inline std::size_t dense_conversion_bytes(const transform::SparseCanonicalModel& model) {
-    const auto rows = model.matrix.rows;
-    const auto columns = model.matrix.columns;
-    if (columns > std::numeric_limits<std::size_t>::max() / sizeof(double) ||
-        (columns && rows > std::numeric_limits<std::size_t>::max() /
-                              (columns * sizeof(double))))
-        return std::numeric_limits<std::size_t>::max();
-    return rows * columns * sizeof(double) +
            (model.rhs.size() + model.objective.size()) * sizeof(double) + 4096U;
 }
 

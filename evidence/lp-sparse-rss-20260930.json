@@ -1,0 +1,388 @@
+{
+ "date": "2026-09-30",
+ "run_started": "2026-09-30T12:05:04+0530",
+ "purpose": "LP-01: peak-RSS / wall delta of the retired dense LP dispatch shape versus the sparse-first path (sparse-lp-path.md \u00a75).",
+ "method": "fork per (instance, path); VmHWM from /proc/self/status; reference simplex on both entry shapes; no speed or optimality claim.",
+ "contract": "docs/contracts/sparse-lp-path.md",
+ "frozen_set": "data/compare/netlib.txt",
+ "instances": [
+  {
+   "name": "afiro",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/afiro.mps",
+   "rows": 27,
+   "columns": 51,
+   "nonzeros": 102,
+   "dense_bytes": 11016,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 6.351,
+    "iterations": 51,
+    "vmhwm_kb": 3292
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 4.006,
+    "iterations": 51,
+    "vmhwm_kb": 3204
+   },
+   "vmhwm_delta_kb": 88
+  },
+  {
+   "name": "blend",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/blend.mps",
+   "rows": 74,
+   "columns": 114,
+   "nonzeros": 522,
+   "dense_bytes": 67488,
+   "retired_dense_path": {
+    "status": "NumericalFailure",
+    "wall_ms": 234.557,
+    "iterations": 301,
+    "vmhwm_kb": 3908
+   },
+   "sparse_path": {
+    "status": "NumericalFailure",
+    "wall_ms": 223.873,
+    "iterations": 301,
+    "vmhwm_kb": 3784
+   },
+   "vmhwm_delta_kb": 124
+  },
+  {
+   "name": "sc50a",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/sc50a.mps",
+   "rows": 50,
+   "columns": 78,
+   "nonzeros": 160,
+   "dense_bytes": 31200,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 8.281,
+    "iterations": 55,
+    "vmhwm_kb": 3316
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 8.172,
+    "iterations": 55,
+    "vmhwm_kb": 3260
+   },
+   "vmhwm_delta_kb": 56
+  },
+  {
+   "name": "sc50b",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/sc50b.mps",
+   "rows": 50,
+   "columns": 78,
+   "nonzeros": 148,
+   "dense_bytes": 31200,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 6.688,
+    "iterations": 50,
+    "vmhwm_kb": 3316
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 6.509,
+    "iterations": 50,
+    "vmhwm_kb": 3264
+   },
+   "vmhwm_delta_kb": 52
+  },
+  {
+   "name": "adlittle",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/adlittle.mps",
+   "rows": 56,
+   "columns": 138,
+   "nonzeros": 424,
+   "dense_bytes": 61824,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 153.725,
+    "iterations": 575,
+    "vmhwm_kb": 3452
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 144.535,
+    "iterations": 575,
+    "vmhwm_kb": 3348
+   },
+   "vmhwm_delta_kb": 104
+  },
+  {
+   "name": "share2b",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/share2b.mps",
+   "rows": 96,
+   "columns": 162,
+   "nonzeros": 777,
+   "dense_bytes": 124416,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 216.387,
+    "iterations": 445,
+    "vmhwm_kb": 3672
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 236.633,
+    "iterations": 445,
+    "vmhwm_kb": 3488
+   },
+   "vmhwm_delta_kb": 184
+  },
+  {
+   "name": "recipe",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/recipe.mps",
+   "rows": 160,
+   "columns": 247,
+   "nonzeros": 790,
+   "dense_bytes": 316160,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 107.215,
+    "iterations": 223,
+    "vmhwm_kb": 3532
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 118.22,
+    "iterations": 223,
+    "vmhwm_kb": 3452
+   },
+   "vmhwm_delta_kb": 80
+  },
+  {
+   "name": "sc105",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/sc105.mps",
+   "rows": 105,
+   "columns": 163,
+   "nonzeros": 340,
+   "dense_bytes": 136920,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 85.002,
+    "iterations": 250,
+    "vmhwm_kb": 3448
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 87.944,
+    "iterations": 250,
+    "vmhwm_kb": 3388
+   },
+   "vmhwm_delta_kb": 60
+  },
+  {
+   "name": "sc205",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/sc205.mps",
+   "rows": 205,
+   "columns": 317,
+   "nonzeros": 665,
+   "dense_bytes": 519880,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 1155.91,
+    "iterations": 1158,
+    "vmhwm_kb": 3976
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 1165.9,
+    "iterations": 1158,
+    "vmhwm_kb": 3620
+   },
+   "vmhwm_delta_kb": 356
+  },
+  {
+   "name": "kb2",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/kb2.mps",
+   "rows": 52,
+   "columns": 77,
+   "nonzeros": 331,
+   "dense_bytes": 32032,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 68.116,
+    "iterations": 248,
+    "vmhwm_kb": 3388
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 72.266,
+    "iterations": 248,
+    "vmhwm_kb": 3332
+   },
+   "vmhwm_delta_kb": 56
+  },
+  {
+   "name": "lotfi",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/lotfi.mps",
+   "rows": 153,
+   "columns": 366,
+   "nonzeros": 1136,
+   "dense_bytes": 447984,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 666.428,
+    "iterations": 834,
+    "vmhwm_kb": 3968
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 600.589,
+    "iterations": 834,
+    "vmhwm_kb": 3756
+   },
+   "vmhwm_delta_kb": 212
+  },
+  {
+   "name": "beaconfd",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/beaconfd.mps",
+   "rows": 173,
+   "columns": 295,
+   "nonzeros": 3408,
+   "dense_bytes": 408280,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 392.684,
+    "iterations": 518,
+    "vmhwm_kb": 4248
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 395.19,
+    "iterations": 518,
+    "vmhwm_kb": 4080
+   },
+   "vmhwm_delta_kb": 168
+  },
+  {
+   "name": "scsd1",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/scsd1.mps",
+   "rows": 77,
+   "columns": 760,
+   "nonzeros": 2388,
+   "dense_bytes": 468160,
+   "retired_dense_path": {
+    "status": "NumericalFailure",
+    "wall_ms": 30.515,
+    "iterations": 63,
+    "vmhwm_kb": 4264
+   },
+   "sparse_path": {
+    "status": "NumericalFailure",
+    "wall_ms": 28.845,
+    "iterations": 63,
+    "vmhwm_kb": 4088
+   },
+   "vmhwm_delta_kb": 176
+  },
+  {
+   "name": "scsd6",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/scsd6.mps",
+   "rows": 147,
+   "columns": 1350,
+   "nonzeros": 4316,
+   "dense_bytes": 1587600,
+   "retired_dense_path": {
+    "status": "NumericalFailure",
+    "wall_ms": 421.281,
+    "iterations": 0,
+    "vmhwm_kb": 5852
+   },
+   "sparse_path": {
+    "status": "NumericalFailure",
+    "wall_ms": 426.006,
+    "iterations": 0,
+    "vmhwm_kb": 4444
+   },
+   "vmhwm_delta_kb": 1408
+  },
+  {
+   "name": "share1b",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/share1b.mps",
+   "rows": 117,
+   "columns": 253,
+   "nonzeros": 1179,
+   "dense_bytes": 236808,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 765.239,
+    "iterations": 1004,
+    "vmhwm_kb": 3776
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 693.464,
+    "iterations": 1004,
+    "vmhwm_kb": 3668
+   },
+   "vmhwm_delta_kb": 108
+  },
+  {
+   "name": "scorpion",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/scorpion.mps",
+   "rows": 388,
+   "columns": 466,
+   "nonzeros": 1534,
+   "dense_bytes": 1446464,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 1277.37,
+    "iterations": 523,
+    "vmhwm_kb": 5256
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 1156.41,
+    "iterations": 523,
+    "vmhwm_kb": 4048
+   },
+   "vmhwm_delta_kb": 1208
+  },
+  {
+   "name": "scagr7",
+   "source": "/home/saikrishna/markov-initial-build/data/netlib/scagr7.mps",
+   "rows": 129,
+   "columns": 185,
+   "nonzeros": 465,
+   "dense_bytes": 190920,
+   "retired_dense_path": {
+    "status": "Optimal",
+    "wall_ms": 178.699,
+    "iterations": 426,
+    "vmhwm_kb": 3528
+   },
+   "sparse_path": {
+    "status": "Optimal",
+    "wall_ms": 168.445,
+    "iterations": 426,
+    "vmhwm_kb": 3448
+   },
+   "vmhwm_delta_kb": 80
+  },
+  {
+   "name": "synthetic_4096x8000",
+   "source": "synthetic",
+   "rows": 4096,
+   "columns": 12096,
+   "nonzeros": 16384,
+   "dense_bytes": 396361728,
+   "retired_dense_path": {
+    "status": "IterationLimit",
+    "wall_ms": 8891.04,
+    "iterations": 200,
+    "vmhwm_kb": 398492
+   },
+   "sparse_path": {
+    "status": "IterationLimit",
+    "wall_ms": 7263.17,
+    "iterations": 200,
+    "vmhwm_kb": 8192
+   },
+   "vmhwm_delta_kb": 390300
+  }
+ ]
+}

@@ -56,16 +56,14 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                 result.dual.assign(working_model.matrix.rows, 0.0);
                 result.objective = 0.0;
             } else {
-                transform::CanonicalModel canonical;
-                if (!charge_or_fail(ctx, dense_conversion_bytes(working_model),
-                                    "dense_convert", out, result)) return;
-                {
-                    core::StageScope stage(ctx, "dense_convert");
-                    canonical = working_model.to_dense();
+                // LP-01 named dimension envelope: an oversized model stays an
+                // escaped length_error → work_limit (sparse-lp-path.md §3),
+                // and no dense m×n canonical matrix is ever materialized.
+                if (working_model.matrix.rows > 4096 ||
+                    working_model.matrix.columns > 16384) {
+                    throw std::length_error("lp dimension limit exceeded "
+                                            "(rows<=4096, columns<=16384)");
                 }
-                if (stop_after_deadline(ctx, options, out, result,
-                                         "dense canonical model conversion"))
-                    return;
                 core::StageScope solve_stage(ctx, "solve");
                 if (out.resolved_engine == "ipm") {
                     lp::interior::Options ipm_opts;
@@ -102,9 +100,9 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                             basis_to_save = *ipm_res.basis_state;
                         }
                     } else {
-                        result = lp::reference::solve(canonical, options.lp_options);
+                        result = lp::reference::solve(working_model, options.lp_options);
                         if (result.status == lp::reference::SolveStatus::optimal &&
-                            result.basis.size() == canonical.matrix.rows) {
+                            result.basis.size() == working_model.matrix.rows) {
                             // Degenerate optimal bases (duplicate indices after
                             // the primal engine fixes variables at bounds) cannot
                             // seed a warm start; the dual engine's own contract is
@@ -113,7 +111,7 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                             // optimum behind a thrown exception.
                             try {
                                 basis_to_save =
-                                    lp::dual::make_basis_state(canonical, result.basis);
+                                    lp::dual::make_basis_state(working_model, result.basis);
                             } catch (const std::bad_alloc&) {
                                 throw;
                             } catch (const std::length_error&) {
@@ -146,20 +144,20 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                     }
                     lp::dual::Session local_session;
                     auto& session = options.repeated_lp_session ? *options.repeated_lp_session : local_session;
-                    const auto dual_res = warm_basis ? lp::dual::solve(canonical, dual_opts, warm_basis) : session.resolve(canonical, dual_opts);
+                    const auto dual_res = warm_basis ? lp::dual::solve(working_model, dual_opts, warm_basis) : session.resolve(working_model, dual_opts);
                     result = dual_res.solution;
                     basis_to_save = dual_res.basis_state;
                     out.used_warm_start = dual_res.used_warm_start;
                     out.used_cold_fallback = dual_res.used_cold_fallback;
                 } else {
-                    result = lp::reference::solve(canonical, options.lp_options);
+                    result = lp::reference::solve(working_model, options.lp_options);
                     if (result.status == lp::reference::SolveStatus::optimal &&
-                        result.basis.size() == canonical.matrix.rows) {
+                        result.basis.size() == working_model.matrix.rows) {
                         // Same degenerate-basis guard as the ipm-fallback path:
                         // a warm start is an optimization, never worth more than
                         // the verified optimum it would be attached to.
                         try {
-                            basis_to_save = lp::dual::make_basis_state(canonical, result.basis);
+                            basis_to_save = lp::dual::make_basis_state(working_model, result.basis);
                         } catch (const std::bad_alloc&) {
                             throw;
                         } catch (const std::length_error&) {

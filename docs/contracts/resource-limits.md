@@ -77,7 +77,7 @@ meaning do not change.
 - **Polling is cooperative, not preemption.** The shared context is checked at
   documented phase boundaries (`stop_after_deadline` in
   `src/api/api_internal.hpp`: parsing/dispatch, model hashing, classification,
-  canonicalization, presolve, scaling, dense conversion, LP solve, postsolve,
+  canonicalization, presolve, scaling, LP solve, postsolve,
   PDLP, QP, NLP/MINLP, MILP search and verification, parallel search and
   verification, MIP proof build and replay) plus a post-engine completion sweep
   around row-activity computation in `src/api/dispatch.cpp`, and inside a few
@@ -95,7 +95,7 @@ meaning do not change.
 - **`maximum_input_bytes` is not an RSS cap.** It bounds parser input before
   tokenization; it says nothing about resident memory.
 - **Charges are explicit estimates, not allocator telemetry.** Instrumented
-  charge points include the canonical working model, dense conversion, proof
+  charge points include the canonical working model, proof
   build, NodeView materialization, and frontier nodes — `sizeof(BranchNode)`
   per pushed node, the same estimate on the serial and parallel searches.
   `memory_charged_peak_bytes` reports the high-water mark of admitted
@@ -111,7 +111,7 @@ meaning do not change.
 | Test | Property |
 |---|---|
 | `tests/stop_reason_test.cpp` — input byte cap | parser cap → `resource_limit` + `input_limit` + `input_resource_limit` |
-| `tests/stop_reason_test.cpp` — dense dimension limit | escaped `std::length_error` → `resource_limit` + `work_limit` |
+| `tests/stop_reason_test.cpp` — LP dimension envelope | named pre-dispatch check throws `std::length_error` → `resource_limit` + `work_limit` |
 | `tests/stop_reason_test.cpp` — allocation sweep | mapped host OOM → `resource_limit` + `allocation_failure`; nothing escapes the API |
 | `tests/stop_reason_test.cpp` — expired deadline / memory budget | cooperative stops carry their exact reason |
 | `tests/stop_reason_test.cpp` — MILP node cap | serial node quota → `quota_exhausted` |

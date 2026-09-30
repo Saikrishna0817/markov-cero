@@ -2,6 +2,7 @@
 
 #include "markov_cero/lp/reference/revised_simplex.hpp"
 #include "markov_cero/linalg/sparse_basis.hpp"
+#include "markov_cero/transform/sparse_canonical_model.hpp"
 
 #include <cstddef>
 #include <chrono>
@@ -89,6 +90,10 @@ class Session {
     Session() = default;
     explicit Session(const Options& defaults) : defaults_(defaults) {}
 
+    Result resolve(const transform::SparseCanonicalModel& model, const Options& options);
+    Result resolve(const transform::SparseCanonicalModel& model) { return resolve(model, defaults_); }
+    // Dense adapter: converts through transform::sparse_from_dense and runs
+    // the identical sparse resolve (contract docs/contracts/sparse-lp-path.md).
     Result resolve(const transform::CanonicalModel& model, const Options& options);
     Result resolve(const transform::CanonicalModel& model) { return resolve(model, defaults_); }
 
@@ -119,11 +124,20 @@ class Session {
     bool last_verified_{false};
 };
 
+// Sparse primaries (contract docs/contracts/sparse-lp-path.md §1/§4).
+[[nodiscard]] std::string fingerprint(const transform::SparseCanonicalModel& model);
+[[nodiscard]] BasisState make_basis_state(const transform::SparseCanonicalModel& model,
+                                          const std::vector<std::size_t>& basic_variables);
+// Dense overloads are explicit adapters: convert once via
+// transform::sparse_from_dense, then run the sparse primary unchanged.
 [[nodiscard]] std::string fingerprint(const transform::CanonicalModel& model);
 [[nodiscard]] BasisState make_basis_state(const transform::CanonicalModel& model,
                                           const std::vector<std::size_t>& basic_variables);
 [[nodiscard]] std::string serialize_basis(const BasisState& basis);
 [[nodiscard]] BasisState parse_basis(const std::string& text);
+[[nodiscard]] Result solve(const transform::SparseCanonicalModel& model,
+                           const Options& options = {},
+                           const std::optional<BasisState>& warm_start = std::nullopt);
 [[nodiscard]] Result solve(const transform::CanonicalModel& model, const Options& options = {},
                            const std::optional<BasisState>& warm_start = std::nullopt);
 [[nodiscard]] Session make_session(const Options& defaults = {});

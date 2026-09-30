@@ -51,9 +51,10 @@ Model tiny_lp() {
     return model;
 }
 
-// More bounded rows than the dense canonicalization dimension cap (4096): the
-// dense conversion throws std::length_error, which the API boundary maps to
-// the work_limit stop (contract section 3, R3).
+// More rows than the LP-01 sparse-path dimension envelope (4096): the named
+// pre-dispatch check throws std::length_error, which the API boundary maps to
+// the work_limit stop (contracts resource-limits.md §3 R3 and
+// sparse-lp-path.md §3).
 Model bounded_rows_lp(std::size_t rows) {
     Model model;
     model.name = "STOP_REASON_WORK_LIMIT";

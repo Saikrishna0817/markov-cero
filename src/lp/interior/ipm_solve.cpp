@@ -216,10 +216,12 @@ Result solve(const transform::SparseCanonicalModel& model, const Options& option
                 dual_options.iteration_limit = std::max<std::size_t>(10000, options.iteration_limit * 50);
                 dual_options.deadline = options.deadline;
 
-                transform::CanonicalModel scaled_copy = sparse_working.to_dense();
+                // Sparse crossover (sparse-lp-path.md §1): the warm state and
+                // the dual solve run directly on the scaled CSC model; no
+                // dense scaled copy and no dense unscaled copy are built.
                 const auto warm_state =
-                    lp::dual::make_basis_state(scaled_copy, *candidate);
-                const auto dual_res = lp::dual::solve(scaled_copy, dual_options, warm_state);
+                    lp::dual::make_basis_state(sparse_working, *candidate);
+                const auto dual_res = lp::dual::solve(sparse_working, dual_options, warm_state);
                 if (dual_res.solution.status == lp::reference::SolveStatus::optimal &&
                     dual_res.solution.primal.size() == n) {
                     lp::reference::Result vertex_scaled;
@@ -243,9 +245,8 @@ Result solve(const transform::SparseCanonicalModel& model, const Options& option
                         out.condition_estimate = dual_res.solution.condition_estimate;
                     }
                     try {
-                        transform::CanonicalModel unscaled_dense = model.to_dense();
                         out.basis_state =
-                            lp::dual::make_basis_state(unscaled_dense, dual_res.solution.basis);
+                            lp::dual::make_basis_state(model, dual_res.solution.basis);
                     } catch (const std::exception&) {
                         out.basis_state.reset();
                     }

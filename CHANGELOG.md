@@ -2,6 +2,42 @@
 
 ## Unreleased
 
+### 2026-09-30 blueprint LP-01 — sparse-first LP path
+
+- Added the binding library contract
+  [`docs/contracts/sparse-lp-path.md`](docs/contracts/sparse-lp-path.md)
+  (v1): the sparse-first dispatch rule, the "no uncapped dense allocation"
+  rule, the 4096×16384 envelope with escaped `length_error` → `work_limit`,
+  one sparse-content fingerprint definition, and the dense/sparse
+  differential and benchmark obligations.
+- Retired the unconditional dense conversion from `engine_lp`: the LP
+  dispatch now runs a named pre-dispatch dimension check (same envelope,
+  same `work_limit` mapping, `stop_reason_test` unchanged in behavior) and
+  solves the sparse working model directly. `dense_conversion_bytes`, its
+  memory charge and its `dense_convert` stage are gone; the resource
+  contract §4/§5 wording was updated in the same change.
+- Made `lp::dual` sparse-primary: `Session::resolve`, `fingerprint`,
+  `make_basis_state` and `solve` take the sparse canonical model; the dense
+  overloads remain as explicit adapters through one shared
+  `transform::sparse_from_dense`. The reference, IPM and IPM-crossover
+  dense sites delegate through the same adapter, and IPM crossover now
+  runs directly on the scaled sparse model (no dense scaled copy, no dense
+  unscaled copy).
+- Added `tests/lp_sparse_differential_test.cpp` over the frozen netlib set:
+  statuses, objectives, both witness boundaries, cross-canonicalizer and
+  round-trip fingerprints, bidirectional warm-start interchange and
+  row-permutation invariance all agree between entries (98/98 CTest).
+- Measured the retired conversion with `scripts/bench_lp_rss.cpp`: forked
+  VmHWM per (instance, path), dense shape ≥ sparse on all 18 records; the
+  synthetic 4096×12096 case measured 398,492 KB vs 8,192 KB
+  (Δ 390,300 KB). Record:
+  [`evidence/lp-sparse-rss-20260930.json`](evidence/lp-sparse-rss-20260930.json).
+- Triaged `bore3d`/`scsd1`/`scsd6`/`blend`: their end-to-end
+  `NumericalFailure` reproduces with identical statuses and objectives on
+  the pre-LP-01 revision (clean stash rebuild), and the two LP entries
+  agree exactly on all four — a deferred pre-existing defect, not
+  introduced by this task.
+
 ### 2026-09-30 blueprint RES-01 — resource stop contract and measured envelope
 
 - Added the binding library contract

@@ -183,19 +183,9 @@ Result solve(const transform::SparseCanonicalModel& m, const Options& o) {
     return attempt;
 }
 Result solve(const transform::CanonicalModel& model, const Options& options) {
-    model.validate();
-    transform::SparseCanonicalModel sparse;
-    sparse.matrix.rows = model.matrix.rows; sparse.matrix.columns = model.matrix.columns;
-    sparse.matrix.column_offsets.push_back(0);
-    for (std::size_t j = 0; j < model.matrix.columns; ++j) {
-        for (std::size_t i = 0; i < model.matrix.rows; ++i) if (model.matrix(i, j) != 0) {
-            sparse.matrix.row_indices.push_back(i); sparse.matrix.values.push_back(model.matrix(i, j));
-        }
-        sparse.matrix.column_offsets.push_back(sparse.matrix.values.size());
-    }
-    sparse.rhs = model.rhs; sparse.objective = model.objective;
-    sparse.objective_offset = model.objective_offset; sparse.record = model.record;
-    return solve(sparse, options);
+    // Dense adapter (contract docs/contracts/sparse-lp-path.md §1): one shared
+    // conversion, then the identical sparse solve.
+    return solve(transform::sparse_from_dense(model), options);
 }
 const char* to_string(SolveStatus s) noexcept {
     switch (s) {
