@@ -2,6 +2,7 @@
 #include "markov_cero/milp/gap.hpp"
 #include "markov_cero/milp/milp_solver.hpp"
 
+#include "markov_cero/core/solve_context.hpp"
 #include "markov_cero/milp/branch_node.hpp"
 #include "markov_cero/milp/cuts.hpp"
 #include "markov_cero/milp/heuristics.hpp"

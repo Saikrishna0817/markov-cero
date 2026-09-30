@@ -64,6 +64,11 @@ void fill_complementarity_gap(NumericalDiagnostic&, const std::vector<double>&,
 /// after the resource-stop invariant has been applied. Engines never set it.
 std::string derive_assurance(const SolveResult& out);
 
+/// Result-boundary completion (src/api/finalize.cpp): fills diagnostics,
+/// applies the recorded resource stop (resource contract section 3) and
+/// derives `assurance` last, exactly once per solve.
+void finalize(SolveResult& out, core::SolveContext& ctx);
+
 /// Earliest solve-wide instant implied by the caller's options, measured from
 /// API entry: an already-set engine deadline, the LP wall-clock limit and the
 /// new solve-wide total limit all intersect here. The MILP duration limit is
@@ -98,10 +103,15 @@ inline bool stop_after_deadline(core::SolveContext& ctx, const SolveOptions& opt
     result.message = std::string("solve stopped after ") + phase + ": " +
                      core::to_string(reason);
     out.diagnostic.failure_site = reason == core::StopReason::memory_budget_exhausted
-                                      ? "memory_budget" : "api_wall_clock_deadline";
+                                      ? "memory_budget"
+                                  : reason == core::StopReason::deadline_exceeded
+                                      ? "api_wall_clock_deadline"
+                                      : "solve_stopped";
     out.diagnostic.suggested_recovery = reason == core::StopReason::memory_budget_exhausted
         ? "raise_memory_limit_bytes_or_reduce_the_model"
-        : "increase_time_limit_or_reduce_preprocessing_cost";
+        : reason == core::StopReason::deadline_exceeded
+              ? "increase_time_limit_or_reduce_preprocessing_cost"
+              : "inspect_stop_reason_and_engine_message";
     return true;
 }
 
@@ -139,8 +149,12 @@ inline core::SolveContext::Config solve_context_config(const SolveOptions& optio
 /// Allocation failure at the API boundary (W02, backlog item 3). Host OOM is
 /// a resource outcome, never a numerical failure and never an infeasible or
 /// optimal result, and it must not escape `solve_file`/`solve_model` as an
-/// exception the caller (CLI, Python, binding) has to survive.
-inline void fail_allocation(SolveResult& out, lp::reference::Result& result) {
+/// exception the caller (CLI, Python, binding) has to survive. The boundary
+/// stop (`R3`, contract section 3) is recorded on the shared context so the
+/// result explains itself.
+inline void fail_allocation(SolveResult& out, lp::reference::Result& result,
+                            core::SolveContext& ctx) {
+    (void)ctx.note_stop(core::StopReason::allocation_failure);
     result.status = lp::reference::SolveStatus::resource_limit;
     result.message = "allocation failed while preparing or running the solve";
     out.status = result.status;

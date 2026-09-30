@@ -13,6 +13,8 @@ set_tests_properties(resource_failure PROPERTIES TIMEOUT 120 WORKING_DIRECTORY $
 # Contract v1: tolerance boundaries and assurance labels.
 add_test(NAME numerical_policy_boundaries COMMAND numerical_policy_boundary_test)
 add_test(NAME assurance_labels COMMAND assurance_label_test)
+# Resource contract v1: stop-reason attribution and completeness.
+add_test(NAME stop_reason_boundary COMMAND stop_reason_test)
 add_test(NAME mps_parser COMMAND mps_parser_test)
 add_test(NAME lp_parser COMMAND lp_parser_test)
 # W5: Milestone 1 — numerical accuracy
@@ -28,6 +30,7 @@ add_test(NAME primal_simplex_properties COMMAND primal_simplex_property_test)
 add_test(NAME dual_simplex COMMAND dual_simplex_test)
 add_test(NAME warm_start_properties COMMAND warm_start_property_test)
 add_test(NAME sparse_basis COMMAND sparse_basis_test)
+add_test(NAME sparse_fill_limit COMMAND sparse_fill_limit_test)
 add_test(NAME sparse_lu_deadline COMMAND sparse_lu_deadline_test)
 add_test(NAME sparse_update_properties COMMAND sparse_update_property_test)
 add_test(NAME audit_regressions COMMAND regression_test)
@@ -99,24 +102,28 @@ add_test(NAME e2e_tier3_m1_combinations COMMAND e2e_tier3_m1_combinations)
 add_test(NAME e2e_tier4_m1_scenarios COMMAND e2e_tier4_m1_scenarios)
 add_test(NAME e2e_runner_harness
   COMMAND ${CMAKE_COMMAND} -E env python3 ${CMAKE_SOURCE_DIR}/scripts/run_e2e_tests.py --build-dir ${CMAKE_BINARY_DIR} --json ${CMAKE_BINARY_DIR}/reports/e2e_report.json)
+add_test(NAME hosted_os_limits
+  COMMAND ${CMAKE_COMMAND} -E env python3
+    ${CMAKE_SOURCE_DIR}/web/backend/os_limits_test.py
+    $<TARGET_FILE:markov-cero-solve>)
 set_tests_properties(
   build_info model_verifier mps_parser lp_parser mps_fuzz_smoke model_properties
   classifier nlp_sqp nlp_rosenbrock nlp_constrained minlp_basic nlobj_parser
   dense_lu primal_simplex primal_simplex_properties dual_simplex
-  warm_start_properties sparse_basis sparse_update_properties audit_regressions
+  warm_start_properties sparse_basis sparse_fill_limit sparse_update_properties audit_regressions
   sparse_canonicalize presolve ruiz_scaling milp milp_heuristics milp_cuts
   strong_branching pdlp parallel_tree_search gpu_buffer equivalence gpu_reduction
   gpu_pdhg_step gpu_pdhg_restart gpu_pdhg_adaptive gpu_pdhg_kkt gpu_pdhg_timing
   gpu_admm gpu_fallback gpu_qp
   qp json_records sovereignty_guard
   ipm_large pdlp_crossover qp_adaptive_rho numerical_diagnostic
-  e2e_tier1_m1_features e2e_tier2_m1_boundaries e2e_tier3_m1_combinations e2e_tier4_m1_scenarios e2e_runner_harness
+  e2e_tier1_m1_features e2e_tier2_m1_boundaries e2e_tier3_m1_combinations e2e_tier4_m1_scenarios e2e_runner_harness hosted_os_limits
   cli_blend_optimal cli_refinery_feasible cli_refinery_infeasible
   cli_refinery_malformed cli_refinery_limited
   cli_case_crude_oil cli_case_multiperiod cli_case_supply_chain
   api_demo
   api_test
-  numerical_policy_boundaries assurance_labels
+  numerical_policy_boundaries assurance_labels stop_reason_boundary
   PROPERTIES
     TIMEOUT 60
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}

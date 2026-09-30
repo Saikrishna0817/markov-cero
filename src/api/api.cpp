@@ -58,7 +58,8 @@ void sync_engine_result(SolveResult& out, const lp::reference::Result& result) {
 
 
 template <class Body>
-void guarded(SolveResult& out, lp::reference::Result& result, Body&& body) {
+void guarded(SolveResult& out, lp::reference::Result& result, core::SolveContext& ctx,
+             Body&& body) {
     try {
         body();
     } catch (const io::MpsError& e) {
@@ -68,12 +69,17 @@ void guarded(SolveResult& out, lp::reference::Result& result, Body&& body) {
         out.diagnostic.failure_site = "mps_parser";
         out.diagnostic.suggested_recovery = "correct_mps_syntax_at_indicated_record";
     } catch (const io::MpsResourceLimitError& e) {
+        // R3: the configured input cap rejected the model before any solve
+        // work ran; attribute it to the boundary stop, not to a cooperative
+        // context stop the solve never reached.
+        (void)ctx.note_stop(core::StopReason::input_limit);
         result.status = lp::reference::SolveStatus::resource_limit;
         result.message = e.what();
         out.error = e.what();
         out.diagnostic.failure_site = "input_resource_limit";
         out.diagnostic.suggested_recovery = "reduce_file_or_configured_parser_limits";
     } catch (const io::LpResourceLimitError& e) {
+        (void)ctx.note_stop(core::StopReason::input_limit);
         result.status = lp::reference::SolveStatus::resource_limit;
         result.message = e.what();
         out.error = e.what();
@@ -86,6 +92,9 @@ void guarded(SolveResult& out, lp::reference::Result& result, Body&& body) {
         out.diagnostic.failure_site = "input_validation";
         out.diagnostic.suggested_recovery = "verify_model_dimensions_and_bounds";
     } catch (const std::length_error& e) {
+        // R3: a dimension/factor/fill limit escaped an engine; this is a work
+        // limit, never a numerical result.
+        (void)ctx.note_stop(core::StopReason::work_limit);
         result.status = lp::reference::SolveStatus::resource_limit;
         result.message = e.what();
         out.error = e.what();
@@ -93,7 +102,7 @@ void guarded(SolveResult& out, lp::reference::Result& result, Body&& body) {
         out.diagnostic.suggested_recovery = "increase_maximum_factor_nonzeros";
     } catch (const std::bad_alloc&) {
         // Host allocation failure is a resource outcome, not a numerical one.
-        fail_allocation(out, result);
+        fail_allocation(out, result, ctx);
     } catch (const std::exception& e) {
         result.status = lp::reference::SolveStatus::numerical_failure;
         result.message = e.what();
@@ -102,63 +111,6 @@ void guarded(SolveResult& out, lp::reference::Result& result, Body&& body) {
         out.diagnostic.suggested_recovery = "inspect_runtime_error_message";
     }
     sync_engine_result(out, result);
-}
-
-/// Reports the shared cooperative stop on the result, and enforces the W02
-/// invariant that a resource stop never accompanies an unverified optimal,
-/// infeasible or unbounded claim.
-void apply_resource_stop(SolveResult& out, core::SolveContext& ctx) {
-    const core::StopReason reason = ctx.stop_reason();
-    if (reason == core::StopReason::none) return;
-    out.stop_reason = core::to_string(reason);
-    if (reason == core::StopReason::memory_budget_exhausted) {
-        out.diagnostic.failure_site = "memory_budget";
-        out.diagnostic.suggested_recovery = "raise_memory_limit_bytes_or_reduce_the_model";
-    }
-    const bool unclaimed_success =
-        out.status == lp::reference::SolveStatus::optimal ||
-        out.status == lp::reference::SolveStatus::infeasible ||
-        out.status == lp::reference::SolveStatus::unbounded;
-    if (!unclaimed_success && reason != core::StopReason::memory_budget_exhausted) return;
-    out.status = lp::reference::SolveStatus::resource_limit;
-    out.message = "solve stopped (" + out.stop_reason +
-                  ") before the result could be verified";
-    out.error = out.message;
-    out.verified = false;
-}
-
-void finalize(SolveResult& out, core::SolveContext& ctx) {
-    out.verified =
-        (out.status == lp::reference::SolveStatus::optimal && out.original_verified &&
-         out.canonical_verified) ||
-        ((out.status == lp::reference::SolveStatus::infeasible ||
-          out.status == lp::reference::SolveStatus::unbounded) &&
-         out.canonical_verified);
-
-    // Eliminate silent failures: guarantee valid diagnostic state
-    if (out.diagnostic.failure_site.empty()) {
-        if (out.status == lp::reference::SolveStatus::optimal) {
-            out.diagnostic.failure_site = "none";
-            out.diagnostic.suggested_recovery = "none";
-        } else {
-            out.diagnostic.failure_site = out.resolved_engine + "_solve";
-            out.diagnostic.suggested_recovery = "inspect_engine_numerics_and_parameters";
-        }
-    }
-    if (out.diagnostic.primal_residual == 0.0) {
-        out.diagnostic.primal_residual = std::max(out.canonical_report.maximum_primal_violation,
-                                                 out.primal_report.maximum_row_violation);
-    }
-    if (out.diagnostic.dual_residual == 0.0) {
-        out.diagnostic.dual_residual = out.canonical_report.maximum_dual_violation;
-    }
-    // condition_estimate is engine-populated: 0.0 here means the resolved
-    // engine performed no factorization (matrix-free PDLP / SQP), which is
-    // reported as-is rather than replaced by a fake "perfectly conditioned".
-    apply_resource_stop(out, ctx);
-    // Derived last so the label reflects the post-stop status and flags: a
-    // resource stop downgrades the status before the label is computed.
-    out.assurance = derive_assurance(out);
 }
 
 
@@ -205,7 +157,7 @@ SolveResult solve_file(const std::string& path, const SolveOptions& options) {
             out.runtime_ms = elapsed_ms(started);
             return out;
         }
-        guarded(out, result, [&] {
+        guarded(out, result, ctx, [&] {
             const bool is_lp = (path.size() >= 3 &&
                 (path.rfind(".lp") == path.size() - 3 || path.rfind(".LP") == path.size() - 3));
             // R12 (thousands-to-millions of nonzeros): the default 16 MB parser
@@ -226,7 +178,7 @@ SolveResult solve_file(const std::string& path, const SolveOptions& options) {
     } catch (const std::bad_alloc&) {
         // Nothing from the API boundary may escape as std::bad_alloc: report
         // the resource outcome instead (W02 allocation-failure harness).
-        fail_allocation(out, result);
+        fail_allocation(out, result, ctx);
         finalize(out, ctx);
     } catch (const std::exception& error) {
         result.status = lp::reference::SolveStatus::resource_limit;
@@ -262,10 +214,10 @@ SolveResult solve_model(const model::Model& model, const SolveOptions& options) 
     try {
         const auto timed_options = with_api_deadline(options, started);
         out.resolved_engine = options.engine;
-        guarded(out, result, [&] { run_engine(model, timed_options, out, result, ctx); });
+        guarded(out, result, ctx, [&] { run_engine(model, timed_options, out, result, ctx); });
         finalize(out, ctx);
     } catch (const std::bad_alloc&) {
-        fail_allocation(out, result);
+        fail_allocation(out, result, ctx);
         finalize(out, ctx);
     } catch (const std::exception& error) {
         result.status = lp::reference::SolveStatus::resource_limit;

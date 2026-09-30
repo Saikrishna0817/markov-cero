@@ -7,6 +7,10 @@ void run_milp(const model::Model& model, const SolveOptions& options, SolveResul
         if (options.lp_options.deadline && (!milp_options.deadline ||
             *options.lp_options.deadline < *milp_options.deadline))
             milp_options.deadline = options.lp_options.deadline;
+        // RES-01: the serial search polls the shared context at its phase and
+        // node boundaries (resource contract section 4).
+        milp_options.context = &ctx;
+        const auto search_started = Clock::now();
         const auto milp_res = [&] {
             core::StageScope stage(ctx, "search");
             auto solved = milp::solve(model, milp_options);
@@ -36,6 +40,24 @@ void run_milp(const model::Model& model, const SolveOptions& options, SolveResul
             milp_res.ml_telemetry.maximum_candidate_count;
         out.ml_fallback_reason = milp_res.ml_fallback_reason;
         if (stop_after_deadline(ctx, options, out, result, "MILP search")) return;
+        // R3 (contract section 3): the serial search runs engine-locally and
+        // reports its own stops, so attribute them once the shared context is
+        // back at the API layer. The node quota is definitive (the loop exits
+        // on that condition); the engine-local time limit is the loop's own
+        // deadline derived from the same option. Anything else (queued-node
+        // capacity, uncertified node LPs) stays with the honest fallback in
+        // apply_resource_stop rather than a guessed reason.
+        if (result.status == lp::reference::SolveStatus::resource_limit &&
+            ctx.stop_reason() == core::StopReason::none) {
+            if (milp_res.nodes_explored >= milp_options.max_nodes) {
+                (void)ctx.note_stop(core::StopReason::quota_exhausted);
+            } else if (std::isfinite(options.milp_options.time_limit_seconds) &&
+                       options.milp_options.time_limit_seconds > 0.0 &&
+                       std::chrono::duration<double>(Clock::now() - search_started).count() >=
+                           options.milp_options.time_limit_seconds) {
+                (void)ctx.note_stop(core::StopReason::deadline_exceeded);
+            }
+        }
 
         out.certificate_type = "none";
         {

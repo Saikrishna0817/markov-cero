@@ -95,11 +95,20 @@ struct SolveResult {
     // triggered a failed dual-simplex crossover). Empty otherwise.
     std::string convergence_note;
 
-    // W02/IR-20: first cooperative stop recorded by the solve-wide
-    // SolveContext (deadline, cancellation, memory budget, quota). Empty when
-    // nothing stopped the solve; it never appears next to an unverified
-    // optimal/infeasible/unbounded status.
+    // W02/IR-20 + resource contract (docs/contracts/resource-limits.md): the
+    // first recorded resource stop for this solve — a cooperative context
+    // stop (deadline, cancellation, memory budget, quota) or an API-boundary
+    // stop (input_limit, work_limit, allocation_failure). Non-empty on every
+    // `resource_limit` result (unattributable engine-internal stops report
+    // `unspecified_resource_limit`); empty when nothing stopped the solve; it
+    // never appears next to an unverified optimal/infeasible/unbounded status.
     std::string stop_reason;
+
+    // IR-21 peak diagnostic (resource contract section 2): high-water mark of
+    // solver-owned bytes admitted by the solve-wide MemoryBudget; 0 when no
+    // charge ran. Instrumented charges only — never an RSS measurement
+    // (contract section 4).
+    std::size_t memory_charged_peak_bytes = 0;
 
     // D-16: how often the ADMM penalty rho changed (each change triggers one
     // KKT re-factorization). 0 for every non-QP engine.

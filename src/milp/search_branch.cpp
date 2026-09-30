@@ -149,6 +149,12 @@ bool Search::branch() {
             down_valid = false;
         }
         if (down_valid) {
+            // RES-01: charge the shared budget before allocating a queue node
+            // (mirrors the parallel worker's per-push charge).
+            if (options.context && !options.context->charge_or_stop(sizeof(BranchNode))) {
+                stop_reason = "memory budget refused a node allocation";
+                return false;
+            }
             auto down_child = std::make_shared<BranchNode>();
             down_child->id = next_node_id++;
             down_child->parent_id = node->id;
@@ -172,6 +178,10 @@ bool Search::branch() {
             up_valid = false;
         }
         if (up_valid) {
+            if (options.context && !options.context->charge_or_stop(sizeof(BranchNode))) {
+                stop_reason = "memory budget refused a node allocation";
+                return false;
+            }
             auto up_child = std::make_shared<BranchNode>();
             up_child->id = next_node_id++;
             up_child->parent_id = node->id;

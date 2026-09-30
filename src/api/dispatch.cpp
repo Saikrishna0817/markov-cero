@@ -46,6 +46,10 @@ void run_engine(const model::Model& model, const SolveOptions& input_options, So
     // caller-owned and outside any solver memory budget), so the boundary
     // hashes it without copying; engines migrate to ModelSnapshot next.
     out.model_fingerprint = model::hash_model(model).fingerprint();
+    // RES-01: fingerprinting is O(nnz) with no internal deadline; observe the
+    // shared context as soon as it finishes so an expired solve-wide deadline
+    // is recorded at a documented boundary instead of after the engine.
+    if (stop_after_deadline(ctx, options, out, result, "model fingerprinting")) return;
 
     // W6: classify every model with the locked decision tree and record the
     // outcome in the result telemetry. Auto dispatch now flows through the
@@ -60,6 +64,7 @@ void run_engine(const model::Model& model, const SolveOptions& input_options, So
     const auto stats = model::classify_stats(model);
     out.problem_class = model::to_string(classification.problem_class);
     out.classification_reason = classification.reason;
+    if (stop_after_deadline(ctx, options, out, result, "model classification")) return;
 
     if (out.resolved_engine == "auto") {
         out.resolved_engine = model::select_engine(
@@ -115,13 +120,22 @@ void run_engine(const model::Model& model, const SolveOptions& input_options, So
     else if (out.resolved_engine == "milp" || out.resolved_engine == "miqp")
         run_milp(model, options, out, result, ctx);
     else run_lp(model, options, out, result, ctx);
-    if (ctx.deadline().expired()) {
-        (void)ctx.note_stop(core::StopReason::deadline_exceeded);
-        result.status = lp::reference::SolveStatus::resource_limit;
-        result.message = "solve-wide deadline reached before completion";
-        out.original_verified = false;
-        out.canonical_verified = false;
-    }
+    // RES-01 (resource contract section 4): observe the shared context across
+    // the engine phase so a deadline that expires here — or a cancel/memory
+    // stop recorded anywhere in the pipeline — is attached to this result.
+    // An engine that already reported the stop itself keeps its specific
+    // message; only the sweep's own attribution may overwrite the result.
+    const auto sweep = [&] {
+        const bool engine_reported_stop =
+            ctx.stop_reason() != core::StopReason::none &&
+            result.status == lp::reference::SolveStatus::resource_limit;
+        if (!engine_reported_stop &&
+            stop_after_deadline(ctx, options, out, result, "post-engine completion")) {
+            out.original_verified = false;
+            out.canonical_verified = false;
+        }
+    };
+    sweep();
     if (out.original_primal.size() == model.matrix.column_count) {
         out.row_activities = model.matrix.multiply(out.original_primal);
         for (std::size_t i = 0; i < out.row_activities.size(); ++i) {
@@ -131,6 +145,7 @@ void run_engine(const model::Model& model, const SolveOptions& input_options, So
                 ? model.row_upper[i].value - out.row_activities[i] : std::numeric_limits<double>::quiet_NaN());
         }
     }
+    sweep();
 }
 
 } // namespace markov_cero::api::detail

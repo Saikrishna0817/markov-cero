@@ -1,0 +1,537 @@
+{
+ "date": "2026-09-30",
+ "run_started": "2026-09-30T08:46:47+0530",
+ "purpose": "RES-01 slice D: measured wall-overrun / peak-RSS envelope and empirical cooperative polling bound (blueprint steps 3 and benchmark requirement).",
+ "commands": {
+  "benchmark": ".venv/bin/python scripts/bench_resource_envelope.py --cli /tmp/opencode/markov-base01-build/markov-cero-solve --out <out.json>",
+  "contract": "docs/contracts/resource-limits.md"
+ },
+ "environment": {
+  "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+  "python": "3.14.7",
+  "cli": "/tmp/opencode/markov-base01-build/markov-cero-solve"
+ },
+ "distributions": {
+  "blend_deadline_1us": {
+   "model": "examples/blend.mps",
+   "args": [
+    "--time-limit",
+    "0.000001"
+   ],
+   "limit_seconds": 1e-06,
+   "statuses": [
+    "ResourceLimit"
+   ],
+   "stop_reasons": [
+    "deadline_exceeded"
+   ],
+   "runtime_seconds": {
+    "min": 5.8e-05,
+    "max": 8.7e-05,
+    "mean": 7.7e-05,
+    "median": 8.5e-05,
+    "n": 3
+   },
+   "wall_seconds": {
+    "min": 0.0013,
+    "max": 0.0021,
+    "mean": 0.0018,
+    "median": 0.002,
+    "n": 3
+   },
+   "overrun_seconds": {
+    "min": 5.7e-05,
+    "max": 8.6e-05,
+    "mean": 7.6e-05,
+    "median": 8.4e-05,
+    "n": 3
+   },
+   "rss_kib": {
+    "min": 17060,
+    "max": 17132,
+    "mean": 17093.333333,
+    "median": 17088,
+    "n": 3
+   },
+   "memory_charged_peak_bytes": {
+    "min": 0,
+    "max": 0,
+    "mean": 0.0,
+    "median": 0,
+    "n": 3
+   },
+   "returncodes": [
+    5
+   ]
+  },
+  "large_deadline_250ms": {
+   "model": "data/cases/process_network_large.mps",
+   "args": [
+    "--time-limit",
+    "0.25"
+   ],
+   "limit_seconds": 0.25,
+   "statuses": [
+    "ResourceLimit"
+   ],
+   "stop_reasons": [
+    "deadline_exceeded"
+   ],
+   "runtime_seconds": {
+    "min": 0.251094,
+    "max": 0.251334,
+    "mean": 0.251214,
+    "median": 0.251334,
+    "n": 2
+   },
+   "wall_seconds": {
+    "min": 0.2533,
+    "max": 0.2534,
+    "mean": 0.25335,
+    "median": 0.2534,
+    "n": 2
+   },
+   "overrun_seconds": {
+    "min": 0.001094,
+    "max": 0.001334,
+    "mean": 0.001214,
+    "median": 0.001334,
+    "n": 2
+   },
+   "rss_kib": {
+    "min": 16792,
+    "max": 17084,
+    "mean": 16938.0,
+    "median": 17084,
+    "n": 2
+   },
+   "memory_charged_peak_bytes": {
+    "min": 0,
+    "max": 0,
+    "mean": 0.0,
+    "median": 0,
+    "n": 2
+   },
+   "returncodes": [
+    5
+   ]
+  },
+  "large_deadline_1s": {
+   "model": "data/cases/process_network_large.mps",
+   "args": [
+    "--time-limit",
+    "1"
+   ],
+   "limit_seconds": 1.0,
+   "statuses": [
+    "ResourceLimit"
+   ],
+   "stop_reasons": [
+    "deadline_exceeded"
+   ],
+   "runtime_seconds": {
+    "min": 1.001522,
+    "max": 1.002286,
+    "mean": 1.001871,
+    "median": 1.001686,
+    "n": 5
+   },
+   "wall_seconds": {
+    "min": 1.004,
+    "max": 1.0053,
+    "mean": 1.00458,
+    "median": 1.0045,
+    "n": 5
+   },
+   "overrun_seconds": {
+    "min": 0.001522,
+    "max": 0.002286,
+    "mean": 0.001871,
+    "median": 0.001686,
+    "n": 5
+   },
+   "rss_kib": {
+    "min": 17000,
+    "max": 17184,
+    "mean": 17077.6,
+    "median": 17048,
+    "n": 5
+   },
+   "memory_charged_peak_bytes": {
+    "min": 88448,
+    "max": 88448,
+    "mean": 88448.0,
+    "median": 88448,
+    "n": 5
+   },
+   "returncodes": [
+    5
+   ]
+  },
+  "large_memory_64k": {
+   "model": "data/cases/process_network_large.mps",
+   "args": [
+    "--memory-limit-bytes",
+    "65536"
+   ],
+   "limit_seconds": null,
+   "statuses": [
+    "ResourceLimit"
+   ],
+   "stop_reasons": [
+    "memory_budget_exhausted"
+   ],
+   "runtime_seconds": {
+    "min": 0.543542,
+    "max": 0.553624,
+    "mean": 0.548583,
+    "median": 0.553624,
+    "n": 2
+   },
+   "wall_seconds": {
+    "min": 0.546,
+    "max": 0.5559,
+    "mean": 0.55095,
+    "median": 0.5559,
+    "n": 2
+   },
+   "overrun_seconds": {},
+   "rss_kib": {
+    "min": 17020,
+    "max": 17196,
+    "mean": 17108.0,
+    "median": 17196,
+    "n": 2
+   },
+   "memory_charged_peak_bytes": {
+    "min": 0,
+    "max": 0,
+    "mean": 0.0,
+    "median": 0,
+    "n": 2
+   },
+   "returncodes": [
+    5
+   ]
+  },
+  "blend_baseline": {
+   "model": "examples/blend.mps",
+   "args": [],
+   "limit_seconds": null,
+   "statuses": [
+    "Optimal"
+   ],
+   "stop_reasons": [
+    ""
+   ],
+   "runtime_seconds": {
+    "min": 0.000188,
+    "max": 0.000269,
+    "mean": 0.000229,
+    "median": 0.000269,
+    "n": 2
+   },
+   "wall_seconds": {
+    "min": 0.002,
+    "max": 0.0023,
+    "mean": 0.00215,
+    "median": 0.0023,
+    "n": 2
+   },
+   "overrun_seconds": {},
+   "rss_kib": {
+    "min": 17064,
+    "max": 17100,
+    "mean": 17082.0,
+    "median": 17100,
+    "n": 2
+   },
+   "memory_charged_peak_bytes": {
+    "min": 8432,
+    "max": 8432,
+    "mean": 8432.0,
+    "median": 8432,
+    "n": 2
+   },
+   "returncodes": [
+    0
+   ]
+  },
+  "large_baseline": {
+   "model": "data/cases/process_network_large.mps",
+   "args": [],
+   "limit_seconds": null,
+   "statuses": [
+    "Optimal"
+   ],
+   "stop_reasons": [
+    ""
+   ],
+   "runtime_seconds": {
+    "min": 1.063813,
+    "max": 1.063813,
+    "mean": 1.063813,
+    "median": 1.063813,
+    "n": 1
+   },
+   "wall_seconds": {
+    "min": 1.0665,
+    "max": 1.0665,
+    "mean": 1.0665,
+    "median": 1.0665,
+    "n": 1
+   },
+   "overrun_seconds": {},
+   "rss_kib": {
+    "min": 17020,
+    "max": 17020,
+    "mean": 17020.0,
+    "median": 17020,
+    "n": 1
+   },
+   "memory_charged_peak_bytes": {
+    "min": 88448,
+    "max": 88448,
+    "mean": 88448.0,
+    "median": 88448,
+    "n": 1
+   },
+   "returncodes": [
+    0
+   ]
+  }
+ },
+ "trials": [
+  {
+   "model": "examples/blend.mps",
+   "args": [
+    "--time-limit",
+    "0.000001"
+   ],
+   "returncode": 5,
+   "wall_seconds": 0.002,
+   "rss_kib": 17060,
+   "status": "ResourceLimit",
+   "stop_reason": "deadline_exceeded",
+   "runtime_ms": 0.084746,
+   "memory_charged_peak_bytes": 0,
+   "stderr_tail": "markov-cero 0.5.2 ResourceLimit [LP -> auto] NOT VERIFIED\n"
+  },
+  {
+   "model": "examples/blend.mps",
+   "args": [
+    "--time-limit",
+    "0.000001"
+   ],
+   "returncode": 5,
+   "wall_seconds": 0.0021,
+   "rss_kib": 17088,
+   "status": "ResourceLimit",
+   "stop_reason": "deadline_exceeded",
+   "runtime_ms": 0.086646,
+   "memory_charged_peak_bytes": 0,
+   "stderr_tail": "markov-cero 0.5.2 ResourceLimit [LP -> auto] NOT VERIFIED\n"
+  },
+  {
+   "model": "examples/blend.mps",
+   "args": [
+    "--time-limit",
+    "0.000001"
+   ],
+   "returncode": 5,
+   "wall_seconds": 0.0013,
+   "rss_kib": 17132,
+   "status": "ResourceLimit",
+   "stop_reason": "deadline_exceeded",
+   "runtime_ms": 0.058117,
+   "memory_charged_peak_bytes": 0,
+   "stderr_tail": "markov-cero 0.5.2 ResourceLimit [LP -> auto] NOT VERIFIED\n"
+  },
+  {
+   "model": "data/cases/process_network_large.mps",
+   "args": [
+    "--time-limit",
+    "0.25"
+   ],
+   "returncode": 5,
+   "wall_seconds": 0.2533,
+   "rss_kib": 17084,
+   "status": "ResourceLimit",
+   "stop_reason": "deadline_exceeded",
+   "runtime_ms": 251.333616,
+   "memory_charged_peak_bytes": 0,
+   "stderr_tail": "markov-cero 0.5.2 ResourceLimit [MILP -> milp] NOT VERIFIED\nproof: tier=unverified status=not_requested budget_exhausted=false nodes=0 witness_values=0 build_ms=0 replay_ms=0\n"
+  },
+  {
+   "model": "data/cases/process_network_large.mps",
+   "args": [
+    "--time-limit",
+    "0.25"
+   ],
+   "returncode": 5,
+   "wall_seconds": 0.2534,
+   "rss_kib": 16792,
+   "status": "ResourceLimit",
+   "stop_reason": "deadline_exceeded",
+   "runtime_ms": 251.093629,
+   "memory_charged_peak_bytes": 0,
+   "stderr_tail": "markov-cero 0.5.2 ResourceLimit [MILP -> milp] NOT VERIFIED\nproof: tier=unverified status=not_requested budget_exhausted=false nodes=0 witness_values=0 build_ms=0 replay_ms=0\n"
+  },
+  {
+   "model": "data/cases/process_network_large.mps",
+   "args": [
+    "--time-limit",
+    "1"
+   ],
+   "returncode": 5,
+   "wall_seconds": 1.0042,
+   "rss_kib": 17048,
+   "status": "ResourceLimit",
+   "stop_reason": "deadline_exceeded",
+   "runtime_ms": 1001.521874,
+   "memory_charged_peak_bytes": 88448,
+   "stderr_tail": "markov-cero 0.5.2 ResourceLimit [MILP -> milp] NOT VERIFIED\nproof: tier=unverified status=exhausted budget_exhausted=true nodes=1 witness_values=0 build_ms=458.332178 replay_ms=0.178732\n"
+  },
+  {
+   "model": "data/cases/process_network_large.mps",
+   "args": [
+    "--time-limit",
+    "1"
+   ],
+   "returncode": 5,
+   "wall_seconds": 1.004,
+   "rss_kib": 17000,
+   "status": "ResourceLimit",
+   "stop_reason": "deadline_exceeded",
+   "runtime_ms": 1001.590118,
+   "memory_charged_peak_bytes": 88448,
+   "stderr_tail": "v-cero 0.5.2 ResourceLimit [MILP -> milp] NOT VERIFIED\nproof: tier=unverified status=exhausted budget_exhausted=true nodes=1 witness_values=0 build_ms=479.59422499999999 replay_ms=0.17913699999999999\n"
+  },
+  {
+   "model": "data/cases/process_network_large.mps",
+   "args": [
+    "--time-limit",
+    "1"
+   ],
+   "returncode": 5,
+   "wall_seconds": 1.0049,
+   "rss_kib": 17020,
+   "status": "ResourceLimit",
+   "stop_reason": "deadline_exceeded",
+   "runtime_ms": 1002.285647,
+   "memory_charged_peak_bytes": 88448,
+   "stderr_tail": "markov-cero 0.5.2 ResourceLimit [MILP -> milp] NOT VERIFIED\nproof: tier=unverified status=exhausted budget_exhausted=true nodes=1 witness_values=0 build_ms=463.129479 replay_ms=0.19302900000000001\n"
+  },
+  {
+   "model": "data/cases/process_network_large.mps",
+   "args": [
+    "--time-limit",
+    "1"
+   ],
+   "returncode": 5,
+   "wall_seconds": 1.0045,
+   "rss_kib": 17184,
+   "status": "ResourceLimit",
+   "stop_reason": "deadline_exceeded",
+   "runtime_ms": 1001.685844,
+   "memory_charged_peak_bytes": 88448,
+   "stderr_tail": "markov-cero 0.5.2 ResourceLimit [MILP -> milp] NOT VERIFIED\nproof: tier=unverified status=exhausted budget_exhausted=true nodes=1 witness_values=0 build_ms=489.24489 replay_ms=0.19419700000000001\n"
+  },
+  {
+   "model": "data/cases/process_network_large.mps",
+   "args": [
+    "--time-limit",
+    "1"
+   ],
+   "returncode": 5,
+   "wall_seconds": 1.0053,
+   "rss_kib": 17136,
+   "status": "ResourceLimit",
+   "stop_reason": "deadline_exceeded",
+   "runtime_ms": 1002.272213,
+   "memory_charged_peak_bytes": 88448,
+   "stderr_tail": "v-cero 0.5.2 ResourceLimit [MILP -> milp] NOT VERIFIED\nproof: tier=unverified status=exhausted budget_exhausted=true nodes=1 witness_values=0 build_ms=464.62286599999999 replay_ms=0.18212800000000001\n"
+  },
+  {
+   "model": "data/cases/process_network_large.mps",
+   "args": [
+    "--memory-limit-bytes",
+    "65536"
+   ],
+   "returncode": 5,
+   "wall_seconds": 0.5559,
+   "rss_kib": 17196,
+   "status": "ResourceLimit",
+   "stop_reason": "memory_budget_exhausted",
+   "runtime_ms": 553.624397,
+   "memory_charged_peak_bytes": 0,
+   "stderr_tail": "markov-cero 0.5.2 ResourceLimit [MILP -> milp] NOT VERIFIED\nproof: tier=unverified status=not_requested budget_exhausted=false nodes=0 witness_values=0 build_ms=0 replay_ms=0\n"
+  },
+  {
+   "model": "data/cases/process_network_large.mps",
+   "args": [
+    "--memory-limit-bytes",
+    "65536"
+   ],
+   "returncode": 5,
+   "wall_seconds": 0.546,
+   "rss_kib": 17020,
+   "status": "ResourceLimit",
+   "stop_reason": "memory_budget_exhausted",
+   "runtime_ms": 543.542419,
+   "memory_charged_peak_bytes": 0,
+   "stderr_tail": "markov-cero 0.5.2 ResourceLimit [MILP -> milp] NOT VERIFIED\nproof: tier=unverified status=not_requested budget_exhausted=false nodes=0 witness_values=0 build_ms=0 replay_ms=0\n"
+  },
+  {
+   "model": "examples/blend.mps",
+   "args": [],
+   "returncode": 0,
+   "wall_seconds": 0.002,
+   "rss_kib": 17064,
+   "status": "Optimal",
+   "stop_reason": "",
+   "runtime_ms": 0.187832,
+   "memory_charged_peak_bytes": 8432,
+   "stderr_tail": ""
+  },
+  {
+   "model": "examples/blend.mps",
+   "args": [],
+   "returncode": 0,
+   "wall_seconds": 0.0023,
+   "rss_kib": 17100,
+   "status": "Optimal",
+   "stop_reason": "",
+   "runtime_ms": 0.269338,
+   "memory_charged_peak_bytes": 8432,
+   "stderr_tail": ""
+  },
+  {
+   "model": "data/cases/process_network_large.mps",
+   "args": [],
+   "returncode": 0,
+   "wall_seconds": 1.0665,
+   "rss_kib": 17020,
+   "status": "Optimal",
+   "stop_reason": "",
+   "runtime_ms": 1063.812874,
+   "memory_charged_peak_bytes": 88448,
+   "stderr_tail": ""
+  }
+ ],
+ "polling_bound": {
+  "max_observed_deadline_overrun_seconds": 0.002286,
+  "interpretation": "Largest measured gap between configured deadline and recorded stop across deadline trials: an empirical upper bound on one cooperative polling interval on these inputs, not a guaranteed bound (section 4)."
+ },
+ "rss_vs_budget": {
+  "memory_limit_bytes": 65536,
+  "max_rss_bytes_under_that_cap": 17608704,
+  "interpretation": "memory_limit_bytes meters instrumented charges only; measured process RSS stays far above the cap, as the contract states."
+ },
+ "limitations": [
+  "Cooperative stops only: a single indivisible kernel between polls extends the observed overrun; no preemption is claimed.",
+  "ru_maxrss is per-child on Linux (KiB); this machine's RSS is not portable to other hosts or input distributions.",
+  "runtime_ms spans API entry through engine completion, before JSON serialization; process wall_seconds additionally includes startup.",
+  "Small trial counts characterize this run, not a distributional guarantee."
+ ]
+}

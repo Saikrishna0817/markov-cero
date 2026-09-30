@@ -70,6 +70,11 @@ void certify_mip(const model::Model& model, const SolveOptions& options, SolveRe
         (sizeof(double) + sizeof(std::size_t)) +
         std::min<std::size_t>(options.mip_proof_max_nodes, 1024U) * 64U + 4096U;
     if (!charge_or_fail(ctx, proof_bytes, "proof_build", out, result)) return;
+    // RES-01: proof building runs up to its own proof budget with no shared
+    // stop check of its own; poll here so a solve-wide deadline or cancellation
+    // recorded before the build starts is honored (the proof budget itself
+    // stays a proof outcome, not a solve-wide stop).
+    if (stop_after_deadline(ctx, options, out, result, "MIP proof build")) return;
     auto stage_start = Clock::now();
     bool building = true;
     try {

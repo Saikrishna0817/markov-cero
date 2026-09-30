@@ -1,4 +1,5 @@
 #include "search_context.hpp"
+#include "markov_cero/core/solve_context.hpp"
 namespace markov_cero::milp::detail {
 Result Search::run() {
 if (!initialize() || !root_relaxation() || !root_branching()) {
@@ -8,11 +9,29 @@ if (!initialize() || !root_relaxation() || !root_branching()) {
     node_model = root_model;
     // 6. Tree Search Loop
     stop_reason = {};
-    while (!queue.empty() && result.nodes_explored < options.max_nodes) {
+    // RES-01: the shared context (when wired by the API layer) is polled at
+    // this phase boundary and at every node so a cancellation or deadline
+    // recorded anywhere in the pipeline reaches the serial search; the
+    // engine-local deadline check below still owns the per-node time limit.
+    // First stop wins: a root-phase stop above is never overwritten here.
+    if (stop_reason.empty() && options.context) {
+        const auto shared_reason = options.context->poll();
+        if (shared_reason != core::StopReason::none)
+            stop_reason = core::to_string(shared_reason);
+    }
+    while (stop_reason.empty() && !queue.empty() &&
+           result.nodes_explored < options.max_nodes) {
         const auto now = std::chrono::steady_clock::now();
         if (options.deadline && now >= *options.deadline) {
             stop_reason = "time limit reached";
             break;
+        }
+        if (options.context) {
+            const auto shared_reason = options.context->poll();
+            if (shared_reason != core::StopReason::none) {
+                stop_reason = core::to_string(shared_reason);
+                break;
+            }
         }
 
         node = queue.top();

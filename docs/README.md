@@ -16,6 +16,8 @@ Start with the [project README](../README.md) for the problem, architecture, dem
 |---|---|
 | [Status](project/STATUS.md) | Current capability boundaries and open acceptance gates |
 | [Numerical contract](contracts/numerical-policy.md) | Binding tolerances, statuses, verification boundaries and assurance labels (contract v1) |
+| [Resource limits contract](contracts/resource-limits.md) | Binding stop reasons, attribution rules and non-guarantees for cooperative resource stops (library, v1) |
+| [Hosted limits contract](contracts/hosted-limits.md) | Kernel-enforced CPU, address-space, file, output and wall limits for each hosted solve child (service, v1) |
 | [Provenance](project/PROVENANCE.md) | Source history, review limits and attributed inputs |
 | [Original request](project/ORIGINAL_REQUEST.md) | Historical SIH scope and roadmap, not a completion certificate |
 | [Changelog](../CHANGELOG.md) | Dated implementation and verification history |

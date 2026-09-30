@@ -4,6 +4,7 @@ import json
 import os
 import pathlib
 import subprocess
+import sys
 import tempfile
 import threading
 import urllib.error
@@ -20,6 +21,53 @@ MAX_BODY = 1_100_000
 MAX_MODEL = 1_000_000
 MAX_RESULT = 2_000_000
 SLOTS = threading.BoundedSemaphore(2)
+
+# OS hard limits for every spawned solve (RES-01 step 5,
+# docs/contracts/resource-limits.md): the CLI flags below are cooperative,
+# these bounds are enforced by the kernel and survive a solver that never
+# polls. Wall kills the child; CPU, address-space and file-size limits are
+# applied by exec'ing the solver from a thin rlimit wrapper so a threaded
+# server never forks with preexec hooks. Output is bounded by redirecting
+# stdout/stderr into files that RLIMIT_FSIZE caps.
+SOLVE_WALL_TIMEOUT_SECONDS = float(os.environ.get("SOLVE_WALL_TIMEOUT_SECONDS", "15"))
+SOLVE_RLIMIT_CPU_SECONDS = int(os.environ.get("SOLVE_RLIMIT_CPU_SECONDS", "12"))
+SOLVE_RLIMIT_AS_BYTES = int(os.environ.get("SOLVE_RLIMIT_AS_BYTES", str(1024 ** 3)))
+SOLVE_RLIMIT_FSIZE_BYTES = int(os.environ.get("SOLVE_RLIMIT_FSIZE_BYTES", str(16 * 1024 ** 2)))
+MAX_DETAIL_BYTES = 4096
+
+# argv: program cpu_seconds as_bytes fsize_bytes [program args...]
+_RLIMIT_WRAPPER = (
+    "import os,resource,sys;"
+    "_c,_a,_f=int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4]);"
+    "resource.setrlimit(resource.RLIMIT_CPU,(_c,_c+3));"
+    "resource.setrlimit(resource.RLIMIT_AS,(_a,_a));"
+    "resource.setrlimit(resource.RLIMIT_FSIZE,(_f,_f));"
+    "os.execvp(sys.argv[1],[sys.argv[1]]+sys.argv[5:])"
+)
+
+
+def run_solver(command, timeout, cpu_seconds, as_bytes, fsize_bytes,
+               stdout_path, stderr_path):
+    """Run one solve under the declared OS hard limits.
+
+    Raises subprocess.TimeoutExpired (after killing the child) on the wall
+    limit. A negative returncode means the kernel terminated the child
+    (CPU/address-space/file-size signal). stdout/stderr land in the given
+    files, bounded by fsize_bytes, and are read back by the caller.
+    """
+    wrapped = [sys.executable, "-c", _RLIMIT_WRAPPER, command[0],
+               str(cpu_seconds), str(as_bytes), str(fsize_bytes), *command[1:]]
+    with open(stdout_path, "wb") as out, open(stderr_path, "wb") as err:
+        return subprocess.run(wrapped, stdout=out, stderr=err, timeout=timeout,
+                              check=False)
+
+
+def read_capped(path):
+    try:
+        return pathlib.Path(path).read_bytes()[:MAX_DETAIL_BYTES].decode(
+            "utf-8", errors="replace")
+    except OSError:
+        return ""
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -115,13 +163,26 @@ class Handler(BaseHTTPRequestHandler):
             source.write_text(model, encoding="utf-8")
             command = [SOLVER_BIN, str(source), "--output", str(result), "--threads", "1", "--max-nodes", "1000", "--max-queued-nodes", "1000", "--max-input-bytes", "1000000", "--time-limit", "10"]
             try:
-                run = subprocess.run(command, capture_output=True, text=True, timeout=15, check=False)
+                run = run_solver(
+                    command,
+                    timeout=SOLVE_WALL_TIMEOUT_SECONDS,
+                    cpu_seconds=SOLVE_RLIMIT_CPU_SECONDS,
+                    as_bytes=SOLVE_RLIMIT_AS_BYTES,
+                    fsize_bytes=SOLVE_RLIMIT_FSIZE_BYTES,
+                    stdout_path=pathlib.Path(directory) / "stdout.log",
+                    stderr_path=pathlib.Path(directory) / "stderr.log",
+                )
             except subprocess.TimeoutExpired:
                 return self.respond(504, {"error": "Solve exceeded the service time limit."})
             except OSError:
                 return self.respond(503, {"error": "Could not start the solver."})
+            if run.returncode < 0:
+                return self.respond(422, {
+                    "error": "Solver exceeded an OS resource limit.",
+                    "detail": f"terminated by signal {-run.returncode}",
+                })
             if not result.is_file():
-                return self.respond(422, {"error": "Solver did not return a result.", "detail": run.stderr[-500:]})
+                return self.respond(422, {"error": "Solver did not return a result.", "detail": read_capped(pathlib.Path(directory) / "stderr.log")[-500:]})
             if result.stat().st_size > MAX_RESULT:
                 return self.respond(413, {"error": "Result exceeds the response size limit."})
             try:

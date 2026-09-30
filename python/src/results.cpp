@@ -13,6 +13,7 @@ py::dict to_python(api::SolveResult res) {
     out["problem_class"] = res.problem_class;
     out["classification_reason"] = res.classification_reason;
     out["stop_reason"] = res.stop_reason;
+    out["memory_charged_peak_bytes"] = res.memory_charged_peak_bytes;
     // W01/D16: stable identity of the validated model that produced this
     // result (mix of structural and numeric content hashes).
     out["model_fingerprint"] = res.model_fingerprint;

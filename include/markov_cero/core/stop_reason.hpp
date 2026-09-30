@@ -4,7 +4,8 @@
 
 namespace markov_cero::core {
 
-/// First-observed cooperative stop condition for one solve (D06/W02).
+/// First-observed resource stop for one solve (D06/W02). Contract:
+/// docs/contracts/resource-limits.md.
 ///
 /// Failure semantics shared by every engine, verifier and proof stage:
 ///
@@ -14,8 +15,13 @@ namespace markov_cero::core {
 ///   outcome. Engines report it as `SolveStatus::resource_limit` (or the
 ///   timeout/limit status a stage already uses) and never as `optimal`,
 ///   `infeasible` or `unbounded`.
-/// - `StopReason::none` means no cooperative stop was recorded; it does not
-///   assert that the result is optimal, only that nothing stopped the solve.
+/// - Cooperative stops (deadline, cancellation, budget, quota) are recorded by
+///   the shared SolveContext from inside the solve. Boundary stops
+///   (`input_limit`, `work_limit`, `allocation_failure`) are recorded by the
+///   API boundary when it maps a limit hit or a host allocation failure to a
+///   resource outcome.
+/// - `StopReason::none` means no stop was recorded; it does not assert that
+///   the result is optimal, only that nothing stopped the solve.
 /// - Witness completeness is a separate question (W03): a stopped solve must
 ///   not upgrade an incomplete certificate to a verified one.
 ///
@@ -29,6 +35,11 @@ enum class StopReason : std::uint8_t {
     memory_budget_exhausted,
     queue_capacity_exhausted,
     quota_exhausted,
+    // API-boundary attributions (R3): appended so existing values keep their
+    // numeric identity.
+    input_limit,
+    work_limit,
+    allocation_failure,
 };
 
 [[nodiscard]] constexpr const char* to_string(StopReason reason) noexcept {
@@ -39,6 +50,9 @@ enum class StopReason : std::uint8_t {
         case StopReason::memory_budget_exhausted: return "memory_budget_exhausted";
         case StopReason::queue_capacity_exhausted: return "queue_capacity_exhausted";
         case StopReason::quota_exhausted: return "quota_exhausted";
+        case StopReason::input_limit: return "input_limit";
+        case StopReason::work_limit: return "work_limit";
+        case StopReason::allocation_failure: return "allocation_failure";
     }
     return "unknown";
 }

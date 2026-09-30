@@ -13,6 +13,10 @@
 #include <string>
 #include <vector>
 
+namespace markov_cero::core {
+class SolveContext;
+}
+
 namespace markov_cero::milp {
 
 struct Options {
@@ -24,6 +28,11 @@ struct Options {
     std::size_t max_iterations{500000};
     double time_limit_seconds{60.0};
     std::optional<std::chrono::steady_clock::time_point> deadline;
+    /// Optional shared cooperative-stop context (RES-01 resource contract,
+    /// docs/contracts/resource-limits.md). When set by the API layer, the
+    /// serial search polls it at the root/node phase boundaries so a
+    /// cancellation recorded anywhere in the pipeline reaches this search.
+    core::SolveContext* context{nullptr};
     double relative_gap_tolerance{1e-4};
     double absolute_gap_tolerance{1e-6};
     double integrality_tolerance{1e-6};

@@ -30,7 +30,7 @@ ALLOWED_ORIGIN=http://localhost:5173 \
 python backend/server.py
 ```
 
-`GET /health` reports whether the binary is available. `POST /solve` accepts MPS or LP text after validating the bearer token with Supabase Auth. The adapter applies an approximately 1 MB input cap, two concurrent solve slots, a 10-second CLI solve limit and a 15-second process timeout. It uses the existing C++ CLI rather than implementing a second solver. Do not expose this adapter without its intended authentication and origin configuration.
+`GET /health` reports whether the binary is available. `POST /solve` accepts MPS or LP text after validating the bearer token with Supabase Auth. The adapter applies an approximately 1 MB input cap, two concurrent solve slots, a 10-second CLI solve limit and a 15-second process timeout. Each solve child additionally runs under kernel-enforced OS limits (CPU, address space, file size, redirected output) with kill-on-timeout, declared in the [hosted limits contract](../docs/contracts/hosted-limits.md) and exercised by `backend/os_limits_test.py` (CTest `hosted_os_limits`). It uses the existing C++ CLI rather than implementing a second solver. Do not expose this adapter without its intended authentication and origin configuration.
 
 ## Deployment layout
 

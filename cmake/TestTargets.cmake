@@ -45,6 +45,8 @@ add_executable(warm_start_property_test tests/warm_start_property_test.cpp)
 target_link_libraries(warm_start_property_test PRIVATE markov_cero_core)
 add_executable(sparse_basis_test tests/sparse_basis_test.cpp)
 target_link_libraries(sparse_basis_test PRIVATE markov_cero_core)
+add_executable(sparse_fill_limit_test tests/sparse_fill_limit_test.cpp)
+target_link_libraries(sparse_fill_limit_test PRIVATE markov_cero_core)
 add_executable(sparse_lu_deadline_test tests/sparse_lu_deadline_test.cpp)
 target_link_libraries(sparse_lu_deadline_test PRIVATE markov_cero_core)
 add_executable(sparse_update_property_test tests/sparse_update_property_test.cpp)
@@ -164,6 +166,10 @@ add_executable(numerical_policy_boundary_test tests/numerical_policy_boundary_te
 target_link_libraries(numerical_policy_boundary_test PRIVATE markov_cero_core)
 add_executable(assurance_label_test tests/assurance_label_test.cpp)
 target_link_libraries(assurance_label_test PRIVATE markov_cero_core)
+# Resource contract (docs/contracts/resource-limits.md): boundary stop-reason
+# attribution and the resource_limit completeness invariant.
+add_executable(stop_reason_test tests/stop_reason_test.cpp)
+target_link_libraries(stop_reason_test PRIVATE markov_cero_core)
 # Test executables must keep assert() checks alive in EVERY build type:
 # Release/RelWithDebInfo define NDEBUG, which compiles assert() to a no-op and
 # silently disables the assert-based test files (CI's ASan/UBSan and TSan jobs

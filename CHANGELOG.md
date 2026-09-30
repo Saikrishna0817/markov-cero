@@ -2,6 +2,48 @@
 
 ## Unreleased
 
+### 2026-09-30 blueprint RES-01 — resource stop contract and measured envelope
+
+- Added the binding library contract
+  [`docs/contracts/resource-limits.md`](docs/contracts/resource-limits.md)
+  (v1): the stop-reason table, attribution rules R1–R5 (sticky first stop,
+  every `resource_limit` describes itself, precise boundary attribution,
+  honest `unspecified_resource_limit` fallback, empty off the resource path)
+  and the non-guarantees (cooperative polling, instrumented charges only,
+  byte/input caps are not RSS).
+- Extended `StopReason` with `input_limit`, `work_limit` and
+  `allocation_failure` (existing numeric values unchanged) and mapped parser
+  byte caps, escaped `length_error`s and host `bad_alloc`s at the API
+  boundary. `stop_reason` is non-empty on every `resource_limit` result in
+  C++, CLI JSON and Python, and never accompanies an unverified
+  optimal/infeasible/unbounded claim.
+- Added shared-context polls at model hashing, classification, the
+  post-engine completion sweep around row activities, PDLP/QP/nonlinear
+  verification, the MIP proof build, and the serial MILP search's root and
+  per-node boundaries (new `milp::Options.context`).
+- Charged the serial frontier against the shared memory budget (root and
+  both child pushes, mirroring the parallel `sizeof(BranchNode)` convention)
+  and exposed the admitted-charge high-water mark as
+  `memory_charged_peak_bytes` in C++, CLI JSON and Python.
+- Added boundary tests `tests/stop_reason_test.cpp` (input/work/allocation
+  attribution, cooperative reasons, node-quota and engine-deadline
+  attribution, queue capacity, shared cancellation, serial charge refusal,
+  peak bounds) and `tests/sparse_fill_limit_test.cpp` (the factor fill cap
+  throws before any partial factor exists).
+- Measured the cooperative envelope with
+  `scripts/bench_resource_envelope.py`: 15 trials across small and larger
+  inputs under tight wall and memory limits. Worst observed deadline overrun
+  2.3 ms; RSS under a 64 KiB charge cap stayed ~17 MiB — both exactly the
+  contract's non-guarantees. Record:
+  [`evidence/resource-overrun-rss-20260930.json`](evidence/resource-overrun-rss-20260930.json).
+- Added the hosted hard-limit contract
+  [`docs/contracts/hosted-limits.md`](docs/contracts/hosted-limits.md) and
+  kernel-enforced limits in `web/backend/server.py` (rlimit wrapper for CPU,
+  address space and file size, redirected output, kill-on-timeout) with
+  `web/backend/os_limits_test.py` (CTest `hosted_os_limits`).
+- Verified this slice: 97/97 CTest, 22/22 binding tests, and clean source,
+  docs, JSON, backlink and sovereignty guards.
+
 ### 2026-09-29 blueprint NUM-01 — numerical and status contract (v1)
 
 - Added the binding contract `docs/contracts/numerical-policy.md`: one

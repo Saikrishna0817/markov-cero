@@ -118,6 +118,24 @@ bool Search::root_branching() {
     unsolved_node_lps = 0;
     min_unsolved_bound = std::numeric_limits<double>::infinity();
 
+    // RES-01 (resource contract section 4): the frontier is solver-owned
+    // memory, so the shared budget is charged before the root node is
+    // allocated. A refusal stops the search with a resource outcome and only
+    // whatever bound/incumbent was already established.
+    if (options.context && !options.context->charge_or_stop(sizeof(BranchNode))) {
+        result.status = lp::reference::SolveStatus::resource_limit;
+        result.best_bound = best_lower_bound;
+        if (std::isfinite(best_upper_bound)) {
+            result.primal = best_primal;
+            result.objective = best_upper_bound;
+            result.relative_gap = std::max(0.0, best_upper_bound - best_lower_bound) /
+                                  std::max(1.0, std::abs(best_upper_bound));
+        }
+        result.message = "memory budget refused the root node allocation";
+        result.runtime_ms = std::chrono::duration<double, std::milli>(
+            std::chrono::steady_clock::now() - start_time).count();
+        return false;
+    }
     auto root_node = std::make_shared<BranchNode>();
     root_node->id = 0;
     root_node->parent_id = 0;

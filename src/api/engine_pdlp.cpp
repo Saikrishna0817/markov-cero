@@ -95,6 +95,10 @@ void run_pdlp(const model::Model& model, const SolveOptions& options, SolveResul
             out.diagnostic.failure_site = "pdlp_first_order_solver";
             out.diagnostic.suggested_recovery = "crossover_to_dual_simplex_or_tighten_step_sizes";
         }
+        // RES-01: verification is O(nnz) with no shared-context poll after it;
+        // a stop that lands mid-scan must be recorded before the result is
+        // handed back (contract section 4).
+        if (stop_after_deadline(ctx, options, out, result, "PDLP verification")) return;
         out.nodes_explored = 1;
 
 }

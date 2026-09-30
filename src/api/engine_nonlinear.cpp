@@ -165,6 +165,10 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
                 }
             }
         }
+        // RES-01: SQP/MINLP verification runs with no deadline of its own;
+        // one shared-context poll before leaving the engine covers both
+        // branches (contract section 4).
+        if (stop_after_deadline(ctx, options, out, result, "nonlinear verification")) return;
         out.nodes_explored = 1;
         return;
 

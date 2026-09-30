@@ -113,6 +113,10 @@ void run_qp(const model::Model& model, const SolveOptions& options, SolveResult&
             out.original_message = result.message;
             out.diagnostic.failure_site = "qp_wall_clock_deadline";
             out.diagnostic.suggested_recovery = "increase_time_limit_or_use_a_warm_start";
+            // R3: ADMM's own deadline fired before the shared context recorded
+            // one (repeated sessions measure from an earlier start); the
+            // result must still name the wall clock as its stop.
+            (void)ctx.note_stop(core::StopReason::deadline_exceeded);
         } else {
             result.status = lp::reference::SolveStatus::numerical_failure;
             result.message = std::string("QP solve failed: ") + qp::to_string(qpres.status);
@@ -120,6 +124,10 @@ void run_qp(const model::Model& model, const SolveOptions& options, SolveResult&
             out.diagnostic.failure_site = "qp_kkt_factorization";
             out.diagnostic.suggested_recovery = "increase_regularization_sigma_or_rescale_problem";
         }
+        // RES-01: KKT/infeasibility verification runs with no deadline of its
+        // own; poll the shared context before the result leaves the engine so
+        // a stop that lands mid-verification is recorded (contract section 4).
+        if (stop_after_deadline(ctx, options, out, result, "QP verification")) return;
 
 }
 
