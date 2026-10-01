@@ -136,7 +136,25 @@ Executed 2026-09-30:
   pre-existing at HEAD, not introduced by the sparse path; the entries
   still agree exactly on every one of them (dense/sparse fingerprint
   match included). Tracked as a deferred defect; LP-01 makes no claim
-  about these four models beyond agreement.
+  about these four models beyond agreement. Note the reproduction path:
+  `bore3d` and `scsd1` fail through the CLI as well, while `blend` fails
+  only through the library differential harness (no presolve/scale) and
+  solves `Optimal` through the CLI — see the GAP-01 context note below.
+- GAP-01 addition (2026-10-01), `etamacro`: outside the LP-01 triage and
+  outside the 17-fixture differential set, so it has no entry-agreement
+  record. All four CLI engines (`primal`, `dual`, `ipm`, `pdlp`) return
+  byte-identical status, objective, iteration count and message on HEAD
+  **and on the pre-LP-01 revision `32be1ec`** — `NumericalFailure`
+  (primal/ipm: the same `cok_fail ook_fail` witness rejection at
+  objective −755.714309; dual: phase I; pdlp: 100 000-iteration limit) —
+  so the failure is pre-existing, not a sparse-path regression
+  ([record](../../evidence/gap01-etamacro-2026-10-01.json)). The cause
+  is numerical, not dispatch: canonical complementarity 2.15e-3 against
+  a tolerance three orders tighter, on a model with estimated condition
+  8.3e17. The witness check refusing to certify is the contract working;
+  no fix and no objective claim is made. No dense/sparse differential
+  was run for this model, and adding one would mean extending
+  `data/compare/netlib.txt`, which is frozen after results exist.
 - Benchmark: [`evidence/lp-sparse-rss-20260930.json`](../../evidence/lp-sparse-rss-20260930.json)
   — retired dense dispatch shape vs sparse-first, forked VmHWM per
   (instance, path). Dense peak ≥ sparse peak on all 18 records; the

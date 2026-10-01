@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-01",
+  "task": "GAP-01 slice 2 — is the etamacro NumericalFailure pre-existing?",
+  "question": "BENCH-01 recorded data/netlib/etamacro.mps as NumericalFailure, a model outside the LP-01 deferred set (bore3d, scsd1, scsd6, blend). docs/project/STATUS.md left open whether that failure pre-dates LP-01. This record answers it by running the same model through the same CLI on both sides of LP-01.",
+  "model": {
+    "path": "data/netlib/etamacro.mps",
+    "sha256": "41701e1add7af2ed2b21a421ab7271bc867e6bc7ad98ac189748d6522e7d4926",
+    "bytes": 96850,
+    "size": "400 rows, 688 columns, 2409 nonzeros"
+  },
+  "revisions": {
+    "head": {
+      "commit": "e8a68be58057764ce0da4ead299b932b39c9c3a5",
+      "binary": "markov-cero-solve",
+      "sha256": "36284e66e5584958d7cb57eb0fe7e1d080534835c9c01d1adcb5d4aca3336bc1"
+    },
+    "pre_lp01": {
+      "commit": "32be1ec8eb831b948c2d17c59001ee51063248e6",
+      "relation": "parent of LP-01 (e9327b0); RES-01 state, no sparse-path change",
+      "binary": "markov-cero-solve",
+      "sha256": "1d959bd911a0ed63afc4aed0b61f51a7cf4960587ebdc6de8c8b6f1e67f3a5e3"
+    },
+    "build": "cmake -DCMAKE_BUILD_TYPE=Release -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON, same flags for both, in separate build trees"
+  },
+  "method": {
+    "command": "markov-cero-solve data/netlib/etamacro.mps --engine {primal,dual,ipm,pdlp} --time-limit 60",
+    "default_options": "presolve on, Ruiz scaling on, PDLP tolerance 1e-4 — CLI defaults, no overrides",
+    "threads": "LP path is single-threaded",
+    "host": "Linux x86_64, glibc 2.44, one machine"
+  },
+  "results": [
+    {"engine": "primal", "head": {"status": "NumericalFailure", "objective": -755.7143090291331, "lp_iterations": 1378, "message": "canonical witness rejected: scaled optimality verification failed: cok_fail ook_fail"}, "pre_lp01": {"status": "NumericalFailure", "objective": -755.7143090291331, "lp_iterations": 1378, "message": "canonical witness rejected: scaled optimality verification failed: cok_fail ook_fail"}, "identical": true},
+    {"engine": "dual", "head": {"status": "NumericalFailure", "objective": 0, "lp_iterations": 1378, "message": "phase I failed: NumericalFailure"}, "pre_lp01": {"status": "NumericalFailure", "objective": 0, "lp_iterations": 1378, "message": "phase I failed: NumericalFailure"}, "identical": true},
+    {"engine": "ipm", "head": {"status": "NumericalFailure", "objective": -755.7143090291331, "lp_iterations": 0, "message": "canonical witness rejected: scaled optimality verification failed: cok_fail ook_fail"}, "pre_lp01": {"status": "NumericalFailure", "objective": -755.7143090291331, "lp_iterations": 0, "message": "canonical witness rejected: scaled optimality verification failed: cok_fail ook_fail"}, "identical": true},
+    {"engine": "pdlp", "head": {"status": "IterationLimit", "objective": 0, "lp_iterations": 100000, "message": "iteration limit reached"}, "pre_lp01": {"status": "IterationLimit", "objective": 0, "lp_iterations": 100000, "message": "iteration limit reached"}, "identical": true}
+  ],
+  "head_primal_diagnostics": {
+    "primal_residual": 5.564402272284497e-10,
+    "dual_residual": 2.0621525320674294e-16,
+    "complementarity_gap": 0.0021495307816637166,
+    "condition_estimate": 8.321852767856061e+17,
+    "maximum_canonical_primal_violation": 5.564402272284497e-10,
+    "maximum_canonical_dual_violation": 2.0621525320674294e-16,
+    "failure_site": "primal_solve",
+    "suggested_recovery": "inspect_engine_numerics_and_parameters",
+    "runtime_ms": 1789.785242
+  },
+  "conclusion": {
+    "pre_existing": true,
+    "basis": "All four engines return byte-identical status, objective, iteration count and message on both revisions; no LP-01 (or later) change is implicated.",
+    "interpretation": "primal and ipm both reach the same objective, but the accepted-witness check in src/verify/sparse_lp_verifier.cpp refuses to certify it: the canonical complementarity residual is 2.15e-3 against a tolerance three orders of magnitude tighter, on a model whose estimated condition number is 8.3e17. The NumericalFailure is the honest outcome — the solver does not report Optimal for a witness it cannot verify.",
+    "classification": "pre-existing numerical failure, tracked alongside the LP-01 deferred set, not a regression and not fixed here"
+  },
+  "not_run": [
+    "dense/sparse differential for etamacro — it is not one of the 17 fixtures in data/compare/netlib.txt, which is marked do-not-edit after results exist, so entry agreement for this model was not measured",
+    "no fix attempted: changing factorization, scaling or tolerance policy to certify this model is a numerical-contract change, not a documentation gap",
+    "no reference optimum for etamacro is recorded in evidence/bench01-preregistration-2026-10-01.json, so no objective agreement was checked",
+    "one host, one toolchain, no second solver"
+  ],
+  "context_note": "The LP-01 deferred set reproduces differently by path: bore3d and scsd1 fail through the CLI at both revisions (as above), while blend fails only through the library differential harness (lp_sparse_differential_test, no presolve/scale) and solves Optimal through the CLI at both revisions. Each observation in docs/contracts/sparse-lp-path.md §5 should be read with its own path in mind; this record states the CLI path explicitly for etamacro."
+}

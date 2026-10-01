@@ -35,6 +35,27 @@
   `InvalidModel` status, because a recorded campaign row is never
   rewritten; only a new preregistration can re-run them. Full suite
   after the change: 120/120 CTest, 27/27 binding tests.
+- Answered the second gap instead of restating it: `etamacro` was run
+  through all four CLI engines on HEAD `e8a68be` **and** on the
+  pre-LP-01 revision `32be1ec` with identical flags, and all eight
+  runs return byte-identical status, objective, iteration count and
+  message across the two revisions. Its `NumericalFailure` is
+  therefore pre-existing — the open question
+  [`docs/project/STATUS.md`](docs/project/STATUS.md) carried — and the
+  cause is numerical, not dispatch: canonical complementarity 2.15e-3
+  against a tolerance three orders tighter on a model with estimated
+  condition 8.3e17, so the witness check declining to certify is the
+  contract working. Recorded in
+  [`evidence/gap01-etamacro-2026-10-01.json`](evidence/gap01-etamacro-2026-10-01.json)
+  with both binaries' hashes, added to the deferred set in
+  [`docs/contracts/sparse-lp-path.md`](docs/contracts/sparse-lp-path.md) §5,
+  and indexed. The same section now records that the LP-01 four
+  reproduce differently by path — `blend` fails only through the
+  library differential harness and solves `Optimal` through the CLI —
+  so each observation is read with its own path. No fix, no objective
+  claim and no dense/sparse differential for `etamacro` (it is not in
+  the frozen 17-fixture set); a pre-LP-01 build tree was used only for
+  this comparison and is not part of any release artifact.
 
 ### 2026-10-01 blueprint REL-01 — package, qualify and document the supported solver
 
