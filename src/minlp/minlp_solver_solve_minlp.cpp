@@ -9,9 +9,11 @@ MinlpSolution solve_minlp(const MinlpProblem& problem, const std::vector<double>
         options.feasibility_tolerance <= 0.0 ||
         !std::isfinite(options.sqp_options.kkt_tolerance) ||
         options.sqp_options.kkt_tolerance <= 0.0 || options.milp_max_nodes == 0 ||
-        !std::isfinite(options.milp_time_limit) || options.milp_time_limit <= 0.0) {
+        !std::isfinite(options.milp_time_limit) || options.milp_time_limit <= 0.0 ||
+        options.max_oa_cuts == 0) {
         out.status = lp::reference::SolveStatus::invalid_options;
-        out.message = "minlp: iteration, tolerance, and master limits must be positive and finite";
+        out.message = "minlp: iteration, tolerance, master and OA row limits must be "
+                      "positive and finite";
         return out;
     }
     NlpModel nlp = problem.nlp;

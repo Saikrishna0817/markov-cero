@@ -1,5 +1,6 @@
 #pragma once
 
+#include "markov_cero/minlp/oa_cut.hpp"
 #include "markov_cero/nlp/nlp_model.hpp"
 #include "markov_cero/nlp/sqp_solver.hpp"
 #include "markov_cero/model/model.hpp"
@@ -40,6 +41,9 @@ struct MinlpOptions {
     nlp::SqpOptions sqp_options{};
     std::size_t milp_max_nodes{20000};
     double milp_time_limit{30.0};
+    // MINLP-01 (minlp-oa.md §8.2): OA row cap; the next refinement that would
+    // exceed it stops the loop like the iteration limit. 0 is invalid_options.
+    std::size_t max_oa_cuts{10000};
     bool verbose{false};
     std::optional<std::chrono::steady_clock::time_point> deadline;
 };
@@ -54,6 +58,13 @@ struct MinlpSolution {
     std::size_t iterations{0};
     std::size_t cuts_added{0};
     bool integer_feasible{false};
+    // MINLP-01 (minlp-oa.md §8-§9): paired robustness/assurance record.
+    std::size_t sqp_calls{0};       // total fixed-integer subproblem solves
+    std::size_t sqp_failures{0};    // total failed subproblem calls
+    std::size_t master_nodes{0};    // sum of master nodes_explored
+    std::size_t cuts_replayed{0};   // completed source-polynomial replays
+    std::string bound_provenance;   // "milp_master_certified" or empty
+    std::vector<OaCut> oa_cuts;     // provenance of every stored tangent
 };
 
 struct MinlpProblem {

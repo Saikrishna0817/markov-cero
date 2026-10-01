@@ -118,6 +118,9 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
             }();
             out.lp_iterations = sol.iterations;
             out.cuts_generated = sol.cuts_added;
+            // MINLP-01 (minlp-oa.md §8.4): master tree growth is the node
+            // count this branch reports; the SQP branch keeps its old value.
+            out.nodes_explored = sol.master_nodes;
             const double sense_sign = model.objective_sense == model::ObjectiveSense::maximize
                                           ? -1.0
                                           : 1.0;
@@ -200,7 +203,9 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
         // one shared-context poll before leaving the engine covers both
         // branches (contract section 4).
         if (stop_after_deadline(ctx, options, out, result, "nonlinear verification")) return;
-        out.nodes_explored = 1;
+        // The SQP branch keeps the historical value 1; the MINLP branch
+        // already reported master_nodes above (minlp-oa.md §8.4).
+        if (out.resolved_engine != "outer_approx") out.nodes_explored = 1;
         return;
 
 }

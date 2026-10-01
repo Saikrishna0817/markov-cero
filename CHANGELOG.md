@@ -2,6 +2,72 @@
 
 ## Unreleased
 
+### 2026-10-01 blueprint MINLP-01 — outer-approximation cuts with source replay
+
+- Added the binding library contract
+  [`docs/contracts/minlp-oa.md`](docs/contracts/minlp-oa.md) (v1) before
+  any numerical code: the restricted convex scope and screening (§2), the
+  OA derivation (§3), cut provenance and outward-only weakening (§4), the
+  independent source replay (§5), incumbent verification (§6), bound
+  certification and the status map (§7), counters and caps (§8), the
+  public interfaces (§9), the A–H test obligations (§10), the §11
+  benchmark obligation and the numeric allowances (§12).
+- New public cut API
+  [`include/markov_cero/minlp/oa_cut.hpp`](include/markov_cero/minlp/oa_cut.hpp):
+  `derive_oa_cut` evaluates the source polynomial (linear sense-signed
+  terms, `NLOBJ` terms, and the quadratic energy assembled by
+  `qp::make_quadratic_model`) at the linearization point and emits a
+  gradient row with `kOaCutWeakening = 1e-9` added **outward only**;
+  `replay_oa_cuts` re-derives each stored `OaCut` from the source model
+  independently of the solving path (componentwise
+  `kOaCutReplayTolerance = 1e-8` on gradient, value, rhs, weakening and
+  sense); `oa_ineq_source_map` mirrors `make_nlp_model`'s row order.
+- Two-path cross-check inside the OA loop
+  ([`minlp_solver_oa_rows.cpp`](src/minlp/minlp_solver_oa_rows.cpp),
+  [`minlp_solver_iterate_outer_approximation.cpp`](src/minlp/minlp_solver_iterate_outer_approximation.cpp)):
+  rows are created from the NLP callback view, each newly stored cut is
+  immediately replayed from the source polynomial, and any mismatch —
+  or a row-map length discrepancy — fails closed to
+  `numerical_failure` instead of trusting the master. Master rows carry
+  the weakened rhs; `cuts_replayed` counts every replayed cut.
+- Bound and status discipline (§7): only `optimal`, `gap_satisfied`,
+  `feasible`, `iteration_limit` and `resource_limit` masters with a
+  finite `best_bound` certify; an infeasible master with an incumbent
+  fails closed to `numerical_failure` and without one reports honest
+  `infeasible`; an unbounded master stops inconclusive at
+  `iteration_limit` with **no big-M**; a certified bound never enters
+  without `bound_provenance = "milp_master_certified"`, and every
+  incumbent-retaining exit keeps only what §6 verified (integer
+  residual ≤ 1e-6 plus `nlp::verify_nlp_feasibility`, no unverified
+  binding, no bound without a certified master).
+- New counters on `MinlpSolution` (additive): `sqp_calls`,
+  `sqp_failures`, `master_nodes` (sum over all master solves),
+  `cuts_replayed`, `bound_provenance`, and the full `oa_cuts` provenance
+  records; `MinlpOptions::max_oa_cuts` (default 10000) stops exactly
+  like the iteration limit when exceeded, and `0` is `invalid_options`.
+  The MINLP engine branch now reports `nodes_explored = master_nodes`.
+- Model screening: non-finite objective, matrix, `NLOBJ` and `NLCON`
+  coefficients are rejected at `validate` time as `invalid_model`.
+- §10 suites: [`tests/minlp01_oa_test.cpp`](tests/minlp01_oa_test.cpp)
+  (case A analytic optimum with underestimator tangent checks at
+  x = 0, 0.5, 1, the two-integer exhaustive oracle, infeasible-pair
+  honesty in case F, master-node-limit honesty in case G, the OA row
+  cap and `max_oa_cuts = 0`) and
+  [`tests/minlp01_cut_replay_test.cpp`](tests/minlp01_cut_replay_test.cpp)
+  (six directed corruptions of gradient/value/rhs/weakening/sense all
+  rejected with the failing field named, 48 seeded random samples
+  replayed against solve-time `oa_cuts`, and malformed-term/non-finite
+  screening). CTest 115/115.
+- §11 benchmark stratum: [`scripts/bench_minlp01_oa.cpp`](scripts/bench_minlp01_oa.cpp)
+  (`minlp01_oa_benchmark`) runs four embedded restricted convex MINLP
+  cases with known optima (basic 1.25, case-A binary 0.2, two-integer
+  oracle 0.3, maximize+offset recorded in the normalized internal sense)
+  through `minlp::solve_minlp` with a warm-up before each timed solve —
+  4 Optimal, verified bounds within 1e-3, `cuts_replayed == cuts_added`
+  on every case ([record](evidence/minlp01-oa-2026-10-01.json), listed
+  in [evidence/INDEX.md](evidence/INDEX.md)). Solver-trusted bounds
+  only; no speed claim.
+
 ### 2026-10-01 blueprint NLP-02 — elastic restoration for inconsistent SQP linearizations
 
 - Added the binding library contract

@@ -44,6 +44,7 @@ add_library(markov_cero_core STATIC
   src/nlp/sqp_solver_restoration.cpp
   src/nlp/sqp_solver.cpp
   src/minlp/minlp_solver.cpp src/minlp/minlp_solver_iterate_outer_approximation.cpp src/minlp/minlp_solver_solve_minlp.cpp
+  src/minlp/minlp_oa_cut.cpp src/minlp/minlp_solver_oa_rows.cpp
   src/verify/primal_verifier.cpp
   src/verify/linear_certificate.cpp
   src/linalg/dense_lu.cpp

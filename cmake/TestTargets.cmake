@@ -29,6 +29,12 @@ add_executable(nlp_restoration_test tests/nlp_restoration_test.cpp)
 target_link_libraries(nlp_restoration_test PRIVATE markov_cero_core)
 add_executable(minlp_basic_test tests/minlp_basic_test.cpp)
 target_link_libraries(minlp_basic_test PRIVATE markov_cero_core)
+# MINLP-01 contract §10: case A/oracles/F/G and cap counters; cut provenance,
+# independent replay corruption and random feasible-point validation.
+add_executable(minlp01_oa_test tests/minlp01_oa_test.cpp)
+target_link_libraries(minlp01_oa_test PRIVATE markov_cero_core)
+add_executable(minlp01_cut_replay_test tests/minlp01_cut_replay_test.cpp)
+target_link_libraries(minlp01_cut_replay_test PRIVATE markov_cero_core)
 add_executable(nlobj_parser_test tests/nlobj_parser_test.cpp)
 target_link_libraries(nlobj_parser_test PRIVATE markov_cero_core)
 add_test(NAME nlp_sqp COMMAND nlp_sqp_test)
@@ -41,6 +47,8 @@ add_test(NAME nlp_derivative_check COMMAND nlp_derivative_check_test)
 add_test(NAME nlp_callback_guard COMMAND nlp_callback_guard_test)
 add_test(NAME nlp_restoration COMMAND nlp_restoration_test)
 add_test(NAME minlp_basic COMMAND minlp_basic_test)
+add_test(NAME minlp01_oa COMMAND minlp01_oa_test)
+add_test(NAME minlp01_cut_replay COMMAND minlp01_cut_replay_test)
 add_test(NAME nlobj_parser COMMAND nlobj_parser_test)
 add_executable(mps_parser_test tests/mps_parser_test.cpp)
 target_link_libraries(mps_parser_test PRIVATE markov_cero_core)
@@ -213,6 +221,10 @@ target_link_libraries(lp_rss_benchmark PRIVATE markov_cero_core)
 # behavior on the tracked QPLIB subset.
 add_executable(qp_kkt_benchmark scripts/bench_qp_kkt.cpp)
 target_link_libraries(qp_kkt_benchmark PRIVATE markov_cero_core)
+# MINLP-01 contract §11: restricted convex quadratic MINLP stratum with
+# known optima and OA counters.
+add_executable(minlp01_oa_benchmark scripts/bench_minlp01_oa.cpp)
+target_link_libraries(minlp01_oa_benchmark PRIVATE markov_cero_core)
 # W02/W01 contracts: shared SolveContext, ModelSnapshot and NodeView.
 add_executable(solve_context_test tests/solve_context_test.cpp)
 target_link_libraries(solve_context_test PRIVATE markov_cero_core)

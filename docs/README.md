@@ -23,6 +23,7 @@ Start with the [project README](../README.md) for the problem, architecture, dem
 | [MIQP node bounds contract](contracts/miqp-node-bounds.md) | Supporting lower-bound derivation, fail-closed bound rules, node status mapping, original-quadratic incumbent verification and QP-leaf replay (library, v1) |
 | [Local SQP and callback contract](contracts/nlp-local-sqp.md) | Callback validation at every evaluation, derivative diagnostic, SQP iteration semantics with the Armijo waiver, LocalStationary status rules and verified-feasible-incumbent handling (library, v2) |
 | [Elastic restoration contract](contracts/nlp-restoration.md) | Primal-infeasible linearized QP handling: frozen failure corpus, exact penalty and acceptance rules, bounded inconclusive failures and paired benchmark obligation (library, v1) |
+| [Restricted convex MINLP OA contract](contracts/minlp-oa.md) | Frozen structural scope and 512 screen, OA cut derivation with provenance and independent source replay, incumbent/master-bound certification, caps and counters, cases A–H test obligations (library, v1) |
 | [Hosted limits contract](contracts/hosted-limits.md) | Kernel-enforced CPU, address-space, file, output and wall limits for each hosted solve child (service, v1) |
 | [Provenance](project/PROVENANCE.md) | Source history, review limits and attributed inputs |
 | [Original request](project/ORIGINAL_REQUEST.md) | Historical SIH scope and roadmap, not a completion certificate |

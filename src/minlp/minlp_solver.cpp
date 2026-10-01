@@ -48,6 +48,33 @@ qp::ConvexityReport hessian_convexity(std::size_t n,
 namespace detail_minlp_solver {
 void require_convex_quadratic_structure(const model::Model& source) {
     source.validate();
+    // minlp-oa.md §2.2: malformed (non-finite) coefficients fail closed at
+    // entry, before screening or any cut exists.
+    for (std::size_t j = 0; j < source.objective.size(); ++j) {
+        if (!std::isfinite(source.objective[j])) {
+            throw std::invalid_argument("minlp: objective coefficient is not finite");
+        }
+    }
+    for (double value : source.matrix.value) {
+        if (!std::isfinite(value)) {
+            throw std::invalid_argument("minlp: matrix coefficient is not finite");
+        }
+    }
+    for (const auto& term : source.nlobj_terms) {
+        if (!std::isfinite(term.coefficient)) {
+            throw std::invalid_argument("minlp: NLOBJ term coefficient is not finite");
+        }
+    }
+    for (const auto& constraint : source.nlcon_constraints) {
+        if (!std::isfinite(constraint.rhs)) {
+            throw std::invalid_argument("minlp: NLCON rhs is not finite");
+        }
+        for (const auto& term : constraint.terms) {
+            if (!std::isfinite(term.coefficient)) {
+                throw std::invalid_argument("minlp: NLCON term coefficient is not finite");
+            }
+        }
+    }
     if (source.nlp_callbacks) {
         throw UnsupportedMinlp(
             "minlp: cannot check convexity of arbitrary callback companions; "
