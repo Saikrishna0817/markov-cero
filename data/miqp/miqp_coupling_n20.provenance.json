@@ -1,0 +1,43 @@
+{
+  "change": "initial synthetic convex MIQP benchmark instance for MIQP-01 contract section 7.8",
+  "columns": 20,
+  "convexity": "Q positive definite (B'B + positive diagonal) by construction",
+  "direction": "minimize",
+  "feasible_witness": [
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0
+  ],
+  "fixture": "miqp_coupling_n20.mps",
+  "generator": "scripts/generators/gen_miqp01_instances.py",
+  "generator_args": {
+    "family": "coupling",
+    "n": 20,
+    "seed": 20261002
+  },
+  "linear_constraint_nonzeros": 56,
+  "model_sha256": "78a87ad2617f8bcf408c4f12c0b033a9734c265a41796ef6de8383aa298eb765",
+  "objective_convention": "free MPS QUADOBJ upper triangle; objective c'x + 0.5 x'Qx; listed diagonal entry (i,i,v) contributes 0.5*v*x_i^2",
+  "problem_class": "MIQP",
+  "quadratic_nonzeros": 197,
+  "regeneration_date": "2026-10-01",
+  "rows": 4,
+  "source": "synthetic; generated in-repo, not an external dataset"
+}

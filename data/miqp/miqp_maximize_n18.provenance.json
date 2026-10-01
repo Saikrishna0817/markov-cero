@@ -1,0 +1,41 @@
+{
+  "change": "initial synthetic convex MIQP benchmark instance for MIQP-01 contract section 7.8",
+  "columns": 18,
+  "convexity": "Q negative semidefinite (negated B'B + diagonal), concave maximize",
+  "direction": "maximize",
+  "feasible_witness": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1
+  ],
+  "fixture": "miqp_maximize_n18.mps",
+  "generator": "scripts/generators/gen_miqp01_instances.py",
+  "generator_args": {
+    "family": "max",
+    "n": 18,
+    "seed": 20261004
+  },
+  "linear_constraint_nonzeros": 45,
+  "model_sha256": "3d47bdef4452dccb6c66b453aaf841699af0deffa2009d5aae720054a9207266",
+  "objective_convention": "free MPS QUADOBJ upper triangle; objective c'x + 0.5 x'Qx; listed diagonal entry (i,i,v) contributes 0.5*v*x_i^2",
+  "problem_class": "MIQP",
+  "quadratic_nonzeros": 155,
+  "regeneration_date": "2026-10-01",
+  "rows": 3,
+  "source": "synthetic; generated in-repo, not an external dataset"
+}

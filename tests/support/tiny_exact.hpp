@@ -37,6 +37,11 @@ class Rational final {
         return Rational(a.numerator_ * b.denominator_ + b.numerator_ * a.denominator_,
                         a.denominator_ * b.denominator_);
     }
+    friend Rational operator-(const Rational& a, const Rational& b) {
+        return Rational(a.numerator_ * b.denominator_ - b.numerator_ * a.denominator_,
+                        a.denominator_ * b.denominator_);
+    }
+    friend Rational operator-(const Rational& a) { return Rational(-a.numerator_, a.denominator_); }
     friend Rational operator*(const Rational& a, const Rational& b) {
         return Rational(a.numerator_ * b.numerator_, a.denominator_ * b.denominator_);
     }

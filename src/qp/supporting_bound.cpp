@@ -13,10 +13,10 @@ double supporting_lower_bound(const model::Model& model, const qp::QuadraticMode
                         const qp::QpSolution& sol,
                         const std::vector<model::Bound>& variable_lower,
                         const std::vector<model::Bound>& variable_upper) {
-    const auto px = q.P.multiply(sol.x);
     const auto m = model.matrix.row_count, n = model.matrix.column_count;
     if (variable_lower.size() != n || variable_upper.size() != n || sol.x.size() != n ||
         sol.y.size() < m) return -std::numeric_limits<double>::infinity();
+    const auto px = q.P.multiply(sol.x);
     std::vector<long double> reduced(n);
     long double bound = model.objective_offset, magnitude = std::abs(bound);
     for (std::size_t j = 0; j < n; ++j) {

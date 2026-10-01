@@ -1,0 +1,39 @@
+{
+  "change": "initial synthetic convex MIQP benchmark instance for MIQP-01 contract section 7.8",
+  "columns": 16,
+  "convexity": "Q positive definite (B'B + positive diagonal) by construction",
+  "direction": "minimize",
+  "feasible_witness": [
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    0
+  ],
+  "fixture": "miqp_dense_block_n16.mps",
+  "generator": "scripts/generators/gen_miqp01_instances.py",
+  "generator_args": {
+    "family": "dense",
+    "n": 16,
+    "seed": 20261003
+  },
+  "linear_constraint_nonzeros": 32,
+  "model_sha256": "5c6fe02b0fba6b693b12de173ef8e6a9d4d7413656a2e1d99974d9a653bc7e4d",
+  "objective_convention": "free MPS QUADOBJ upper triangle; objective c'x + 0.5 x'Qx; listed diagonal entry (i,i,v) contributes 0.5*v*x_i^2",
+  "problem_class": "MIQP",
+  "quadratic_nonzeros": 122,
+  "regeneration_date": "2026-10-01",
+  "rows": 2,
+  "source": "synthetic; generated in-repo, not an external dataset"
+}

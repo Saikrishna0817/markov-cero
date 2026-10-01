@@ -149,6 +149,27 @@ target_link_libraries(qp_adaptive_rho_test PRIVATE markov_cero_core)
 # CPU/GPU disclosure (docs/contracts/convex-qp.md).
 add_executable(qp_kkt_attack_test tests/qp_kkt_attack_test.cpp)
 target_link_libraries(qp_kkt_attack_test PRIVATE markov_cero_core)
+# MIQP-01 contract §7.1/§7.2: supporting-bound algebra against an independent
+# rational restatement of docs/contracts/miqp-node-bounds.md §2.2.
+add_executable(miqp_supporting_bound_test tests/miqp_supporting_bound_test.cpp)
+target_link_libraries(miqp_supporting_bound_test PRIVATE markov_cero_core)
+# MIQP-01 contract §7.3/§7.4: node overlays, infinite-endpoint fail-closed
+# search and the blueprint §13 required MIQP cases.
+add_executable(miqp_node_bound_test tests/miqp_node_bound_test.cpp)
+target_link_libraries(miqp_node_bound_test PRIVATE markov_cero_core)
+# MIQP-01 contract §7.5: incumbent tamper rejection at the engine gate and
+# at proof replay, for minimize and maximize quadratic models.
+add_executable(miqp_incumbent_test tests/miqp_incumbent_test.cpp)
+target_link_libraries(miqp_incumbent_test PRIVATE markov_cero_core)
+# MIQP-01 contract §7.6: proof attacks on quadratic trees — altered primal,
+# multiplier, objective, Farkas certificate, status labels, splits and
+# incumbents must all be rejected.
+add_executable(miqp_proof_attack_test tests/miqp_proof_attack_test.cpp)
+target_link_libraries(miqp_proof_attack_test PRIVATE markov_cero_core)
+# MIQP-01 contract §7.7: seeded random small integer boxes with quadratic
+# objectives differentially checked against exhaustive enumeration.
+add_executable(miqp_bruteforce_test tests/miqp_bruteforce_test.cpp)
+target_link_libraries(miqp_bruteforce_test PRIVATE markov_cero_core)
 add_executable(numerical_diagnostic_test tests/numerical_diagnostic_test.cpp)
 target_link_libraries(numerical_diagnostic_test PRIVATE markov_cero_core)
 add_executable(e2e_tier1_m1_features tests/e2e/test_tier1_m1_features.cpp tests/e2e/test_tier1_m1_features_t1_f03_01_pdlpprimalfeasibilityverification.cpp tests/e2e/test_tier1_m1_features_t1_f06_03_sparsebasisstatisticstracking.cpp)
