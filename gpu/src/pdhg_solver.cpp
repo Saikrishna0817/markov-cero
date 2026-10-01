@@ -1,4 +1,5 @@
 #include "markov_cero/gpu/pdhg_step.hpp"
+#include "markov_cero/gpu/device.hpp"
 #include "markov_cero/gpu/kernels.hpp"
 #include "markov_cero/scale/ruiz_scaling.hpp"
 
@@ -20,6 +21,17 @@ markov_cero::lp::first_order::PdlpResult solve_pdlp_gpu(
     const auto t_total_start = std::chrono::steady_clock::now();
     double h2d_ms = 0.0, kernel_ms = 0.0, d2h_ms = 0.0;
     const std::size_t m = model.matrix.row_count, n = model.matrix.column_count;
+#ifdef MARKOV_CERO_HAS_CUDA
+    if (!is_gpu_available()) {
+        // Tier-1 fallback: kernels are device-only in a CUDA build, so a GPU
+        // entry on a host with no usable device solves on CPU PDLP instead of
+        // dying in cudaMalloc. CPU-only builds keep running the host path
+        // below, which is what their fallback coverage exercises.
+        auto cpu = options;
+        cpu.backend = Backend::cpu;
+        return solve_pdlp(model, cpu);
+    }
+#endif
     if (m == 0 || n == 0) {
         auto cpu = options; cpu.backend = Backend::cpu;
         return solve_pdlp(model, cpu);

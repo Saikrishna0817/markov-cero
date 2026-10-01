@@ -10,11 +10,6 @@
 namespace markov_cero::milp {
 namespace {
 
-// Maximum nodes handed out by one pop_batch call. Amortizes queue-lock
-// contention over a subtree slice instead of one mutex round-trip per node,
-// and removes the per-pop O(n) heap prune that serialized all workers (RW-2).
-constexpr std::size_t kDefaultBatchSize = 16;
-
 // Discarded (stale) pops tolerated before the heap is compacted. Keeps the
 // heap from retaining null/stale entries without paying a full make_heap on
 // every prune request.

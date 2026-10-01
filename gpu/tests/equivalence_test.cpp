@@ -1,3 +1,4 @@
+#include "device_skip.hpp"
 #include "equivalence_test_internal.hpp"
 namespace test_equivalence_test {
 using namespace detail_equivalence_test;
@@ -217,6 +218,7 @@ void test_scale_equivalence() {
 using namespace test_equivalence_test;
 using namespace test_equivalence_test::detail_equivalence_test;
 int main() {
+    if (markov_cero::gpu::test::skip_without_device()) return 77;
     std::cout << "=== Markov-Cero Kernel Equivalence Tests (T-5.03 - T-5.05) ===\n";
     test_synthetic_spmv();
     test_synthetic_spmv_transpose();

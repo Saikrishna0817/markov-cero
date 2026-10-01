@@ -1,3 +1,4 @@
+#include "device_skip.hpp"
 #include "markov_cero/gpu/pdhg_step.hpp"
 #include "markov_cero/io/mps.hpp"
 #include "markov_cero/lp/first_order/pdlp.hpp"
@@ -117,6 +118,7 @@ void test_cpu_timing(const std::string& name, const std::string& path, double ex
 } // namespace
 
 int main() {
+    if (markov_cero::gpu::test::skip_without_device()) return 77;
     try {
         std::cout << "=== Markov-Cero Four-Part Timing Tests (T-5.11 / D-GPU-08) ===\n\n";
 

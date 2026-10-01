@@ -1,3 +1,4 @@
+#include "device_skip.hpp"
 #include "markov_cero/gpu/pdhg_step.hpp"
 #include "markov_cero/io/mps.hpp"
 #include "markov_cero/lp/first_order/pdlp.hpp"
@@ -144,6 +145,7 @@ void test_instance_restart_reduction(const std::string& name,
 } // namespace
 
 int main() {
+    if (markov_cero::gpu::test::skip_without_device()) return 77;
     std::cout << "=== Markov-Cero Adaptive Restart Tests (T-5.08) ===\n";
     using namespace markov_cero::lp::first_order;
 

@@ -13,6 +13,7 @@ Usage: python3 web/backend/service_limits_test.py /path/to/markov-cero-solve
 import json
 import pathlib
 import resource
+import subprocess
 import sys
 import threading
 import time
@@ -56,6 +57,29 @@ def clear_counters():
         service_limits.SLOTS_USED = 0
 
 
+def sanitizer_blocked_by_rlimit_as(solver, model):
+    """True when this build dies under the declared RLIMIT_AS only because a
+    sanitizer reserves ~14 TB of shadow address space (hosted-limits section 3).
+
+    A signal-killed child reaches the client as "terminated by signal 6" with
+    no sanitizer banner, so the evidence has to come from the child's stderr,
+    read the way os_limits_test.py reads it.
+    """
+
+    def under_service_limits():
+        resource.setrlimit(resource.RLIMIT_AS,
+                           (server.SOLVE_RLIMIT_AS_BYTES, server.SOLVE_RLIMIT_AS_BYTES))
+        resource.setrlimit(resource.RLIMIT_CPU,
+                           (server.SOLVE_RLIMIT_CPU_SECONDS, server.SOLVE_RLIMIT_CPU_SECONDS))
+
+    try:
+        probe = subprocess.run([solver, str(model)], capture_output=True,
+                               timeout=60, preexec_fn=under_service_limits)
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return probe.returncode != 0 and b"AddressSanitizer" in probe.stderr
+
+
 def main():
     solver = sys.argv[1] if len(sys.argv) > 1 else server.SOLVER_BIN
     require(pathlib.Path(solver).is_file(), f"solver binary missing: {solver}")
@@ -79,7 +103,8 @@ def main():
 
         # Result fields: assurance and the v1.1 additions reach the client.
         code, _, payload = request(f"{base}/solve", data=solve_payload(model))
-        if code != 200 and b"AddressSanitizer" in payload:
+        if code != 200 and (b"AddressSanitizer" in payload
+                            or sanitizer_blocked_by_rlimit_as(solver, model)):
             # A sanitizer build reserves ~14 TB of shadow address space and
             # dies under the declared RLIMIT_AS; lift only that bound (§3).
             server.SOLVE_RLIMIT_AS_BYTES = resource.RLIM_INFINITY
@@ -103,6 +128,15 @@ def main():
         code, _, payload = request(f"{base}/metrics")
         require(code == 200, f"/metrics must answer 200, got {code}")
         metrics = json.loads(payload)
+        # The /solve response is written before the handler releases its slot,
+        # so a metrics read landing between those two events would still see a
+        # busy pool; wait for the release instead of sampling the race once.
+        release_deadline = time.time() + 5.0
+        while metrics["slots_in_use"] != 0 and time.time() < release_deadline:
+            time.sleep(0.05)
+            code, _, payload = request(f"{base}/metrics")
+            require(code == 200, f"/metrics must answer 200, got {code}")
+            metrics = json.loads(payload)
         for name in ("requests_total", "solves_total", "solves_accepted",
                      "solves_by_status", "quota_rejected", "busy_rejected",
                      "auth_rejected", "client_error", "server_error",

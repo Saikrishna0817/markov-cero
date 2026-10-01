@@ -23,6 +23,11 @@ enum class ChildPushStatus {
     empty_integer_domain    ///< both gates reject: §4.2 conclusive emptiness
 };
 
+/// Maximum nodes handed out by one pop_batch call. Amortizes queue-lock
+/// contention over a subtree slice instead of one mutex round-trip per node,
+/// and removes the per-pop O(n) heap prune that serialized all workers (RW-2).
+inline constexpr std::size_t kDefaultBatchSize = 16;
+
 /// Thread-safe min-heap priority queue of BranchNodes prioritizing lowest lower bound.
 ///
 /// RW-2 rework notes:
@@ -64,7 +69,7 @@ class ThreadSafeNodeQueue {
     /// quiescent or stopped (the worker should then exit).
     [[nodiscard]] std::vector<std::shared_ptr<BranchNode>>
     pop_batch(bool was_active, double prune_cutoff, bool& became_active,
-              std::size_t max_batch = 16);
+              std::size_t max_batch = kDefaultBatchSize);
 
     void deactivate_worker();
     void prune(double cutoff);

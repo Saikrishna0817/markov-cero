@@ -1,3 +1,4 @@
+#include "device_skip.hpp"
 #include "markov_cero/gpu/buffer.hpp"
 #include "markov_cero/gpu/kernels.hpp"
 
@@ -191,6 +192,7 @@ void test_mathematical_properties() {
 } // namespace
 
 int main() {
+    if (markov_cero::gpu::test::skip_without_device()) return 77;
     std::cout << "=== Markov-Cero Deterministic Reduction Tests (T-5.06) ===\n";
     test_empty_and_unit();
     test_reductions_equivalence();

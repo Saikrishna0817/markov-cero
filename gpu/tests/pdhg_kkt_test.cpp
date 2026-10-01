@@ -1,3 +1,4 @@
+#include "device_skip.hpp"
 #include "markov_cero/gpu/pdhg_step.hpp"
 #include "markov_cero/io/mps.hpp"
 #include "markov_cero/lp/first_order/pdlp.hpp"
@@ -116,6 +117,7 @@ void test_instance_kkt_tolerances(const std::string& name,
 } // namespace
 
 int main() {
+    if (markov_cero::gpu::test::skip_without_device()) return 77;
     std::cout << "=== Markov-Cero Relative KKT Termination Tests (T-5.10 / D-GPU-09) ===\n";
     std::cout << "Tolerances tested: 1e-4 (fast), 1e-6 (medium), 1e-8 (high precision)\n\n";
 

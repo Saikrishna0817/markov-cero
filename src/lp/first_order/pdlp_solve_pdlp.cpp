@@ -3,6 +3,8 @@ namespace markov_cero::lp::first_order {
 using namespace detail_pdlp;
 PdlpResult solve_pdlp(const model::Model& model, const PdlpOptions& options) {
     if (options.backend == Backend::gpu) {
+        // gpu::solve_pdlp_gpu falls back to the CPU path itself when the host
+        // has no usable device, so the label below stays honest either way.
         const bool has_device = gpu::is_gpu_available();
         auto result = gpu::solve_pdlp_gpu(model, options);
         result.backend_actually_used = has_device ? "cuda" : "cpu_fallback";

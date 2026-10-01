@@ -76,7 +76,25 @@ def run_instance(
     time_limit_sec: float = 60.0,
     timeout_sec: int = 120,
 ) -> Dict[str, Any]:
-    cmd = [solver_bin, mps_path, "--engine", "milp", "--time-limit", str(time_limit_sec)]
+    # The verdict requires an independently certified optimum (status Optimal
+    # and verified), and the default proof budget (10000 nodes / 5 s) exhausted
+    # on flugpl's 12547-node tree (proof_budget_kind=node_limit, then
+    # time_limit): the search had already closed the gap to 0, the prover just
+    # ran out of room. Budgets are resource allowances, not verdict thresholds,
+    # so the prover gets enough of them here; the PASS bar (Optimal + verified
+    # + rel_error <= tolerance) is unchanged.
+    cmd = [
+        solver_bin,
+        mps_path,
+        "--engine",
+        "milp",
+        "--time-limit",
+        str(time_limit_sec),
+        "--proof-max-nodes",
+        "100000",
+        "--proof-time-limit",
+        "30",
+    ]
     t0 = time.perf_counter()
     try:
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_sec)

@@ -179,6 +179,14 @@ set_tests_properties(
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     ENVIRONMENT "MARKOV_CERO_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
 set_tests_properties(domain_supply_chain_large PROPERTIES TIMEOUT 120)
+# Device-only kernel tests: on a host that compiled CUDA but has no device
+# (the hosted runners) they exit 77 from gpu/tests/device_skip.hpp instead of
+# dying in cudaMalloc. CPU-only builds never take that path.
+set_tests_properties(
+  gpu_buffer equivalence gpu_reduction
+  gpu_pdhg_step gpu_pdhg_restart gpu_pdhg_adaptive gpu_pdhg_kkt gpu_pdhg_timing
+  PROPERTIES
+    SKIP_RETURN_CODE 77)
 if(MARKOV_CERO_BUILD_FUZZER)
   if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message(FATAL_ERROR "libFuzzer target requires Clang")

@@ -1,3 +1,4 @@
+#include "device_skip.hpp"
 #include "gpu_buffer_test_internal.hpp"
 namespace test_gpu_buffer_test {
 using namespace detail_gpu_buffer_test;
@@ -227,6 +228,7 @@ void test_csr_construction_roundtrip() {
 using namespace test_gpu_buffer_test;
 using namespace test_gpu_buffer_test::detail_gpu_buffer_test;
 int main() {
+    if (markov_cero::gpu::test::skip_without_device()) return 77;
     std::cout << "=== Markov-Cero GPU Buffer & CSR Tests (T-5.02) ===\n";
     test_buffer_lifecycle();
     test_buffer_roundtrip_double();

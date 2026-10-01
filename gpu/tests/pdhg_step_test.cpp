@@ -1,3 +1,4 @@
+#include "device_skip.hpp"
 #include "markov_cero/gpu/buffer.hpp"
 #include "markov_cero/gpu/csr.hpp"
 #include "markov_cero/gpu/pdhg_step.hpp"
@@ -202,6 +203,7 @@ void test_zero_transfers_invariant() {
 } // namespace
 
 int main() {
+    if (markov_cero::gpu::test::skip_without_device()) return 77;
     std::cout << "=== Markov-Cero Fused PDHG Step Tests (T-5.07) ===\n";
     test_synthetic_single_step();
     test_netlib_multi_step("afiro", "data/netlib/afiro.mps");
