@@ -40,6 +40,14 @@ struct SqpOptions {
     double trust_step_scale{1.0};        // scales the QP step before line search
     bool verbose{false};
     std::optional<std::chrono::steady_clock::time_point> deadline;
+    // NLP-02 contract nlp-restoration.md: elastic restoration on a
+    // primal-infeasible linearized QP. false = the NLP-01 immediate
+    // inconclusive failure (used by the paired benchmark as the old path).
+    bool elastic_restoration{true};
+    // NLP-02 contract nlp-restoration.md section 5: consecutive rejected
+    // restoration attempts (without an accepted step) before an
+    // inconclusive exit.
+    std::size_t max_restoration_failures{5};
 };
 
 struct SqpSolution {
@@ -66,6 +74,12 @@ struct SqpSolution {
     double x0_projection_norm{0.0};
     std::vector<double> best_feasible_x;
     double best_feasible_objective{0.0};
+    // NLP-02 contract nlp-restoration.md sections 4-6: accepted elastic
+    // restoration steps, rejected restoration attempts, and whether the
+    // consecutive-failure budget ended the solve (inconclusive).
+    std::size_t restoration_steps{0};
+    std::size_t restoration_failures{0};
+    bool restoration_exhausted{false};
 };
 
 class SqpSolver {

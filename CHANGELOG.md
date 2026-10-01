@@ -2,6 +2,54 @@
 
 ## Unreleased
 
+### 2026-10-01 blueprint NLP-02 — elastic restoration for inconsistent SQP linearizations
+
+- Added the binding library contract
+  [`docs/contracts/nlp-restoration.md`](docs/contracts/nlp-restoration.md)
+  before any numerical code: the frozen failure corpus measured on the
+  post-NLP-01 tree (§2), the exact slack-penalized subproblem and penalty
+  grid (§3), the original-violation acceptance rule A1/A2 (§4), the bounded
+  inconclusive outcomes (§5), diagnostics (§6) and the §7 test / §8 paired
+  benchmark obligations. `nlp-local-sqp.md` reaches **v2**: §4.4 now points
+  to the restoration contract instead of deferring the work.
+- **Frozen failure corpus (measured first):** the minimized feasible case
+  `x2_minus_one` (`f = (x−1)²`, `h = x²−1 = 0`, start `x = 0` — feasible
+  at `x = ±1`, but the zero-gradient linearization reads `0·d = 1`) failed
+  with the NLP-01 deferral message; the truly infeasible `linear_pair`
+  failed identically and must stay inconclusive.
+- Elastic subproblem (`sqp_solver_subproblem.cpp`): slack columns
+  (`n_ineq + 2·n_eq`), `P = diag(B_k, 0)` (stays convex), exact penalty
+  `ρ = max(ρ, μ, 10)` escalating ×10 per rejected attempt (cap 1e8);
+  constraint rows keep indices `0…m−1` so dual indexing is untouched.
+- Restoration attempt (`sqp_solver_restoration.cpp`): trust-cap the `d`
+  step at the shared `kTrustRadius`, backtrack `t = 1 … 2⁻¹⁰` accepting
+  the first trial with a nonzero step (≥1e-10) and a ≥5% decrease of the
+  **original** constraint violation — slacks never enter the test. On
+  acceptance: iterate moves, counters update, no L-BFGS curvature, no
+  multiplier overwrite, no convergence claim that step; on rejection the
+  iterate does not move. After 5 consecutive rejected attempts the solve
+  ends inconclusive (`restoration_exhausted`, `failure_site =
+  sqp_restoration`) — never `Infeasible`, never `Optimal`.
+- `SqpOptions::elastic_restoration` (default true) reproduces the exact
+  NLP-01 immediate failure when disabled (the paired benchmark's old
+  path); `SqpSolution` gains `restoration_steps`, `restoration_failures`,
+  `restoration_exhausted`, and every exit message discloses
+  `; elastic restoration steps=K` when K > 0. The binding exposes the
+  `elastic_restoration` kwarg and both counters.
+- Added the §7 suite [`tests/nlp_restoration_test.cpp`](tests/nlp_restoration_test.cpp)
+  (recovery through the independent KKT checker, the disabled old path,
+  the bounded honest failure with `best_feasible_x` empty, healthy-path
+  regression with zero counters) and `test_nlp02_bindings.py` (recovery,
+  off switch, key presence).
+- Added the §8 paired benchmark: `scripts/run_nlp02_benchmark.py` runs the
+  frozen eight-case corpus (NLP-01 §7 + `x2_minus_one`) twice through the
+  public binding, on vs off — 7 vs 6 converged (+1 recovered failure),
+  identical statuses and iterations on every shared-success case,
+  `infeasible_pair` bounded at 6 rejected attempts
+  ([record](evidence/nlp02-restoration-2026-10-01.json)). Paired
+  in-process wall numbers only; no speed, globality or infeasibility
+  claim.
+
 ### 2026-10-01 blueprint NLP-01 — local SQP honesty, callback guards and derivative diagnostics
 
 - Added the binding library contract

@@ -1,0 +1,499 @@
+{
+  "record": "nlp02-restoration-paired",
+  "date": "2026-10-01",
+  "contract": "docs/contracts/nlp-restoration.md section 8",
+  "entry_point": "python binding: markov_cero.NlpModel.solve (SQP)",
+  "package_version": "0.5.2",
+  "git_revision": "5eb9dfb",
+  "python": "3.14.7",
+  "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+  "design": "Each frozen case run twice through the same build: elastic_restoration on (NLP-02) and off (NLP-01 path).",
+  "corpus_size": 8,
+  "runs": [
+    {
+      "case": "convex_qp",
+      "restoration": "on",
+      "start": [
+        0.0,
+        0.0
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied",
+      "iterations": 4,
+      "hessian_resets": 0,
+      "callback_evaluations": 31,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 0.000222,
+      "objective": 1.232595164407831e-32,
+      "x": [
+        0.9999999999999999,
+        2.0
+      ],
+      "constraint_violation": 0.0,
+      "kkt_residual": 2.220446049250313e-16,
+      "stationarity_residual": 2.220446049250313e-16,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "convex_qp",
+      "restoration": "off",
+      "start": [
+        0.0,
+        0.0
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied",
+      "iterations": 4,
+      "hessian_resets": 0,
+      "callback_evaluations": 31,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 0.000131,
+      "objective": 1.232595164407831e-32,
+      "x": [
+        0.9999999999999999,
+        2.0
+      ],
+      "constraint_violation": 0.0,
+      "kkt_residual": 2.220446049250313e-16,
+      "stationarity_residual": 2.220446049250313e-16,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "rosenbrock_start_a",
+      "restoration": "on",
+      "start": [
+        -1.2,
+        1.0
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied",
+      "iterations": 40,
+      "hessian_resets": 0,
+      "callback_evaluations": 296,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 0.001712,
+      "objective": 3.582215076439075e-14,
+      "x": [
+        0.9999998108053058,
+        0.9999996210860671
+      ],
+      "constraint_violation": 0.0,
+      "kkt_residual": 1.6855736535179808e-07,
+      "stationarity_residual": 1.6855736535179808e-07,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "rosenbrock_start_a",
+      "restoration": "off",
+      "start": [
+        -1.2,
+        1.0
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied",
+      "iterations": 40,
+      "hessian_resets": 0,
+      "callback_evaluations": 296,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 0.001716,
+      "objective": 3.582215076439075e-14,
+      "x": [
+        0.9999998108053058,
+        0.9999996210860671
+      ],
+      "constraint_violation": 0.0,
+      "kkt_residual": 1.6855736535179808e-07,
+      "stationarity_residual": 1.6855736535179808e-07,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "rosenbrock_start_b",
+      "restoration": "on",
+      "start": [
+        0.0,
+        0.0
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied",
+      "iterations": 26,
+      "hessian_resets": 0,
+      "callback_evaluations": 190,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 0.001176,
+      "objective": 7.598229186532666e-14,
+      "x": [
+        0.9999997243512865,
+        0.9999994487306845
+      ],
+      "constraint_violation": 0.0,
+      "kkt_residual": 5.625116534965284e-07,
+      "stationarity_residual": 5.625116534965284e-07,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "rosenbrock_start_b",
+      "restoration": "off",
+      "start": [
+        0.0,
+        0.0
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied",
+      "iterations": 26,
+      "hessian_resets": 0,
+      "callback_evaluations": 190,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 0.001171,
+      "objective": 7.598229186532666e-14,
+      "x": [
+        0.9999997243512865,
+        0.9999994487306845
+      ],
+      "constraint_violation": 0.0,
+      "kkt_residual": 5.625116534965284e-07,
+      "stationarity_residual": 5.625116534965284e-07,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "equality_quadratic",
+      "restoration": "on",
+      "start": [
+        3.0,
+        0.0
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied",
+      "iterations": 4,
+      "hessian_resets": 0,
+      "callback_evaluations": 58,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 0.000212,
+      "objective": 1.9999999888091862,
+      "x": [
+        1.0,
+        0.9999999944045931
+      ],
+      "constraint_violation": 5.5954068045593885e-09,
+      "kkt_residual": 7.154712378110162e-09,
+      "stationarity_residual": 7.154712378110162e-09,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "equality_quadratic",
+      "restoration": "off",
+      "start": [
+        3.0,
+        0.0
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied",
+      "iterations": 4,
+      "hessian_resets": 0,
+      "callback_evaluations": 58,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 0.000185,
+      "objective": 1.9999999888091862,
+      "x": [
+        1.0,
+        0.9999999944045931
+      ],
+      "constraint_violation": 5.5954068045593885e-09,
+      "kkt_residual": 7.154712378110162e-09,
+      "stationarity_residual": 7.154712378110162e-09,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "bound_active_upper",
+      "restoration": "on",
+      "start": [
+        0.5
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied",
+      "iterations": 1,
+      "hessian_resets": 0,
+      "callback_evaluations": 10,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 5.7e-05,
+      "objective": 4.0,
+      "x": [
+        1.0
+      ],
+      "constraint_violation": 0.0,
+      "kkt_residual": 0.0,
+      "stationarity_residual": 0.0,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "bound_active_upper",
+      "restoration": "off",
+      "start": [
+        0.5
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied",
+      "iterations": 1,
+      "hessian_resets": 0,
+      "callback_evaluations": 10,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 4.9e-05,
+      "objective": 4.0,
+      "x": [
+        1.0
+      ],
+      "constraint_violation": 0.0,
+      "kkt_residual": 0.0,
+      "stationarity_residual": 0.0,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "saddle_origin",
+      "restoration": "on",
+      "start": [
+        0.0,
+        0.0
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied",
+      "iterations": 1,
+      "hessian_resets": 0,
+      "callback_evaluations": 9,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 3e-05,
+      "objective": 0.0,
+      "x": [
+        0.0,
+        0.0
+      ],
+      "constraint_violation": 0.0,
+      "kkt_residual": 0.0,
+      "stationarity_residual": 0.0,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "saddle_origin",
+      "restoration": "off",
+      "start": [
+        0.0,
+        0.0
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied",
+      "iterations": 1,
+      "hessian_resets": 0,
+      "callback_evaluations": 9,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 2.6e-05,
+      "objective": 0.0,
+      "x": [
+        0.0,
+        0.0
+      ],
+      "constraint_violation": 0.0,
+      "kkt_residual": 0.0,
+      "stationarity_residual": 0.0,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "infeasible_pair",
+      "restoration": "on",
+      "start": [
+        0.5
+      ],
+      "status": "NumericalFailure",
+      "message": "sqp: elastic restoration gave no original-violation decrease after 5 consecutive rejected steps (6 rejected, 0 accepted); linearized infeasibility unresolved - inconclusive",
+      "iterations": 6,
+      "hessian_resets": 0,
+      "callback_evaluations": 48,
+      "restoration_steps": 0,
+      "restoration_failures": 6,
+      "wall_time_seconds": 0.029282,
+      "objective": 0.25,
+      "x": [
+        0.5
+      ],
+      "constraint_violation": 0.5,
+      "kkt_residual": 1.0,
+      "stationarity_residual": 0.0,
+      "complementarity_residual": 0.0,
+      "kkt_verified": false,
+      "certificate_type": "none"
+    },
+    {
+      "case": "infeasible_pair",
+      "restoration": "off",
+      "start": [
+        0.5
+      ],
+      "status": "NumericalFailure",
+      "message": "sqp: QP subproblem linearization is primal-infeasible at the current iterate; elastic restoration is disabled",
+      "iterations": 1,
+      "hessian_resets": 0,
+      "callback_evaluations": 9,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 9.3e-05,
+      "objective": 0.25,
+      "x": [
+        0.5
+      ],
+      "constraint_violation": 0.5,
+      "kkt_residual": 1.0,
+      "stationarity_residual": 0.0,
+      "complementarity_residual": 0.0,
+      "kkt_verified": false,
+      "certificate_type": "none"
+    },
+    {
+      "case": "x2_minus_one",
+      "restoration": "on",
+      "start": [
+        0.0
+      ],
+      "status": "LocalStationary",
+      "message": "sqp: primal, stationarity, and complementarity KKT residuals satisfied; elastic restoration steps=1",
+      "iterations": 3,
+      "hessian_resets": 0,
+      "callback_evaluations": 40,
+      "restoration_steps": 1,
+      "restoration_failures": 0,
+      "wall_time_seconds": 0.000254,
+      "objective": 0.0,
+      "x": [
+        1.0
+      ],
+      "constraint_violation": 0.0,
+      "kkt_residual": 0.0,
+      "stationarity_residual": 0.0,
+      "complementarity_residual": 0.0,
+      "kkt_verified": true,
+      "certificate_type": "local_kkt"
+    },
+    {
+      "case": "x2_minus_one",
+      "restoration": "off",
+      "start": [
+        0.0
+      ],
+      "status": "NumericalFailure",
+      "message": "sqp: QP subproblem linearization is primal-infeasible at the current iterate; elastic restoration is disabled",
+      "iterations": 1,
+      "hessian_resets": 0,
+      "callback_evaluations": 9,
+      "restoration_steps": 0,
+      "restoration_failures": 0,
+      "wall_time_seconds": 2e-05,
+      "objective": 1.0,
+      "x": [
+        0.0
+      ],
+      "constraint_violation": 1.0,
+      "kkt_residual": 2.0,
+      "stationarity_residual": 0.0,
+      "complementarity_residual": 0.0,
+      "kkt_verified": false,
+      "certificate_type": "none"
+    }
+  ],
+  "summary": {
+    "restoration_on": {
+      "runs": 8,
+      "by_status": {
+        "LocalStationary": 7,
+        "NumericalFailure": 1
+      },
+      "converged": 7
+    },
+    "restoration_off": {
+      "runs": 8,
+      "by_status": {
+        "LocalStationary": 6,
+        "NumericalFailure": 2
+      },
+      "converged": 6
+    },
+    "converged_delta_on_minus_off": 1,
+    "paired_wall_overhead_shared_success": [
+      {
+        "case": "convex_qp",
+        "wall_on_seconds": 0.000222,
+        "wall_off_seconds": 0.000131,
+        "ratio_on_over_off": 1.6947
+      },
+      {
+        "case": "rosenbrock_start_a",
+        "wall_on_seconds": 0.001712,
+        "wall_off_seconds": 0.001716,
+        "ratio_on_over_off": 0.9977
+      },
+      {
+        "case": "rosenbrock_start_b",
+        "wall_on_seconds": 0.001176,
+        "wall_off_seconds": 0.001171,
+        "ratio_on_over_off": 1.0043
+      },
+      {
+        "case": "equality_quadratic",
+        "wall_on_seconds": 0.000212,
+        "wall_off_seconds": 0.000185,
+        "ratio_on_over_off": 1.1459
+      },
+      {
+        "case": "bound_active_upper",
+        "wall_on_seconds": 5.7e-05,
+        "wall_off_seconds": 4.9e-05,
+        "ratio_on_over_off": 1.1633
+      },
+      {
+        "case": "saddle_origin",
+        "wall_on_seconds": 3e-05,
+        "wall_off_seconds": 2.6e-05,
+        "ratio_on_over_off": 1.1538
+      }
+    ],
+    "total_wall_time_seconds": 0.036692
+  },
+  "claims": "Paired robust-convergence counts and wall times as measured on the frozen eight-case corpus through the public binding, on vs off, same build, same host.",
+  "non_claims": [
+    "no speed claim beyond the paired in-process wall numbers",
+    "no global objective proof and no local-minimum claim for any case",
+    "no cross-solver ranking",
+    "the infeasible pair remains an inconclusive honest failure, never a proof of infeasibility"
+  ]
+}

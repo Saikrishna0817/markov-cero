@@ -88,8 +88,15 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
                 if (out.original_message.empty()) {
                     out.original_message = "original primal not applicable";
                 }
-                out.diagnostic.failure_site = "sqp_solve";
-                out.diagnostic.suggested_recovery = "improve_x0_or_relax_kkt_tolerance";
+                // NLP-02 contract nlp-restoration.md section 6.3: name the
+                // restoration budget when that is what ended the solve.
+                if (sol.restoration_exhausted) {
+                    out.diagnostic.failure_site = "sqp_restoration";
+                    out.diagnostic.suggested_recovery = "improve_x0_or_relax_constraints";
+                } else {
+                    out.diagnostic.failure_site = "sqp_solve";
+                    out.diagnostic.suggested_recovery = "improve_x0_or_relax_kkt_tolerance";
+                }
             }
         } else {
             minlp::MinlpProblem problem;

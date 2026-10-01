@@ -1,10 +1,12 @@
-# Local SQP and callback contract (v1)
+# Local SQP and callback contract (v2)
 
 Binding contract for how the NLP path validates callbacks, diagnoses
 derivatives, qualifies a local first-order point, and reports statuses and
 incumbents. It closes blueprint task NLP-01 (blueprint §14): NLP is
 advertised as a **local SQP solver** with documented limits; global
-nonconvex optimization stays out of scope.
+nonconvex optimization stays out of scope. v2 (NLP-02): §4.4 now defers to
+the [elastic restoration contract](nlp-restoration.md) for primal-infeasible
+linearizations; statuses, assurances and every other section are unchanged.
 
 Related contracts and evidence:
 
@@ -14,6 +16,8 @@ Related contracts and evidence:
   cooperative polling for callback and solve stages.
 - [Convex QP contract](convex-qp.md) — the QP subproblem solver the SQP step
   uses (`qp::solve_qp`).
+- [Elastic restoration contract](nlp-restoration.md) — the NLP-02 handling
+  of primal-infeasible linearizations (trigger, penalty, acceptance).
 - `evidence/INDEX.md` — benchmark records for the §7 corpus obligation.
 
 Algorithmic reference: Nocedal–Wright, *Numerical Optimization*, SQP chapter.
@@ -115,11 +119,13 @@ point:
    `max_hessian_resets` (3) times. A QP subproblem reported
    `primal_infeasible` is a different case: `B_k` affects only the
    objective, so the linearized constraint set cannot become feasible by
-   resetting — the solve fails immediately with `NumericalFailure` and a
-   message naming the linearized-infeasibility. Either way the outcome is
-   inconclusive: never `Infeasible`, never a claim that the NLP is
-   infeasible (restoration/elastic subproblems are the deferred NLP-02
-   work).
+   resetting — the solve first attempts the elastic restoration of the
+   [nlp-restoration contract](nlp-restoration.md) (enabled by default;
+   `SqpOptions::elastic_restoration = false` keeps the immediate
+   `NumericalFailure` naming the linearized-infeasibility). Either way the
+   outcome is inconclusive: never `Infeasible`, never a claim that the NLP
+   is infeasible, and a recovered solve still passes the §5 verifier gate
+   unchanged.
 5. **Initial point.** `x0` is projected onto the variable bounds before the
    first iteration. The projection is reported: `SqpSolution::x0_projected`
    and `x0_projection_norm` (max coordinate movement), and the solve
@@ -208,6 +214,7 @@ Status, assurance-label and witness changes follow
 [numerical-policy](numerical-policy.md) §8 (version bump + migration note).
 Tolerance changes require the boundary tests
 (`numerical_policy_boundary_test`, `assurance_label_test`,
-`nlp` acceptance checks) to be re-run with an error analysis. Restoring
-inconsistent linearizations (elastic subproblems) is NLP-02 work and must
-not land here under the guise of a message fix.
+`nlp` acceptance checks) to be re-run with an error analysis. Restoration
+of inconsistent linearizations (elastic subproblems) is governed by
+[nlp-restoration](nlp-restoration.md); changes to those semantics update
+both documents together (this document reached v2 when NLP-02 landed).

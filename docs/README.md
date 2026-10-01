@@ -21,7 +21,8 @@ Start with the [project README](../README.md) for the problem, architecture, dem
 | [Convex QP path contract](contracts/convex-qp.md) | Frozen Hessian convention, three-outcome PSD classification, KKT/verification tolerances, status mapping and CPU/GPU path disclosure (library, v1) |
 | [MILP node bounds contract](contracts/milp-node-bounds.md) | Prune-reason/witness table, node lower-bound guards, branch-partition rules, cut obligations and proof/label semantics (library, v1) |
 | [MIQP node bounds contract](contracts/miqp-node-bounds.md) | Supporting lower-bound derivation, fail-closed bound rules, node status mapping, original-quadratic incumbent verification and QP-leaf replay (library, v1) |
-| [Local SQP and callback contract](contracts/nlp-local-sqp.md) | Callback validation at every evaluation, derivative diagnostic, SQP iteration semantics with the Armijo waiver, LocalStationary status rules and verified-feasible-incumbent handling (library, v1) |
+| [Local SQP and callback contract](contracts/nlp-local-sqp.md) | Callback validation at every evaluation, derivative diagnostic, SQP iteration semantics with the Armijo waiver, LocalStationary status rules and verified-feasible-incumbent handling (library, v2) |
+| [Elastic restoration contract](contracts/nlp-restoration.md) | Primal-infeasible linearized QP handling: frozen failure corpus, exact penalty and acceptance rules, bounded inconclusive failures and paired benchmark obligation (library, v1) |
 | [Hosted limits contract](contracts/hosted-limits.md) | Kernel-enforced CPU, address-space, file, output and wall limits for each hosted solve child (service, v1) |
 | [Provenance](project/PROVENANCE.md) | Source history, review limits and attributed inputs |
 | [Original request](project/ORIGINAL_REQUEST.md) | Historical SIH scope and roadmap, not a completion certificate |

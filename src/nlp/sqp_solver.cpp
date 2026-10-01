@@ -29,6 +29,10 @@ SqpSolution SqpSolver::solve(const NlpModel& model, const std::vector<double>& x
 
     Lbfgs lbfgs(static_cast<std::size_t>(options_.lbfgs_memory));
     double mu = options_.merit_penalty;
+    // NLP-02 contract nlp-restoration.md 3.3/5.1: elastic penalty grid and
+    // the consecutive-rejected-steps budget for restoration attempts.
+    double rho = std::max(mu, 10.0);
+    std::size_t consecutive_restoration_failures = 0;
     std::vector<double> lam_ineq, lam_eq;
 
     // Contract §5.4: remember the last iterate inside the feasibility
@@ -47,6 +51,12 @@ SqpSolution SqpSolver::solve(const NlpModel& model, const std::vector<double>& x
     auto finish = [&](lp::reference::SolveStatus status, std::string message) {
         sol.status = status;
         sol.message = std::move(message);
+        // NLP-02 contract nlp-restoration.md section 6.2: the restoration
+        // count reaches every exit message, hence the JSON message field.
+        if (sol.restoration_steps > 0) {
+            sol.message += "; elastic restoration steps=" +
+                           std::to_string(sol.restoration_steps);
+        }
         sol.x = x;
         sol.ineq_multipliers = lam_ineq;
         sol.eq_multipliers = lam_eq;
@@ -131,23 +141,42 @@ SqpSolution SqpSolver::solve(const NlpModel& model, const std::vector<double>& x
             qp::QuadraticModel sub = build_subproblem(model, x, grad, lbfgs,
                                                       J, cvals, n_ineq);
             sub.validate();
-            qp::QpOptions qp_opts;
-            qp_opts.absolute_tolerance = 1e-8;
-            qp_opts.relative_tolerance = 1e-8;
-            qp_opts.max_iterations = 20000;
-            qp_opts.time_limit_seconds = 10.0;
-            qp_opts.deadline = options_.deadline;
+            const auto qp_opts = sqp_qp_options(options_);
             const auto qp_sol = qp::solve_qp(sub, qp_opts);
 
             if (qp_sol.status == qp::QpStatus::primal_infeasible) {
-                // Contract §4.4: B_k affects only the objective, so a
-                // primal-infeasible linearization cannot be repaired by a
-                // Hessian reset — fail immediately and inconclusively
-                // (never Infeasible, never a claim about the NLP itself).
-                return finish(
-                    lp::reference::SolveStatus::numerical_failure,
-                    "sqp: QP subproblem linearization is primal-infeasible at the "
-                    "current iterate; elastic restoration is deferred (NLP-02)");
+                // NLP-02 contract nlp-restoration.md: B_k affects only the
+                // objective, so a primal-infeasible linearization cannot be
+                // repaired by a Hessian reset — attempt the elastic
+                // restoration (or fail immediately when it is disabled).
+                if (!options_.elastic_restoration) {
+                    return finish(
+                        lp::reference::SolveStatus::numerical_failure,
+                        "sqp: QP subproblem linearization is primal-infeasible at the "
+                        "current iterate; elastic restoration is disabled");
+                }
+                const auto rest = attempt_restoration(model, options_, x, grad, lbfgs,
+                                                      J, cvals, n_ineq, mu, rho);
+                if (rest.accepted) {
+                    // Section 4.4: no curvature update, no multiplier
+                    // overwrite, no convergence check on a restoration
+                    // step — the next iteration resumes ordinary SQP.
+                    x = rest.x_trial;
+                    ++sol.restoration_steps;
+                    consecutive_restoration_failures = 0;
+                    remember_feasible(x, rest.violation);
+                    continue;
+                }
+                ++sol.restoration_failures;
+                if (++consecutive_restoration_failures >
+                    options_.max_restoration_failures) {
+                    // Section 5.2: bounded rejected attempts end
+                    // inconclusively — never Infeasible, never Optimal.
+                    sol.restoration_exhausted = true;
+                    return finish(lp::reference::SolveStatus::numerical_failure,
+                                  restoration_exhausted_message(sol, options_));
+                }
+                continue;
             }
             if (qp_sol.status != qp::QpStatus::optimal || qp_sol.x.empty()) {
                 // D-02 LOCKED fallback: indefinite B detected via the failed

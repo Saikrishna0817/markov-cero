@@ -19,7 +19,8 @@ LineSearchOutcome line_search(const NlpModel& model, const SqpOptions& options,
     // scaled with the trust step), and the merit line search still
     // guarantees descent. WITHOUT it, t shrinks to ~1e-3 and progress stalls
     // on ill-conditioned objectives (Rosenbrock-class).
-    constexpr double kTrustRadius = 0.5;
+    // Shared constant (sqp_solver_internal.hpp), also used by the
+    // NLP-02 restoration step.
     double d_norm = 0.0;
     for (std::size_t j = 0; j < n; ++j) {
         d_norm = std::max(d_norm, std::abs(d[j]));

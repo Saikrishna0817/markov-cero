@@ -132,9 +132,12 @@ void register_nlp(py::module_& m) {
                  if (kwargs.contains("max_iterations")) {
                      opts.max_iterations = py::int_(kwargs["max_iterations"]);
                  }
-                 if (kwargs.contains("kkt_tolerance")) {
-                     opts.kkt_tolerance = py::float_(kwargs["kkt_tolerance"]);
-                 }
+                  if (kwargs.contains("kkt_tolerance")) {
+                      opts.kkt_tolerance = py::float_(kwargs["kkt_tolerance"]);
+                  }
+                  if (kwargs.contains("elastic_restoration")) {
+                      opts.elastic_restoration = py::bool_(kwargs["elastic_restoration"]);
+                  }
                  auto sol = nlp::solve_sqp(self, x0, opts);
                  const auto report = nlp::verify_nlp_solution(self, sol, opts.kkt_tolerance);
                  if (sol.status == lp::reference::SolveStatus::optimal)
@@ -159,6 +162,10 @@ void register_nlp(py::module_& m) {
                 out["hessian_resets"] = sol.hessian_resets;
                 out["callback_evaluations"] = sol.callback_evaluations;
                 out["x0_projection_norm"] = sol.x0_projection_norm;
+                // NLP-02 contract nlp-restoration.md section 6.4: elastic
+                // restoration observability (accepted / rejected attempts).
+                out["restoration_steps"] = sol.restoration_steps;
+                out["restoration_failures"] = sol.restoration_failures;
                 if (!sol.best_feasible_x.empty()) {
                     auto best = sol.best_feasible_x;
                     out["best_feasible_x"] = adopt_vector(std::move(best));
@@ -170,7 +177,7 @@ void register_nlp(py::module_& m) {
             "Solve with SQP (D-02). x0 accepts a float64 buffer (zero-copy "
             "read) or a Python list. The returned x is a zero-copy float64 "
             "array adopting the C++ solution storage. Kwargs: "
-            "max_iterations, kkt_tolerance.");
+            "max_iterations, kkt_tolerance, elastic_restoration.");
     m.def(
         "check_derivatives",
         [](const nlp::NlpModel& model, py::object x_obj, double step_hint) {
