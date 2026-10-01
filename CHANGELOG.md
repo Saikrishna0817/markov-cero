@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+### 2026-10-01 release gate — reproducible-build comparison
+
+- Closed one of REL-01's explicitly undone gate items on this host: two
+  independently configured clean build trees
+  (`-DCMAKE_BUILD_TYPE=Release -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON`)
+  of commit `da13130`, created at different absolute paths, produced
+  **107/107 byte-identical artifacts** — every executable plus the
+  static library each tree builds, with 0 differing and 0 files unique
+  to one tree — and each tree passed **120/120 CTest**. Recorded in
+  [`evidence/reproducible-build-20261001.json`](evidence/reproducible-build-20261001.json)
+  with the per-artifact sha256 map, toolchain versions and the artifact
+  definition, and cross-referenced from
+  [`docs/guides/RELEASE.md`](docs/guides/RELEASE.md) §12 and the
+  [status record](docs/project/STATUS.md). The comparison covers the
+  build tree only: no second host, no other toolchain, no wheel or
+  prefix package, no signing, and no claim at any other commit — the
+  signed-artifact, vulnerability-scan, dependency-pinning, D18 owner
+  and second-host gates stay open and are not softened by this.
+
 ### 2026-10-01 GAP-01 — close the gaps the BENCH-01 campaign surfaced
 
 - New binding contract

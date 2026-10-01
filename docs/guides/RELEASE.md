@@ -269,5 +269,12 @@ All of the following remain **pending**; none was closed by REL-01:
   no run record does.
 - Second-host install and reproduction by an independent user — **pending**;
   everything above ran on one host.
-- Signed artifacts, vulnerability scan, dependency pinning, reproducible-build
-  comparison — **pending** (§9).
+- Signed artifacts, vulnerability scan, dependency pinning — **pending** (§9).
+- Reproducible-build comparison — **done locally, scope-limited**: two
+  independently configured clean Release + `-Werror` build trees of one
+  commit, at different absolute paths, produced **107/107 byte-identical**
+  artifacts (0 differing, 0 tree-specific), and both trees passed
+  120/120 CTest ([record](../../evidence/reproducible-build-20261001.json)).
+  That closes the comparison itself only — it says nothing about a second
+  host, another toolchain, the wheel or prefix packages, or any commit
+  other than the one recorded.
