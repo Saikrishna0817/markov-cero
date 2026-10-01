@@ -49,9 +49,18 @@ def tracked_files():
             yield name, path
 
 
-def write_manifest(destination):
+def write_manifest(destination, generated=()):
+    """One sha256 per tracked file, minus the generated outputs themselves.
+
+    The manifest and the SBOM document cannot carry their own hashes —
+    writing one changes the other — so both are excluded and the exclusion
+    is stated in the document rather than left as a silent mismatch.
+    """
+    skip = {path.resolve() for path in generated}
     rows = []
     for name, path in tracked_files():
+        if path.resolve() in skip:
+            continue
         data = path.read_bytes()
         rows.append((name, hashlib.sha256(data).hexdigest(), len(data)))
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -104,7 +113,7 @@ def main(argv=None):
                      if args.manifest_destination
                      else out.with_name("release-source-manifest-"
                                         + out.stem.split("-")[-1] + ".csv"))
-    rows = write_manifest(manifest_path)
+    rows = write_manifest(manifest_path, generated=(out, manifest_path))
 
     commit = git("rev-parse", "HEAD")
     staged = [line for line in git("diff", "--cached", "--name-only").splitlines()
@@ -195,19 +204,24 @@ def main(argv=None):
                 "path": str(manifest_path.relative_to(ROOT)),
                 "entries": len(rows),
                 "sha256": sha256_file(manifest_path),
-                "covers": "every git-tracked file at this commit",
+                "covers": ("every git-tracked file at this commit except "
+                           "this manifest and the SBOM document, which are "
+                           "generated outputs and cannot hash themselves; "
+                           "their hashes are the ones git records"),
             },
             "artifacts": artifacts,
-            "limitations": [
-                "no package signature or provenance attestation",
-                "no vulnerability scan or advisory database lookup",
-                "no reproducible-build comparison against a second builder",
-                "dependencies are the versions resolved on this single host; "
-                "there is no lockfile and no dependency hash pinning",
-                "third_party/ holds licenses only, no vendored code",
-                "single host, single toolchain: no cross-distro or cross-arch "
-                "wheel was produced or tested",
-            ],
+                "limitations": [
+                    "no package signature or provenance attestation",
+                    "no vulnerability scan or advisory database lookup",
+                    "no reproducible-build comparison against a second builder",
+                    "dependencies are the versions resolved on this single host; "
+                    "there is no lockfile and no dependency hash pinning",
+                    "third_party/ holds licenses only, no vendored code",
+                    "single host, single toolchain: no cross-distro or cross-arch "
+                    "wheel was produced or tested",
+                    "the source manifest excludes itself and this document, "
+                    "because writing one changes the other's hash",
+                ],
         },
     }
     out.parent.mkdir(parents=True, exist_ok=True)
