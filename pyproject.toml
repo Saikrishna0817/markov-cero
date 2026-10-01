@@ -1,5 +1,13 @@
 [build-system]
-requires = ["setuptools>=77", "pybind11>=2.12", "cmake>=3.25"]
+# Bounded rather than open-ended: the upper caps keep a silent major bump
+# out of a release build, which is the pinning this repo can honestly
+# claim. The lower bounds stay ranges on purpose - pinning
+# `setuptools==84.0.0` exactly would contradict `requires-python =
+# ">=3.9"` below, because setuptools 84 needs Python >=3.10 and pip would
+# then fail to build the wheel on 3.9. The versions actually qualified are
+# pinned in requirements/qualification.txt: setuptools 84.0.0,
+# pybind11 3.1.0, cmake 4.4.3.
+requires = ["setuptools>=77,<85", "pybind11>=2.12,<4", "cmake>=3.25,<5"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -11,6 +19,13 @@ license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 
 [project.optional-dependencies]
+# Optional tooling extras for scripts/ml and the training scripts; never
+# imported by the wheel, which declares no runtime dependencies. torch
+# 2.9.x carries known advisories (fixes in 2.10.0 and 2.13.0, plus
+# CVE-2026-4538 with no upstream fix) - recorded in
+# evidence/vulnerability-scan-20261001.json. The floor stays >=2.9
+# because no newer torch has been qualified in this repository; raise it
+# only together with a run that proves the training path still works.
 ml-training = ["torch>=2.9", "onnx>=1.16", "onnxruntime>=1.19"]
 
 [tool.setuptools]

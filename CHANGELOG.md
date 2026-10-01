@@ -2,6 +2,55 @@
 
 ## Unreleased
 
+### 2026-10-01 release gate — dependency pinning and a known-vulnerability scan
+
+- **Pinning** — one of REL-01's undone gate items, closed as far as this host
+  goes. The qualified environment is frozen as 34 exact `==` versions in
+  [`requirements/qualification.txt`](requirements/qualification.txt) (`pip freeze`
+  of the `.venv` that ran the 120/120 CTest, 27/27 binding tests and both
+  campaigns; no hashes, and the header says so). `[build-system]` in
+  [`pyproject.toml`](pyproject.toml) is now bounded instead of open-ended
+  (`setuptools>=77,<85`, `pybind11>=2.12,<4`, `cmake>=3.25,<5`) — exact `==`
+  pins were rejected because setuptools 84 needs Python >=3.10 while the project
+  declares `requires-python = ">=3.9"`, so an exact pin would make the wheel
+  unbuildable on 3.9. CI in [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+  pins its actions to full commit SHAs (`checkout`, `setup-python`,
+  `setup-node`), the CUDA container to tag **and** digest
+  (`12.6.3-devel-ubuntu24.04@sha256:392c0df7…`), and `pip`, `pytest` and `numpy`
+  to their qualified versions. CI's interpreter moves 3.11 → **3.14.7**, the
+  version the qualification ran, which the pins require anyway (`numpy==2.5.3`
+  needs Python >=3.12); the action SHAs were read back from upstream
+  (`git ls-remote … refs/tags/v4|v5`) and each equals the tag's current
+  target, and the container digest is Docker Hub's for that tag. What stays
+  unpinned (apt inside the container, the `ubuntu-latest` label, the host
+  toolchain, the `torch>=2.9` floor, npm) is
+  written down in
+  [`docs/guides/RELEASE.md`](docs/guides/RELEASE.md) §9.1 rather than implied.
+  Verified by building a wheel under build isolation with the new bounds.
+- **Scan** — [`evidence/vulnerability-scan-20261001.json`](evidence/vulnerability-scan-20261001.json):
+  `pip-audit` 2.10.1 from an isolated venv outside the repository, run against
+  the freeze on **both** the PyPI and OSV advisory services (two sources, same
+  answer). 32 of the 34 pins audit clean; the two that cannot be resolved
+  against PyPI — `markov-cero` (local wheel) and `torch==2.9.1+cpu` (a local
+  version PyPI does not carry) — are silently skipped by a naive run, which is
+  exactly how a clean-looking scan hides the one package at risk, so torch was
+  re-audited at its PyPI release `2.9.1`: **4 known vulnerabilities**
+  (`PYSEC-2025-194`, `PYSEC-2025-195`, `PYSEC-2026-139`, `PYSEC-2026-2286`;
+  fixes at 2.10.0/2.13.0 for three, **no upstream fix** for CVE-2026-4538).
+  All four sit in the optional `ml-training` extra, which the wheel never
+  imports; they are recorded as open and accepted — inline in
+  [`pyproject.toml`](pyproject.toml) and in the guide — instead of "fixed" by
+  raising a floor that has never been qualified. Not claimed: any npm, C++,
+  apt, container or driver scan, any hash verification, any signature, or
+  anything about advisories published after that date.
+- The SBOM generator's limitation lines now *name* the scan record and the
+  freeze when they exist instead of flatly denying both, and `cmake` joins the
+  recorded build dependencies; `evidence/release-sbom-20261001.json` keeps its
+  original wording, because a generated record is never rewritten.
+  [`docs/guides/RELEASE.md`](docs/guides/RELEASE.md) §9.1/§9.2 and §12,
+  [`docs/project/STATUS.md`](docs/project/STATUS.md) and
+  [`evidence/INDEX.md`](evidence/INDEX.md) carry the same scope limits.
+
 ### 2026-10-01 release gate — reproducible-build comparison
 
 - Closed one of REL-01's explicitly undone gate items on this host: two

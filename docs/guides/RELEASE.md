@@ -8,6 +8,7 @@ local qualification, not a release claim: IR-33 and gate G7 stay open.
 Evidence: [packaging-qualification-20261001.json](../../evidence/packaging-qualification-20261001.json),
 [SBOM](../../evidence/release-sbom-20261001.json),
 [source manifest](../../evidence/release-source-manifest-20261001.csv),
+[dependency vulnerability scan](../../evidence/vulnerability-scan-20261001.json),
 raw logs and drill transcripts in
 [evidence/packaging-qualification-20261001/](../../evidence/packaging-qualification-20261001/),
 external consumer project: [evidence/packaging-consumer/](../../evidence/packaging-consumer/).
@@ -210,10 +211,78 @@ Writes an SPDX 2.3 document plus
 regenerated against this commit — an older readiness manifest must never be
 reused). Offline and deterministic apart from the timestamp.
 
-The document records its own limitations: no signature, no provenance
-attestation, no vulnerability scan, no reproducible-build comparison, no
-dependency pinning (there is no lockfile), single host and single toolchain,
-`third_party/` holds licenses only.
+The document records its own limitations, verbatim: "no package signature or
+provenance attestation", "no vulnerability scan or advisory database lookup",
+"no reproducible-build comparison against a second builder", "no lockfile and
+no dependency hash pinning", single host and single toolchain, `third_party/`
+holds licenses only. The scan record was produced *after* that document, so
+the SBOM neither embeds nor substitutes for it; the generator now phrases
+those two lines to point at the records below whenever they exist, and
+`evidence/release-sbom-20261001.json` keeps its original wording because a
+generated record is never rewritten.
+
+### 9.1 Dependency pinning
+
+Pinned, and what each pin buys:
+
+| What | Pin | Where |
+|---|---|---|
+| Qualification environment | 34 exact `==` versions from `pip freeze` | [`requirements/qualification.txt`](../../requirements/qualification.txt) |
+| Build backend (bounded) | `setuptools>=77,<85`, `pybind11>=2.12,<4`, `cmake>=3.25,<5` | [`pyproject.toml`](../../pyproject.toml) `[build-system]` |
+| CI actions | full commit SHAs (`checkout` `11d5960…`, `setup-python` `a26af69…`, `setup-node` `49933ea…`) | [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) |
+| CI container | tag **and** digest `nvidia/cuda:12.6.3-devel-ubuntu24.04@sha256:392c0df7…` | same workflow |
+| CI Python packages | `pip==26.2.1`, `pytest==9.1.1`, `numpy==2.5.3` | same workflow |
+
+The qualified versions behind the bounded build requirements are setuptools
+**84.0.0**, pybind11 **3.1.0** and cmake **4.4.3** (also in the freeze file).
+Exact `==` pins were deliberately *not* written into `[build-system]`:
+setuptools 84 requires Python >=3.10 while this project declares
+`requires-python = ">=3.9"`, so an exact pin would make the wheel
+unbuildable on 3.9. The bounds stop a silent major bump; the freeze file
+records what was actually run.
+
+Provenance of the pins, checked 2026-10-01: each action SHA was read back
+from upstream with `git ls-remote … refs/tags/v4`/`v5` and equals the tag's
+current target, and the container digest is the one Docker Hub reports for
+that tag. CI's interpreter is pinned to `3.14.7`, the version the
+qualification ran — required, not cosmetic: `numpy==2.5.3` needs Python
+>=3.12, so the pins cannot install on the 3.11 CI used until now.
+
+Not pinned, stated rather than implied: apt packages resolved inside the
+container at run time, the `ubuntu-latest` runner label, the host toolchain
+(g++ 16.2.1 / CMake 4.4.3 are recorded per record, not enforced), and the
+`ml-training` floor (`torch>=2.9`). No file here carries hashes — this is
+version pinning, not `--require-hashes` supply-chain verification.
+
+### 9.2 Known-vulnerability scan (2026-10-01)
+
+[Record](../../evidence/vulnerability-scan-20261001.json): `pip-audit`
+2.10.1, run from an isolated venv outside the repository, against
+`requirements/qualification.txt` on both the **PyPI** and **OSV** advisory
+services (two sources, same answer).
+
+- As committed, **32 of the 34 pins** are resolvable against PyPI and have
+  **0 known vulnerabilities**; a separate pass over the installed `.venv`
+  (56 distributions after excluding the audit tool's own packages) agrees.
+- The two that are not resolvable are `markov-cero` (local wheel, not
+  published) and `torch==2.9.1+cpu` (a local version PyPI does not carry) —
+  both are silently *skipped* by a naive audit, which is how a clean-looking
+  run can hide the one package that matters. The record therefore re-audits
+  torch at its PyPI release version `2.9.1`, where it has **4 known
+  vulnerabilities**
+  (`PYSEC-2025-194`, `PYSEC-2025-195`, `PYSEC-2026-139`, `PYSEC-2026-2286`;
+  fixes at 2.10.0/2.13.0 for three of them, **no upstream fix** for
+  CVE-2026-4538).
+- All four sit in the optional `ml-training` extra, which the wheel never
+  imports — the wheel declares no runtime dependencies at all. They are
+  recorded as open and accepted in [`pyproject.toml`](../../pyproject.toml),
+  not silently fixed by bumping a floor that has never been qualified.
+
+Not claimed by the scan: the npm tree under `web/` (lockfile only, no audit
+run), C++ / system / apt packages, the container image or GPU driver stack,
+`third_party/` beyond the licenses it stores, any source-level review, and
+anything at all about tomorrow — it is a point-in-time observation and must
+be rerun before a release.
 
 ## 10. What is NOT supported (read before filing an issue)
 
@@ -259,7 +328,9 @@ For this qualification the report was redirected away from
 
 ## 12. Open release gates (IR-33 / G7)
 
-All of the following remain **pending**; none was closed by REL-01:
+REL-01 left all of the following pending. Three have since been closed **on
+this host only** (reproducible builds, dependency scan, dependency pinning);
+the rest remain **pending**:
 
 - IR-33: independent release/security review — **pending**; commissioning it is
   an external action.
@@ -269,7 +340,15 @@ All of the following remain **pending**; none was closed by REL-01:
   no run record does.
 - Second-host install and reproduction by an independent user — **pending**;
   everything above ran on one host.
-- Signed artifacts, vulnerability scan, dependency pinning — **pending** (§9).
+- Signed artifacts — **pending**; nothing in this repository is signed.
+- Vulnerability scan — **done locally, scope-limited**: Python packages only,
+  point-in-time, two advisory sources agreeing, four known issues left open
+  in the optional `ml-training` extra (§9.2,
+  [record](../../evidence/vulnerability-scan-20261001.json)). No npm, C++,
+  system, container or driver scan.
+- Dependency pinning — **done locally, scope-limited**: environment freeze,
+  bounded build requirements and SHA/digest-pinned CI (§9.1); no hashes, and
+  the build-toolchain, apt and runner inputs stay unpinned.
 - Reproducible-build comparison — **done locally, scope-limited**: two
   independently configured clean Release + `-Werror` build trees of one
   commit, at different absolute paths, produced **107/107 byte-identical**

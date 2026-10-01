@@ -11,7 +11,9 @@ Writes two artifacts:
 
 Offline and deterministic apart from the timestamp: no network, no
 vulnerability scan, no signing. Those absences are recorded in the
-document's limitations rather than implied.
+document's limitations rather than implied; when the repository carries a
+dependency scan or a version freeze, the limitation names that record
+instead of claiming one exists here.
 
 Usage:
   python3 scripts/generate_release_sbom.py --wheel W.whl \
@@ -39,6 +41,37 @@ def sha256_file(path):
 
 def git(*args):
     return subprocess.check_output(["git", *args], cwd=ROOT, text=True).strip()
+
+
+def scan_limitation():
+    """Name the newest scan record, or admit there is none.
+
+    The generator never scans: it only points at the committed record, so
+    the sentence stays true whichever side of the commit it is written on.
+    """
+    scans = sorted(ROOT.glob("evidence/vulnerability-scan-*.json"))
+    if not scans:
+        return "no vulnerability scan or advisory database lookup"
+    return (
+        "no scan performed by this generator: the Python dependency set was "
+        "audited separately, point-in-time, and is recorded in "
+        f"{scans[-1].name} (rerun before release); no other ecosystem is "
+        "covered by that record"
+    )
+
+
+def pin_limitation():
+    """Name the version freeze when one exists, without claiming hashes."""
+    freezes = sorted(ROOT.glob("requirements/*.txt"))
+    if not freezes:
+        return ("dependencies are the versions resolved on this single host; "
+                "there is no lockfile and no dependency hash pinning")
+    return (
+        "dependencies are version-pinned (not hash-pinned) by "
+        + ", ".join(str(path.relative_to(ROOT)) for path in freezes)
+        + "; the build backend is bounded rather than exact, and there is no "
+        "hash lockfile"
+    )
 
 
 def tracked_files():
@@ -129,6 +162,7 @@ def main(argv=None):
         ("pybind11", "3.1.0", "build backend (pyproject build-system)"),
         ("pytest", "9.1.1", "test-only; not a runtime dependency"),
         ("numpy", "2.5.3", "test-only; not a runtime dependency"),
+        ("cmake", "4.4.3", "build-time tool (pyproject build-system)"),
     ]
     for name, resolved_version, role in resolved:
         entry = package(f"Package-dep-{name}", name, resolved_version)
@@ -137,8 +171,9 @@ def main(argv=None):
     for name, constraint in (("torch", ">=2.9"), ("onnx", ">=1.16"),
                              ("onnxruntime", ">=1.19")):
         entry = package(f"Package-optional-{name}", name, constraint)
-        entry["comment"] = ("optional ml-training extra; not installed and "
-                            "not exercised by this build")
+        entry["comment"] = ("optional ml-training extra; not a runtime "
+                            "dependency of the wheel and not exercised by "
+                            "this build")
         entry["downloadLocation"] = "NOASSERTION"
         packages.append(entry)
 
@@ -210,12 +245,11 @@ def main(argv=None):
                            "their hashes are the ones git records"),
             },
             "artifacts": artifacts,
-                "limitations": [
+            "limitations": [
                     "no package signature or provenance attestation",
-                    "no vulnerability scan or advisory database lookup",
+                    scan_limitation(),
                     "no reproducible-build comparison against a second builder",
-                    "dependencies are the versions resolved on this single host; "
-                    "there is no lockfile and no dependency hash pinning",
+                    pin_limitation(),
                     "third_party/ holds licenses only, no vendored code",
                     "single host, single toolchain: no cross-distro or cross-arch "
                     "wheel was produced or tested",
