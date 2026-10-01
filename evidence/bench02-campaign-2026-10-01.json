@@ -1,0 +1,184 @@
+{
+  "schema": "bench01-1",
+  "campaign_id": "bench02-2026-10-01",
+  "preregistration": "evidence/bench02-preregistration-2026-10-01.json",
+  "preregistration_sha256": "d0c83c6e01abf6b03d2166fe342506a25380280bb334d5e5cc301bafbdf5a663",
+  "host": {
+    "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+    "machine": "x86_64",
+    "processor": "",
+    "python": "3.14.7",
+    "cpu_count": 12,
+    "solver_path": "/tmp/opencode/bench02-build/markov-cero-solve",
+    "solver_sha256": "36284e66e5584958d7cb57eb0fe7e1d080534835c9c01d1adcb5d4aca3336bc1"
+  },
+  "raw_csv": "evidence/bench02-campaign-2026-10-01.csv",
+  "raw_csv_sha256": "6ec4dd186b3d52ca14249f986be2deeb1ebbd8c754d2d2c67150c3214042f9b5",
+  "complete": true,
+  "known_limitations": [
+    "single host: no second-host timing, so the promotion and second-host acceptance criterion of the release contract is documented as NOT MET",
+    "the frozen corpus declares 265 suite instances and 23 curated ones; only the instances marked present in this checkout are executed, and every absent instance stays in the denominator as `absent`",
+    "workers > 1 runs single-threaded children concurrently, so absolute wall times include interference; correctness metrics are unaffected and no sequential-versus-concurrent speed comparison is published",
+    "reference optima exist for only part of the present subset, so reference_agreement covers fewer rows than solved_fraction"
+  ],
+  "summary": {
+    "declared_cells": 265,
+    "rows_emitted": 1325,
+    "run_state_counts": {
+      "absent": 1010,
+      "ok": 315
+    },
+    "status_counts_all_rows": {
+      "": 1010,
+      "Optimal": 190,
+      "NumericalFailure": 30,
+      "ResourceLimit": 75,
+      "IterationLimit": 10,
+      "Feasible": 10
+    },
+    "status_counts_ok_rows": {
+      "Optimal": 190,
+      "NumericalFailure": 30,
+      "ResourceLimit": 75,
+      "IterationLimit": 10,
+      "Feasible": 10
+    },
+    "cold_warm_counts": {
+      "cold": 265,
+      "warm": 1060
+    },
+    "solved_fraction": {
+      "numerator": 38,
+      "denominator": 265,
+      "value": 0.14339622641509434,
+      "rule": "a declared cell is solved when every row it emitted with run_state=ok reports status=Optimal and at least one such row exists; cells with no ok row are unsolved, not excluded"
+    },
+    "cells_status_disagreement": {
+      "numerator": 0,
+      "denominator": 63,
+      "value": 0.0
+    },
+    "objective_disagreement": {
+      "tolerance": 1e-06,
+      "disagreements": [],
+      "numerator": 0,
+      "denominator": 63,
+      "value": 0.0
+    },
+    "reference_agreement": {
+      "LP": {
+        "compared": 60,
+        "disagreements": 0,
+        "tolerance": 1e-05,
+        "numerator": 0,
+        "denominator": 60,
+        "value": 0.0,
+        "denominator_note": "ok rows whose instance holds a reference"
+      },
+      "MILP": {
+        "compared": 75,
+        "disagreements": 60,
+        "tolerance": 0.0001,
+        "numerator": 60,
+        "denominator": 75,
+        "value": 0.8,
+        "denominator_note": "ok rows whose instance holds a reference"
+      },
+      "all": {
+        "numerator": 60,
+        "denominator": 135,
+        "value": 0.4444444444444444,
+        "denominator_note": "ok rows whose instance holds a reference"
+      }
+    },
+    "independent_primal_failures": {
+      "numerator": 10,
+      "denominator": 210,
+      "value": 0.047619047619047616,
+      "counts": {
+        "fail": 10,
+        "pass": 200,
+        "not_checked": 105
+      },
+      "tolerances": {
+        "row_feasibility": 1e-06,
+        "bound_feasibility": 1e-06,
+        "integrality": 1e-06
+      },
+      "excluded": {
+        "not_checked": 105,
+        "run_states": []
+      }
+    },
+    "timing_scope": "process_wall, parent-observed",
+    "time_distribution": {
+      "LP:cold": {
+        "n": 31,
+        "min": 3.464,
+        "median": 111.267,
+        "max": 4096.186
+      },
+      "LP:warm": {
+        "n": 124,
+        "min": 2.365,
+        "median": 117.6905,
+        "max": 6129.549
+      },
+      "MILP:cold": {
+        "n": 28,
+        "min": 2.879,
+        "median": 300003.497,
+        "max": 300597.887
+      },
+      "MILP:warm": {
+        "n": 112,
+        "min": 2.018,
+        "median": 300003.231,
+        "max": 301029.205
+      },
+      "QP:cold": {
+        "n": 4,
+        "min": 1.929,
+        "median": 2.224,
+        "max": 2.443
+      },
+      "QP:warm": {
+        "n": 16,
+        "min": 1.588,
+        "median": 2.458,
+        "max": 3.156
+      }
+    },
+    "rss_distribution_kib": {
+      "LP": {
+        "n": 155,
+        "min": 4544.0,
+        "median": 6096.0,
+        "max": 12212.0
+      },
+      "MILP": {
+        "n": 140,
+        "min": 904.0,
+        "median": 11128.0,
+        "max": 276436.0
+      },
+      "QP": {
+        "n": 20,
+        "min": 16.0,
+        "median": 222.0,
+        "max": 5288.0
+      }
+    },
+    "nodes_and_gaps": {
+      "rows_reporting_nodes": 315,
+      "rows_reporting_relative_gap": 230,
+      "max_nodes_explored": 37543.0,
+      "relative_gap_distribution": {
+        "n": 230,
+        "min": 0.0,
+        "median": 0.0,
+        "max": 1.0
+      }
+    }
+  }
+}

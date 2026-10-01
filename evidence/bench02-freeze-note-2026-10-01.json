@@ -1,0 +1,165 @@
+{
+  "date": "2026-10-01",
+  "task": "GAP-01 slice 3 \u2014 why BENCH-02 declares a successor frozen-instance manifest",
+  "question": "BENCH-01 recorded 45 `hash_mismatch` rows: nine present `data/cases` models whose sha256 disagreed with the 2026-09-28 freeze, so they stayed in the denominator and never executed. A recorded row is never rewritten, so the only way to run them is a new preregistration over a successor manifest (benchmark campaign contract section 3: \"evidence/frozen-instances-20260928.json or its successor\"). This record documents the drift, what can and cannot be proven about it, and the comparability of the two campaigns.",
+  "drift_audit": {
+    "method": "re-hash every declared instance of evidence/frozen-instances-20260928.json from the working tree with sha256",
+    "declared": 265,
+    "present": 63,
+    "identical": 54,
+    "changed": 9,
+    "missing": 0,
+    "appeared_but_absent": 0
+  },
+  "predecessor": {
+    "path": "evidence/frozen-instances-20260928.json",
+    "date": "2026-09-28",
+    "sha256": "a923a6f54a6915aa0db6dd7b157ba7eef7592e04fe5c7dd57ba187c1b7422101",
+    "immutable": true
+  },
+  "successor": {
+    "path": "evidence/frozen-instances-2026-10-01.json",
+    "date": "2026-10-01",
+    "sha256": "0870b0167b5e5cb6a81704152c92d02c5bfac26101e1f9bfcdf51639df55e6cc",
+    "generator": "scripts/freeze_successor_instances.py",
+    "fields_changed_vs_predecessor": "only date/frozen_at, the successor_of and changed_vs_predecessor records, and the sha256 of the nine files; suites, ids, names, families, problem classes, splits, presence flags, counts, timing and curated blocks are copied field-for-field, so the declared subset is identical (verified: 265 ids in the same order, present flags all equal)"
+  },
+  "changed_files": [
+    {
+      "id": "data/cases/capitanescu_dc_opf.mps",
+      "frozen": "1ce96e997853707132fc2d2bc36d2480adca2e8627d27e69155dc60d9f4625a2",
+      "current": "05a34222338df156bd1639b9779a8eb75bcac6526cae6d1fa7aea2c5a4bb5bfe",
+      "comment_only": true
+    },
+    {
+      "id": "data/cases/li_crude_blending.mps",
+      "frozen": "0e4081ab46efeaf6e5037e6ab268fbd2eaa978658cb1e2e54ee349b80cefc4c8",
+      "current": "fb19e3a47adba2a02f1357164d54b2ed17e2f568d356ba0b451e5b4d991a4783",
+      "comment_only": true
+    },
+    {
+      "id": "data/cases/neiro_refinery_scheduling.mps",
+      "frozen": "57876aeda874f6ecdb0bf999ce27fdad128a8e6190f827d91d5078cfd517c7a4",
+      "current": "d4aac328f46c31df8601f0d77314a3feb97942c3e0a9655cd1acbc222d47d907",
+      "comment_only": true
+    },
+    {
+      "id": "data/cases/pochet_lot_sizing.mps",
+      "frozen": "45b6e48c667552fade25176ef87b8f2e3a5ba62a70aebff5f31f61e2244efc38",
+      "current": "25439d2d035fc3b34eccbd493216872f8edf5905495869c7291d086efd2fb3b7",
+      "comment_only": true
+    },
+    {
+      "id": "data/cases/process_network_large.mps",
+      "frozen": "62812d23cb2a81f15351a8555ca8ff7d4f3befcf52cf7797dd210630cfd7b65a",
+      "current": "edff1aa5bd73d9ab661b8b69f22dc96b0757bfe2acf5a96e5700cb008e037be3",
+      "comment_only": null,
+      "note": "frozen bytes unrecoverable \u2014 see unrecoverable_frozen_bytes"
+    },
+    {
+      "id": "data/cases/production_planning_large.mps",
+      "frozen": "6f919e51ead9fbee83be867012b9e1850a8e653aee3f8694faa20ae3d335f8f7",
+      "current": "0c9980de1fd1ce7af868f1e16783226647180405d5f68c8c7a90e1d374baa1cc",
+      "comment_only": true
+    },
+    {
+      "id": "data/cases/refinery_scheduling_large.mps",
+      "frozen": "39cdeb41ba6ba0ac988ee18929aa5ffe2dc93e3a4b299c65ad18d3adf512fd1a",
+      "current": "844e5b7f15e6e9ca09e97db0164a4851aad5a4ed673a1756810801030b53b677",
+      "comment_only": null,
+      "note": "frozen bytes unrecoverable \u2014 see unrecoverable_frozen_bytes"
+    },
+    {
+      "id": "data/cases/shapiro_network_flow.mps",
+      "frozen": "04ef0a785e307ae4d95d96e47aedc8021d3fec9f98f37a073c9729e7809398e7",
+      "current": "318fd983e858d10932c6eba1c2143c24b7eea708a8233e11c474ec644cb54e7a",
+      "comment_only": true
+    },
+    {
+      "id": "data/cases/supply_chain_large.mps",
+      "frozen": "5c38d15fc370a81f9b72a17fabda1b03d995f69d4b14b7884acfcf19ec0e6145",
+      "current": "219928cce852760a536a1ff625fa1041fb69f9a64932ca0cb87d70ad1c48a3d4",
+      "comment_only": true
+    }
+  ],
+  "what_is_proven": {
+    "seven_of_nine_comment_equivalent": {
+      "claim": "for seven of the nine files the 2026-09-28 frozen bytes are exactly the pre-comment commit blob, the commit that changed them added only `*` comment lines, and comment-stripped bytes at that commit equal comment-stripped bytes at HEAD \u2014 so frozen and current content differ only by MPS comment lines",
+      "evidence": [
+        "`git show a9c7e42^:<id>` sha256 equals the frozen sha256 for all seven",
+        "commit a9c7e42 (2026-09-29 11:11 +0530) adds 2-5 `*` lines per file and nothing else: `git diff a9c7e42^ a9c7e42 -- data/cases/` shows only `+* ...` additions",
+        "sha256 of bytes with `^\\s*\\*` lines removed is equal between a9c7e42 and HEAD for all nine files"
+      ],
+      "seven_files": [
+        "data/cases/capitanescu_dc_opf.mps",
+        "data/cases/li_crude_blending.mps",
+        "data/cases/neiro_refinery_scheduling.mps",
+        "data/cases/pochet_lot_sizing.mps",
+        "data/cases/production_planning_large.mps",
+        "data/cases/shapiro_network_flow.mps",
+        "data/cases/supply_chain_large.mps"
+      ]
+    },
+    "same_subset": "the successor re-declares the identical 265 cells with identical splits, classes and presence flags; only nine sha256 values move",
+    "references_unchanged": "none of the nine carries a `reference_objective` in its provenance file, and the two preregistrations bind the identical 27-entry `reference_objectives` map (same values, same sources)",
+    "binary": {
+      "commit": "829976af79bb7de85a110aa37f39001757b04747",
+      "build": "cmake -DCMAKE_BUILD_TYPE=Release -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON in a fresh tree",
+      "sha256": "36284e66e5584958d7cb57eb0fe7e1d080534835c9c01d1adcb5d4aca3336bc1",
+      "determinism_note": "byte-identical to the independently configured GAP-01 validation build of the same source state"
+    }
+  },
+  "unrecoverable_frozen_bytes": {
+    "files": [
+      "data/cases/process_network_large.mps",
+      "data/cases/refinery_scheduling_large.mps"
+    ],
+    "fact": "the sha256 recorded by the 2026-09-28 freeze for these two files is not the sha256 of any committed version of the file (checked every blob in `git log -- <path>`), is not present in the object database (`git cat-file -e` fails), and is not matched by normalizing the committed bytes to CRLF, to no-trailing-newline, to an added trailing newline, or to CR-stripped form",
+    "history": "both files entered the repository in the 2026-09-28 12:32/12:33 IST \"Upload benchmark data batch 29/30\" commits and were rewritten by a9c7e42 the next day; the freeze evidently recorded a working-tree state that was never committed and no longer exists in this checkout",
+    "consequence": "for these two models the equivalence of the 2026-09-28 content with the content BENCH-02 runs CANNOT be demonstrated from this repository. They execute in BENCH-02 as the current committed bytes, exactly as the successor manifest declares them; their BENCH-01 rows remain `hash_mismatch`, their BENCH-02 rows are the only record of their solver behaviour, and no claim is made that the two campaigns measured the same model file for these two cells.",
+    "not_claimed": "that the models are semantically identical, that the freeze was wrong, or that the BENCH-01 rows for these cells were spurious"
+  },
+  "preregistration_comparability": {
+    "bench01": {
+      "path": "evidence/bench01-preregistration-2026-10-01.json",
+      "sha256_before_this_campaign": "recorded in the bench01 campaign summary",
+      "campaign_id": "bench01-2026-10-01"
+    },
+    "bench02": {
+      "path": "evidence/bench02-preregistration-2026-10-01.json",
+      "sha256": "d0c83c6e01abf6b03d2166fe342506a25380280bb334d5e5cc301bafbdf5a663",
+      "campaign_id": "bench02-2026-10-01",
+      "written_before_any_run": true,
+      "written_at": "2026-10-01T16:22:11.035935+00:00"
+    },
+    "differing_keys": [
+      "campaign_id",
+      "written_at",
+      "manifest",
+      "solver",
+      "metrics",
+      "declared_subset"
+    ],
+    "identical_keys": [
+      "caps (LP 60, QP 60, MILP 300)",
+      "parent_slack_s (30)",
+      "threads (1)",
+      "repeats (5, cold index 0)",
+      "workers (4) and its interference caveat",
+      "timing_scope",
+      "tolerances",
+      "known_limitations",
+      "order (same 265 ids in the same order)",
+      "reference_objectives and reference_sources",
+      "reference_coverage"
+    ],
+    "metrics_wording": "the two preregistrations quote different wording of `solved_fraction` because the original shorthand \"rows with status Optimal \u00f7 declared cells\" was corrected before the first campaign completed; the clarification recorded in docs/contracts/benchmark-campaign.md section 6 states the denominator and the computed quantity were always the cell-level one and that the bench01 preregistration is not edited. The quantity bound by both campaigns is the same one.",
+    "conclusion": "same subset, order, caps, threads, repeats, tolerances and metric quantity; the only intentional differences are the manifest, the pinned solver binary, the campaign id and the timestamp \u2014 which is exactly what a new preregistration is for."
+  },
+  "not_run_or_not_claimed": [
+    "BENCH-01's 45 hash_mismatch rows stand; no row was rewritten, re-run or deleted",
+    "no speed comparison between the two campaigns: different pinned binaries (BENCH-01's binary predates GAP-01) with worker interference on one host; \u00a712.3 of the contract forbids publishing a ratio across binaries",
+    "no second host, no second solver, no significance test",
+    "the nine cells carry no reference optimum, so nothing here claims their objectives agree with a known answer"
+  ]
+}

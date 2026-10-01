@@ -63,6 +63,90 @@ because a recorded campaign row is never rewritten — they can only be
 re-run as part of a new preregistration. It is one host, one binary and
 no second solver, so it carries no speed claim.
 
+## Second campaign — 2026-10-01 (BENCH-02)
+
+The nine `data/cases` models behind those 45 `hash_mismatch` rows can
+only execute under a **new preregistration**, so BENCH-02 declares a
+successor manifest (`docs/contracts/benchmark-campaign.md` §3: the
+2026-09-28 freeze "or its successor"). The predecessor is not edited;
+`scripts/freeze_successor_instances.py` re-hashed all 63 present
+instances and recorded the nine moved digests plus a
+`successor_of` pointer, and the whole drift — including what is and is
+not provable about it — is written up in the
+[freeze note](../../evidence/bench02-freeze-note-2026-10-01.json).
+Seven of the nine differ from the frozen bytes only by `*` comment
+lines added the day after the freeze; for two
+(`process_network_large`, `refinery_scheduling_large`) the frozen bytes
+exist nowhere in this repository, so their equivalence **cannot be
+demonstrated** and no claim is made that both campaigns measured the
+same file for those two cells.
+
+Artifacts, in order:
+[successor manifest](../../evidence/frozen-instances-2026-10-01.json),
+[freeze note](../../evidence/bench02-freeze-note-2026-10-01.json),
+[preregistration](../../evidence/bench02-preregistration-2026-10-01.json)
+(written before any cell ran),
+[raw rows](../../evidence/bench02-campaign-2026-10-01.csv) (1,325),
+[driver log](../../evidence/bench02-campaign-2026-10-01.log),
+[§6 summary](../../evidence/bench02-campaign-2026-10-01.json). The
+preregistration differs from BENCH-01's in exactly the manifest, the
+pinned solver (Release + `-Werror` build of the then-current commit,
+sha `36284e66…`), the campaign id and the timestamp; subset, order,
+caps, threads, repeats, tolerances and the metric quantity are
+identical, as the freeze note audits key by key.
+
+What it measured, on the same single host with four interfering
+children, over the declared 265 cells in ~1 h 42 min:
+
+- **1,325 rows, 0 harness exceptions, 0 parent timeouts, 0
+  `hash_mismatch`**: 315 `ok` (all 63 present cells × 5 repeats) and
+  1,010 `absent`. Every cell that is present actually ran this time.
+- **Solved fraction 38/265 (0.143)** against BENCH-01's 31/265
+  (0.117): seven cells newly solved, none lost. Per declared class:
+  LP 25/98 and QP 4/18 unchanged, **MILP 2/149 → 9/149**. The seven
+  are `capitanescu_dc_opf`, `li_crude_blending`,
+  `neiro_refinery_scheduling`, `pochet_lot_sizing`,
+  `process_network_large`, `refinery_scheduling_large`,
+  `shapiro_network_flow`; of the other two, `production_planning_large`
+  is `ResourceLimit` and `supply_chain_large` `Feasible` — measured
+  statuses, kept as they are.
+- **0/63 cells disagree on status across repeats and 0/63 disagree on
+  objective** at the 1e-6 repeat tolerance.
+- **Reference agreement**: LP 0/60 disagreements at 1e-5; MILP 60/75
+  at 1e-4, where the 60 are 55 `ResourceLimit` and 5
+  `NumericalFailure` rows that never claimed optimality — the 15
+  reference-bearing rows that did return a result (`Optimal` ×10,
+  `Feasible` ×1) match their reference exactly.
+- **Independent primal re-check: 200 pass, 10 fail, 105 `not_checked`**
+  over 210 checked rows. The 10 failures are `QPLIB_0010` (5 rows,
+  max violation 1.28e-6, same as BENCH-01) and **`capitanescu_dc_opf`
+  (5 rows, 7.503556e-6)** — a cell the solver reports `Optimal` and
+  `VERIFIED` in canonical scale while the harness's original-scale
+  reader exceeds its 1e-6 bar. Both are reported as failures; neither
+  status is rewritten.
+- Statuses over `ok` rows: `Optimal` 190, `ResourceLimit` 75,
+  `NumericalFailure` 30, `IterationLimit` 10, `Feasible` 10.
+- The two cells GAP-01 unparsed now execute instead of failing to
+  parse: `e226` → `NumericalFailure`, `grow7` → `IterationLimit`.
+  The LP deferred set is unchanged (`etamacro`, `bore3d`, `scsd1`,
+  `scsd6` `NumericalFailure`; `blend` `Optimal`), consistent with the
+  [etamacro record](../../evidence/gap01-etamacro-2026-10-01.json).
+- Cold process-wall medians: LP 111 ms, QP 2.2 ms, MILP 300.0 s (the
+  cap). Published as a distribution only — different binary from
+  BENCH-01 and worker interference mean **no speed ratio between the
+  two campaigns is computed or implied** (§12.3).
+
+Three corpus caveats travel with these numbers: the frozen manifest
+declares four `cases` cells as MILP that the solver itself classifies
+as LP or QP (`li_crude_blending`, `shapiro_network_flow` → LP;
+`capitanescu_dc_opf`, `crude_blending_large` → QP), so their caps and
+class metrics follow the **declared** class while the JSON payload
+reports the solver's own classification as measured; the nine cells
+carry no reference optimum, so their objectives are checked only for
+repeat agreement; and the host is still one machine with no second
+solver, so the second-host acceptance criterion of the release contract
+remains NOT MET.
+
 ## What this checkout declares
 
 `evidence/frozen-instances-20260928.json` fixes the corpus:
@@ -79,8 +163,8 @@ no second solver, so it carries no speed claim.
 The 202 absent instances keep their rows as `absent` and stay in every
 denominator. Present instances whose file hash disagrees with the frozen
 manifest are `hash_mismatch`: they are not executed, and they too stay in
-the denominator — 63 present minus 9 mismatches leaves **54 executable
-cells** on this checkout.
+the denominator — on the 2026-09-28 manifest that left **54 executable
+cells** of 63 present, and BENCH-01 ran exactly those 54.
 
 All nine mismatches are the curated `data/cases/*` files
 `capitanescu_dc_opf`, `li_crude_blending`, `neiro_refinery_scheduling`,
@@ -88,10 +172,17 @@ All nine mismatches are the curated `data/cases/*` files
 `refinery_scheduling_large`, `shapiro_network_flow` and
 `supply_chain_large`. Commit `a9c7e42` (2026-09-29) added `*` comment
 headers to exactly those nine files the day after the 2026-09-28 freeze,
-deleting nothing — the model semantics are unchanged, but the bytes no
-longer match the frozen record and the contract does not let the harness
-guess. Re-freezing would mean a new manifest and a new preregistration,
-never an edit of `frozen-instances-20260928.json`.
+deleting nothing — so the bytes no longer match the frozen record and the
+contract does not let the harness guess. For seven of the nine that
+comment-only claim is provable (frozen bytes = pre-comment commit blob,
+diff adds only `*` lines, comment-stripped bytes unchanged since); for
+`process_network_large` and `refinery_scheduling_large` the frozen bytes
+exist nowhere in this repository, so their equivalence cannot be shown.
+Re-freezing means a new manifest and a new preregistration, never an
+edit of `frozen-instances-20260928.json` — which is what
+`evidence/frozen-instances-2026-10-01.json` (BENCH-02's successor) is,
+with the full audit in the
+[freeze note](../../evidence/bench02-freeze-note-2026-10-01.json).
 
 ## Host, toolchain and timing scope
 
@@ -209,8 +300,12 @@ and no significance test, therefore no significance claim.
 4. **Reference coverage.** 27 of 63 present instances carry a reference
    optimum, so `reference_agreement` covers fewer rows than
    `solved_fraction`.
-5. **Nine hash mismatches.** The post-freeze comment edit described
-   above removes nine present instances from execution while leaving
-   them in the denominator, so 54 of 63 present cells actually run.
+5. **Nine hash mismatches (BENCH-01 only).** The post-freeze comment
+   edit described above removed nine present instances from execution
+   while leaving them in the denominator, so 54 of 63 present cells ran.
+   BENCH-02's successor manifest removed that obstacle: 0
+   `hash_mismatch` and all 63 present cells executed there; the two
+   models whose frozen bytes are unrecoverable remain a caveat of that
+   campaign, not a row state.
 6. **Sampled RSS.** A peak read on the 2 ms grid is a lower bound for
    any child shorter than one interval.

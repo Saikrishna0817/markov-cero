@@ -57,6 +57,52 @@
   the frozen 17-fixture set); a pre-LP-01 build tree was used only for
   this comparison and is not part of any release artifact.
 
+- Third gap closed with a second campaign instead of an edit: the nine
+  post-freeze `hash_mismatch` cells can only run under a new
+  preregistration, so `scripts/freeze_successor_instances.py` wrote
+  `evidence/frozen-instances-2026-10-01.json` — the successor the
+  campaign contract §3 allows — after re-hashing all 63 present
+  instances (54 identical, 9 changed, 0 missing, 0 newly appeared) and
+  stamping it with `successor_of` and the nine old/new digests. The
+  2026-09-28 freeze is untouched. The accompanying
+  [`evidence/bench02-freeze-note-2026-10-01.json`](evidence/bench02-freeze-note-2026-10-01.json)
+  proves what can be proven: for seven of the nine the frozen bytes are
+  exactly the pre-comment blob, commit `a9c7e42` added only `*` lines,
+  and comment-stripped bytes have not moved since. For
+  `process_network_large` and `refinery_scheduling_large` the frozen
+  bytes are in no commit and no blob of this repository (checked under
+  four normalizations), so their equivalence to the 2026-09-28 content
+  is **not claimed** — and that is recorded, not glossed.
+  BENCH-02 itself (`evidence/bench02-preregistration-2026-10-01.json`
+  written first, then 1,325 rows, then the §6 summary) differs from
+  BENCH-01 only in manifest, pinned binary (Release + `-Werror`, sha
+  `36284e66…`), campaign id and timestamp: subset, order, caps,
+  threads, repeats, tolerances and metric quantity are audited
+  identical in the freeze note. Measured on the same host in ~1 h 42
+  min: **0 `hash_mismatch`, 315 `ok` rows (all 63 present cells × 5),
+  1,010 `absent`, 0 harness exceptions, 0 parent timeouts**; solved
+  fraction **38/265 (0.143)** vs 31/265 (0.117) — seven newly solved
+  (`capitanescu_dc_opf`, `li_crude_blending`,
+  `neiro_refinery_scheduling`, `pochet_lot_sizing`,
+  `process_network_large`, `refinery_scheduling_large`,
+  `shapiro_network_flow`), none lost, MILP 2/149 → 9/149 while LP
+  25/98 and QP 4/18 are unchanged; 0/63 status or objective
+  disagreement; reference agreement 0/60 LP at 1e-5 and 60/75 MILP at
+  1e-4 where the 60 are `ResourceLimit`/`NumericalFailure` rows that
+  never claimed optimality. Independent primal re-check **200 pass,
+  10 fail, 105 `not_checked`**: `QPLIB_0010` (5, 1.28e-6, unchanged)
+  plus the new `capitanescu_dc_opf` (5, 7.503556e-6 — the solver
+  reports `Optimal` and `VERIFIED` in canonical scale while the
+  harness's original-scale reader exceeds its 1e-6 bar); both stay
+  failures and no status is rewritten. `e226`/`grow7` now reach the
+  solver (`NumericalFailure`/`IterationLimit`) instead of
+  `InvalidModel`, the LP deferred set is unchanged, and three corpus
+  caveats are published rather than hidden: two frozen files are
+  unrecoverable, four declared-MILP `cases` cells are LP/QP to the
+  solver's own classifier (caps and class metrics follow the declared
+  class), and no speed ratio is computed between campaigns —
+  different binaries, interfering workers, one host.
+
 ### 2026-10-01 blueprint REL-01 — package, qualify and document the supported solver
 
 - Published the supported matrix and the install/upgrade/rollback
