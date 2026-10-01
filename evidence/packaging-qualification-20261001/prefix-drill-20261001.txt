@@ -1,0 +1,23 @@
+# REL-01 prefix drill 2026-10-01T14:04:46Z
+# commit: 980687cf04ff9f688fab2c70ac93a97bf3c72f3b
+
+## P1 install
+-- Installing: /tmp/opencode/rel01/install/lib/cmake/markov_cero/markov_ceroConfigVersion.cmake
+files: 93
+
+## P1 consumer
+installed-consumer PASS
+exit: 0
+
+## P2 remove prefix then re-configure (expected failure)
+-- Configuring incomplete, errors occurred!
+configure exit: 1 (nonzero is the expected result)
+
+## P3 reinstall and rebuild consumer
+installed-consumer PASS
+exit: 0
+installed verify-mip:
+  --relative-gap T  Accepted relative gap (default: 0)
+
+## P4 remove prefix
+prefix exists after removal: no

@@ -11,6 +11,7 @@ Usage: python3 web/backend/os_limits_test.py /path/to/markov-cero-solve
 
 import json
 import pathlib
+import resource
 import subprocess
 import sys
 import tempfile
@@ -100,7 +101,10 @@ def main():
         require(big.returncode != 0,
                 "the file-size limit must refuse an 8 MiB write under a 1 MiB cap")
 
-        # Real solve under the declared service defaults: caps admit normal work.
+        # Real solve under the declared service defaults: caps admit normal
+        # work. A sanitizer build reserves ~14 TB of shadow address space and
+        # dies under the declared RLIMIT_AS; retry once with only that bound
+        # lifted, and say so (hosted-limits section 3).
         result_path = pathlib.Path(directory) / "result.json"
         real = run([solver, str(ROOT / "examples" / "blend.mps"),
                     "--output", str(result_path)],
@@ -109,6 +113,17 @@ def main():
                    as_bytes=server.SOLVE_RLIMIT_AS_BYTES,
                    fsize_bytes=server.SOLVE_RLIMIT_FSIZE_BYTES,
                    directory=directory)
+        if real.returncode != 0 and b"AddressSanitizer" in (
+                pathlib.Path(directory, "stderr.log").read_bytes()):
+            print("note: sanitizer build blocked by the declared RLIMIT_AS; "
+                  "retrying the control solve with only that bound lifted")
+            real = run([solver, str(ROOT / "examples" / "blend.mps"),
+                        "--output", str(result_path)],
+                       timeout=30,
+                       cpu_seconds=server.SOLVE_RLIMIT_CPU_SECONDS,
+                       as_bytes=resource.RLIM_INFINITY,
+                       fsize_bytes=server.SOLVE_RLIMIT_FSIZE_BYTES,
+                       directory=directory)
         require(real.returncode == 0,
                 f"a normal solve must run inside the service caps (rc={real.returncode})")
         require(result_path.is_file(), "the capped solve must write its result")

@@ -2,6 +2,74 @@
 
 ## Unreleased
 
+### 2026-10-01 blueprint REL-01 — package, qualify and document the supported solver
+
+- Published the supported matrix and the install/upgrade/rollback
+  procedure in the new
+  [`docs/guides/RELEASE.md`](docs/guides/RELEASE.md): the D17
+  platform tiers (one Linux x86-64 gcc/Release/Python 3.14 host, plus
+  a locally sanitizer-qualified build; Windows, macOS, aarch64, CUDA,
+  manylinux and other Python versions explicitly unsupported), honest
+  D18 placeholders (`UNASSIGNED` support and security contacts, no
+  SLA), the offline wheel and CMake-prefix install paths, the upgrade
+  caveat that `--force-reinstall` is mandatory because rebuilds share
+  version `0.5.2`, the validated rollback sequence, the hosted
+  service's controls, the SBOM command, an explicit "what is NOT
+  supported" section and the open IR-33 / G7 gates. Registered in
+  `scripts/check_docs.py` and the documentation index.
+- Hosted service (blueprint step 6) with contract
+  [`docs/contracts/hosted-limits.md`](docs/contracts/hosted-limits.md)
+  **v1.1**: a fixed 60-second request quota keyed by client address
+  and checked before authentication (HTTP 429), `GET /metrics`
+  monotonic counters whose snapshots are taken before their own
+  response is counted, and a result-field whitelist so unknown payload
+  keys never reach a client. Every v1 limit row is unchanged. New CTest
+  `hosted_service_limits` joins `hosted_os_limits`; a new
+  `web/backend/service_limits.py` holds the quota and counter logic
+  with a loopback HTTP test double, and `web/backend/server.py` was
+  split so the adapter stays readable. The numerical-policy contract's
+  HTTP-adapter migration row is marked resolved.
+- Recorded that a sanitizer build cannot run under the declared 1 GiB
+  `RLIMIT_AS` (AddressSanitizer reserves ~14 TB of shadow address
+  space). The contract's not-claims now say so, and the two hosted
+  tests lift only that bound — printing that they did — when pointed
+  at a sanitizer binary. Deploying a sanitizer build is not a
+  supported configuration and the adapter itself lifts nothing.
+- Qualification evidence for commit `980687c`:
+  [`evidence/packaging-qualification-20261001.json`](evidence/packaging-qualification-20261001.json)
+  plus raw configure/build/ctest logs and the prefix and rollback drill
+  transcripts in
+  `evidence/packaging-qualification-20261001/`. Clean Release build with
+  `MARKOV_CERO_WARNINGS_AS_ERRORS=ON` → **120/120 CTest**; offline host
+  wheel `markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl` (sha256
+  `c1f19c9d…79d91`, 4,416,813 bytes) installed into a fresh venv →
+  **27/27** binding tests run from outside the repository; CMake prefix
+  install of 93 files with every `bin/` and `lib/` byte-identical to the
+  build tree and an installed external consumer PASS; prefix drill
+  P1 install / P2 expected configure failure / P3 reinstall / P4 remove;
+  rollback drill D1–D4 restoring the prior MINLP-01 wheel's `_core*.so`
+  byte-identically, with the one old-wheel test failure explained as
+  MINLP-02 version skew and the prior build passing its own suite 26/26
+  (D1b). An ASan+UBSan build passed **120/120** (457 s).
+- Step 4: new
+  [`scripts/generate_release_sbom.py`](scripts/generate_release_sbom.py)
+  writes an SPDX 2.3 document
+  ([`evidence/release-sbom-20261001.json`](evidence/release-sbom-20261001.json))
+  and a per-file source manifest
+  ([`evidence/release-source-manifest-20261001.csv`](evidence/release-source-manifest-20261001.csv))
+  regenerated against the release commit, embedding the wheel and
+  installed-binary hashes. Offline and deterministic apart from the
+  timestamp; no signature, provenance attestation, vulnerability scan,
+  dependency pinning or reproducible-build comparison, and those
+  absences are recorded in the document's own limitations.
+- Still open and deliberately unclaimed: second-host installation and
+  reproduction, independent release/security review (IR-33 / gate G7),
+  two named maintainers plus a security contact (D18), hosted CI
+  sanitizer and CUDA evidence (the workflow exists, no run record does;
+  `nvcc` is absent on this host), signed artifacts, vulnerability
+  scanning and dependency pinning. No production ML, NLP, GPU or MINLP
+  support is advertised by this package.
+
 ### 2026-10-01 blueprint BENCH-01 — preregistered benchmark campaign
 
 - Added the binding campaign contract

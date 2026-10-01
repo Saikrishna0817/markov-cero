@@ -1,0 +1,505 @@
+{
+ "spdxVersion": "SPDX-2.3",
+ "dataLicense": "CC0-1.0",
+ "SPDXID": "SPDXRef-DOCUMENT",
+ "name": "markov-cero-0.5.2",
+ "documentNamespace": "urn:spdx-document:markov-cero:0.5.2:980687cf04ff9f688fab2c70ac93a97bf3c72f3b",
+ "creationInfo": {
+  "created": "2026-10-01T14:11:50+00:00",
+  "creators": [
+   "Tool: scripts/generate_release_sbom.py"
+  ]
+ },
+ "packages": [
+  {
+   "SPDXID": "SPDXRef-Package-markov-cero",
+   "name": "markov-cero",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "markov-cero-0.5.2 source tree"
+  },
+  {
+   "SPDXID": "SPDXRef-Package-dep-setuptools",
+   "name": "setuptools",
+   "versionInfo": "84.0.0",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "comment": "build backend (pyproject build-system)"
+  },
+  {
+   "SPDXID": "SPDXRef-Package-dep-pybind11",
+   "name": "pybind11",
+   "versionInfo": "3.1.0",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "comment": "build backend (pyproject build-system)"
+  },
+  {
+   "SPDXID": "SPDXRef-Package-dep-pytest",
+   "name": "pytest",
+   "versionInfo": "9.1.1",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "comment": "test-only; not a runtime dependency"
+  },
+  {
+   "SPDXID": "SPDXRef-Package-dep-numpy",
+   "name": "numpy",
+   "versionInfo": "2.5.3",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "comment": "test-only; not a runtime dependency"
+  },
+  {
+   "SPDXID": "SPDXRef-Package-optional-torch",
+   "name": "torch",
+   "versionInfo": ">=2.9",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "comment": "optional ml-training extra; not installed and not exercised by this build"
+  },
+  {
+   "SPDXID": "SPDXRef-Package-optional-onnx",
+   "name": "onnx",
+   "versionInfo": ">=1.16",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "comment": "optional ml-training extra; not installed and not exercised by this build"
+  },
+  {
+   "SPDXID": "SPDXRef-Package-optional-onnxruntime",
+   "name": "onnxruntime",
+   "versionInfo": ">=1.19",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "comment": "optional ml-training extra; not installed and not exercised by this build"
+  },
+  {
+   "SPDXID": "SPDXRef-Artifact-wheel-markov_cero-0.5.2-cp314-cp314-linux_x86_64",
+   "name": "markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+   "checksums": [
+    {
+     "algorithm": "SHA256",
+     "checksumValue": "c1f19c9d3dc809f143e5a8b8956823fbb4aff3befab4f3a99479fe7344f79d91"
+    }
+   ],
+   "comment": "built locally; tag is a host wheel, not manylinux"
+  },
+  {
+   "SPDXID": "SPDXRef-Artifact-bin-markov-cero-iis",
+   "name": "markov-cero-iis",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "bin/markov-cero-iis",
+   "checksums": [
+    {
+     "algorithm": "SHA256",
+     "checksumValue": "e006da01373db87d08303105458f8b0849d28965dd02e77d99fecc42fdb1387f"
+    }
+   ],
+   "comment": "installed from this build; identical to the build-tree file"
+  },
+  {
+   "SPDXID": "SPDXRef-Artifact-bin-markov-cero-info",
+   "name": "markov-cero-info",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "bin/markov-cero-info",
+   "checksums": [
+    {
+     "algorithm": "SHA256",
+     "checksumValue": "5b78725bbdedb7a7586197cab19bd4a08dddbe91fc0f243610c4a30fb58d7acb"
+    }
+   ],
+   "comment": "installed from this build; identical to the build-tree file"
+  },
+  {
+   "SPDXID": "SPDXRef-Artifact-bin-markov-cero-mps-inspect",
+   "name": "markov-cero-mps-inspect",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "bin/markov-cero-mps-inspect",
+   "checksums": [
+    {
+     "algorithm": "SHA256",
+     "checksumValue": "9909c610d7e820a89de9e99bcfce9516d7fecd5863151e5749d9fd6f02a611d1"
+    }
+   ],
+   "comment": "installed from this build; identical to the build-tree file"
+  },
+  {
+   "SPDXID": "SPDXRef-Artifact-bin-markov-cero-solve",
+   "name": "markov-cero-solve",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "bin/markov-cero-solve",
+   "checksums": [
+    {
+     "algorithm": "SHA256",
+     "checksumValue": "80580f8723d92296d6928160f0690f7345ca3e41f1139954920eb24e8d72f968"
+    }
+   ],
+   "comment": "installed from this build; identical to the build-tree file"
+  },
+  {
+   "SPDXID": "SPDXRef-Artifact-bin-markov-cero-verify-minlp",
+   "name": "markov-cero-verify-minlp",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "bin/markov-cero-verify-minlp",
+   "checksums": [
+    {
+     "algorithm": "SHA256",
+     "checksumValue": "ed1325809c30d4b4fac4a89344adbae704a7f8046e00e9b8457e11082acdf2ae"
+    }
+   ],
+   "comment": "installed from this build; identical to the build-tree file"
+  },
+  {
+   "SPDXID": "SPDXRef-Artifact-bin-markov-cero-verify-mip",
+   "name": "markov-cero-verify-mip",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "bin/markov-cero-verify-mip",
+   "checksums": [
+    {
+     "algorithm": "SHA256",
+     "checksumValue": "0ce1b4b60ba8e75fc55d17766b041ce8c34dcd21551d79864dddfe996bf11cb2"
+    }
+   ],
+   "comment": "installed from this build; identical to the build-tree file"
+  },
+  {
+   "SPDXID": "SPDXRef-Artifact-lib-cmake-markov_cero-markov_ceroConfig-cmake",
+   "name": "markov_ceroConfig.cmake",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "lib/cmake/markov_cero/markov_ceroConfig.cmake",
+   "checksums": [
+    {
+     "algorithm": "SHA256",
+     "checksumValue": "296da9ee8745a3d180f9f8ceeb3718a66cae5ecaddd58c559d640efce2d5b09b"
+    }
+   ],
+   "comment": "installed from this build; identical to the build-tree file"
+  },
+  {
+   "SPDXID": "SPDXRef-Artifact-lib-cmake-markov_cero-markov_ceroConfigVersion-cmake",
+   "name": "markov_ceroConfigVersion.cmake",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "lib/cmake/markov_cero/markov_ceroConfigVersion.cmake",
+   "checksums": [
+    {
+     "algorithm": "SHA256",
+     "checksumValue": "6afa1118eb1989313981f7ee2b22ba3a826c3872e2dfaf3453dca01c6b6576f5"
+    }
+   ],
+   "comment": "installed from this build; identical to the build-tree file"
+  },
+  {
+   "SPDXID": "SPDXRef-Artifact-lib-cmake-markov_cero-markov_ceroTargets-release-cmake",
+   "name": "markov_ceroTargets-release.cmake",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "lib/cmake/markov_cero/markov_ceroTargets-release.cmake",
+   "checksums": [
+    {
+     "algorithm": "SHA256",
+     "checksumValue": "a289b06158a0acc1c5c24d2d3b281153b7e14054edac2ea542c9fe4c4e99294e"
+    }
+   ],
+   "comment": "installed from this build; identical to the build-tree file"
+  },
+  {
+   "SPDXID": "SPDXRef-Artifact-lib-cmake-markov_cero-markov_ceroTargets-cmake",
+   "name": "markov_ceroTargets.cmake",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "lib/cmake/markov_cero/markov_ceroTargets.cmake",
+   "checksums": [
+    {
+     "algorithm": "SHA256",
+     "checksumValue": "9c67d16d829bde830d5cada3f48b6a953f8fbe28f61e3d993faf4dd9127801f2"
+    }
+   ],
+   "comment": "installed from this build; identical to the build-tree file"
+  },
+  {
+   "SPDXID": "SPDXRef-Artifact-lib-libmarkov_cero_core-a",
+   "name": "libmarkov_cero_core.a",
+   "versionInfo": "0.5.2",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "licenseConcluded": "Apache-2.0",
+   "licenseDeclared": "Apache-2.0",
+   "copyrightText": "NOASSERTION",
+   "supplier": "NOASSERTION",
+   "packageFileName": "lib/libmarkov_cero_core.a",
+   "checksums": [
+    {
+     "algorithm": "SHA256",
+     "checksumValue": "1266a27a891ca9668fb0a63e2b00c35ac35540917d2cd97e262555e1674a83de"
+    }
+   ],
+   "comment": "installed from this build; identical to the build-tree file"
+  }
+ ],
+ "relationships": [
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-markov-cero",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Package-dep-setuptools",
+   "relationshipType": "DEPENDS_ON"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Package-dep-pybind11",
+   "relationshipType": "DEPENDS_ON"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Package-dep-pytest",
+   "relationshipType": "DEPENDS_ON"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Package-dep-numpy",
+   "relationshipType": "DEPENDS_ON"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Package-optional-torch",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Package-optional-onnx",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Package-optional-onnxruntime",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Artifact-wheel-markov_cero-0.5.2-cp314-cp314-linux_x86_64",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Artifact-bin-markov-cero-iis",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Artifact-bin-markov-cero-info",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Artifact-bin-markov-cero-mps-inspect",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Artifact-bin-markov-cero-solve",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Artifact-bin-markov-cero-verify-minlp",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Artifact-bin-markov-cero-verify-mip",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Artifact-lib-cmake-markov_cero-markov_ceroConfig-cmake",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Artifact-lib-cmake-markov_cero-markov_ceroConfigVersion-cmake",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Artifact-lib-cmake-markov_cero-markov_ceroTargets-release-cmake",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Artifact-lib-cmake-markov_cero-markov_ceroTargets-cmake",
+   "relationshipType": "OTHER"
+  },
+  {
+   "spdxElementId": "SPDXRef-Package-markov-cero",
+   "relatedSpdxElement": "SPDXRef-Artifact-lib-libmarkov_cero_core-a",
+   "relationshipType": "OTHER"
+  }
+ ],
+ "x_markovNotes": {
+  "commit": "980687cf04ff9f688fab2c70ac93a97bf3c72f3b",
+  "generated_from": "the git index: every listed path is either identical to 980687c or staged for the release commit that records this document. unstaged modifications at generation: 12; staged paths: 25",
+  "staged_paths": [
+   "CHANGELOG.md",
+   "docs/README.md",
+   "docs/contracts/hosted-limits.md",
+   "docs/guides/RELEASE.md",
+   "docs/project/STATUS.md",
+   "evidence/INDEX.md",
+   "evidence/packaging-qualification-20261001.json",
+   "evidence/packaging-qualification-20261001/asan-build.log",
+   "evidence/packaging-qualification-20261001/asan-configure.log",
+   "evidence/packaging-qualification-20261001/asan-ctest.log",
+   "evidence/packaging-qualification-20261001/binary-hashes.json",
+   "evidence/packaging-qualification-20261001/consumer-build.log",
+   "evidence/packaging-qualification-20261001/consumer-configure.log",
+   "evidence/packaging-qualification-20261001/install.log",
+   "evidence/packaging-qualification-20261001/prefix-drill-20261001.txt",
+   "evidence/packaging-qualification-20261001/release-build.log",
+   "evidence/packaging-qualification-20261001/release-configure.log",
+   "evidence/packaging-qualification-20261001/release-ctest.log",
+   "evidence/packaging-qualification-20261001/rollback-drill-20261001.txt",
+   "evidence/release-sbom-20261001.json",
+   "evidence/release-source-manifest-20261001.csv",
+   "scripts/check_docs.py",
+   "scripts/generate_release_sbom.py",
+   "web/backend/os_limits_test.py",
+   "web/backend/service_limits_test.py"
+  ],
+  "license": "Apache-2.0",
+  "license_files": {
+   "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+   "NOTICE": "3859e7c5d9961f9d477533502a3eeba1de8ea6d6322a3db83ccdb26616297655"
+  },
+  "source_manifest": {
+   "path": "evidence/release-source-manifest-20261001.csv",
+   "entries": 1700,
+   "sha256": "8563b8a1fd5061fbf030a5db7eb3fcfdbe2b9383fb5eaa462bf72e0dcad54a26",
+   "covers": "every git-tracked file at this commit"
+  },
+  "artifacts": {
+   "markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl": "c1f19c9d3dc809f143e5a8b8956823fbb4aff3befab4f3a99479fe7344f79d91",
+   "bin/markov-cero-iis": "e006da01373db87d08303105458f8b0849d28965dd02e77d99fecc42fdb1387f",
+   "bin/markov-cero-info": "5b78725bbdedb7a7586197cab19bd4a08dddbe91fc0f243610c4a30fb58d7acb",
+   "bin/markov-cero-mps-inspect": "9909c610d7e820a89de9e99bcfce9516d7fecd5863151e5749d9fd6f02a611d1",
+   "bin/markov-cero-solve": "80580f8723d92296d6928160f0690f7345ca3e41f1139954920eb24e8d72f968",
+   "bin/markov-cero-verify-minlp": "ed1325809c30d4b4fac4a89344adbae704a7f8046e00e9b8457e11082acdf2ae",
+   "bin/markov-cero-verify-mip": "0ce1b4b60ba8e75fc55d17766b041ce8c34dcd21551d79864dddfe996bf11cb2",
+   "lib/cmake/markov_cero/markov_ceroConfig.cmake": "296da9ee8745a3d180f9f8ceeb3718a66cae5ecaddd58c559d640efce2d5b09b",
+   "lib/cmake/markov_cero/markov_ceroConfigVersion.cmake": "6afa1118eb1989313981f7ee2b22ba3a826c3872e2dfaf3453dca01c6b6576f5",
+   "lib/cmake/markov_cero/markov_ceroTargets-release.cmake": "a289b06158a0acc1c5c24d2d3b281153b7e14054edac2ea542c9fe4c4e99294e",
+   "lib/cmake/markov_cero/markov_ceroTargets.cmake": "9c67d16d829bde830d5cada3f48b6a953f8fbe28f61e3d993faf4dd9127801f2",
+   "lib/libmarkov_cero_core.a": "1266a27a891ca9668fb0a63e2b00c35ac35540917d2cd97e262555e1674a83de"
+  },
+  "limitations": [
+   "no package signature or provenance attestation",
+   "no vulnerability scan or advisory database lookup",
+   "no reproducible-build comparison against a second builder",
+   "dependencies are the versions resolved on this single host; there is no lockfile and no dependency hash pinning",
+   "third_party/ holds licenses only, no vendored code",
+   "single host, single toolchain: no cross-distro or cross-arch wheel was produced or tested"
+  ]
+ }
+}

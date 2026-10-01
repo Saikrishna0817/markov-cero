@@ -1,0 +1,27 @@
+# REL-01 rollback drill 2026-10-01T14:05:09Z
+# commit: 980687cf04ff9f688fab2c70ac93a97bf3c72f3b
+# prior wheel: MINLP-01 commit 2fa49ea, sha256 5a55f57d09ae2fad9e5d42f847a01bfc22f5eb88153bf7e94c9434336657ebd9
+# new wheel:    REL-01 commit 980687c, sha256 c1f19c9d3dc809f143e5a8b8956823fbb4aff3befab4f3a99479fe7344f79d91
+# venv: fresh python3.14 venv with pytest+numpy installed offline from /tmp/opencode/rel01/pipdl
+
+## D1 install prior build
+Successfully installed markov-cero-0.5.2
+core sha256: b1a82348c72cada1abeb1a5330b80716741ebf4cec1ef7bdf161765b18a2c265
+tests: 1 failed, 26 passed in 0.16s
+
+## D2 upgrade to the new build
+Successfully installed markov-cero-0.5.2
+core sha256: 14dc88a8f8fd85ff41d50131d62b9c25a0235c3f704844daca8e95dc28b01a16
+tests: 27 passed in 0.17s
+
+## D3 rollback to the prior build
+Successfully installed markov-cero-0.5.2
+core sha256: b1a82348c72cada1abeb1a5330b80716741ebf4cec1ef7bdf161765b18a2c265
+tests: 1 failed, 26 passed in 0.15s
+
+## D4 uninstall
+  Successfully uninstalled markov-cero-0.5.2
+import after uninstall: ModuleNotFoundError: No module named 'markov_cero'
+
+## D1b prior wheel against the prior commit's own test suite
+tests (2fa49ea suite): 26 passed in 0.12s

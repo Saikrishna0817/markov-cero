@@ -1,0 +1,150 @@
+{
+  "date": "2026-10-01",
+  "task": "REL-01 — package and deploy the supported solver (local half)",
+  "scope": "What was executed on this host, with the exact commands, hashes, transcripts and what stays open. Not a release claim, not an independent review, not a second-host validation. Step 6 (service quota, metrics, result fields) ships as code and CTest in the same release; its contract and tests are web/backend/ and docs/contracts/hosted-limits.md v1.1. Step 1 (supported matrix) is documented in docs/guides/RELEASE.md. Steps 7 and 8 are external and remain open.",
+  "commit": "980687cf04ff9f688fab2c70ac93a97bf3c72f3b",
+  "tree": "git status clean outside web/ at build time; web/ holds unrelated frontend work and is not part of this package",
+  "version": "0.5.2",
+  "license": {
+    "spdx": "Apache-2.0",
+    "LICENSE_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "NOTICE_sha256": "3859e7c5d9961f9d477533502a3eeba1de8ea6d6322a3db83ccdb26616297655",
+    "pyproject_metadata": "license = \"Apache-2.0\" with license-files = [LICENSE, NOTICE], checked by the CI coherence step"
+  },
+  "host": {
+    "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+    "machine": "x86_64",
+    "cpu_threads": 12,
+    "python": "3.14.7",
+    "cmake": "4.4.3",
+    "gcc": "g++ (GCC) 16.2.1 20260810",
+    "build_venv": ".venv (setuptools 84.0.0, pybind11 3.1.0, pip 26.2.1)",
+    "matrix_honesty": "single Linux x86-64 host, gcc Release, Python 3.14, CPU only. No second host, no macOS/Windows/aarch64, no other Python, no CUDA device. The wheel tag is linux_x86_64, not manylinux."
+  },
+  "clean_release_build": {
+    "configure": "cmake -S . -B /tmp/opencode/rel01/build -DCMAKE_BUILD_TYPE=Release -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON",
+    "configure_exit": 0,
+    "build": "cmake --build /tmp/opencode/rel01/build --parallel 12",
+    "build_exit": 0,
+    "warnings_as_errors": true,
+    "ctest": {
+      "command": "ctest --test-dir /tmp/opencode/rel01/build --output-on-failure --timeout 300",
+      "passed": 120,
+      "total": 120,
+      "seconds": 64.42
+    },
+    "logs": [
+      "evidence/packaging-qualification-20261001/release-configure.log",
+      "evidence/packaging-qualification-20261001/release-build.log",
+      "evidence/packaging-qualification-20261001/release-ctest.log"
+    ]
+  },
+  "wheel_qualification": {
+    "command": ".venv/bin/python -m pip wheel . -w /tmp/opencode/rel01/wheels --no-deps --no-build-isolation",
+    "offline": true,
+    "build_isolation": false,
+    "dependencies_downloaded": "none for markov-cero (pyproject declares no runtime dependencies); pytest 9.1.1 and numpy 2.5.3 were downloaded once into /tmp/opencode/rel01/pipdl for the test-only venv",
+    "artifact": "/tmp/opencode/rel01/wheels/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+    "bytes": 4416813,
+    "sha256": "c1f19c9d3dc809f143e5a8b8956823fbb4aff3befab4f3a99479fe7344f79d91",
+    "tag": "cp314-cp314-linux_x86_64 (local host wheel, NOT manylinux)",
+    "fresh_venv_install": {
+      "venv": "python3 -m venv /tmp/opencode/rel01/venv (Python 3.14.7)",
+      "install_command": "pip install --no-index --no-deps /tmp/opencode/rel01/wheels/markov_cero-0.5.2-cp314-cp314-linux_x86_64.whl",
+      "pytest": "27 passed",
+      "test_location": "/tmp/opencode/rel01/run (outside the repository, so an in-tree binary cannot hide a packaging defect)",
+      "installed_core_sha256": "14dc88a8f8fd85ff41d50131d62b9c25a0235c3f704844daca8e95dc28b01a16",
+      "note": "pytest and numpy are test-only tools installed from a local wheel directory with --no-index; neither is a runtime dependency"
+    }
+  },
+  "cmake_package_qualification": {
+    "install_command": "cmake --install /tmp/opencode/rel01/build --prefix /tmp/opencode/rel01/install",
+    "installed_files": 93,
+    "binaries": {
+      "markov-cero-solve": "80580f8723d92296",
+      "markov-cero-verify-mip": "0ce1b4b60ba8e75f",
+      "markov-cero-verify-minlp": "ed1325809c30d4b4",
+      "markov-cero-iis": "e006da01373db87d",
+      "markov-cero-info": "5b78725bbdedb7a7",
+      "markov-cero-mps-inspect": "9909c610d7e820a8"
+    },
+    "binaries_note": "full 64-hex digests for all 93 installed files are in evidence/packaging-qualification-20261001/binary-hashes.json; every installed bin/ and lib/ file was byte-identical to its build-tree counterpart",
+    "external_consumer": {
+      "project": "evidence/packaging-consumer/",
+      "command": "cmake -S evidence/packaging-consumer -B ... -DCMAKE_PREFIX_PATH=/tmp/opencode/rel01/install -DCMAKE_BUILD_TYPE=Release && ./installed-consumer examples/cases/multiperiod_production.mps",
+      "result": "status=Optimal verified=yes certificate=independent_mip_tree objective=5300 fingerprint=3743977559983760680 replay accepted=yes checked_nodes=7 — installed-consumer PASS",
+      "logs": [
+        "evidence/packaging-qualification-20261001/consumer-configure.log",
+        "evidence/packaging-qualification-20261001/consumer-build.log",
+        "evidence/packaging-qualification-20261001/install.log"
+      ]
+    },
+    "prefix_drill": {
+      "P1_install": "93 files installed, external consumer builds and passes",
+      "P2_remove": "prefix removed, consumer reconfigure fails with exit 1 (expected)",
+      "P3_reinstall": "consumer builds and passes again",
+      "P4_remove": "prefix removed",
+      "transcript": "evidence/packaging-qualification-20261001/prefix-drill-20261001.txt"
+    }
+  },
+  "rollback_drill": {
+    "prior_wheel": {
+      "source": "MINLP-01 commit 2fa49ea, built in a temporary git worktree",
+      "sha256": "5a55f57d09ae2fad9e5d42f847a01bfc22f5eb88153bf7e94c9434336657ebd9",
+      "installed_core_sha256": "b1a82348c72cada1abeb1a5330b80716741ebf4cec1ef7bdf161765b18a2c265"
+    },
+    "new_wheel": {
+      "source": "this commit 980687c",
+      "sha256": "c1f19c9d3dc809f143e5a8b8956823fbb4aff3befab4f3a99479fe7344f79d91",
+      "installed_core_sha256": "14dc88a8f8fd85ff41d50131d62b9c25a0235c3f704844daca8e95dc28b01a16"
+    },
+    "D1_install_prior": "26 passed, 1 failed",
+    "D2_upgrade_to_new": "27 passed",
+    "D3_rollback_to_prior": "core sha256 byte-identical to D1; 26 passed, 1 failed",
+    "D4_uninstall": "import markov_cero raises ModuleNotFoundError",
+    "rollback_byte_identical": true,
+    "expected_failure_explained": "the single failure on the prior wheel is test_proof_guarantee.py::test_minlp_oa_proof_guarantee_fields, a MINLP-02 feature that did not exist at MINLP-01; the prior wheel passes its own commit's suite 26/26 (D1b). It is version skew, not a packaging defect.",
+    "transcript": "evidence/packaging-qualification-20261001/rollback-drill-20261001.txt"
+  },
+  "sanitizer_evidence": {
+    "asan_ubsan": {
+      "configure": "cmake -S . -B build_rel01_asan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMARKOV_CERO_ENABLE_ASAN_UBSAN=ON -DMARKOV_CERO_WARNINGS_AS_ERRORS=ON",
+      "build_exit": 0,
+      "ctest": {"passed": 120, "total": 120, "seconds": 457.06},
+      "build_location": "build_rel01_asan/ (gitignored; not part of the release artifact)",
+      "logs": [
+        "evidence/packaging-qualification-20261001/asan-configure.log",
+        "evidence/packaging-qualification-20261001/asan-build.log",
+        "evidence/packaging-qualification-20261001/asan-ctest.log"
+      ],
+      "hosted_interaction": "the sanitizer binary cannot run under the hosted service's declared 1 GiB RLIMIT_AS (AddressSanitizer reserves ~14 TB of shadow address space). Both hosted tests detect that failure, lift only RLIMIT_AS for the control solve and print that they did so; every other declared limit still binds. Deploying a sanitizer build is not a supported configuration."
+    },
+    "tsan": "not re-run at this commit; TSan remains a CI matrix job only",
+    "hosted_runs": ".github/workflows/ci.yml declares ASan-UBSan, TSan, CUDA-compile, wheel, docs and web jobs, but no hosted run is recorded in this repository. Hosted sanitizer and CUDA evidence stay PENDING — they are claimed nowhere in this record."
+  },
+  "cuda_evidence": {
+    "nvcc_present_on_host": false,
+    "claim": "none. No CUDA compilation or device run was performed for this package; GPU and CUDA remain outside the supported tier."
+  },
+  "service_qualification": {
+    "contract": "docs/contracts/hosted-limits.md v1.1 (request quota, metrics, result-field whitelist added; every v1 limit row unchanged)",
+    "tests": ["hosted_os_limits (CTest)", "hosted_service_limits (CTest)"],
+    "release_build_result": "2/2 passed",
+    "asan_build_result": "2/2 passed with the RLIMIT_AS lift described above"
+  },
+  "open_gates": [
+    "Second-host install and reproduction by an independent user — NOT MET (single host)",
+    "Independent release/security review and commissioning it — external, PENDING",
+    "Two named maintainers plus a security contact (D18) — external, PENDING; the guide records honest placeholders",
+    "Hosted CI evidence (sanitizer, CUDA, multi-platform) — PENDING; the workflow exists, no run record does",
+    "SBOM signature, provenance attestation, vulnerability scan, dependency pinning — PENDING (a source/artifact SBOM exists, nothing signed it)",
+    "Reproducible-build comparison against a second builder — PENDING"
+  ],
+  "limitations": [
+    "Everything here ran on one host with one toolchain; the wheel is a host wheel, not manylinux, and installing it elsewhere is untested",
+    "120/120 CTest and 27/27 binding tests describe this commit on this host only",
+    "The rollback drill proves the operator procedure, not cross-version API compatibility",
+    "No GPU, ML, NLP or MINLP production tier is advertised by this package (blueprint REL-01 prohibition)",
+    "No correctness, performance or security guarantee attaches to a passing install or consumer run"
+  ]
+}

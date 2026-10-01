@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CURRENT = ['README.md', 'docs/README.md', 'docs/guides/BUILDING.md',
            'docs/guides/QUICKSTART.md', 'docs/guides/VERIFY.md',
            'docs/guides/BENCHMARKS.md',
+           'docs/guides/RELEASE.md',
            'docs/contracts/numerical-policy.md',
            'docs/contracts/resource-limits.md',
            'docs/contracts/sparse-lp-path.md',

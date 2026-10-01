@@ -61,6 +61,13 @@ A cooperative stop returns a `ResourceLimit` JSON result through the normal
   static frontend and any reverse proxy are outside this contract; container
   or platform limits (Docker `--memory`, cgroups) are complementary and
   remain the deployer's responsibility.
+- **A sanitizer build cannot run under the declared address-space cap.** An
+  ASan-instrumented child reserves roughly 14 TB of shadow address space and
+  is killed by the 1 GiB `RLIMIT_AS` before it starts. The service is
+  therefore qualified with a non-sanitizer binary; the two hosted tests lift
+  only `RLIMIT_AS` when they are pointed at a sanitizer build and print that
+  they did so. Deploying a sanitizer build is not a supported configuration
+  and no relaxed default is applied by the adapter itself.
 - **Authentication and origin checks are not resource limits** and are
   documented in `web/README.md`, not here.
 - **The request quota is per client address, not per identity.** Several

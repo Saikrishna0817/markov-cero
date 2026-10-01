@@ -12,6 +12,7 @@ Usage: python3 web/backend/service_limits_test.py /path/to/markov-cero-solve
 
 import json
 import pathlib
+import resource
 import sys
 import threading
 import time
@@ -78,6 +79,13 @@ def main():
 
         # Result fields: assurance and the v1.1 additions reach the client.
         code, _, payload = request(f"{base}/solve", data=solve_payload(model))
+        if code != 200 and b"AddressSanitizer" in payload:
+            # A sanitizer build reserves ~14 TB of shadow address space and
+            # dies under the declared RLIMIT_AS; lift only that bound (§3).
+            server.SOLVE_RLIMIT_AS_BYTES = resource.RLIM_INFINITY
+            print("note: sanitizer build blocked by the declared RLIMIT_AS; "
+                  "retrying with only that bound lifted")
+            code, _, payload = request(f"{base}/solve", data=solve_payload(model))
         require(code == 200, f"a real solve must answer 200, got {code}: {payload[:200]}")
         data = json.loads(payload)
         require(data.get("status") == "Optimal",
