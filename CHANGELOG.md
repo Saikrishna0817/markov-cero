@@ -2,6 +2,39 @@
 
 ## Unreleased
 
+### 2026-10-02 release gate — hosted CI green end to end, a real GPU device run, and budgets sized from measurements
+
+- **The hosted matrix is green** — [CI run 36938268360](evidence/hosted-ci-36938268360-2026-10-02.json)
+  on `7fbb3ff`: **12/12 jobs success** (gcc/clang × Debug/Release/ASan-UBSan/TSan
+  each at 121/121 CTest + Netlib 7/7 + MIPLIB 3/3, plus wheel, docs/web,
+  CUDA-compile and ML-fallback). Four pushes were needed to get there and
+  the record keeps all four: `f13ff97` (9 jobs failed), `e75201d` (6),
+  `7d99223` (2), then green. Every fix widens a resource allowance or fixes
+  detection/reporting — no assertion, tolerance or PASS bar moved.
+- **What was actually broken** — the 180 s default watchdog killed
+  `refinery_domain_and_iis` in four jobs (hosted worst 607 s) → `TIMEOUT
+  1200`; the domain tests' original solver limits (60 s / 90 s) starved
+  Debug builds → non-Release gets 360 s solver / 420 s deadline (hosted
+  worst 116 s); the MIPLIB runner's flugpl search needs ~5x wall time under
+  Debug or a sanitizer (5583–6703 of 12547 nodes at 60 s) → every
+  non-Release CI build now runs with `--time-limit 600 --proof-time-limit
+  300 --timeout-sec 1200` while Release keeps the defaults (same PASS bar);
+  the hosted RLIMIT_AS lift keyed on an `AddressSanitizer` banner and missed
+  TSan's silent signal death → `web/backend/sanitizer_build.py` identifies
+  sanitizer builds by static-runtime markers or `ldd`, and the lift prints
+  the hosted-limits §3 note it performs; and clang+TSan force-loads its own
+  `operator new`, colliding with the allocation-injection harness at link
+  time → those two tests link with `--allow-multiple-definition` and exit
+  **77 (skip)** only under clang+TSan (gcc+TSan still runs them, 2/2 green).
+- **A real device run** — [GPU device run](evidence/gpu-device-run-2026-10-02.json):
+  the CUDA build compiled in the digest-pinned `nvidia/cuda:12.6.3-devel`
+  container (arch 75; the container has no driver, so it compiles only) and
+  executed on this host's **RTX 2050** (driver 610.57.04, CC 8.6):
+  **121/121 CTest with 0 skips**, all 11 GPU-related tests Passed, buffer/
+  CSR/refinery roundtrip probe lines captured. Hosted CI still has no GPU —
+  its 8 device tests skip by design (11/11 with 8 Skipped in the CUDA job).
+  No speed claim; one host, one run.
+
 ### 2026-10-02 benchmark — the BENCH-02 primal re-check failures closed as a reporting defect
 
 - **All ten rows analyzed** — [record](evidence/bench02-primal-recheck-defect-2026-10-02.json):

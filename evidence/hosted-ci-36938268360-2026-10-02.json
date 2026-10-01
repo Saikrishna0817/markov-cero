@@ -1,0 +1,72 @@
+{
+  "record": "hosted-ci",
+  "date": "2026-10-02",
+  "task": "REL-01 / Phase 12 — a fully green hosted CI run as durable evidence",
+  "question": "The workflow in .github/workflows/ci.yml existed but every push since dependency pinning failed at least one job. This record names the run in which the complete hosted matrix passed on the current source, what each green job actually executed, and which failures were closed to get there.",
+  "run": {
+    "workflow": "CI (push to main)",
+    "run_id": 36938268360,
+    "url": "https://github.com/Saikrishna0817/markov-cero/actions/runs/36938268360",
+    "conclusion": "success",
+    "head_sha": "7fbb3ffbd38f48a7635a30b812f3f270c3f420c5",
+    "head_commit": "7fbb3ff rel-01: size the diagnostic budgets from the hosted CI measurements (miplib, refinery, domain)",
+    "created": "2026-10-01T22:59:18Z",
+    "updated": "2026-10-01T23:21:37Z",
+    "wall": "22 m 19 s, 12 of 12 jobs success, 0 failed, 0 cancelled"
+  },
+  "environment": {
+    "runner": "github-hosted ubuntu-latest, runner image ubuntu24/20260927.320",
+    "toolchains": "GNU 13.3.0 and Clang 18.1.3 (as printed by each job's CMake configure), Python 3.14.7 per the pinned workflow",
+    "matrix": "compiler {gcc, clang} x build_type {Debug, Release, ASan-UBSan, TSan} = 8 solver jobs, plus wheel/binding, docs+web, CUDA-compile and optional-ML jobs",
+    "gpu": "none — hosted runners have no NVIDIA device; the CUDA job compiles in the digest-pinned nvidia/cuda:12.6.3-devel-ubuntu24.04 container and runs the fallback check without a device"
+  },
+  "jobs": [
+    {"name": "Documentation paths and web build", "result": "success", "duration": "17 s"},
+    {"name": "Python wheel and binding tests", "result": "success", "duration": "3 m 2 s"},
+    {"name": "Optional ML compilation and fallback contract", "result": "success", "duration": "4 m 13 s"},
+    {"name": "gcc / Release", "result": "success", "duration": "5 m 22 s"},
+    {"name": "CUDA compilation and CPU fallback", "result": "success", "duration": "6 m 3 s"},
+    {"name": "clang / Release", "result": "success", "duration": "7 m 8 s"},
+    {"name": "clang / ASan-UBSan", "result": "success", "duration": "10 m 31 s"},
+    {"name": "clang / TSan", "result": "success", "duration": "13 m 57 s"},
+    {"name": "gcc / TSan", "result": "success", "duration": "16 m 48 s"},
+    {"name": "clang / Debug", "result": "success", "duration": "17 m 53 s"},
+    {"name": "gcc / ASan-UBSan", "result": "success", "duration": "18 m 7 s"},
+    {"name": "gcc / Debug", "result": "success", "duration": "22 m 15 s"}
+  ],
+  "key_observations": [
+    "All eight solver jobs ran the full 121-test CTest suite to '100% tests passed out of 121' (clang/TSan with exactly the two declared skips below) plus the Netlib 7/7 and MIPLIB 3/3 benchmark steps.",
+    "gcc / Debug: refinery_domain_and_iis Passed 606.95 s and domain_supply_chain_large Passed 116.17 s inside the sized budgets; MIPLIB 3/3 with the diagnostic budget (flugpl previously died at the 60 s default with 5583 of 12547 nodes).",
+    "clang / TSan: resource_failure and stop_reason_boundary reported ***Skipped (exit 77) — the declared clang+TSan allocation-injection limitation — while gcc / TSan ran and passed both tests (0.05 s each), so the coverage is only skipped where the sanitizer runtime makes it impossible.",
+    "gcc / TSan: hosted_os_limits Passed 4.76 s and hosted_service_limits Passed 2.26 s under the sanitizer build with only the declared RLIMIT_AS lifted (hosted-limits v1.1 section 3).",
+    "CUDA job: '100% tests passed out of 11' with exactly the 8 device-skip tests Skipped (gpu_buffer, equivalence, gpu_reduction, gpu_pdhg_step, gpu_pdhg_restart, gpu_pdhg_adaptive, gpu_pdhg_kkt, gpu_pdhg_timing); gpu_admm, gpu_fallback and gpu_qp ran their no-device path and passed.",
+    "The MIPLIB budget step uses --time-limit 600 --proof-time-limit 300 --timeout-sec 1200 for every non-Release build type and the historical defaults for Release; the PASS bar (Optimal + verified + relative tolerance) is identical in every job."
+  ],
+  "failures_closed_to_get_here": [
+    {"run": 36915132410, "commit": "f13ff97", "jobs_failed": "9 of 12 (every build job plus CUDA; only docs/wheel/ML passed)", "cause": "pre-existing blockers diagnosed from the logs — clang -Werror warning, MIPLIB proof budget, ASan RLIMIT_AS death, GPU tests dying without a device"},
+    {"run": 36922948673, "commit": "e75201d", "jobs_failed": "6 of 12 (both ASan, both TSan, both Debug)", "cause": "refinery watchdog 180 s (4 jobs), domain solver limits 60/90 s under clang/Debug, hosted RLIMIT_AS banner check missing for TSan's silent signal-6 death, MIPLIB flugpl under sanitizer slowdown, clang+TSan multiple-definition link of the allocation-injection tests"},
+    {"run": 36934994461, "commit": "7d99223", "jobs_failed": "2 of 12 (both Debug)", "cause": "ctest now fully green (121/121 in both), only the MIPLIB step's budget condition still excluded Debug builds — FLUGPL hit the 60 s default (clang/Debug 6703 nodes, gcc/Debug 5583 of 12547)"},
+    {"run": 36938268360, "commit": "7fbb3ff", "jobs_failed": "none", "cause": "the run recorded here"}
+  ],
+  "fixes_in_the_green_path": {
+    "commits": [
+      "00c4d6c rel-01: clear the hosted CI blockers (clang warning, proof budget, asan rlimit, gpu no-device)",
+      "e75201d bench-02: report the measured QP primal violation instead of a default zero",
+      "7d99223 rel-01: clear the remaining CI failures (slow-build budgets, clang+tsan injection, sanitizer rlimit detection)",
+      "7fbb3ff rel-01: size the diagnostic budgets from the hosted CI measurements (miplib, refinery, domain)"
+    ],
+    "mechanism": "Every fix widens a resource allowance or fixes reporting/detection: refinery watchdog 180 -> 1200 s (worst hosted observation 607 s), domain solver limits 60/90 s -> 360/360 s with 420 s test deadlines for non-Release builds (worst hosted observation 116 s), MIPLIB diagnostic budget for every non-Release build, sanitizer-build detection replaces a banner-only check for the declared RLIMIT_AS lift, and the two allocation-injection tests skip with exit 77 only under clang+TSan. No assertion, tolerance, PASS bar or verdict was changed in any job."
+  },
+  "what_this_proves": [
+    "the current source builds and passes the full hosted matrix — two compilers, four build types including both sanitizer families, plus wheel, docs/web, CUDA-compile and ML-fallback jobs — on GitHub-hosted runners",
+    "the sanitizer RLIMIT_AS lift (hosted-limits v1.1 section 3) works for ASan and TSan alike, and the no-device GPU path skips cleanly while the CPU fallbacks run",
+    "the workflow that REL-01 previously described as 'exists, no run record does' now has a dated green run"
+  ],
+  "not_claimed": [
+    "no second CI provider, no self-hosted runner, no Windows or macOS, no other compiler version",
+    "no GPU execution in CI (the hosted runners have none; the device run is recorded separately in gpu-device-run-2026-10-02.json)",
+    "no speed or performance measurement — job durations are wall-clock observations on shared runners, not benchmarks",
+    "one run at one commit; a green run is evidence of that run, not a guarantee for future runs"
+  ],
+  "note": "Run identifiers and timestamps read from the GitHub API on 2026-10-02; job-level observations read from that run's logs. The evidence files documenting this run are committed after it, so the run itself covers the four commits listed above and not the documentation commit."
+}

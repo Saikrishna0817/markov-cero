@@ -1,0 +1,61 @@
+{
+  "record": "gpu-device-run",
+  "date": "2026-10-02",
+  "task": "RES-01 remainder — execute the CUDA build against a real GPU device on this host",
+  "question": "The hosted CI can only prove no-device behavior (gpu tests exit 77 and skip). This record runs the same CUDA build's full suite on the host that has the RTX 2050, so the device path — kernel execution, buffer/CSR roundtrips, PDHG/ADMM/QP kernels and the CPU-fallback contract — is exercised for real against the current source.",
+  "build": {
+    "build_dir": "build-cuda2",
+    "source_commit": "7d99223 rel-01: clear the remaining CI failures (slow-build budgets, clang+tsan injection, sanitizer rlimit detection)",
+    "note": "binaries were built from the working tree that became 7d99223; only CMake test-budget files changed after the build (no binary impact)",
+    "configure": "cmake -S . -B build-cuda2 (default options with CUDA toolchain available)",
+    "compiler": "nvcc 12.6.3 from container markov-cuda-dev@sha256:258a92012c2bf8cd42119bc8f27b03408e7b21c7187f872f4330381dd0bf8efc (base nvidia/cuda:12.6.3-devel-ubuntu24.04 pinned by tag and digest per docs/guides/RELEASE.md)",
+    "cuda_architectures": "75",
+    "cuda_runtimes": "host-side static cudart — the container has no NVIDIA driver (its run prints the 'NVIDIA Driver was not detected' warning), so the container is used for compilation only and every binary runs on the host",
+    "container_command": "docker run --rm --user $(id -u):$(id -g) -v <repo>:<repo> -w <repo> markov-cuda-dev bash -c 'cmake -S . -B build-cuda2 && cmake --build build-cuda2 --parallel 4'",
+    "container_build_rc": 0
+  },
+  "device": {
+    "name": "NVIDIA GeForce RTX 2050",
+    "driver": "610.57.04 (KMD 610.57.04)",
+    "cuda_umd": "13.3",
+    "memory": "4096 MiB",
+    "compute_capability": "8.6",
+    "host_access": "standard container runtime on this host (no --privileged needed for the device test run; it is a host-side execution, not inside the container)"
+  },
+  "run": {
+    "command": "ctest --test-dir build-cuda2 -j4 --output-on-failure --timeout 180",
+    "where": "host (device visible)",
+    "result": "121/121 passed, 0 skipped, 0 failed, total 37.86 s",
+    "log": "run of 2026-10-02; every gpu_* test reported Passed rather than Skipped"
+  },
+  "gpu_tests_executed": [
+    {"test": "gpu_buffer", "seconds": 0.34},
+    {"test": "gpu_reduction", "seconds": 0.49},
+    {"test": "equivalence", "seconds": 0.58},
+    {"test": "gpu_pdhg_step", "seconds": 0.29},
+    {"test": "gpu_pdhg_kkt", "seconds": 1.22},
+    {"test": "gpu_pdhg_restart", "seconds": 1.41},
+    {"test": "gpu_admm", "seconds": 0.25},
+    {"test": "gpu_fallback", "seconds": 0.23},
+    {"test": "gpu_pdhg_timing", "seconds": 0.64},
+    {"test": "gpu_pdhg_adaptive", "seconds": 2.16},
+    {"test": "gpu_qp", "seconds": 0.73}
+  ],
+  "direct_probe": {
+    "command": "./build-cuda2/gpu_buffer_test",
+    "observed": "buffer lifecycle, double/size_t roundtrip, bounds checking, CSR construction roundtrip, model sparse-matrix roundtrip and the refinery MPS roundtrip all PASS on the device build"
+  },
+  "what_this_proves": [
+    "the current source compiles and links against CUDA 12.6 for arch 75 and the resulting binary runs on a real device",
+    "kernel execution paths (PDHG variants, ADMM, reductions, QP) and the buffer/CSR layer execute successfully on compute capability 8.6",
+    "the CPU-fallback contract still passes in the same run (gpu_fallback)",
+    "the hosted CI's no-device skip (exit 77) is an environment property, not a hidden device failure: with a device present the same 8 device-skip tests run and pass instead of skipping"
+  ],
+  "not_claimed": [
+    "no speed comparison against the CPU path and no end-to-end acceleration claim (hardware.md's boundary stands)",
+    "no other GPU model, no multi-GPU, no other driver or CUDA version",
+    "hosted CI still has no GPU: the cuda-build job's 8 device-skip tests keep exiting 77 there, and the main matrix jobs compile without CUDA (gpu_* tests run their CPU path); this record does not change either",
+    "one host, one run"
+  ],
+  "note": "Dated observation against the recorded binary; see gpu_hardware_*.json records from 2026-09-28 for the earlier device-access measurements this build does not replace."
+}
