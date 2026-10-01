@@ -33,9 +33,8 @@ void require(bool condition, const char* message) {
     if (!condition) throw std::runtime_error(message);
 }
 
-// Keeps a pointer observable so the optimizer cannot prove the allocation
-// dead and delete the probe (GCC's dead-allocation elimination would then
-// skip the harness entirely).
+// Keeps a pointer observable so the optimizer cannot prove the allocation dead
+// and delete the probe (GCC's dead-allocation elimination would skip it).
 void keep_alive(const void* pointer) {
     __asm__ __volatile__("" : : "r"(pointer) : "memory");
 }
@@ -291,6 +290,7 @@ void test_engine_allocation_sweep() {
 } // namespace
 
 int main() {
+    MARKOV_CERO_TEST_SKIP_INJECTION();
     test_harness_self_check();
     test_snapshot_capture_fails_closed();
     test_node_view_materialize_fails_closed();

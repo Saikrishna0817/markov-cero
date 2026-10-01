@@ -18,6 +18,7 @@ import tempfile
 import time
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import sanitizer_build  # noqa: E402
 import server  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -102,9 +103,10 @@ def main():
                 "the file-size limit must refuse an 8 MiB write under a 1 MiB cap")
 
         # Real solve under the declared service defaults: caps admit normal
-        # work. A sanitizer build reserves ~14 TB of shadow address space and
-        # dies under the declared RLIMIT_AS; retry once with only that bound
-        # lifted, and say so (hosted-limits section 3).
+        # work. A sanitizer build reserves ~14 TB of shadow address space (or
+        # dies silently when its shadow mapping fails) and cannot run under
+        # the declared RLIMIT_AS; retry once with only that bound lifted, and
+        # say so (hosted-limits section 3).
         result_path = pathlib.Path(directory) / "result.json"
         real = run([solver, str(ROOT / "examples" / "blend.mps"),
                     "--output", str(result_path)],
@@ -113,8 +115,7 @@ def main():
                    as_bytes=server.SOLVE_RLIMIT_AS_BYTES,
                    fsize_bytes=server.SOLVE_RLIMIT_FSIZE_BYTES,
                    directory=directory)
-        if real.returncode != 0 and b"AddressSanitizer" in (
-                pathlib.Path(directory, "stderr.log").read_bytes()):
+        if real.returncode != 0 and sanitizer_build.is_sanitizer_build(solver):
             print("note: sanitizer build blocked by the declared RLIMIT_AS; "
                   "retrying the control solve with only that bound lifted")
             real = run([solver, str(ROOT / "examples" / "blend.mps"),

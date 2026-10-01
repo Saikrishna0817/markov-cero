@@ -285,6 +285,7 @@ void test_serial_queue_charge_refusal_is_described() {
 } // namespace
 
 int main() {
+    MARKOV_CERO_TEST_SKIP_INJECTION();
     test_parser_cap_is_input_limit();
     test_dimension_limit_is_work_limit();
     test_allocation_failure_is_attributed();

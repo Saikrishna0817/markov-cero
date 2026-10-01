@@ -22,6 +22,7 @@ import urllib.request
 from http.server import ThreadingHTTPServer
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import sanitizer_build  # noqa: E402
 import server  # noqa: E402
 import service_limits  # noqa: E402
 
@@ -58,12 +59,14 @@ def clear_counters():
 
 
 def sanitizer_blocked_by_rlimit_as(solver, model):
-    """True when this build dies under the declared RLIMIT_AS only because a
-    sanitizer reserves ~14 TB of shadow address space (hosted-limits section 3).
+    """True when this build dies under the declared RLIMIT_AS and is a
+    sanitizer build (hosted-limits section 3).
 
-    A signal-killed child reaches the client as "terminated by signal 6" with
-    no sanitizer banner, so the evidence has to come from the child's stderr,
-    read the way os_limits_test.py reads it.
+    The probe child establishes causation - the same binary that dies under
+    the declared caps must be the one we retry - while build identity comes
+    from sanitizer_build.is_sanitizer_build, because a signal-killed child
+    reaches the client as "terminated by signal 11" with no banner on stderr
+    to key on.
     """
 
     def under_service_limits():
@@ -77,7 +80,7 @@ def sanitizer_blocked_by_rlimit_as(solver, model):
                                timeout=60, preexec_fn=under_service_limits)
     except (OSError, subprocess.TimeoutExpired):
         return False
-    return probe.returncode != 0 and b"AddressSanitizer" in probe.stderr
+    return probe.returncode != 0 and sanitizer_build.is_sanitizer_build(solver)
 
 
 def main():
@@ -103,8 +106,7 @@ def main():
 
         # Result fields: assurance and the v1.1 additions reach the client.
         code, _, payload = request(f"{base}/solve", data=solve_payload(model))
-        if code != 200 and (b"AddressSanitizer" in payload
-                            or sanitizer_blocked_by_rlimit_as(solver, model)):
+        if code != 200 and sanitizer_blocked_by_rlimit_as(solver, model):
             # A sanitizer build reserves ~14 TB of shadow address space and
             # dies under the declared RLIMIT_AS; lift only that bound (§3).
             server.SOLVE_RLIMIT_AS_BYTES = resource.RLIM_INFINITY

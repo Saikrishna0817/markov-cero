@@ -15,6 +15,14 @@ add_test(NAME numerical_policy_boundaries COMMAND numerical_policy_boundary_test
 add_test(NAME assurance_labels COMMAND assurance_label_test)
 # Resource contract v1: stop-reason attribution and completeness.
 add_test(NAME stop_reason_boundary COMMAND stop_reason_test)
+if(MARKOV_CERO_ENABLE_TSAN AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  # Under clang+TSan both allocation-injection tests exit 77 with a printed
+  # reason instead of failing their own assertions (the sanitizer runtime owns
+  # the global operator new/delete the harness replaces - see
+  # cmake/TestTargets.cmake); report that as a ctest skip.
+  set_tests_properties(resource_failure stop_reason_boundary
+    PROPERTIES SKIP_RETURN_CODE 77)
+endif()
 # MPS rim contract (docs/contracts/mps-input.md §3): objective-row RHS as the
 # objective constant; the test also parses data/netlib/e226.mps and grow7.mps,
 # so it needs MARKOV_CERO_SOURCE_DIR (set for the shared group below).
@@ -126,10 +134,31 @@ set_tests_properties(cli_input_byte_limit PROPERTIES WILL_FAIL TRUE)
 add_test(NAME domain_refinery_scheduling_large COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/data/cases/refinery_scheduling_large.mps)
 add_test(NAME domain_crude_blending_large COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/data/cases/crude_blending_large.qps)
 add_test(NAME domain_process_network_large COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/data/cases/process_network_large.mps)
-add_test(NAME domain_production_planning_large COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/data/cases/production_planning_large.mps --mip-gap 0.05)
+# Wall-clock budgets for the two large MILP domain cases. The solver's own
+# search limit is a resource allowance, not a verdict threshold: under Debug
+# or a sanitizer build the same assertions need several times the wall time
+# (gcc/Debug solved these in 31 s / 58 s; the hosted clang/Debug job crossed
+# the 60 s / 90 s limits, the solver returned ResourceLimit, and the CLI
+# reported failure). Assertions, verification and the exit contract are
+# unchanged, and a solve that reaches its target stops before the budget.
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  set(MARKOV_CERO_DOMAIN_PP_TIME_LIMIT 60)
+  set(MARKOV_CERO_DOMAIN_SC_TIME_LIMIT 90)
+  set(MARKOV_CERO_DOMAIN_PP_DEADLINE 90)
+  set(MARKOV_CERO_DOMAIN_SC_DEADLINE 120)
+else()
+  set(MARKOV_CERO_DOMAIN_PP_TIME_LIMIT 240)
+  set(MARKOV_CERO_DOMAIN_SC_TIME_LIMIT 240)
+  set(MARKOV_CERO_DOMAIN_PP_DEADLINE 300)
+  set(MARKOV_CERO_DOMAIN_SC_DEADLINE 300)
+endif()
+add_test(NAME domain_production_planning_large COMMAND markov-cero-solve
+  ${CMAKE_SOURCE_DIR}/data/cases/production_planning_large.mps --mip-gap 0.05
+  --time-limit ${MARKOV_CERO_DOMAIN_PP_TIME_LIMIT})
 add_test(NAME domain_power_dispatch_dc_opf COMMAND markov-cero-solve ${CMAKE_SOURCE_DIR}/data/cases/power_dispatch_dc_opf.qps)
 add_test(NAME domain_supply_chain_large COMMAND markov-cero-solve
-  ${CMAKE_SOURCE_DIR}/data/cases/supply_chain_large.mps --time-limit 90)
+  ${CMAKE_SOURCE_DIR}/data/cases/supply_chain_large.mps
+  --time-limit ${MARKOV_CERO_DOMAIN_SC_TIME_LIMIT})
 add_test(NAME api_demo COMMAND api_demo)
 add_test(NAME api_test COMMAND api_test)
 add_test(NAME refinery_domain_and_iis COMMAND refinery_test)
@@ -182,7 +211,20 @@ set_tests_properties(
     TIMEOUT 90
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     ENVIRONMENT "MARKOV_CERO_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
-set_tests_properties(domain_supply_chain_large PROPERTIES TIMEOUT 120)
+# Watchdogs for the two cases that also carry an explicit solver time limit
+# above; the Release values are the historical 90 s / 120 s, the wider
+# diagnostic-build values track the solver budgets they wrap.
+set_tests_properties(domain_production_planning_large
+  PROPERTIES TIMEOUT ${MARKOV_CERO_DOMAIN_PP_DEADLINE})
+set_tests_properties(domain_supply_chain_large
+  PROPERTIES TIMEOUT ${MARKOV_CERO_DOMAIN_SC_DEADLINE})
+# The refinery/IIS analysis suite is the one genuinely slow diagnostic case:
+# 33 s hosted Release, 168 s hosted ASan, 259 s local ASan, 286 s local gcc
+# Debug, 317 s local clang Debug — so the CI default 180 s watchdog killed it
+# in four jobs before it could finish. Assertions are unchanged; only the
+# wall-clock budget for slow build types moves (900 s ≈ 2.8x the slowest
+# measured run).
+set_tests_properties(refinery_domain_and_iis PROPERTIES TIMEOUT 900)
 # Device-only kernel tests: on a host that compiled CUDA but has no device
 # (the hosted runners) they exit 77 from gpu/tests/device_skip.hpp instead of
 # dying in cudaMalloc. CPU-only builds never take that path.

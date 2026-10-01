@@ -78,10 +78,19 @@ jobs:
             --instances afiro adlittle sc50a sc50b sc105 share2b recipe
 
       - name: Run MIPLIB benchmark runner
+        env:
+          # Sanitizer instrumentation slows the same search ~5x: flugpl's
+          # gap-closing search crossed the 60 s default under ASan/TSan while
+          # it finishes in ~12 s in Release, and the prover needs proportionally
+          # more room for the same 12547-node tree. Budgets are resource
+          # allowances for a diagnostic build; the PASS bar (Optimal + verified
+          # + relative tolerance) is unchanged for every job.
+          MIPLIB_BUDGET: ${{ (matrix.build_type == 'ASan-UBSan' || matrix.build_type == 'TSan') && '--time-limit 300 --proof-time-limit 120 --timeout-sec 480' || '' }}
         run: |
           python3 scripts/run_miplib.py \
             --solver build/markov-cero-solve \
-            --instances stein9 stein15 flugpl
+            --instances stein9 stein15 flugpl \
+            $MIPLIB_BUDGET
 
       - name: Run refinery qualification demo
         run: bash scripts/run-qualification-demo.sh

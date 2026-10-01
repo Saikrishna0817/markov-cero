@@ -269,6 +269,20 @@ target_link_libraries(assurance_label_test PRIVATE markov_cero_core)
 # attribution and the resource_limit completeness invariant.
 add_executable(stop_reason_test tests/stop_reason_test.cpp)
 target_link_libraries(stop_reason_test PRIVATE markov_cero_core)
+# These two tests include tests/support/failing_new.hpp, which REPLACES the
+# global operator new/delete. Clang's static TSan runtime force-loads its own
+# copies (libclang_rt.tsan_cxx.a via --whole-archive, ahead of the test
+# objects), so under clang+TSan the definitions cannot coexist - and the
+# runtime's would win anyway, leaving the harness unable to fail an
+# allocation. gcc's libtsan defines no replacements; every other build is
+# unaffected. Allow the link, compile the skip in, and let main() exit 77.
+if(MARKOV_CERO_ENABLE_TSAN AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  foreach(_mc_injection_test IN ITEMS resource_failure_test stop_reason_test)
+    target_link_options(${_mc_injection_test} PRIVATE -Wl,--allow-multiple-definition)
+    target_compile_definitions(${_mc_injection_test} PRIVATE
+      MARKOV_CERO_TEST_CLANG_TSAN_INJECTION_UNAVAILABLE=1)
+  endforeach()
+endif()
 # Test executables must keep assert() checks alive in EVERY build type:
 # Release/RelWithDebInfo define NDEBUG, which compiles assert() to a no-op and
 # silently disables the assert-based test files (CI's ASan/UBSan and TSan jobs

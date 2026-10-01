@@ -14,6 +14,7 @@
 
 #include <atomic>
 #include <cstddef>
+#include <cstdio>
 #include <cstdlib>
 #include <limits>
 #include <new>
@@ -58,7 +59,26 @@ class FailingNew final {
     inline static std::atomic<std::size_t> failures_{0};
 };
 
+/// clang+TSan (cmake/TestTargets.cmake): the sanitizer runtime force-loads its
+/// own replacement operator new/delete, so nothing in this header can fail an
+/// allocation. The tests that include it report a ctest skip (exit 77) instead
+/// of failing their own assertions.
+inline int injection_unavailable_exit() {
+    std::fprintf(stderr, "SKIP: allocation-failure injection unavailable "
+                         "(clang+TSan runtime owns operator new/delete)\n");
+    return 77;
+}
+
 } // namespace markov_cero::test
+
+// Skips the test body when the harness cannot replace operator new/delete,
+// and expands to nothing in every other build (see cmake/TestTargets.cmake).
+#ifdef MARKOV_CERO_TEST_CLANG_TSAN_INJECTION_UNAVAILABLE
+#define MARKOV_CERO_TEST_SKIP_INJECTION() \
+    return markov_cero::test::injection_unavailable_exit()
+#else
+#define MARKOV_CERO_TEST_SKIP_INJECTION() do {} while (0)
+#endif
 
 namespace {
 

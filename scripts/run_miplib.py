@@ -75,26 +75,17 @@ def run_instance(
     mps_path: str,
     time_limit_sec: float = 60.0,
     timeout_sec: int = 120,
+    proof_max_nodes: int = 100000,
+    proof_time_limit_sec: float = 30.0,
 ) -> Dict[str, Any]:
-    # The verdict requires an independently certified optimum (status Optimal
-    # and verified), and the default proof budget (10000 nodes / 5 s) exhausted
-    # on flugpl's 12547-node tree (proof_budget_kind=node_limit, then
-    # time_limit): the search had already closed the gap to 0, the prover just
-    # ran out of room. Budgets are resource allowances, not verdict thresholds,
-    # so the prover gets enough of them here; the PASS bar (Optimal + verified
-    # + rel_error <= tolerance) is unchanged.
-    cmd = [
-        solver_bin,
-        mps_path,
-        "--engine",
-        "milp",
-        "--time-limit",
-        str(time_limit_sec),
-        "--proof-max-nodes",
-        "100000",
-        "--proof-time-limit",
-        "30",
-    ]
+    # Budgets are resource allowances, not verdict thresholds: the default
+    # proof budget (10000 nodes / 5 s) exhausted on flugpl's 12547-node tree
+    # (proof_budget_kind=node_limit, then time_limit) after the search had
+    # closed the gap. The PASS bar (Optimal + verified + rel_error) is unchanged.
+    cmd = [solver_bin, mps_path, "--engine", "milp",
+           "--time-limit", str(time_limit_sec),
+           "--proof-max-nodes", str(proof_max_nodes),
+           "--proof-time-limit", str(proof_time_limit_sec)]
     t0 = time.perf_counter()
     try:
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_sec)
@@ -162,7 +153,18 @@ def main():
         default=["stein9", "stein15", "flugpl"],
         help="Subset of instances to run (default: stein9 stein15 flugpl)",
     )
+    parser.add_argument("--time-limit", type=float, default=60.0,
+                        help="search time limit per instance, seconds (default: 60)")
+    parser.add_argument("--timeout-sec", type=int, default=120,
+                        help="hard subprocess timeout per instance (default: 120)")
+    parser.add_argument("--proof-time-limit", type=float, default=30.0,
+                        help="MIP proof time budget per instance (default: 30)")
+    parser.add_argument("--proof-max-nodes", type=int, default=100000,
+                        help="MIP proof node budget per instance (default: 100000)")
     args = parser.parse_args()
+    if args.timeout_sec <= args.time_limit + args.proof_time_limit:
+        parser.error("--timeout-sec must leave headroom over "
+                     "--time-limit + --proof-time-limit")
 
     solver = args.solver or find_solver_binary()
     if not solver:
@@ -198,7 +200,9 @@ def main():
         meta = MIPLIB_BENCHMARKS[name]
         try:
             mps_file = ensure_instance(name, args.data_dir)
-            res = run_instance(solver, mps_file)
+            res = run_instance(solver, mps_file, args.time_limit,
+                               args.timeout_sec, args.proof_max_nodes,
+                               args.proof_time_limit)
         except FileNotFoundError as error:
             print(f"[-] {name}: {error}")
             res = {"status": "DatasetUnavailable", "verified": False, "exit_code": -1}
