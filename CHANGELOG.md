@@ -2,6 +2,34 @@
 
 ## Unreleased
 
+### 2026-10-02 benchmark — the BENCH-02 primal re-check failures closed as a reporting defect
+
+- **All ten rows analyzed** — [record](evidence/bench02-primal-recheck-defect-2026-10-02.json):
+  BENCH-02's 10 independent primal re-check failures (`QPLIB_0010` ×5 at
+  1.28e-6, `capitanescu_dc_opf` ×5 at 7.50e-6 on the harness's first violated
+  row) were not solver-verification failures: the production JSON field
+  `maximum_primal_violation` was a **defaulted 0** on the QP path while
+  `diagnostic.primal_residual` and the row slacks carried the exact real
+  value, and the campaign harness reads that JSON field (campaign contract
+  §8). The three tolerance scales that legitimately disagree here are laid
+  out from the serialized primal: the harness's 1e-6 flat bar, the scale-aware
+  solve gate (3.00000128e-06 allowance on the offending QPLIB row), and the
+  documented 1e-4 engine certificate (convex-qp §2.4).
+- **The fix reports the measurement** — commit `e75201d`
+  ([src/api/engine_qp.cpp](src/api/engine_qp.cpp)) fills `primal_report` at
+  the engine-gate scale so the report can never contradict
+  `original_verified`, with [tests/qp_primal_report_test.cpp](tests/qp_primal_report_test.cpp)
+  pinning it. Post-fix, QPLIB's serialized field equals the harness's
+  independent measurement to every printed digit, and capitanescu's true
+  maximum (5.12e-05 on `balance_5`) is now visible instead of a zero.
+- **No verdict moved** — all 10 rows stay `independent_primal_failure`; the
+  campaign was not re-run, no row was dropped or reclassified, and neither
+  the 1e-6 harness bar nor any solver gate was loosened (numerical-policy
+  rule 5 / campaign §7). The sibling gap in the nonlinear engines —
+  `engine_nonlinear.cpp` never fills `primal_report` and `nlp_verifier.cpp`
+  folds bounds into `inequality_violation` — is documented as open, not
+  papered over with an invented mapping.
+
 ### 2026-10-01 release gate — dependency pinning and a known-vulnerability scan
 
 - **Pinning** — one of REL-01's undone gate items, closed as far as this host

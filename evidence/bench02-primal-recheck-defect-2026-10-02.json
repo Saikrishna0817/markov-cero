@@ -1,0 +1,108 @@
+{
+  "record": "bench02-primal-recheck-defect",
+  "date": "2026-10-02",
+  "task": "BENCH-02 slice — analyze and close the 10 independent-primal-recheck failures",
+  "question": "BENCH-02 recorded 10 independent primal re-check failures (2 of 63 cells x 5 repeats) while the same rows returned solver status Optimal with VERIFIED certificates. This record analyzes every failed row, explains why the harness and the solver disagreed, fixes the reporting defect the comparison exposed, and states what did not change: no campaign row, status or verdict is rewritten (benchmark-campaign.md sections 7 and 8).",
+  "campaign": {
+    "record": "evidence/bench02-campaign-2026-10-01.csv",
+    "summary": "evidence/bench02-campaign-2026-10-01.json",
+    "rows_total": 1325,
+    "independent_primal_recheck": "200 pass / 10 fail / 105 not_checked",
+    "solver_sha256": "36284e66e5584958d7cb57eb0fe7e1d080534835c9c01d1adcb5d4aca3336bc1",
+    "harness_bar": "1e-6 absolute (T5, benchmark-campaign.md section 7)",
+    "failure_note_on_every_row": "harness_feasibility_failure_solver_reported_verified"
+  },
+  "failed_rows": [
+    {
+      "instance": "data/qp/QPLIB_0010.mps",
+      "engine": "QP -> qp (classifier)",
+      "repeats": [0, 1, 2, 3, 4],
+      "status": "Optimal",
+      "verified": true,
+      "harness_first_violation_row": "C00000001",
+      "harness_measured": 1.280096e-06
+    },
+    {
+      "instance": "data/cases/capitanescu_dc_opf.mps",
+      "engine": "QP -> qp (classifier; declared MILP in the corpus)",
+      "repeats": [0, 1, 2, 3, 4],
+      "status": "Optimal",
+      "verified": true,
+      "harness_first_violation_row": "balance_1",
+      "harness_measured": 7.503556e-06
+    }
+  ],
+  "defect": {
+    "statement": "The solver's JSON field maximum_primal_violation was emitted as exactly 0 for both engines' QP path while diagnostic.primal_residual and the row slacks carried the real measured values. The campaign harness (section 8) reads that JSON field, so it compared a defaulted zero against its own independent re-check instead of the solver's own measurement.",
+    "pre_fix_observations": [
+      {
+        "instance": "data/qp/QPLIB_0010.mps",
+        "maximum_primal_violation": 0,
+        "diagnostic.primal_residual": 1.2800963955506006e-06,
+        "verified": true
+      },
+      {
+        "instance": "data/cases/capitanescu_dc_opf.mps",
+        "maximum_primal_violation": 0,
+        "diagnostic.primal_residual": 5.1157411590452284e-05,
+        "verified": true
+      }
+    ],
+    "cause": "src/api/engine_qp.cpp never filled out.primal_report; apps/json_output.hpp maps maximum_primal_violation from primal_report.maximum_row_violation, so the defaulted struct serialized as 0. The verification decision (qp::verify_qp_solution at 1e-4) and the KKT certificate were computed independently and were never wrong.",
+    "classification": "Reporting data-quality defect in the production CLI JSON, not a solver-verification defect: both engines' acceptance gates were satisfied and the independent harness re-check was right to fail the rows against its own 1e-6 bar."
+  },
+  "three_tolerance_scales": {
+    "campaign_harness": "1e-6 absolute on the row violation the harness recomputes from the solver's primal (benchmark-campaign.md section 7, T5/T6/T7 are harness bars, not solver gates)",
+    "solve_gate": "1e-6 absolute + 1e-6 relative x (sum_i |a_ij x_j| + |b_i|) row scale (src/qp/convergence.hpp). For QPLIB_0010 row C00000001: row scale 1.0000012800963956 + side 1 gives an allowance of 3.0000012800963954e-06 > measured 1.2800963955506006e-06, so the row passes the solve gate and fails the flat harness bar",
+    "engine_certificate": "qp::verify_qp_solution(..., 1e-4) — the documented convex-qp.md section 2.4 engine gate, accepted for both instances",
+    "why_no_gate_was_loosened": "numerical-policy.md rule 5 / benchmark-campaign.md section 7: a failing row stays failed and the harness bar is unchanged; the fix makes the solver report its own measurement instead of a default zero"
+  },
+  "fix": {
+    "commit": "e75201d bench-02: report the measured QP primal violation instead of a default zero",
+    "change": "src/api/engine_qp.cpp fills out.primal_report via verify::verify_primal with the 1e-4/1e-6 engine-gate scale so the report's pass flag can never contradict original_verified; apps/json_output.hpp mapping unchanged (it already read primal_report.maximum_row_violation)",
+    "test": "tests/qp_primal_report_test.cpp asserts a non-default measured value is serialized for both QP instances",
+    "post_fix_binary_sha256": "8363c24cab8e359ca3e2b35b9053a6c633901a69a6087e8c3b45949167e373c3"
+  },
+  "post_fix_observations": [
+    {
+      "instance": "data/qp/QPLIB_0010.mps",
+      "status": "Optimal",
+      "verified": true,
+      "maximum_primal_violation": 1.2800963955506006e-06,
+      "diagnostic.primal_residual": 1.2800963955506006e-06,
+      "harness_independent_value": 1.280096e-06,
+      "note": "the solver's serialized field now equals the harness's independent measurement to every printed digit"
+    },
+    {
+      "instance": "data/cases/capitanescu_dc_opf.mps",
+      "status": "Optimal",
+      "verified": true,
+      "maximum_primal_violation": 5.1157411590452284e-05,
+      "maximum_row": "balance_5",
+      "harness_first_violation_row": "balance_1",
+      "harness_first_violation_value": 7.5035556758971645e-06,
+      "harness_second_row": "balance_2",
+      "harness_second_value": 7.5035556758971645e-06,
+      "note": "bench01_mps.check() returns the FIRST violating row, not the maximum; the true maximum sits on balance_5. Both are above the 1e-6 harness bar, so the verdict is identical whichever row is reported"
+    }
+  ],
+  "verdicts_unchanged": {
+    "statement": "The 10 rows remain independent_primal_failure in the BENCH-02 record. The campaign was not re-run, no row was dropped or reclassified, and the harness's 1e-6 bar is untouched (benchmark-campaign.md sections 7 and 8). This record closes the defect the comparison exposed in the solver's reporting, not the campaign's failures.",
+    "reason_both_sides_are_correct": "The rows really do violate the harness's absolute 1e-6 bar (1.28e-06 and 5.12e-05 measured independently), while the solver's own documented gates (scale-aware 1e-6/1e-6 solve gate, 1e-4 certificate) legitimately accept them — convex-qp.md section 2.4 exists precisely because these scales differ."
+  },
+  "open_gaps": [
+    {
+      "gap": "The nonlinear engines carry the same class of gap: src/api/engine_nonlinear.cpp never fills primal_report, and src/nlp/nlp_verifier.cpp folds bound violations into inequality_violation, so JSON maximum_primal_violation stays a defaulted 0 for NLP/MINLP results while diagnostics carry residuals under different names.",
+      "status": "documented, not fixed — mapping those residual definitions onto the shared primal_report field would require a semantics decision (which residual equals which row violation) and is not guessed here"
+    }
+  ],
+  "method": {
+    "commands": [
+      "markov-cero-solve data/qp/QPLIB_0010.mps --output <pre/post-fix json>",
+      "markov-cero-solve data/cases/capitanescu_dc_opf.mps --output <pre/post-fix json>",
+      "python3 -c <row-scale computation from the serialized primal and the MPS rows>"
+    ],
+    "host": "Linux x86_64, one machine; pre-fix values observed against the BENCH-02-era binary, post-fix values against the current Release build (sha above)"
+  },
+  "note": "Every number above is a measured value from a serialized run or from the campaign CSV; no row's status, verification flag or pass/fail outcome was changed by this work. No speed claim."
+}
