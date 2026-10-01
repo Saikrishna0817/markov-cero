@@ -2,6 +2,75 @@
 
 ## Unreleased
 
+### 2026-10-01 blueprint BENCH-01 — preregistered benchmark campaign
+
+- Added the binding campaign contract
+  [`docs/contracts/benchmark-campaign.md`](docs/contracts/benchmark-campaign.md)
+  (v1) before any campaign code: the declared subset and its frozen
+  order (§2), per-class caps, one thread, five repeats per cell with
+  repeat 0 cold and round barriers (§4), the row schema and the
+  `run_state` table with exit codes explicitly *not* treated as errors
+  (§5), `/proc/<pid>/status` `VmHWM` as the only usable peak-RSS
+  source because `os.wait4` returns the parent's high-water mark
+  (§6), the metric definitions with numerators and denominators (§6)
+  and the tolerance table (§7). §6 records the clarification that
+  `solved_fraction` is a cell-level fraction — the original wording
+  was unit-inconsistent, the preregistration's quoted text is not
+  edited, and no declared subset, cap, thread, repeat or tolerance
+  changed with it.
+- New harness under [`scripts/run_bench01_campaign.py`](scripts/run_bench01_campaign.py)
+  and `scripts/support/bench01_{config,mps,runner,prereg,summarise}.py`:
+  `preregister` writes the declaration once and refuses to overwrite
+  it, `run` executes one row per cell × repeat with resume validation
+  against the recorded solver hash/threads/caps, `summarise` emits the
+  JSON report. The independent MPS reader
+  (`bench01_mps.py`) re-reads every model — integer markers by
+  structure, blank RHS vector names, repeated row/column entries
+  summed, `QUADOBJ`/`QMATRIX` accepted and ignored for activity
+  purposes — and recomputes row and bound activity from the reported
+  primal; a solver-reported status is never rewritten, and an
+  `Optimal` row whose recomputed activity misses the harness bar is
+  recorded as `independent_primal_failures` with a
+  `harness_feasibility_failure_solver_reported_verified` note.
+- Preregistration
+  [`evidence/bench01-preregistration-2026-10-01.json`](evidence/bench01-preregistration-2026-10-01.json)
+  written before any run: 265 declared cells (63 present, 202
+  absent), split order holdout→tune→train, caps LP/QP 60 s and MILP
+  300 s, one thread, 5 repeats, four concurrent children with the
+  interference caveat, 27/63 reference-optimum coverage and four
+  named limitations.
+- `bench01_harness_selftest` (CTest, [`tests/bench01_harness_selftest.py`](tests/bench01_harness_selftest.py))
+  asserts all six `SELF_TEST_OBLIGATIONS` — declared denominator,
+  absent cells kept in it, cold-index assignment, exit code never
+  used as an error, `ru_maxrss` documented as unusable, tolerance
+  table binding — plus the status-never-rewritten rule and that no
+  fabricated record reaches `evidence/`. CTest 118/118.
+- First campaign: 1,325 rows, 0 harness exceptions, 0 parent
+  timeouts ([summary](evidence/bench01-campaign-2026-10-01.json),
+  [rows](evidence/bench01-campaign-2026-10-01.csv),
+  [log](evidence/bench01-campaign-2026-10-01.log)). 270 `ok` rows
+  over 54 instances, 1,010 `absent`, 45 `hash_mismatch`; solved
+  fraction 31/265 = 0.117; 0/54 cells disagreed on status or on
+  objective at 1e-6 across repeats; 165/170 independent primal
+  re-checks pass, the 5 failures being `QPLIB_0010` at 1.28e-6
+  (above the harness 1e-6 bar, below the solver's 1e-4 QP gate);
+  reference agreement 0/60 LP and 0/10 MILP `Optimal` rows
+  disagree, the 60 MILP rows counted being `ResourceLimit` and
+  `NumericalFailure` rows that never claimed optimality. Nine
+  `data/cases` files hash-mismatch because commit `a9c7e42` gave
+  them comment headers the day after the freeze — declared,
+  kept in the denominator, not executed. Statuses as measured; one
+  host, one binary, no second solver, no speed claim.
+- New gaps surfaced: `data/netlib/e226.mps` and `grow7.mps` are
+  rejected `InvalidModel` with "objective-row RHS/RANGES values are
+  unsupported", and the `NumericalFailure` set here (`bore3d`,
+  `etamacro`, `scsd1`, `scsd6`) is not the LP-01 deferred set.
+- Documentation: new guide
+  [`docs/guides/BENCHMARKS.md`](docs/guides/BENCHMARKS.md)
+  registered in `scripts/check_docs.py` and linked from
+  `docs/README.md`; `evidence/INDEX.md`, `docs/project/STATUS.md`
+  and this changelog record the run.
+
 ### 2026-10-01 blueprint MINLP-02 — independent OA proof replay
 
 - Added the binding library contract

@@ -218,6 +218,8 @@ add_test(NAME readiness_edge_cases COMMAND readiness_edge_cases_test)
 if(Python3_Interpreter_FOUND)
   add_test(NAME repository_tools COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tests/repository_tools_test.py
     $<TARGET_FILE:markov-cero-solve> $<TARGET_FILE:markov-cero-verify-mip> $<TARGET_FILE:markov-cero-verify-minlp>)
+  # BENCH-01 contract section 10: fabricated records only, no solver, no data.
+  add_test(NAME bench01_harness_selftest COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tests/bench01_harness_selftest.py)
 endif()
 
 add_test(NAME worker_kill_demo

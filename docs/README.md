@@ -9,6 +9,7 @@ Start with the [project README](../README.md) for the problem, architecture, dem
 | [Quickstart](guides/QUICKSTART.md) | Build the solver, run a small model, and interpret a result |
 | [Building](guides/BUILDING.md) | Build flags, C++ install, Python wheel, optional CUDA and benchmark tools |
 | [Verification](guides/VERIFY.md) | Re-run checks, understand proof replay, and record fresh evidence |
+| [Benchmarks](guides/BENCHMARKS.md) | Declare, run and read a benchmark campaign and its raw rows |
 
 ## Project records
 
@@ -25,6 +26,7 @@ Start with the [project README](../README.md) for the problem, architecture, dem
 | [Elastic restoration contract](contracts/nlp-restoration.md) | Primal-infeasible linearized QP handling: frozen failure corpus, exact penalty and acceptance rules, bounded inconclusive failures and paired benchmark obligation (library, v1) |
 | [Restricted convex MINLP OA contract](contracts/minlp-oa.md) | Frozen structural scope and 512 screen, OA cut derivation with provenance and independent source replay, incumbent/master-bound certification, caps and counters, cases A–H test obligations (library, v1) |
 | [Convex MINLP OA proof replay contract](contracts/minlp-proof-replay.md) | Versioned OA proof object and obligations O1–O12, independent master-tree replay, tier/certificate/status map with the oa_replayed label, shared proof budgets, attack/enumeration/CLI test obligations (library, v1) |
+| [Benchmark campaign contract](contracts/benchmark-campaign.md) | Preregistration-before-run rule, frozen subset/caps/repeats, full-denominator row retention, independent primal re-check, metric definitions, output schema and harness self-test obligations (harness, v1) |
 | [Hosted limits contract](contracts/hosted-limits.md) | Kernel-enforced CPU, address-space, file, output and wall limits for each hosted solve child (service, v1) |
 | [Provenance](project/PROVENANCE.md) | Source history, review limits and attributed inputs |
 | [Original request](project/ORIGINAL_REQUEST.md) | Historical SIH scope and roadmap, not a completion certificate |
