@@ -42,7 +42,7 @@ with tempfile.TemporaryDirectory() as directory:
         raise AssertionError('unsafe path accepted')
     except ValueError:
         pass
-    if len(sys.argv) == 3:
+    if len(sys.argv) >= 3:
         model = Path(directory) / 'proof.mps'
         model.write_text('NAME PROOF\nROWS\n N COST\n L CAP\nCOLUMNS\n X COST -1 CAP 1\n'
                          'RHS\n R CAP 1.5\nBOUNDS\n LI B X 0\n UI B X 2\nENDATA\n')
@@ -86,4 +86,35 @@ with tempfile.TemporaryDirectory() as directory:
         proof.write_text(result['mip_proof'] + '\nEXTRA\n')
         bad = subprocess.run([sys.argv[2], str(model), str(proof)], capture_output=True)
         assert bad.returncode != 0
+    if len(sys.argv) >= 4:
+        # MINLP-02 contract §7 (minlp-proof-replay.md): the checked-in
+        # NLOBJ + NLCON fixture solves with an accepted OA proof, and the
+        # standalone replay CLI accepts it, rejects an exhausted budget and
+        # rejects a corrupted version.
+        fixture = ROOT / 'tests/fixtures/minlp_case_a.mps'
+        run = subprocess.run([sys.argv[1], str(fixture)], capture_output=True,
+                             text=True, check=True)
+        result = json.loads(run.stdout)
+        assert result['status'] == 'Optimal', result
+        assert result['assurance'] == 'oa_replayed', result
+        assert result['guarantee_tier'] == 'independent_oa', result
+        assert result['verified'] is True and result['proof_status'] == 'accepted', result
+        assert result['oa_proof_build_ms'] >= 0 and result['oa_proof_verify_ms'] >= 0, result
+        assert result['oa_proof'].startswith('MARKOV_OA_PROOF 1\n'), result['oa_proof'][:32]
+        proof = Path(directory) / 'oa_proof.txt'
+        proof.write_text(result['oa_proof'])
+        accepted = subprocess.run([sys.argv[3], str(fixture), str(proof),
+                                   '--time-limit', '10'], capture_output=True, text=True)
+        assert accepted.returncode == 0, accepted
+        assert 'VERIFIED:' in accepted.stdout, accepted.stdout
+        starved = subprocess.run([sys.argv[3], str(fixture), str(proof),
+                                  '--max-nodes', '1'], capture_output=True, text=True)
+        assert starved.returncode == 1, starved
+        assert 'REJECTED:' in starved.stdout, starved.stdout
+        proof.write_text(result['oa_proof'].replace('MARKOV_OA_PROOF 1',
+                                                    'MARKOV_OA_PROOF 7', 1))
+        unknown_version = subprocess.run([sys.argv[3], str(fixture), str(proof)],
+                                         capture_output=True, text=True)
+        assert unknown_version.returncode == 1, unknown_version
+        assert 'REJECTED:' in unknown_version.stdout, unknown_version.stdout
 print('Offline cache integrity, path validation and CLI proof replay passed')

@@ -13,6 +13,7 @@
 #include <memory>
 #include <optional>
 #include "markov_cero/verify/mip_proof.hpp"
+#include "markov_cero/verify/oa_proof.hpp"
 #include <string>
 #include <vector>
 
@@ -161,6 +162,11 @@ struct SolveResult {
     double mip_proof_build_ms{0.0};
     double mip_proof_verify_ms{0.0};
     std::shared_ptr<const verify::MipProof> mip_proof;
+    // MINLP-02 (minlp-proof-replay.md §6.2): independent OA proof record and
+    // its construction/replay cost, alongside the MIP proof family.
+    double oa_proof_build_ms{0.0};
+    double oa_proof_verify_ms{0.0};
+    std::shared_ptr<const verify::OaProof> oa_proof;
     std::string proof_message;
     std::vector<std::string> variable_names;
     std::vector<std::string> row_names;

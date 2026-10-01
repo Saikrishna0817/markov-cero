@@ -1,7 +1,7 @@
-# Numerical and status contract — v2
+# Numerical and status contract — v3
 
-**Contract version:** 2 (v1: `assurance` field introduced 2026-09-29; v2: NLP status `LocalOptimal` renamed `LocalStationary` 2026-10-01 under blueprint NLP-01 — a first-order KKT candidate is stationarity, not a proven local optimum).
-**Status:** binding for every change under blueprint task NUM-01 and its dependents (LP-01, QP-01, MIP-01, MIQP-01, NLP-01, MINLP-01).
+**Contract version:** 3 (v1: `assurance` field introduced 2026-09-29; v2: NLP status `LocalOptimal` renamed `LocalStationary` 2026-10-01 under blueprint NLP-01 — a first-order KKT candidate is stationarity, not a proven local optimum; v3: `oa_replayed` reserved → emitted 2026-10-01 under blueprint MINLP-02 — an independent OA proof replay is the MINLP witness for `Optimal`).
+**Status:** binding for every change under blueprint task NUM-01 and its dependents (LP-01, QP-01, MIP-01, MIQP-01, NLP-01, MINLP-01, MINLP-02).
 **Scope:** every tolerance, status, verification flag and assurance label emitted by `api::solve_file` / `api::solve_model`, the CLI JSON and the Python binding.
 
 Rules this contract exists to enforce (blueprint §5 and §9):
@@ -38,6 +38,7 @@ A verifier recomputes activities, residuals and objectives from input and compar
 | Label | Meaning | Emitted when |
 |---|---|---|
 | `tree_replayed` | an independent, bounded, cut-free MILP/MIQP proof tree was rebuilt and replayed | `proof_status == "accepted"` and `guarantee_tier ∈ {independent_tree, replayed_tree}` |
+| `oa_replayed` | an independent convex outer-approximation proof (cuts, pivot, tree, incumbent, bound, gap) was rebuilt and replayed against the source model (new in contract v3) | `proof_status == "accepted"`, `guarantee_tier ∈ {independent_oa, replayed_oa}` and `canonical_verified` |
 | `optimality_witness_checked` | a class-specific optimality/infeasibility/unboundedness witness (LP dual gap, Farkas ray, recession ray, convex QP KKT) passed, **and** no un-replayed global claim is being made | `status ∈ {Optimal, Infeasible, Unbounded, GapSatisfied}`, `canonical_verified`, `certificate_type` is a witness type, and the certificate is not solver-trusted |
 | `local_kkt_checked` | a first-order NLP KKT candidate passed the independent NLP checker | `certificate_type == "local_kkt"` |
 | `original_primal_checked` | only the original-model primal/integrality/objective check passed | `original_verified` and none of the above apply (MILP incumbents without an accepted proof, solver-trusted MINLP OA results, PDLP primal-feasibility-only results) |
@@ -46,7 +47,7 @@ A verifier recomputes activities, residuals and objectives from input and compar
 **Non-global labels.** `local_kkt_checked` and any MINLP result are **not global certificates**:
 
 - `local_kkt_checked` is a first-order necessary condition. It does not prove a local minimum (a saddle satisfies it) and never proves globality. `local_minimum_verified` is reserved for a future second-order sufficiency test and is not emitted today.
-- MINLP with `certificate_type == "incumbent_feasibility; solver_trusted_oa"` publishes `original_primal_checked`. The OA master bound is solver-trusted until MINLP-02 adds an independent OA replay; only then may `oa_replayed` be emitted. A small OA gap never justifies `optimality_witness_checked`.
+- MINLP with `certificate_type == "incumbent_feasibility; solver_trusted_oa"` publishes `original_primal_checked` (proofs disabled, exhausted or rejected). With MINLP-02 the OA master bound is replayed independently: an accepted proof publishes `oa_replayed` and `canonical_verified`. A small OA gap alone never justifies `optimality_witness_checked`.
 - `guarantee_tier == "unverified"` always accompanies `assurance ∈ {original_primal_checked, unverified}` for MILP results.
 
 ---
@@ -57,7 +58,7 @@ A verifier recomputes activities, residuals and objectives from input and compar
 
 | JSON status | Meaning | Required passing witness for the claim | `assurance` ceiling |
 |---|---|---|---|
-| `Optimal` | global optimum of the stated class | LP: canonical primal+dual gap; QP: original-unit KKT; MILP/MIQP: replayed proof tree, else downgraded to `Feasible` | `optimality_witness_checked` / `tree_replayed` |
+| `Optimal` | global optimum of the stated class | LP: canonical primal+dual gap; QP: original-unit KKT; MILP/MIQP: replayed proof tree, else downgraded to `Feasible`; MINLP (convex quadratic scope): replayed OA proof, else downgraded to `Feasible` | `optimality_witness_checked` / `tree_replayed` / `oa_replayed` |
 | `Infeasible` | no feasible point exists | canonical Farkas/alternative witness (LP, QP) | `optimality_witness_checked` |
 | `Unbounded` | objective unbounded over a feasible set | feasible anchor + improving recession ray | `optimality_witness_checked` |
 | `GapSatisfied` | bound within the declared gap tolerance; **not** exact optimality | best valid bound + incumbent, both verified | `optimality_witness_checked` (never `tree_replayed` unless a proof was accepted) |
@@ -291,7 +292,20 @@ These are recorded, not silently accepted. None is a licence to change behaviour
 
 ---
 
-## 9. Compatibility and migration note (contracts v1 and v2)
+## 9. Compatibility and migration note (contracts v1–v3)
+
+**v3 (2026-10-01, MINLP-02).** One assurance label becomes reachable and one
+status requires a new witness:
+
+| Surface | Before v3 | With v3 | Action for a caller |
+|---|---|---|---|
+| `assurance` | `oa_replayed` reserved, never emitted | `oa_replayed` emitted iff an OA proof is `accepted` and the result is canonical | consumers that enumerate labels must accept `oa_replayed`; existing labels unchanged |
+| `status = Optimal` on the MINLP path | solver-trusted OA bound with `certificate_type == "incumbent_feasibility; solver_trusted_oa"` | requires an accepted independent OA replay (`canonical_verified`) | MINLP results with proofs disabled, exhausted or rejected now report `Feasible` + `original_primal_checked`, never `Optimal` |
+| `certificate_type` on accepted MINLP proofs | `incumbent_feasibility; solver_trusted_oa` | `incumbent_feasibility; independent_oa_gap` (`…_tree` when the relative gap is exactly 0) | whitelist consumers must accept the new certificate strings |
+
+No existing field changes meaning and no label is removed; the downgrade is
+the same rule blueprint §5 already applied to MILP proof budgets
+(exhaustion/absence of a replay never converts to `Optimal`).
 
 **v2 (2026-10-01, NLP-01).** One status spelling changed:
 
@@ -322,4 +336,4 @@ Migration guidance:
 - **`assurance` is additive and monotone within one result.** It is computed once in `api::detail::finalize` after `apply_resource_stop`, so a resource stop can only lower the label. Engines and callers must never write it.
 - **A default of `"unverified"` is honest, not missing.** Any `SolveResult` that never passed through `finalize` (default-constructed, aggregate-filled, or a stopped run) reports `unverified`.
 - **Known deferred consumer:** `web/backend/server.py` whitelists `iterations`/`optimality_gap` and does not yet pass `assurance` (also still misses `lp_iterations`/`relative_gap`). Assigned to blueprint task REL-01; it is a reporting gap, not a solver-status change.
-- **Versioning.** The schema is tracked by the contract version above. Renaming `assurance`, removing a label, or changing the meaning of an existing key requires contract v2 and a migration note here.
+- **Versioning.** The schema is tracked by the contract version above. Renaming `assurance`, removing a label, or changing the meaning of an existing key requires a contract version bump and a migration note here.

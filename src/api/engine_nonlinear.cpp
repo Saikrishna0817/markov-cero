@@ -198,6 +198,24 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
                     out.diagnostic.suggested_recovery = "inspect_cut_accumulation_and_x0";
                 }
             }
+            // MINLP-02 (minlp-proof-replay.md §4.1): independent proof build
+            // and replay after incumbent verification, before the downgrade.
+            {
+                core::StageScope certify_stage(ctx, "certify");
+                certify_minlp(model, options, out, result, ctx, sol);
+            }
+            // MINLP-02 (§5.3, mirrors engine_milp): without an accepted
+            // replay a MINLP solve never reports Optimal — including when
+            // proofs are disabled (proof_status = "not_requested").
+            if ((result.status == lp::reference::SolveStatus::optimal ||
+                 result.status == lp::reference::SolveStatus::gap_satisfied) &&
+                !out.canonical_verified) {
+                result.status = out.original_verified
+                    ? lp::reference::SolveStatus::feasible
+                    : lp::reference::SolveStatus::resource_limit;
+                result.message = "independent proof " + out.proof_status +
+                                 "; optimality not certified";
+            }
         }
         // RES-01: SQP/MINLP verification runs with no deadline of its own;
         // one shared-context poll before leaving the engine covers both

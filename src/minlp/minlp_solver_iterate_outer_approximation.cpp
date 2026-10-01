@@ -165,6 +165,26 @@ MinlpSolution iterate_outer_approximation(const MinlpProblem& problem, const Nlp
         milp_opts.enable_strong_branching = false;
         const auto master_sol = milp::solve(master, milp_opts);
         out.master_nodes += master_sol.nodes_explored;
+        // MINLP-02 (minlp-proof-replay.md §6.1): capture this master revision
+        // for the independent proof build. History is append-only; an empty
+        // history means no master was ever solved.
+        out.master_model = master;
+        out.master_primal = master_sol.primal;
+        out.master_status = master_sol.status;
+        out.master_objective = master_sol.objective;
+        {
+            const bool finite_bound = std::isfinite(master_sol.best_bound);
+            MasterRecord record;
+            record.iteration = out.iterations;
+            record.status = master_sol.status;
+            // minlp-proof-replay.md §2.1/O7: the serialized record carries a
+            // finite bound per entry; a master with no finite bound is
+            // disclosed through its status and certified=false instead.
+            record.bound = finite_bound ? master_sol.best_bound : 0.0;
+            record.certified = certified_master_status(master_sol.status) && finite_bound;
+            record.cut_count = acc.cuts.size();
+            out.master_history.push_back(record);
+        }
 
         if (master_sol.status == lp::reference::SolveStatus::infeasible) {
             if (out.integer_feasible) {

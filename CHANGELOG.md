@@ -2,6 +2,77 @@
 
 ## Unreleased
 
+### 2026-10-01 blueprint MINLP-02 — independent OA proof replay
+
+- Added the binding library contract
+  [`docs/contracts/minlp-proof-replay.md`](docs/contracts/minlp-proof-replay.md)
+  (v1) before any numerical code: the `MARKOV_OA_PROOF 1` format and
+  budgets (§2), the obligation list O1–O12 in order (§3), the writer
+  side (§4), the status/assurance downgrade table (§5.3, §5.4), the
+  reader and verifier (§6), the test obligations (§7), the benchmark
+  (§8), the documentation duty (§9) and the locked tolerances (§10).
+  Obligation O2 binds **both** the model fingerprint and the source
+  objective sense.
+- New verifier core under [`include/markov_cero/verify/oa_proof.hpp`](include/markov_cero/verify/oa_proof.hpp)
+  and `src/verify/` (`oa_proof.cpp`, `oa_proof_io.cpp`,
+  `oa_proof_builder.cpp`, `oa_proof_internal.hpp`): `build_oa_proof`
+  records master cuts, convexity pivots, the embedded MIP proof, the
+  certified bound history and the incumbent; `verify_oa_proof` rebuilds
+  the master rows from the **source** model (never reusing the solve
+  path), replays every cut at `1e-8` with `1e-9` outward-only
+  weakening, re-derives the pivot at `1e-6`, and re-checks incumbent
+  integrality/feasibility/objective, bound and gap at `1e-6` with a
+  `1e-9` gap cross-check over the locked `1e-3`. Reader and verifier
+  poll the shared deadline and enforce `maximum_tangents = 10000`,
+  `maximum_nodes = 10000`, `maximum_witness_values = 4e6` and a
+  4096-byte fingerprint.
+- §5.3 downgrade: a MINLP solve without an accepted **canonical** replay
+  never reports `Optimal` — `not_requested` (proofs disabled),
+  `exhausted` (budget) and `rejected` all fall back to `Feasible` +
+  `original_primal_checked`, while an infeasible claim keeps
+  `Infeasible` + `verified`. Accepted proofs publish `certificate_type`
+  `incumbent_feasibility; independent_oa_gap` (`…_tree` at gap 0) and
+  `out.best_bound`/`relative_gap` from the replayed record.
+- Surfaces: `SolveResult::oa_proof` / `oa_proof_build_ms` /
+  `oa_proof_verify_ms` ([`include/markov_cero/api/solve.hpp`](include/markov_cero/api/solve.hpp)),
+  CLI JSON, the Python `oa_proof` key, and the standalone
+  `markov-cero-verify-minlp` checker (exit 0 accepted, 1 rejected —
+  including malformed and exhausted, 2 usage) with `--time-limit`,
+  `--max-nodes`, `--max-values` and `--relative-gap`.
+- `assurance` value `oa_replayed` emitted iff `proof_status ==
+  "accepted"`, `guarantee_tier ∈ {independent_oa, replayed_oa}` and
+  `canonical_verified`
+  ([`docs/contracts/numerical-policy.md`](docs/contracts/numerical-policy.md)
+  bumped to v3 with the migration note).
+- §7 suites: [`tests/minlp02_proof_test.cpp`](tests/minlp02_proof_test.cpp)
+  (healthy/infeasible/maximize round-trips, node- and time-limit
+  downgrades, stripped-fingerprint `replayed_oa`, reader rejections),
+  [`tests/minlp02_proof_attack_test.cpp`](tests/minlp02_proof_attack_test.cpp)
+  (18 directed mutations naming the failing obligation plus a
+  64-iteration seeded fuzz), and
+  [`tests/minlp02_enumeration_test.cpp`](tests/minlp02_enumeration_test.cpp)
+  (seeded convex quadratic MINLPs cross-checked against an exhaustive
+  per-integer-pair oracle, plus an infeasible member). CLI sections in
+  [`tests/repository_tools_test.py`](tests/repository_tools_test.py) and
+  the binding section in
+  [`python/tests/test_proof_guarantee.py`](python/tests/test_proof_guarantee.py).
+  CTest 118/118, bindings 27/27.
+- §8 benchmark: [`scripts/bench_minlp02_proof.cpp`](scripts/bench_minlp02_proof.cpp)
+  (`minlp02_proof_benchmark`) runs the frozen four-case stratum through
+  `api::solve_model` twice per case — proofs on and
+  `enable_mip_proof = false` — recording status, assurance, tier,
+  build/replay ms, `write_oa_proof` bytes and objective/bound/gap:
+  4/4 accepted `independent_oa`, 6,821 proof bytes, proof-off arm
+  `Feasible` + `not_requested`
+  ([record](evidence/minlp02-proof-2026-10-01.json), listed in
+  [evidence/INDEX.md](evidence/INDEX.md)). Wall difference disclosed
+  only; no speed claim.
+- Docs: [`docs/guides/VERIFY.md`](docs/guides/VERIFY.md) new OA replay
+  section (format version, command, tier table, budgets, and the
+  explicit limitation that floating-point replay is not a formal exact
+  proof); `evidence/INDEX.md` row; `docs/project/STATUS.md` entry and
+  risk-table update.
+
 ### 2026-10-01 blueprint MINLP-01 — outer-approximation cuts with source replay
 
 - Added the binding library contract

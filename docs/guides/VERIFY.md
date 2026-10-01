@@ -98,3 +98,52 @@ with a 45-second generation budget and a 10-second replay budget accepted all
 157 nodes at a requested relative gap of 0.05. This certifies the 5% gap, not
 zero-gap optimality. The harness and replay result are retained in
 [evidence](../../evidence/readiness-validation/production-proof-harness.txt).
+
+## MINLP independent OA proof replay
+
+Convex quadratic MINLP results expose `oa_proof`, `oa_proof_build_ms`,
+`oa_proof_verify_ms`, `assurance` and `guarantee_tier`. The proof string
+begins with the header `MARKOV_OA_PROOF 1` — format version 1, checked by
+strict equality in the writer, the reader and the verifier
+([contract](../contracts/minlp-proof-replay.md)). Save it verbatim, then run:
+
+```bash
+markov-cero-solve MODEL.mps > result.json        # or the Python binding
+python3 -c "import json,sys; open('oa.txt','w').write(json.load(open('result.json'))['oa_proof'])"
+markov-cero-verify-minlp MODEL.mps oa.txt
+```
+
+Exit 0 means accepted; exit 1 means rejected (including a malformed or
+truncated proof and an exhausted replay budget); exit 2 is a usage error. A
+rejected proof prints `REJECTED:` and names the failed obligation — the
+fingerprint, a cut replay, the convexity pivot, the incumbent, the master
+tree, the bound or the gap. The checker takes `--time-limit SEC`,
+`--max-nodes N`, `--max-values N` and `--relative-gap T`.
+
+**Budgets are shared with the MIP proof.** Generation and replay read
+`enable_mip_proof`, `proof_time_limit`, `proof_max_nodes` and
+`proof_max_witness_values` (CLI: `--proof-time-limit`, `--proof-max-nodes`,
+`--proof-max-values`; the standalone checker's `--max-nodes` bounds the
+replay only). Exhaustion reports `proof_status = "exhausted"` with the
+budget kind and never converts to `Optimal`: the status becomes `Feasible`
+with `assurance = "original_primal_checked"`.
+
+**Tiers.**
+
+| `guarantee_tier` | Meaning |
+|---|---|
+| `independent_oa` | the fingerprint matched the source model and every obligation (O1–O12) passed |
+| `replayed_oa` | all obligations passed but the fingerprint was stripped, so the proof is not tied to this model — replayable, never canonical |
+| `unverified` | exhausted, rejected or not requested |
+
+`assurance = "oa_replayed"` is emitted only for an accepted, canonical
+result. An accepted proof reports `certificate_type`
+`incumbent_feasibility; independent_oa_gap` (or `…_tree` when the relative
+gap is exactly 0); an infeasible claim reports `incumbent_feasibility;
+independent_oa_tree` alongside `claims_infeasible = true`.
+
+**Limitation.** Replay is floating-point arithmetic against the same model
+data. It is an independent re-derivation with documented tolerances — not a
+formal exact or machine-checked proof — and it says nothing about whether
+the model represents a physical plant. The [record](../../evidence/minlp02-proof-2026-10-01.json)
+measures 4/4 accepted on the frozen four-case stratum.

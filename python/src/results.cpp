@@ -2,6 +2,7 @@
 #include <cstring>
 #include <sstream>
 #include "markov_cero/verify/mip_proof.hpp"
+#include "markov_cero/verify/oa_proof.hpp"
 namespace bindings {
 // Shared implementation behind mc.solve and Model.solve: run the API on an
 // assembled model::Model and translate the result into a Python dict.
@@ -54,6 +55,13 @@ py::dict to_python(api::SolveResult res) {
         std::ostringstream proof; verify::write_mip_proof(proof, *res.mip_proof);
         out["mip_proof"] = proof.str();
     } else out["mip_proof"] = py::none();
+    // MINLP-02 (minlp-proof-replay.md §6.4): OA proof record next to mip_proof.
+    out["oa_proof_build_ms"] = res.oa_proof_build_ms;
+    out["oa_proof_verify_ms"] = res.oa_proof_verify_ms;
+    if (res.oa_proof) {
+        std::ostringstream proof; verify::write_oa_proof(proof, *res.oa_proof);
+        out["oa_proof"] = proof.str();
+    } else out["oa_proof"] = py::none();
     out["variable_names"] = res.variable_names;
     out["row_names"] = res.row_names;
     out["row_activities"] = res.row_activities;

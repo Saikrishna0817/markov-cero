@@ -40,6 +40,15 @@ std::string derive_assurance(const SolveResult& out) {
         (out.guarantee_tier == "independent_tree" || out.guarantee_tier == "replayed_tree");
     if (proof_accepted && out.canonical_verified) return "tree_replayed";
 
+    // MINLP-02 (minlp-proof-replay.md §5.4): an accepted OA proof with a
+    // model fingerprint, canonical only via §5.2's single path. The
+    // replayed_oa tier never sets canonical_verified, so oa_replayed is
+    // emitted iff an independent replay held.
+    const bool oa_proof_accepted =
+        out.proof_status == "accepted" &&
+        (out.guarantee_tier == "independent_oa" || out.guarantee_tier == "replayed_oa");
+    if (oa_proof_accepted && out.canonical_verified) return "oa_replayed";
+
     // NLP: a first-order KKT candidate. Never a global certificate and never a
     // proof of a local minimum; local_minimum_verified stays reserved.
     if (out.certificate_type == "local_kkt") {

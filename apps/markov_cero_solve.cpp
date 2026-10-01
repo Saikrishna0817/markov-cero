@@ -57,6 +57,9 @@ markov_cero::apps::JsonOutputData to_json_data(const markov_cero::api::SolveResu
     data.proof_message = res.proof_message;
     data.mip_proof_build_ms = res.mip_proof_build_ms;
     data.mip_proof_verify_ms = res.mip_proof_verify_ms;
+    data.oa_proof = res.oa_proof;
+    data.oa_proof_build_ms = res.oa_proof_build_ms;
+    data.oa_proof_verify_ms = res.oa_proof_verify_ms;
     data.variable_names = res.variable_names;
     data.row_names = res.row_names;
     data.row_activities = res.row_activities;

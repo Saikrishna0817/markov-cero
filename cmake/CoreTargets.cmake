@@ -7,9 +7,11 @@ add_library(markov_cero_core STATIC
   src/api/assurance.cpp
   src/api/finalize.cpp
   src/api/mip_certificate.cpp
+  src/api/minlp_certificate.cpp
   src/verify/mip_proof.cpp src/verify/mip_proof_relaxation.cpp
   src/verify/mip_proof_io.cpp
   src/verify/mip_proof_builder.cpp
+  src/verify/oa_proof.cpp src/verify/oa_proof_io.cpp src/verify/oa_proof_builder.cpp
   src/api/dispatch.cpp
   src/api/engine_nonlinear.cpp
   src/api/engine_parallel.cpp
@@ -175,6 +177,9 @@ target_link_libraries(markov-cero-solve PRIVATE markov_cero_core)
 
 add_executable(markov-cero-verify-mip apps/markov_cero_verify_mip.cpp)
 target_link_libraries(markov-cero-verify-mip PRIVATE markov_cero_core)
+
+add_executable(markov-cero-verify-minlp apps/markov_cero_verify_minlp.cpp)
+target_link_libraries(markov-cero-verify-minlp PRIVATE markov_cero_core)
 
 add_executable(markov-cero-iis apps/markov_cero_iis.cpp)
 target_link_libraries(markov-cero-iis PRIVATE markov_cero_core)

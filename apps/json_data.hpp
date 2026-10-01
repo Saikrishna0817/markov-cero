@@ -22,6 +22,10 @@ struct JsonOutputData {
     std::string proof_message;
     double mip_proof_build_ms = 0.0;
     double mip_proof_verify_ms = 0.0;
+    // MINLP-02 (minlp-proof-replay.md §6.3): OA proof record next to mip_proof.
+    std::shared_ptr<const markov_cero::verify::OaProof> oa_proof;
+    double oa_proof_build_ms = 0.0;
+    double oa_proof_verify_ms = 0.0;
     std::vector<std::string> variable_names;
     std::vector<std::string> row_names;
     std::vector<double> row_activities;

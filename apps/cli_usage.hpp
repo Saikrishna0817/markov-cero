@@ -47,4 +47,14 @@ inline void mip_verify_usage(std::ostream& out) {
         << "  --max-values N    Maximum witness values (default: 4000000)\n"
         << "  --relative-gap T  Accepted relative gap (default: 0)\n";
 }
+
+// MINLP-02 (minlp-proof-replay.md §6.3): same flag surface as the MIP
+// verifier — the certified artifact is an embedded MILP tree.
+inline void minlp_verify_usage(std::ostream& out) {
+    out << "usage: markov-cero-verify-minlp MODEL.mps PROOF.txt [options]\n"
+        << "  --time-limit SEC  Maximum proof parsing/replay time (default: 5)\n"
+        << "  --max-nodes N     Maximum proof tree nodes (default: 10000)\n"
+        << "  --max-values N    Maximum witness values (default: 4000000)\n"
+        << "  --relative-gap T  Accepted relative gap (default: 0)\n";
+}
 }

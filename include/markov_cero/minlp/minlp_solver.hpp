@@ -48,6 +48,17 @@ struct MinlpOptions {
     std::optional<std::chrono::steady_clock::time_point> deadline;
 };
 
+// One OA master revision as recorded for the MINLP-02 proof build
+// (minlp-proof-replay.md §2.1/§6.1): bound is the raw master lower bound in
+// the normalized minimization sense, certified matches minlp-oa.md §7.1.
+struct MasterRecord {
+    std::size_t iteration{0};
+    lp::reference::SolveStatus status{lp::reference::SolveStatus::numerical_failure};
+    double bound{std::numeric_limits<double>::quiet_NaN()};
+    bool certified{false};
+    std::size_t cut_count{0};
+};
+
 struct MinlpSolution {
     lp::reference::SolveStatus status{lp::reference::SolveStatus::numerical_failure};
     std::string message;
@@ -65,6 +76,13 @@ struct MinlpSolution {
     std::size_t cuts_replayed{0};   // completed source-polynomial replays
     std::string bound_provenance;   // "milp_master_certified" or empty
     std::vector<OaCut> oa_cuts;     // provenance of every stored tangent
+    // MINLP-02 (minlp-proof-replay.md §6.1): final master capture for the
+    // independent proof build. Empty history means no master was solved.
+    model::Model master_model;
+    std::vector<double> master_primal;
+    lp::reference::SolveStatus master_status{lp::reference::SolveStatus::numerical_failure};
+    double master_objective{0.0};
+    std::vector<MasterRecord> master_history;
 };
 
 struct MinlpProblem {

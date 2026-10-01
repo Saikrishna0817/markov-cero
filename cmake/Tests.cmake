@@ -139,6 +139,7 @@ add_test(NAME hosted_os_limits
 set_tests_properties(
   build_info model_verifier mps_parser lp_parser mps_fuzz_smoke model_properties
   classifier nlp_sqp nlp_rosenbrock nlp_constrained minlp_basic nlobj_parser
+  minlp02_proof minlp02_proof_attack minlp02_enumeration
   dense_lu primal_simplex primal_simplex_properties dual_simplex
   warm_start_properties sparse_basis sparse_fill_limit sparse_update_properties audit_regressions
   sparse_canonicalize presolve ruiz_scaling milp milp_heuristics   milp_cuts milp_cut_validity mip_adversarial milp_bruteforce milp_edge_cases
@@ -216,7 +217,7 @@ target_link_libraries(readiness_edge_cases_test PRIVATE markov_cero_core)
 add_test(NAME readiness_edge_cases COMMAND readiness_edge_cases_test)
 if(Python3_Interpreter_FOUND)
   add_test(NAME repository_tools COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tests/repository_tools_test.py
-    $<TARGET_FILE:markov-cero-solve> $<TARGET_FILE:markov-cero-verify-mip>)
+    $<TARGET_FILE:markov-cero-solve> $<TARGET_FILE:markov-cero-verify-mip> $<TARGET_FILE:markov-cero-verify-minlp>)
 endif()
 
 add_test(NAME worker_kill_demo

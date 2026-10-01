@@ -1,0 +1,16 @@
+NAME MINLP_CASE_A
+ROWS
+ N COST
+COLUMNS
+    X    COST   -2.0
+    Y    COST    0.2
+BOUNDS
+ UP BND    X    2.0
+ LO BND    Y    0.0
+ UI BND    Y    1.0
+NLOBJ
+  1.0 X X
+NLCON
+  1.0 X X <= 0.0 X2_LE_Y
+  -1.0 Y <= 0.0 X2_LE_Y
+ENDATA

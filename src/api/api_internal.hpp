@@ -49,6 +49,11 @@ void run_qp(const model::Model& model, const SolveOptions& options, SolveResult&
 void certify_mip(const model::Model&, const SolveOptions&, SolveResult&,
                  lp::reference::Result&, core::SolveContext& ctx,
                  const std::vector<verify::MipObligation>& obligations = {});
+// MINLP-02 (minlp-proof-replay.md §4.1): independent OA proof build + replay
+// for the MINLP branch, same switch and budget fields as certify_mip.
+void certify_minlp(const model::Model&, const SolveOptions&, SolveResult&,
+                   lp::reference::Result&, core::SolveContext& ctx,
+                   const minlp::MinlpSolution&);
 void run_milp(const model::Model& model, const SolveOptions& options, SolveResult& out,
               lp::reference::Result& result, core::SolveContext& ctx);
 void run_lp(const model::Model& model, const SolveOptions& options, SolveResult& out,

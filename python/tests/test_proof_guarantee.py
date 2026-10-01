@@ -1,5 +1,7 @@
 """Public Python assurance and proof-budget fields."""
 
+import os
+
 import markov_cero as mc
 
 
@@ -40,3 +42,39 @@ def test_milp_proof_guarantee_fields():
     assert exhausted["proof_budget_kind"] == "node_limit"
     # A proof that never completed may only claim the original primal check.
     assert exhausted["assurance"] == "original_primal_checked"
+
+
+def test_minlp_oa_proof_guarantee_fields():
+    """MINLP-02 contract §7: OA replay fields and the exhaustion downgrade."""
+    root = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
+    fixture = os.path.join(root, "tests", "fixtures", "minlp_case_a.mps")
+    accepted = mc.solve(fixture)
+    assert accepted["status"] == "Optimal"
+    assert accepted["verified"] is True
+    assert accepted["assurance"] == "oa_replayed"
+    assert accepted["guarantee_tier"] == "independent_oa"
+    assert accepted["proof_status"] == "accepted"
+    assert accepted["proof_budget_exhausted"] is False
+    assert accepted["certificate_type"] == "incumbent_feasibility; independent_oa_gap"
+    assert accepted["oa_proof_build_ms"] >= 0
+    assert accepted["oa_proof_verify_ms"] >= 0
+    assert accepted["proof_model_fingerprint"] == str(accepted["model_fingerprint"])
+    assert isinstance(accepted["oa_proof"], str)
+    assert accepted["oa_proof"].startswith("MARKOV_OA_PROOF 1\n")
+
+    # Contract §5.3: exhaustion keeps the original primal check but never
+    # claims optimality, while the proof itself stays attached for replay.
+    exhausted = mc.solve(fixture, proof_max_nodes=1)
+    assert exhausted["status"] == "Feasible"
+    assert exhausted["original_verified"] is True
+    assert exhausted["verified"] is False
+    assert exhausted["guarantee_tier"] == "unverified"
+    assert exhausted["proof_status"] == "exhausted"
+    assert exhausted["proof_budget_exhausted"] is True
+    assert exhausted["proof_budget_kind"] == "node_limit"
+    assert exhausted["assurance"] == "original_primal_checked"
+    assert "optimality not certified" in exhausted["message"]
+    assert isinstance(exhausted["oa_proof"], str)
+    assert exhausted["oa_proof"].startswith("MARKOV_OA_PROOF 1\n")

@@ -216,6 +216,13 @@ inline bool emit_json_output(const JsonOutputData& data) {
         markov_cero::verify::write_mip_proof(proof, *data.mip_proof);
         json << ",\"mip_proof\":\"" << json_escape(proof.str()) << "\"";
     }
+    json << ",\"oa_proof_build_ms\":" << json_number(data.oa_proof_build_ms)
+         << ",\"oa_proof_verify_ms\":" << json_number(data.oa_proof_verify_ms);
+    if (data.oa_proof) {
+        std::ostringstream proof;
+        markov_cero::verify::write_oa_proof(proof, *data.oa_proof);
+        json << ",\"oa_proof\":\"" << json_escape(proof.str()) << "\"";
+    }
     if (!data.error.empty()) {
         json << ",\"error\":\"" << json_escape(data.error) << "\"";
     }

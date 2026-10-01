@@ -1,0 +1,131 @@
+{
+  "record": "minlp02-proof",
+  "date": "2026-10-01",
+  "contract": "docs/contracts/minlp-proof-replay.md section 8",
+  "entry_point": "library: api::solve_model",
+  "design": "Frozen minlp-oa.md section 11 four-case stratum; each case solved twice through api::solve_model with shared proof budgets on (default) and enable_mip_proof = false; warm-up solve before each timed solve; proof bytes measured with write_oa_proof.",
+  "cases": [
+    {
+      "case": "basic_quadratic",
+      "source_sense": "minimize",
+      "known_optimum": 1.25,
+      "proof_on": {
+        "status": "Optimal",
+        "assurance": "oa_replayed",
+        "guarantee_tier": "independent_oa",
+        "proof_status": "accepted",
+        "canonical_verified": true,
+        "build_ms": 1.430714,
+        "replay_ms": 0.12424399999999999,
+        "proof_bytes": 1452,
+        "objective": 1.2500000136170706,
+        "best_bound": 1.2499999952499998,
+        "relative_gap": 1.4693656442492522e-08,
+        "wall_ms": 4.7058819999999999
+      },
+      "proof_off": {
+        "status": "Feasible",
+        "assurance": "original_primal_checked",
+        "proof_status": "not_requested",
+        "objective": 1.2500000136170706,
+        "best_bound": 1.2499999952499998,
+        "relative_gap": 1.4693656442492522e-08,
+        "wall_ms": 2.834603
+      }
+    },
+    {
+      "case": "case_a_binary",
+      "source_sense": "minimize",
+      "known_optimum": 0.20000000000000001,
+      "proof_on": {
+        "status": "Optimal",
+        "assurance": "oa_replayed",
+        "guarantee_tier": "independent_oa",
+        "proof_status": "accepted",
+        "canonical_verified": true,
+        "build_ms": 1.386298,
+        "replay_ms": 0.13014700000000001,
+        "proof_bytes": 1765,
+        "objective": 0.19999999999999996,
+        "best_bound": 0.1999999988749481,
+        "relative_gap": 1.1250518572314405e-09,
+        "wall_ms": 193.314198
+      },
+      "proof_off": {
+        "status": "Feasible",
+        "assurance": "original_primal_checked",
+        "proof_status": "not_requested",
+        "objective": 0.19999999999999996,
+        "best_bound": 0.19999999887494813,
+        "relative_gap": 1.1250518294758649e-09,
+        "wall_ms": 207.50115099999999
+      }
+    },
+    {
+      "case": "two_integer_oracle",
+      "source_sense": "minimize",
+      "known_optimum": 0.29999999999999999,
+      "proof_on": {
+        "status": "Optimal",
+        "assurance": "oa_replayed",
+        "guarantee_tier": "independent_oa",
+        "proof_status": "accepted",
+        "canonical_verified": true,
+        "build_ms": 2.5087510000000002,
+        "replay_ms": 0.21757000000000001,
+        "proof_bytes": 2109,
+        "objective": 0.30000000000000004,
+        "best_bound": 0.29999999861582244,
+        "relative_gap": 1.3841776058676203e-09,
+        "wall_ms": 221.67937800000001
+      },
+      "proof_off": {
+        "status": "Feasible",
+        "assurance": "original_primal_checked",
+        "proof_status": "not_requested",
+        "objective": 0.30000000000000004,
+        "best_bound": 0.29999999861582249,
+        "relative_gap": 1.3841775503564691e-09,
+        "wall_ms": 221.69837799999999
+      }
+    },
+    {
+      "case": "maximize_offset",
+      "source_sense": "maximize",
+      "known_optimum": 0.75,
+      "proof_on": {
+        "status": "Optimal",
+        "assurance": "oa_replayed",
+        "guarantee_tier": "independent_oa",
+        "proof_status": "accepted",
+        "canonical_verified": true,
+        "build_ms": 1.5526519999999999,
+        "replay_ms": 0.16415399999999999,
+        "proof_bytes": 1495,
+        "objective": 0.74999998638292942,
+        "best_bound": 0.75000000675000011,
+        "relative_gap": 2.0367070696636347e-08,
+        "wall_ms": 4.675033
+      },
+      "proof_off": {
+        "status": "Feasible",
+        "assurance": "original_primal_checked",
+        "proof_status": "not_requested",
+        "objective": 0.74999998638292942,
+        "best_bound": 0.75000000675000011,
+        "relative_gap": 2.0367070696636347e-08,
+        "wall_ms": 3.2410839999999999
+      }
+    }
+  ],
+  "summary": {
+    "cases": 4,
+    "accepted": 4,
+    "accepted_fraction": "4/4",
+    "total_proof_bytes": 6821,
+    "wall_ms_proof_on": 424.37449100000003,
+    "wall_ms_proof_off": 435.275216,
+    "wall_difference_ms": -10.900724999999966,
+    "note": "Wall difference is disclosure only: one machine, one run, no speed claim. Accepted fraction is the acceptance gate (minlp-proof-replay.md section 8)."
+  }
+}

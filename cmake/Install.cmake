@@ -1,7 +1,7 @@
 include(CMakePackageConfigHelpers)
 install(TARGETS markov_cero_core EXPORT markov_ceroTargets
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(TARGETS markov-cero-iis markov-cero-verify-mip markov-cero-solve markov-cero-info markov-cero-mps-inspect
+install(TARGETS markov-cero-iis markov-cero-verify-mip markov-cero-verify-minlp markov-cero-solve markov-cero-info markov-cero-mps-inspect
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY include/markov_cero gpu/include/markov_cero
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
