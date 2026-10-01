@@ -190,7 +190,7 @@ Result solve(const transform::CanonicalModel& model, const Options& options) {
 const char* to_string(SolveStatus s) noexcept {
     switch (s) {
     case SolveStatus::gap_satisfied: return "GapSatisfied";
-    case SolveStatus::local_optimal: return "LocalOptimal";
+    case SolveStatus::local_optimal: return "LocalStationary";
     case SolveStatus::feasible: return "Feasible";
     case SolveStatus::optimal: return "Optimal";
     case SolveStatus::infeasible: return "Infeasible";

@@ -2,6 +2,55 @@
 
 ## Unreleased
 
+### 2026-10-01 blueprint NLP-01 — local SQP honesty, callback guards and derivative diagnostics
+
+- Added the binding library contract
+  [`docs/contracts/nlp-local-sqp.md`](docs/contracts/nlp-local-sqp.md): the
+  exact local guarantee (§1), the callback contract validated at every
+  evaluation (§2), the developer-only derivative diagnostic (§3), the audited
+  SQP iteration semantics with the documented Armijo/Wolfe waiver (§4), the
+  status/verification/incumbent rules (§5), and the §6 test and §7 benchmark
+  obligations.
+- Status schema v2: the public NLP status `LocalOptimal` is renamed
+  `LocalStationary` (numerical-policy v1 → v2 with a migration note); the
+  C++ enum `local_optimal` is retained for source compatibility. A
+  first-order KKT candidate — a saddle satisfies it — is stationarity, not
+  a proven local optimum.
+- Callback guard (§2): every solve-path constraint value/Jacobian and
+  gradient/objective result is dimension- and finiteness-checked
+  (`nlp_callback_guard`); violations and callback exceptions become a
+  bounded `NumericalFailure` naming the callback (never a crash, never
+  `LocalStationary`), a callback broken at report time fails closed to an
+  unknown (`null`) residual instead of a plausible zero, and the solve
+  counts and exposes user-callback evaluations.
+- SQP semantics (§4): a `primal_infeasible` QP subproblem now fails
+  immediately with an inconclusive message naming the linearized
+  infeasibility (`B_k` affects only the objective, so a reset cannot help) —
+  never `Infeasible`, never a claim about the NLP itself; x0 bound
+  projection is disclosed (`x0_projected`, `x0_projection_norm`); the last
+  feasibility-tolerated iterate is kept (`best_feasible_x`) and the engine
+  attaches it only after its own `verify_nlp_feasibility` accepts it,
+  without upgrading the limit/failure status.
+- Added `nlp::check_derivatives` (public C++, plus `mc.check_derivatives`
+  in the binding): centered finite differences in the interior, one-sided
+  differences within one step of a finite bound, a documented step rule and
+  error threshold — diagnostic only, never called inside the solve path.
+- Added the §6 suites: `nlp_local_semantics` (two-start Rosenbrock, the
+  analytic equality multiplier, bound-active stationarity through the
+  bound-normal projection, saddle → `LocalStationary` never `Optimal`,
+  infeasible pair stays inconclusive), `nlp_derivative_check` (wrong
+  gradient/Jacobian detected, correct and bound-adjacent callbacks pass,
+  NLOBJ polynomial path, malformed input fails closed) and
+  `nlp_callback_guard` (NaN/wrong-size/throwing callbacks, x0 guards, a
+  limit exit retaining a verified incumbent with projection disclosure, and
+  the engine attaching that incumbent on a failed callback solve).
+- Added the §7 benchmark: `scripts/run_nlp01_benchmark.py` runs a separate
+  seven-case local corpus through the public binding — 6
+  `LocalStationary`, 1 honest `NumericalFailure`, with residuals,
+  iterations, callback counts and wall times as measured
+  ([record](evidence/nlp01-local-2026-10-01.json)). Never merged with the
+  QP/MIP/MIQP summaries; no globality, local-minimum or speed claim.
+
 ### 2026-10-01 blueprint MIQP-01 — certified MIQP node bounds, incumbent checks and replay obligations
 
 - Added the binding library contract

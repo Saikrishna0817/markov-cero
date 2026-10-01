@@ -1,6 +1,6 @@
-# Numerical and status contract — v1
+# Numerical and status contract — v2
 
-**Contract version:** 1 (schema: `assurance` field introduced 2026-09-29).
+**Contract version:** 2 (v1: `assurance` field introduced 2026-09-29; v2: NLP status `LocalOptimal` renamed `LocalStationary` 2026-10-01 under blueprint NLP-01 — a first-order KKT candidate is stationarity, not a proven local optimum).
 **Status:** binding for every change under blueprint task NUM-01 and its dependents (LP-01, QP-01, MIP-01, MIQP-01, NLP-01, MINLP-01).
 **Scope:** every tolerance, status, verification flag and assurance label emitted by `api::solve_file` / `api::solve_model`, the CLI JSON and the Python binding.
 
@@ -62,7 +62,7 @@ A verifier recomputes activities, residuals and objectives from input and compar
 | `Unbounded` | objective unbounded over a feasible set | feasible anchor + improving recession ray | `optimality_witness_checked` |
 | `GapSatisfied` | bound within the declared gap tolerance; **not** exact optimality | best valid bound + incumbent, both verified | `optimality_witness_checked` (never `tree_replayed` unless a proof was accepted) |
 | `Feasible` | verified incumbent only; global conclusion unverified | original-model primal + integrality | `original_primal_checked` |
-| `LocalOptimal` | first-order local KKT candidate for NLP | independent NLP KKT checker | `local_kkt_checked` |
+| `LocalStationary` | first-order local KKT candidate for NLP (renamed from `LocalOptimal` in v2; the C++ enum `local_optimal` is retained) | independent NLP KKT checker | `local_kkt_checked` |
 | `ResourceLimit` | stop reason hit (deadline/memory/nodes/queue) | none; incumbent/bound retained only if separately verified | `original_primal_checked` or `unverified` |
 | `IterationLimit` | iteration budget hit | none | as verified, else `unverified` |
 | `NumericalFailure` | a required witness was rejected | none | `unverified` |
@@ -291,9 +291,23 @@ These are recorded, not silently accepted. None is a licence to change behaviour
 
 ---
 
-## 9. Compatibility and migration note (contract v1)
+## 9. Compatibility and migration note (contracts v1 and v2)
 
-Contract v1 adds a field and changes no existing one.
+**v2 (2026-10-01, NLP-01).** One status spelling changed:
+
+| Surface | Before v2 | With v2 | Action for a caller |
+|---|---|---|---|
+| JSON/CLI/Python `status` on the NLP path | `LocalOptimal` | `LocalStationary` | consumers that whitelist or match the status string must accept `LocalStationary`; meanings and witnesses are otherwise identical |
+| C++ `lp::reference::SolveStatus` | `local_optimal` | unchanged (retained for source compatibility) | none |
+| `assurance` label | `local_kkt_checked` | unchanged | none |
+
+Rationale: a saddle satisfies first-order KKT, so advertising the candidate
+as "optimal" overstated the check. The witness, the assurance ceiling and
+every other status are unchanged; `local_minimum_verified` remains reserved
+for a future second-order test. Statuses are additive-per-snapshot: results
+produced before v2 recorded `LocalOptimal`.
+
+**v1 (2026-09-29).** Contract v1 adds a field and changes no existing one.
 
 | Surface | Before v1 | With v1 | Action for a caller |
 |---|---|---|---|

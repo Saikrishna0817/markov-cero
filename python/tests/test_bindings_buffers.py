@@ -62,7 +62,7 @@ def test_nlp_numpy_buffers_and_strided_inputs():
     )
     x0 = np.array([0.0, 0.0])[::-1]  # strided (negative-stride) view of [0, 0]
     res = nlp.solve(x0)
-    assert res["status"] == "LocalOptimal"
+    assert res["status"] == "LocalStationary"
     assert isinstance(res["x"], np.ndarray)
     assert res["x"].base is not None
     assert res["x"][0] == pytest.approx(1.0, abs=1e-4)
@@ -83,7 +83,7 @@ def test_nlp_jacobian_2d_buffer_path():
     )
     nlp.set_bounds([0.0, 0.0], [3.0, 3.0])
     res = nlp.solve([0.2, 0.2])
-    assert res["status"] == "LocalOptimal"
+    assert res["status"] == "LocalStationary"
     assert res["x"][0] == pytest.approx(0.75, abs=1e-4)
     assert res["x"][1] == pytest.approx(0.75, abs=1e-4)
 

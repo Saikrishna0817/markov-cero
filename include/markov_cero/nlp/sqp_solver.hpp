@@ -57,6 +57,15 @@ struct SqpSolution {
     // Multipliers for telemetry (ineq then eq).
     std::vector<double> ineq_multipliers;
     std::vector<double> eq_multipliers;
+    // NLP-01 contract nlp-local-sqp.md §2.4/§4.5/§5.4: user-callback
+    // invocations during this solve, the bound projection applied to x0,
+    // and the last feasibility-tolerated iterate kept for non-KKT exits
+    // (empty when no iterate met the feasibility tolerance).
+    std::size_t callback_evaluations{0};
+    bool x0_projected{false};
+    double x0_projection_norm{0.0};
+    std::vector<double> best_feasible_x;
+    double best_feasible_objective{0.0};
 };
 
 class SqpSolver {

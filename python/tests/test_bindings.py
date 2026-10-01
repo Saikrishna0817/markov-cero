@@ -147,7 +147,7 @@ def test_model_builder_nlp_callbacks_path_a():
     m.set_nlp_callbacks(cb)
 
     res = m.solve()
-    assert res["status"] == "LocalOptimal"
+    assert res["status"] == "LocalStationary"
     assert res["problem_class"] == "NLP"
     assert res["classification_reason"] == "nlp_callbacks"
     assert res["engine"] == "sqp"
@@ -173,7 +173,7 @@ def test_nlp_unconstrained_quadratic():
     )
     nlp.set_bounds([-10.0, -10.0], [10.0, 10.0])
     res = nlp.solve([0.0, 0.0])
-    assert res["status"] == "LocalOptimal"
+    assert res["status"] == "LocalStationary"
     assert res["x"][0] == pytest.approx(1.0, abs=1e-4)
     assert res["x"][1] == pytest.approx(-2.0, abs=1e-4)
     assert res["kkt_residual"] < 1e-6
@@ -193,7 +193,7 @@ def test_nlp_constrained_quadratic():
     )
     nlp.set_bounds([0.0, 0.0], [3.0, 3.0])
     res = nlp.solve([0.2, 0.2])
-    assert res["status"] == "LocalOptimal"
+    assert res["status"] == "LocalStationary"
     assert res["x"][0] == pytest.approx(0.75, abs=1e-4)
     assert res["x"][1] == pytest.approx(0.75, abs=1e-4)
     assert res["constraint_violation"] < 1e-6
@@ -220,7 +220,7 @@ def test_nlp_rosenbrock_convergence():
     # the kkt target is relaxed to the convergence band actually reached
     # through the callback API (4e-5 after 5000 iterations, x within 1e-4).
     res = nlp.solve([-1.2, 1.0], max_iterations=5000, kkt_tolerance=1e-4)
-    assert res["status"] == "LocalOptimal"
+    assert res["status"] == "LocalStationary"
     assert res["x"][0] == pytest.approx(1.0, abs=1e-3)
     assert res["x"][1] == pytest.approx(1.0, abs=1e-3)
 
@@ -250,7 +250,7 @@ def test_nlobj_file_classified_as_nlp(tmp_path):
         "ENDATA\n"
     )
     res = mc.solve(str(mps))
-    assert res["status"] == "LocalOptimal"
+    assert res["status"] == "LocalStationary"
     assert res["problem_class"] == "NLP"
     # min 0.5 x1^2 + 0.5 x2^2 s.t. x1 + x2 >= 1.5 -> x1 = x2 = 0.75, obj 0.5625
     assert res["objective"] == pytest.approx(0.5625, abs=1e-4)

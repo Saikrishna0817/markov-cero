@@ -1,4 +1,5 @@
 #include "bindings_internal.hpp"
+#include "markov_cero/nlp/derivative_check.hpp"
 #include <cstring>
 namespace bindings {
 // NLP objective wrapper: calls the Python callable with a list of floats.
@@ -147,17 +148,49 @@ void register_nlp(py::module_& m) {
                  out["message"] = sol.message;
                  out["objective"] = sol.objective;
                  out["x"] = adopt_vector(std::move(sol.x));
-                 out["kkt_residual"] = sol.kkt_residual;
-                 out["constraint_violation"] = sol.constraint_violation;
-                 out["iterations"] = sol.iterations;
-                 out["hessian_resets"] = sol.hessian_resets;
-                 return out;
-             },
-             py::arg("x0"),
-             "Solve with SQP (D-02). x0 accepts a float64 buffer (zero-copy "
-             "read) or a Python list. The returned x is a zero-copy float64 "
-             "array adopting the C++ solution storage. Kwargs: "
-             "max_iterations, kkt_tolerance.");
+                out["kkt_residual"] = sol.kkt_residual;
+                out["constraint_violation"] = sol.constraint_violation;
+                // Independent-checker breakdown (nlp-local-sqp.md §7): the
+                // bound-normal stationarity residual at the returned point;
+                // 0.0 only when the checker rejected before that stage.
+                out["stationarity_residual"] = report.stationarity_residual;
+                out["complementarity_residual"] = report.complementarity_residual;
+                out["iterations"] = sol.iterations;
+                out["hessian_resets"] = sol.hessian_resets;
+                out["callback_evaluations"] = sol.callback_evaluations;
+                out["x0_projection_norm"] = sol.x0_projection_norm;
+                if (!sol.best_feasible_x.empty()) {
+                    auto best = sol.best_feasible_x;
+                    out["best_feasible_x"] = adopt_vector(std::move(best));
+                    out["best_feasible_objective"] = sol.best_feasible_objective;
+                }
+                return out;
+            },
+            py::arg("x0"),
+            "Solve with SQP (D-02). x0 accepts a float64 buffer (zero-copy "
+            "read) or a Python list. The returned x is a zero-copy float64 "
+            "array adopting the C++ solution storage. Kwargs: "
+            "max_iterations, kkt_tolerance.");
+    m.def(
+        "check_derivatives",
+        [](const nlp::NlpModel& model, py::object x_obj, double step_hint) {
+            const std::vector<double> x = read_doubles(x_obj);
+            const auto report = nlp::check_derivatives(model, x, step_hint);
+            py::dict out;
+            out["passed"] = report.passed();
+            out["gradient_ok"] = report.gradient_ok;
+            out["jacobian_ok"] = report.jacobian_ok;
+            out["worst_gradient_error"] = report.worst_gradient_error;
+            out["worst_jacobian_error"] = report.worst_jacobian_error;
+            out["gradient_checks"] = report.gradient_checks;
+            out["jacobian_checks"] = report.jacobian_checks;
+            out["message"] = report.message;
+            return out;
+        },
+        py::arg("model"), py::arg("x"), py::arg("step_hint") = 0.0,
+        "Developer-only centered/one-sided finite-difference check of the "
+        "analytic gradient and constraint Jacobian at x (NLP-01 contract "
+        "section 3). Never used inside the solve path.");
 
 }
 

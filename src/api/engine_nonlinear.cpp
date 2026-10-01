@@ -34,6 +34,28 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
             out.diagnostic.condition_estimate = 0.0;
             result.status = sol.status;
             result.message = sol.message;
+            // NLP-01 contract nlp-local-sqp.md §5.4: on a non-KKT exit,
+            // attach the solver's last feasibility-tolerated iterate only
+            // after this engine's own verifier accepts it. The status is
+            // never upgraded, and verification runs before the shared-deadline
+            // poll below (verification itself is deadline-free, resource
+            // contract section 4).
+            if (sol.status != lp::reference::SolveStatus::optimal &&
+                !sol.best_feasible_x.empty()) {
+                const auto feas = nlp::verify_nlp_feasibility(nlp_model, sol.best_feasible_x,
+                                                              1e-6);
+                if (feas.feasible) {
+                    result.primal = sol.best_feasible_x;
+                    result.objective = sol.best_feasible_objective;
+                    out.original_primal = sol.best_feasible_x;
+                    out.original_objective = sol.best_feasible_objective;
+                    out.original_verified = true;
+                    out.original_message =
+                        "best verified feasible iterate attached; status unchanged";
+                } else {
+                    out.original_message = "original primal not applicable";
+                }
+            }
             if (stop_after_deadline(ctx, options, out, result, "SQP solve")) return;
             core::StageScope verify_stage(ctx, "verify");
             if (sol.status == lp::reference::SolveStatus::optimal) {
@@ -63,7 +85,9 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
                 }
             } else {
                 out.canonical_verified = false;
-                out.original_message = "original primal not applicable";
+                if (out.original_message.empty()) {
+                    out.original_message = "original primal not applicable";
+                }
                 out.diagnostic.failure_site = "sqp_solve";
                 out.diagnostic.suggested_recovery = "improve_x0_or_relax_kkt_tolerance";
             }

@@ -10,7 +10,7 @@ namespace {
 
 // Statuses for which a class-specific witness can carry a global claim.
 // GapSatisfied is included because a verified bound plus incumbent is a real
-// (weaker) global statement; Feasible and LocalOptimal are deliberately not.
+// (weaker) global statement; Feasible and LocalStationary are deliberately not.
 bool is_global_status(lp::reference::SolveStatus status) {
     switch (status) {
     case lp::reference::SolveStatus::optimal:

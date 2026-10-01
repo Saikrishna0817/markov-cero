@@ -270,7 +270,7 @@ return limit/failure plus any independently feasible point
 - Active upper/lower bounds and changing active sets; test multiplier signs.
 - Deliberately wrong gradient/Jacobian callbacks; derivative diagnostic detects mismatch.
 - Saddle `f(x,y)=x²-y²` at `(0,0)`: zero gradient **must not** be called a verified local minimum.
-- Infeasible constraints `x≤0`, `x≥1`: do not report `Optimal`, `LocalOptimal`, or globally proved infeasible merely because SQP fails.
+- Infeasible constraints `x≤0`, `x≥1`: do not report `Optimal`, `LocalStationary`, or globally proved infeasible merely because SQP fails.
 - Callback returns NaN, wrong-sized vector, throws, or stalls: bounded error/stop behavior.
 
 ### Exit gate

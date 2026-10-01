@@ -108,9 +108,19 @@ NlpVerificationReport verify_nlp_solution(const NlpModel& model, const SqpSoluti
         return report;
     }
 
-    // Feasibility.
+    // Feasibility (guarded: contract nlp-local-sqp.md §2.6 — a verification
+    // call on raw user callbacks must reject, never throw).
     std::size_t n_ineq = 0, n_eq = 0;
-    const auto cvals = constraint_values(model, x, n_ineq, n_eq);
+    std::vector<double> cvals;
+    try {
+        cvals = constraint_values(model, x, n_ineq, n_eq);
+    } catch (const std::exception& e) {
+        report.message = std::string("constraint callback failed: ") + e.what();
+        return report;
+    } catch (...) {
+        report.message = "constraint callback failed with a non-standard exception";
+        return report;
+    }
     for (std::size_t i = 0; i < n_ineq; ++i) {
         report.inequality_violation = std::max(report.inequality_violation, cvals[i]);
     }

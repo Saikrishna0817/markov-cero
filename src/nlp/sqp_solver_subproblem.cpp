@@ -144,6 +144,10 @@ namespace detail_sqp_solver {
 double merit_directional_derivative(const NlpModel& model, const std::vector<double>& z,
                                     const std::vector<double>& d, double mu) {
     const auto grad = model.eval_gradient(z);
+    if (model.has_callbacks()) {
+        detail::note_callback_evaluation();
+    }
+    require_gradient(model, grad);
     std::size_t n_ineq = 0, n_eq = 0;
     const auto cvals = constraint_values(model, z, n_ineq, n_eq);
     const auto J = constraint_jacobian(model, z, n_ineq, n_eq);
