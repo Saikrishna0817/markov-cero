@@ -136,6 +136,10 @@ add_test(NAME hosted_os_limits
   COMMAND ${CMAKE_COMMAND} -E env python3
     ${CMAKE_SOURCE_DIR}/web/backend/os_limits_test.py
     $<TARGET_FILE:markov-cero-solve>)
+add_test(NAME hosted_service_limits
+  COMMAND ${CMAKE_COMMAND} -E env python3
+    ${CMAKE_SOURCE_DIR}/web/backend/service_limits_test.py
+    $<TARGET_FILE:markov-cero-solve>)
 set_tests_properties(
   build_info model_verifier mps_parser lp_parser mps_fuzz_smoke model_properties
   classifier nlp_sqp nlp_rosenbrock nlp_constrained minlp_basic nlobj_parser

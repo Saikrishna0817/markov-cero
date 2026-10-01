@@ -328,6 +328,7 @@ produced before v2 recorded `LocalOptimal`.
 | `api::SolveResult` (C++) | no `assurance` member | `std::string assurance`, default `"unverified"` | read `assurance`; nothing to migrate |
 | CLI JSON | `certificate_type`, `guarantee_tier`, `verified`, … | one added key: `"assurance"` | consumers that whitelist result keys must add `"assurance"` |
 | Python binding dict | same set as CLI | one added key: `"assurance"` | same |
+| HTTP adapter whitelist (`web/backend/server.py`) | no `assurance` | one added key: `"assurance"` (REL-01, with `lp_iterations`, `relative_gap`, `stop_reason`) | HTTP consumers read `assurance` like CLI/Python consumers |
 | Status enum, all prior keys | — | unchanged names, meanings and defaults | none |
 
 Migration guidance:
@@ -335,5 +336,5 @@ Migration guidance:
 - **Stop inferring rigor from `guarantee_tier` or `certificate_type`.** Both are inputs to the label, not the label: a solver-trusted MINLP bound may report a small gap and `verified = true` while `assurance` is `original_primal_checked`. The label is the single field that answers "what passed".
 - **`assurance` is additive and monotone within one result.** It is computed once in `api::detail::finalize` after `apply_resource_stop`, so a resource stop can only lower the label. Engines and callers must never write it.
 - **A default of `"unverified"` is honest, not missing.** Any `SolveResult` that never passed through `finalize` (default-constructed, aggregate-filled, or a stopped run) reports `unverified`.
-- **Known deferred consumer:** `web/backend/server.py` whitelists `iterations`/`optimality_gap` and does not yet pass `assurance` (also still misses `lp_iterations`/`relative_gap`). Assigned to blueprint task REL-01; it is a reporting gap, not a solver-status change.
+- **Known deferred consumer — resolved by blueprint task REL-01:** `web/backend/server.py` whitelisted `iterations`/`optimality_gap` only. As of hosted-limits v1.1 the whitelist also passes `assurance`, `lp_iterations`, `relative_gap` and `stop_reason`, so the typed label reaches HTTP consumers. It was a reporting gap, never a solver-status change.
 - **Versioning.** The schema is tracked by the contract version above. Renaming `assurance`, removing a label, or changing the meaning of an existing key requires a contract version bump and a migration note here.

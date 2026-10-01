@@ -1,15 +1,21 @@
 """Bounded HTTP adapter for the existing markov-cero CLI solver."""
 
 import json
+import math
 import os
 import pathlib
 import subprocess
 import sys
 import tempfile
 import threading
+import time
 import urllib.error
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+from service_limits import (QUOTA, bump, metrics_snapshot, record,
+                            record_status, slots_acquire, slots_release,
+                            slots_used)
 
 
 PORT = int(os.environ.get("PORT", "8080"))
@@ -83,9 +89,12 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("X-Content-Type-Options", "nosniff")
         super().end_headers()
 
-    def respond(self, status, data):
+    def respond(self, status, data, headers=None):
         payload = json.dumps(data, separators=(",", ":"), allow_nan=False).encode("utf-8")
+        record(status, self.path)
         self.send_response(status)
+        for name, value in (headers or {}).items():
+            self.send_header(name, value)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(payload)))
         self.end_headers()
@@ -98,10 +107,14 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        if self.path != "/health":
-            return self.respond(404, {"error": "Not found."})
-        ready = pathlib.Path(SOLVER_BIN).is_file() and os.access(SOLVER_BIN, os.X_OK)
-        self.respond(200 if ready else 503, {"status": "ready" if ready else "solver_unavailable"})
+        if self.path == "/health":
+            ready = pathlib.Path(SOLVER_BIN).is_file() and os.access(SOLVER_BIN, os.X_OK)
+            return self.respond(200 if ready else 503,
+                                {"status": "ready" if ready else "solver_unavailable"})
+        if self.path == "/metrics":
+            ready = pathlib.Path(SOLVER_BIN).is_file() and os.access(SOLVER_BIN, os.X_OK)
+            return self.respond(200, metrics_snapshot(ready, slots_used()))
+        return self.respond(404, {"error": "Not found."})
 
     def authenticated(self):
         token_header = self.headers.get("Authorization", "")
@@ -124,8 +137,14 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path != "/solve":
             return self.respond(404, {"error": "Not found."})
+        bump("solves_total")
         if ALLOWED_ORIGIN and self.headers.get("Origin") not in (None, ALLOWED_ORIGIN):
             return self.respond(403, {"error": "Origin is not allowed."})
+        allowed, retry_after = QUOTA.spend(self.client_address[0])
+        if not allowed:
+            bump("quota_rejected")
+            return self.respond(429, {"error": "Request quota exceeded."},
+                                {"Retry-After": str(retry_after)})
         if not self.authenticated():
             return self.respond(401, {"error": "A valid session is required."})
         try:
@@ -147,12 +166,13 @@ class Handler(BaseHTTPRequestHandler):
         suffix = pathlib.Path(filename).suffix.lower() if isinstance(filename, str) else ""
         if suffix not in (".mps", ".lp"):
             return self.respond(400, {"error": "Use an .mps or .lp model."})
-        if not SLOTS.acquire(blocking=False):
+        if not slots_acquire(SLOTS):
+            bump("busy_rejected")
             return self.respond(429, {"error": "Solver is busy. Try again shortly."})
         try:
             self.solve(model, suffix)
         finally:
-            SLOTS.release()
+            slots_release(SLOTS)
 
     def solve(self, model, suffix):
         if not pathlib.Path(SOLVER_BIN).is_file():
@@ -173,23 +193,32 @@ class Handler(BaseHTTPRequestHandler):
                     stderr_path=pathlib.Path(directory) / "stderr.log",
                 )
             except subprocess.TimeoutExpired:
+                bump("timeouts")
                 return self.respond(504, {"error": "Solve exceeded the service time limit."})
             except OSError:
                 return self.respond(503, {"error": "Could not start the solver."})
             if run.returncode < 0:
+                bump("os_limit_kills")
                 return self.respond(422, {
                     "error": "Solver exceeded an OS resource limit.",
                     "detail": f"terminated by signal {-run.returncode}",
                 })
             if not result.is_file():
+                bump("solver_failures")
                 return self.respond(422, {"error": "Solver did not return a result.", "detail": read_capped(pathlib.Path(directory) / "stderr.log")[-500:]})
             if result.stat().st_size > MAX_RESULT:
                 return self.respond(413, {"error": "Result exceeds the response size limit."})
             try:
                 data = json.loads(result.read_text(encoding="utf-8"))
             except (UnicodeDecodeError, json.JSONDecodeError):
+                bump("solver_failures")
                 return self.respond(502, {"error": "Solver returned invalid JSON."})
-            fields = ("status", "engine", "problem_class", "objective", "verified", "message", "rows", "cols", "nonzeros", "iterations", "nodes_explored", "optimality_gap")
+            # hosted-limits v1.1 §4: fixed whitelist, additive only.
+            fields = ("status", "engine", "problem_class", "objective", "verified",
+                      "assurance", "message", "rows", "cols", "nonzeros",
+                      "iterations", "lp_iterations", "nodes_explored",
+                      "optimality_gap", "relative_gap", "stop_reason")
+            record_status(str(data.get("status")))
             self.respond(200, {key: data[key] for key in fields if key in data})
 
 
