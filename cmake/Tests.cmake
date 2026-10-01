@@ -137,20 +137,23 @@ add_test(NAME domain_process_network_large COMMAND markov-cero-solve ${CMAKE_SOU
 # Wall-clock budgets for the two large MILP domain cases. The solver's own
 # search limit is a resource allowance, not a verdict threshold: under Debug
 # or a sanitizer build the same assertions need several times the wall time
-# (gcc/Debug solved these in 31 s / 58 s; the hosted clang/Debug job crossed
-# the 60 s / 90 s limits, the solver returned ResourceLimit, and the CLI
-# reported failure). Assertions, verification and the exit contract are
-# unchanged, and a solve that reaches its target stops before the budget.
+# (the hosted clang/Debug job crossed the original 60 s / 90 s limits, the
+# solver returned ResourceLimit, and the CLI reported failure; the recorded
+# CI runs then measured 61 s / 117 s on gcc/Debug and 43 s / 79 s on
+# clang/Debug). The diagnostic budgets sit at ~3x the worst hosted
+# observation; Release keeps the historical 60 s / 90 s. Assertions,
+# verification and the exit contract are unchanged, and a solve that reaches
+# its target stops before the budget.
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   set(MARKOV_CERO_DOMAIN_PP_TIME_LIMIT 60)
   set(MARKOV_CERO_DOMAIN_SC_TIME_LIMIT 90)
   set(MARKOV_CERO_DOMAIN_PP_DEADLINE 90)
   set(MARKOV_CERO_DOMAIN_SC_DEADLINE 120)
 else()
-  set(MARKOV_CERO_DOMAIN_PP_TIME_LIMIT 240)
-  set(MARKOV_CERO_DOMAIN_SC_TIME_LIMIT 240)
-  set(MARKOV_CERO_DOMAIN_PP_DEADLINE 300)
-  set(MARKOV_CERO_DOMAIN_SC_DEADLINE 300)
+  set(MARKOV_CERO_DOMAIN_PP_TIME_LIMIT 360)
+  set(MARKOV_CERO_DOMAIN_SC_TIME_LIMIT 360)
+  set(MARKOV_CERO_DOMAIN_PP_DEADLINE 420)
+  set(MARKOV_CERO_DOMAIN_SC_DEADLINE 420)
 endif()
 add_test(NAME domain_production_planning_large COMMAND markov-cero-solve
   ${CMAKE_SOURCE_DIR}/data/cases/production_planning_large.mps --mip-gap 0.05
@@ -220,11 +223,12 @@ set_tests_properties(domain_supply_chain_large
   PROPERTIES TIMEOUT ${MARKOV_CERO_DOMAIN_SC_DEADLINE})
 # The refinery/IIS analysis suite is the one genuinely slow diagnostic case:
 # 33 s hosted Release, 168 s hosted ASan, 259 s local ASan, 286 s local gcc
-# Debug, 317 s local clang Debug — so the CI default 180 s watchdog killed it
-# in four jobs before it could finish. Assertions are unchanged; only the
-# wall-clock budget for slow build types moves (900 s ≈ 2.8x the slowest
-# measured run).
-set_tests_properties(refinery_domain_and_iis PROPERTIES TIMEOUT 900)
+# Debug, 317 s local clang Debug, and on the hosted runners 396 s
+# (clang/Debug) and 605 s (gcc/Debug) — the CI default 180 s watchdog killed
+# it in four jobs before it could finish, and the first 900 s budget left
+# less than 2x over the worst hosted observation. Assertions are unchanged;
+# only the wall-clock budget for slow build types moves.
+set_tests_properties(refinery_domain_and_iis PROPERTIES TIMEOUT 1200)
 # Device-only kernel tests: on a host that compiled CUDA but has no device
 # (the hosted runners) they exit 77 from gpu/tests/device_skip.hpp instead of
 # dying in cudaMalloc. CPU-only builds never take that path.

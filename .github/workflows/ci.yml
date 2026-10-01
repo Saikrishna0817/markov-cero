@@ -79,13 +79,14 @@ jobs:
 
       - name: Run MIPLIB benchmark runner
         env:
-          # Sanitizer instrumentation slows the same search ~5x: flugpl's
-          # gap-closing search crossed the 60 s default under ASan/TSan while
-          # it finishes in ~12 s in Release, and the prover needs proportionally
-          # more room for the same 12547-node tree. Budgets are resource
-          # allowances for a diagnostic build; the PASS bar (Optimal + verified
-          # + relative tolerance) is unchanged for every job.
-          MIPLIB_BUDGET: ${{ (matrix.build_type == 'ASan-UBSan' || matrix.build_type == 'TSan') && '--time-limit 300 --proof-time-limit 120 --timeout-sec 480' || '' }}
+          # A Debug or sanitizer build slows the same search ~5x: flugpl's
+          # gap-closing search crosses the 60 s default under Debug, ASan or
+          # TSan (measured 5583-6703 of 12547 nodes at 60 s) while it finishes
+          # in ~6 s in Release. The caps below are resource allowances for a
+          # diagnostic build — a solve that proves optimality stops long before
+          # them, only a stuck search is bounded — and the PASS bar (Optimal +
+          # verified + relative tolerance) is unchanged for every job.
+          MIPLIB_BUDGET: ${{ matrix.build_type != 'Release' && '--time-limit 600 --proof-time-limit 300 --timeout-sec 1200' || '' }}
         run: |
           python3 scripts/run_miplib.py \
             --solver build/markov-cero-solve \
