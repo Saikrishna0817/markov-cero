@@ -183,6 +183,10 @@ target_link_libraries(qp_adaptive_rho_test PRIVATE markov_cero_core)
 # CPU/GPU disclosure (docs/contracts/convex-qp.md).
 add_executable(qp_kkt_attack_test tests/qp_kkt_attack_test.cpp)
 target_link_libraries(qp_kkt_attack_test PRIVATE markov_cero_core)
+# QP reporting: primal_report must carry the measured row violation the JSON
+# "maximum_primal_violation" field publishes (BENCH-02 QPLIB_0010 shape).
+add_executable(qp_primal_report_test tests/qp_primal_report_test.cpp)
+target_link_libraries(qp_primal_report_test PRIVATE markov_cero_core)
 # MIQP-01 contract §7.1/§7.2: supporting-bound algebra against an independent
 # rational restatement of docs/contracts/miqp-node-bounds.md §2.2.
 add_executable(miqp_supporting_bound_test tests/miqp_supporting_bound_test.cpp)

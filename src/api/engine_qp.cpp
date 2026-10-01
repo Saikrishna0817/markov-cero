@@ -53,6 +53,21 @@ void run_qp(const model::Model& model, const SolveOptions& options, SolveResult&
             result.message = "QP solved to optimality";
             out.original_primal = qpres.x;
             out.original_objective = qpres.objective_value;
+            // Report the measured primal feasibility of the iterate the JSON
+            // advertises: this engine used to leave primal_report at its
+            // defaults, so maximum_primal_violation was emitted as 0 while
+            // diagnostic.primal_residual and the row slacks carried the real
+            // value. The verification decision above stays the KKT
+            // certificate; these tolerances are the same 1e-4 engine-gate
+            // scale (convex-qp.md section 2.4) so this report's pass flag can
+            // never contradict original_verified.
+            {
+                const verify::Candidate candidate{out.original_primal,
+                                                  out.original_objective};
+                out.primal_report = verify::verify_primal(model, candidate, {1e-4, 1e-4},
+                                                          {1e-4, 1e-4}, 1e-6, true,
+                                                          ctx.deadline());
+            }
             const auto rep = qp::verify_qp_solution(qp_model, qpres, 1e-4);
             out.original_verified = rep.passed;
             // Contract §4: the witness name is published only when the
