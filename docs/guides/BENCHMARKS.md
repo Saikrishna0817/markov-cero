@@ -53,9 +53,14 @@ campaign's record. It completed with 0 harness exceptions and 0 parent
 timeouts: 270 `ok` rows over 54 instances, 1,010 `absent` and 45
 `hash_mismatch`. Headline numbers — 31/265 solved (0.117), 0/54 cells
 disagreeing on status or objective across repeats, 165/170 independent
-primal re-checks passing — and the two new input gaps it exposed are
-read in the [evidence index](../../evidence/INDEX.md) and the
-[status record](../project/STATUS.md). It is one host, one binary and
+primal re-checks passing — and the gaps it exposed are read in the
+[evidence index](../../evidence/INDEX.md) and the
+[status record](../project/STATUS.md). One of those gaps, the
+`InvalidModel` rejection of `data/netlib/e226.mps` and `grow7.mps`,
+was closed afterwards by the [MPS rim contract](../contracts/mps-input.md);
+those two cells still carry their 2026-10-01 `InvalidModel` rows,
+because a recorded campaign row is never rewritten — they can only be
+re-run as part of a new preregistration. It is one host, one binary and
 no second solver, so it carries no speed claim.
 
 ## What this checkout declares

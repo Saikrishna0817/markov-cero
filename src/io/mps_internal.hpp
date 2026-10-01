@@ -60,6 +60,7 @@ class Parser {
     std::string problem_name;
     std::string objective_name;
     model::ObjectiveSense sense = model::ObjectiveSense::minimize;
+    double objective_offset{0.0};
     std::vector<Row> rows;
     std::unordered_map<std::string, std::size_t> row_by_name;
     std::vector<Column> columns;

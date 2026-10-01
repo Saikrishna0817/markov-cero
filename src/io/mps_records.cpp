@@ -98,7 +98,24 @@ void Parser::record(const std::vector<std::string>& fields) {
             for (std::size_t p = start_p; p < fields.size(); p += 2U) {
                 const auto row = find_row(fields[p]);
                 if (rows[row].type == 'N') {
-                    throw MpsError(line_number, "objective-row RHS/RANGES values are unsupported");
+                    // docs/contracts/mps-input.md §1–§2: the objective row's
+                    // RHS is the objective constant; a range or a rim value on
+                    // any other N row has no target and is rejected, not
+                    // dropped.
+                    if (rows[row].name != objective_name)
+                        throw MpsError(line_number,
+                                       "rim value on a non-objective N row is unsupported");
+                    if (section == Section::ranges)
+                        throw MpsError(line_number,
+                                       "RANGES on the objective row is unsupported");
+                    const double value = number(fields[p + 1U], line_number);
+                    if (!std::isfinite(value) || !std::isfinite(objective_offset + value))
+                        throw MpsError(line_number, "objective offset must be finite");
+                    if (rows[row].has_rhs)
+                        throw MpsError(line_number, "duplicate RHS row");
+                    objective_offset += value;
+                    rows[row].has_rhs = true;
+                    continue;
                 }
                 const double value = number(fields[p + 1U], line_number);
                 if (section == Section::rhs) {

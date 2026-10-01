@@ -3,6 +3,8 @@
 #include "support/tiny_exact.hpp"
 #include <cfenv>
 #include <cmath>
+#include <cstdlib>
+#include <fstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -55,14 +57,36 @@ int main() {
         rejected = true;
     }
     require(rejected, "content after ENDATA");
+    // docs/contracts/mps-input.md §1: an RHS entry naming the objective row
+    // is the free-MPS objective constant, not an ambiguity.
+    const auto offset_model = markov_cero::io::parse_mps_string(
+        "NAME X\nROWS\n N O\n L R\nCOLUMNS\n X O 1 R 1\nRHS\n R1 R 5\n R1 O 3\nENDATA\n");
+    require(offset_model.objective_offset == 3.0, "objective RHS is the objective constant");
+    require(offset_model.row_upper[0].value == 5.0, "constrained-row RHS unchanged");
     rejected = false;
     try {
         (void)markov_cero::io::parse_mps_string(
-            "NAME X\nROWS\n N O\n L R\nCOLUMNS\n X O 1 R 1\nRHS\n R1 O 3\nENDATA\n");
+            "NAME X\nROWS\n N O\n L R\nCOLUMNS\n X O 1 R 1\nRHS\n R1 O 3\n R1 O 4\nENDATA\n");
     } catch (const markov_cero::io::MpsError&) {
         rejected = true;
     }
-    require(rejected, "objective RHS ambiguity");
+    require(rejected, "duplicate objective RHS");
+    rejected = false;
+    try {
+        (void)markov_cero::io::parse_mps_string(
+            "NAME X\nROWS\n N O\n L R\nCOLUMNS\n X O 1 R 1\nRANGES\n G1 O 3\nENDATA\n");
+    } catch (const markov_cero::io::MpsError&) {
+        rejected = true;
+    }
+    require(rejected, "objective RANGES rejected");
+    rejected = false;
+    try {
+        (void)markov_cero::io::parse_mps_string(
+            "NAME X\nROWS\n N O\n N O2\n L R\nCOLUMNS\n X O 1 R 1\nRHS\n R1 O2 3\nENDATA\n");
+    } catch (const markov_cero::io::MpsError&) {
+        rejected = true;
+    }
+    require(rejected, "rim value on a non-objective N row");
     rejected = false;
     try {
         (void)markov_cero::io::parse_mps_string(
@@ -143,6 +167,17 @@ int main() {
     const auto prod2 = qp2.quadratic_matrix.multiply({1.0, 1.0});
     require(std::abs(prod2[0] - 8.0) < 1e-12 && std::abs(prod2[1] - 10.0) < 1e-12,
             "QMATRIX matrix-vector multiplication");
+
+    // mps-input.md §3: the two netlib models that motivated the rule parse.
+    const char* source_dir = std::getenv("MARKOV_CERO_SOURCE_DIR");
+    require(source_dir != nullptr, "MARKOV_CERO_SOURCE_DIR must point at the source tree");
+    std::ifstream e226(std::string(source_dir) + "/data/netlib/e226.mps");
+    require(static_cast<bool>(e226), "open data/netlib/e226.mps");
+    require(markov_cero::io::parse_mps(e226).objective_offset == -7.113,
+            "e226 objective offset");
+    std::ifstream grow7(std::string(source_dir) + "/data/netlib/grow7.mps");
+    require(static_cast<bool>(grow7), "open data/netlib/grow7.mps");
+    require(markov_cero::io::parse_mps(grow7).objective_offset == 0.0, "grow7 objective offset");
 
     return 0;
 }

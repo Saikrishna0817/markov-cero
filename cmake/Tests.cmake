@@ -15,6 +15,9 @@ add_test(NAME numerical_policy_boundaries COMMAND numerical_policy_boundary_test
 add_test(NAME assurance_labels COMMAND assurance_label_test)
 # Resource contract v1: stop-reason attribution and completeness.
 add_test(NAME stop_reason_boundary COMMAND stop_reason_test)
+# MPS rim contract (docs/contracts/mps-input.md §3): objective-row RHS as the
+# objective constant; the test also parses data/netlib/e226.mps and grow7.mps,
+# so it needs MARKOV_CERO_SOURCE_DIR (set for the shared group below).
 add_test(NAME mps_parser COMMAND mps_parser_test)
 add_test(NAME lp_parser COMMAND lp_parser_test)
 # W5: Milestone 1 — numerical accuracy

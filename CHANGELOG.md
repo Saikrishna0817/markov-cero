@@ -2,6 +2,40 @@
 
 ## Unreleased
 
+### 2026-10-01 GAP-01 — close the gaps the BENCH-01 campaign surfaced
+
+- New binding contract
+  [`docs/contracts/mps-input.md`](docs/contracts/mps-input.md) (v1),
+  written before the code: an `RHS` entry naming the objective (`N`)
+  row is the free-MPS objective constant and lands in
+  `model.objective_offset` (so a reported objective is `cᵀx + offset`
+  exactly as every engine and verifier already computes it, and the
+  offset joins the model fingerprint); `RANGES` on the objective row,
+  rim values on any other `N` row, duplicate entries and multiple rim
+  vectors stay rejected with named messages rather than dropped. The
+  contract also states what it does *not* claim: that either newly
+  parsing model solves.
+- The reader implements it (`src/io/mps_records.cpp`,
+  `src/io/mps_model.cpp`): the previous blanket
+  "objective-row RHS/RANGES values are unsupported" rejection — the
+  cause of the two `InvalidModel` rows BENCH-01 reported for
+  `data/netlib/e226.mps` (offset `-7.113`) and `data/netlib/grow7.mps`
+  (offset `0`) — is replaced by the §1 rule, and `Parser` accumulates
+  the offset into `Model::objective_offset` at build time. The
+  `mps_parser` test's old "objective RHS ambiguity" rejection case is
+  replaced by the four §3 obligations (offset applied, duplicate
+  rejected, objective `RANGES` rejected, non-objective `N` row
+  rejected) plus a parse of both netlib files with their expected
+  offsets, under the CTest `MARKOV_CERO_SOURCE_DIR` environment the
+  shared group already sets.
+- Both models now reach the solver instead of failing at the parser —
+  `e226` reports `NumericalFailure` (phase I) and `grow7`
+  `IterationLimit` (phase II) at a 60 s cap. That is honest progress,
+  not a solve claim: their 2026-10-01 campaign rows keep their
+  `InvalidModel` status, because a recorded campaign row is never
+  rewritten; only a new preregistration can re-run them. Full suite
+  after the change: 120/120 CTest, 27/27 binding tests.
+
 ### 2026-10-01 blueprint REL-01 — package, qualify and document the supported solver
 
 - Published the supported matrix and the install/upgrade/rollback

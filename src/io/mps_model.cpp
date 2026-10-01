@@ -49,6 +49,7 @@ model::Model Parser::build() {
     model::Model result;
     result.name = problem_name;
     result.objective_sense = sense;
+    result.objective_offset = objective_offset;
     result.matrix = builder.build();
     result.row_name = std::move(row_names);
     result.row_lower = std::move(row_lower);
