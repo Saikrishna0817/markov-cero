@@ -2,6 +2,45 @@
 
 ## Unreleased
 
+### 2026-10-02 benchmark — BENCH-03, a preregistered campaign over the LP deferred set
+
+- **Preregistered before any run** — [preregistration](evidence/bench03-preregistration-2026-10-02.json)
+  (campaign `bench03-2026-10-02`) binds a new subset freeze
+  ([evidence/frozen-instances-bench03-2026-10-02.json](evidence/frozen-instances-bench03-2026-10-02.json))
+  whose seven netlib entries — the LP-01 deferred set (`bore3d`, `scsd1`,
+  `scsd6`, `blend`), the GAP-01 model (`etamacro`) and the two MPS-rim
+  models (`e226`, `grow7`) — were copied **verbatim** from the 2026-10-01
+  successor manifest and re-hashed against the working tree first (7/7
+  match, refusal on any mismatch), with the split and timing vocabulary
+  copied unchanged. Caps/threads/repeats/workers (LP 60 s, 1 thread, 5
+  repeats with repeat 0 cold, 4 workers), the §6 metrics quoted verbatim
+  and the §7 tolerances locked, all written by the harness's `preregister`
+  step before any cell executed; harness self-test 9/9 first.
+- **Measured: 35 rows, 0 harness exceptions, 35 `ok`** —
+  [record](evidence/bench03-campaign-2026-10-02.json),
+  [raw rows](evidence/bench03-campaign-2026-10-02.csv),
+  [log](evidence/bench03-campaign-2026-10-02.log): solved fraction
+  **1/7 = 0.143** (`blend` alone — `Optimal`, `verified`,
+  `optimality_witness_checked` in all five repeats); `bore3d`, `scsd1`,
+  `scsd6`, `etamacro` and `e226` return `NumericalFailure` ×5 each and
+  `grow7` `IterationLimit` ×5, every failing row `verified=false` with its
+  exit code and numerical diagnostics kept in `notes`. 0/7 cells disagree
+  on status or objective across repeats (T4); independent primal re-check
+  **15 pass / 0 fail / 20 `not_checked`** at the locked 1e-6 bars.
+- **What it is honest about** — reference agreement is **0/0**: no reference
+  optimum exists for any of the seven (each provenance file says
+  `reference_objective: null`), and the preregistration records
+  `with_reference: 0` rather than borrowing numbers. Every status and
+  objective is byte-identical to the same cells' BENCH-02 rows, so the
+  deferred set is documented as **unchanged and still failing honestly** —
+  this campaign closes the *evidence* gap on that open item, not the
+  defects themselves. One host, worker interference, no speed claim.
+- **Harness note** — `scripts/support/bench01_prereg.py` now derives the
+  `known_limitations` manifest counts instead of hard-coding the 265/23
+  corpus wording, so a subset manifest states its own declared/present
+  numbers; the already-written BENCH-01/BENCH-02 preregistrations are
+  immutable and keep the original text.
+
 ### 2026-10-02 release gate — hosted CI green end to end, a real GPU device run, and budgets sized from measurements
 
 - **The hosted matrix is green** — [CI run 36938268360](evidence/hosted-ci-36938268360-2026-10-02.json)

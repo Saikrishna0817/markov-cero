@@ -43,18 +43,27 @@ METRICS = {
                       'measured, only over rows that reported them',
 }
 
-LIMITATIONS = [
-    'single host: no second-host timing, so the promotion and second-host '
-    'acceptance criterion of the release contract is documented as NOT MET',
-    'the frozen corpus declares 265 suite instances and 23 curated ones; '
-    'only the instances marked present in this checkout are executed, and '
-    'every absent instance stays in the denominator as `absent`',
-    'workers > 1 runs single-threaded children concurrently, so absolute '
-    'wall times include interference; correctness metrics are unaffected '
-    'and no sequential-versus-concurrent speed comparison is published',
-    'reference optima exist for only part of the present subset, so '
-    'reference_agreement covers fewer rows than solved_fraction',
-]
+def limitations(declared: list) -> list:
+    """Known limitations with manifest-derived counts (contract §2).
+
+    The counts come from the manifest this preregistration binds, so a
+    subset manifest (BENCH-03) states its own declared/present numbers
+    instead of inheriting a hard-coded corpus size. The preregistrations
+    already written under the previous wording are immutable and keep it.
+    """
+    present = sum(1 for c in declared if c['present'])
+    return [
+        'single host: no second-host timing, so the promotion and second-host '
+        'acceptance criterion of the release contract is documented as NOT MET',
+        f'the frozen manifest declares {len(declared)} cells and {present} '
+        'are present in this checkout; every absent instance stays in the '
+        'denominator as `absent`',
+        'workers > 1 runs single-threaded children concurrently, so absolute '
+        'wall times include interference; correctness metrics are unaffected '
+        'and no sequential-versus-concurrent speed comparison is published',
+        'reference optima exist for only part of the present subset, so '
+        'reference_agreement covers fewer rows than solved_fraction',
+    ]
 
 
 def sha256_file(path) -> str:
@@ -186,7 +195,7 @@ def build(campaign_id: str, binary: str, workers: int,
         'reference_coverage': {'with_reference': len(references),
                                'present': sum(1 for c in declared
                                               if c['present'])},
-        'known_limitations': LIMITATIONS,
+        'known_limitations': limitations(declared),
         'solver': {'path': str(binary), 'sha256': sha256_file(binary)},
         'hardware_record': 'evidence/hardware.md',
     }

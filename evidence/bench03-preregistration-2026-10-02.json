@@ -1,0 +1,153 @@
+{
+  "schema": "bench01-1",
+  "contract": {
+    "path": "docs/contracts/benchmark-campaign.md",
+    "version": 1
+  },
+  "campaign_id": "bench03-2026-10-02",
+  "written_before_any_run": true,
+  "written_at": "2026-10-02T01:59:04.599399+00:00",
+  "manifest": {
+    "path": "evidence/frozen-instances-bench03-2026-10-02.json",
+    "date": "2026-10-02",
+    "sha256": "60e34f571b7249b83b8be75b9538f5a0c97d223809603d2b384baf555b17db18"
+  },
+  "declared_subset": [
+    {
+      "id": "data/netlib/e226.mps",
+      "name": "e226",
+      "suite": "netlib",
+      "problem_class": "LP",
+      "split": "holdout",
+      "family": "netlib",
+      "sha256": "ddf56486daea52c8592b520aeb83d329223a1b45a3e5a269bd663ef9195bd8d8",
+      "present": true
+    },
+    {
+      "id": "data/netlib/etamacro.mps",
+      "name": "etamacro",
+      "suite": "netlib",
+      "problem_class": "LP",
+      "split": "holdout",
+      "family": "netlib",
+      "sha256": "41701e1add7af2ed2b21a421ab7271bc867e6bc7ad98ac189748d6522e7d4926",
+      "present": true
+    },
+    {
+      "id": "data/netlib/bore3d.mps",
+      "name": "bore3d",
+      "suite": "netlib",
+      "problem_class": "LP",
+      "split": "holdout",
+      "family": "netlib",
+      "sha256": "c7cfe0d4abd466346e3cda4e16d00651f44f3ce1da317cf583c5fed5dfc0515a",
+      "present": true
+    },
+    {
+      "id": "data/netlib/scsd1.mps",
+      "name": "scsd1",
+      "suite": "netlib",
+      "problem_class": "LP",
+      "split": "tune",
+      "family": "netlib",
+      "sha256": "8c4aac4987a81ef66715b5cb2debdb1993afe6cb5e2a29f32556a03802bf55f5",
+      "present": true
+    },
+    {
+      "id": "data/netlib/scsd6.mps",
+      "name": "scsd6",
+      "suite": "netlib",
+      "problem_class": "LP",
+      "split": "train",
+      "family": "netlib",
+      "sha256": "f3da742cfa24cfadb99d510847ea1f7a361ba61537d4c2900c09b674912a5891",
+      "present": true
+    },
+    {
+      "id": "data/netlib/blend.mps",
+      "name": "blend",
+      "suite": "netlib",
+      "problem_class": "LP",
+      "split": "train",
+      "family": "netlib",
+      "sha256": "38e1d84a38f1e0adaa16d3dd0abe758f6cea13a21f33681aa92742b693260aef",
+      "present": true
+    },
+    {
+      "id": "data/netlib/grow7.mps",
+      "name": "grow7",
+      "suite": "netlib",
+      "problem_class": "LP",
+      "split": "train",
+      "family": "netlib",
+      "sha256": "6b8734ffdf991a36f17cfddf306834a4a3ced3e17964cac9fa2983a043906cd4",
+      "present": true
+    }
+  ],
+  "absent": [],
+  "present_count": 7,
+  "declared_count": 7,
+  "order": [
+    "data/netlib/bore3d.mps",
+    "data/netlib/e226.mps",
+    "data/netlib/etamacro.mps",
+    "data/netlib/scsd1.mps",
+    "data/netlib/blend.mps",
+    "data/netlib/grow7.mps",
+    "data/netlib/scsd6.mps"
+  ],
+  "caps": {
+    "LP": 60.0,
+    "QP": 60.0,
+    "MILP": 300.0
+  },
+  "parent_slack_s": 30.0,
+  "threads": 1,
+  "repeats": {
+    "per_cell": 5,
+    "cold_index": 0
+  },
+  "workers": {
+    "count": 4,
+    "interference_caveat": "absolute wall times include interference between concurrent single-threaded children; correctness metrics are unaffected and no speed comparison is published from this campaign"
+  },
+  "timing_scope": "process_wall: parent-observed wall clock around the solver process, including model parse, CLI start-up and result serialisation",
+  "metrics": {
+    "solved_fraction": "declared cells whose every `ok` row reports `Optimal` \u00f7 declared cells; a cell with no `ok` row is unsolved, never excluded",
+    "status_counts": "count per status over all rows",
+    "objective_disagreement": "cells whose warm-median objective differs from another repeat of the same cell by more than \u00a77's tolerance",
+    "reference_agreement": "`ok` rows whose objective differs from the harness's reference optimum by more than \u00a77's tolerance, per class",
+    "independent_primal_failures": "`ok` rows whose harness-recomputed feasibility exceeds \u00a77's tolerance",
+    "time_distribution": "cold and warm process-wall per class: n, min, median, max, and the paired per-instance ratios when a second solver is present",
+    "rss_distribution": "per-child peak RSS (KiB) sampled from `/proc/<pid>/status` `VmHWM` while the child runs, per class: n, min, median, max",
+    "nodes_and_gaps": "`nodes_explored` and `relative_gap` counts as measured, only over rows that reported them"
+  },
+  "tolerances": {
+    "objective_reference": {
+      "LP": 1e-05,
+      "QP": 0.0001,
+      "MILP": 0.0001
+    },
+    "objective_repeat": 1e-06,
+    "row_feasibility": 1e-06,
+    "bound_feasibility": 1e-06,
+    "integrality": 1e-06
+  },
+  "reference_objectives": {},
+  "reference_sources": {},
+  "reference_coverage": {
+    "with_reference": 0,
+    "present": 7
+  },
+  "known_limitations": [
+    "single host: no second-host timing, so the promotion and second-host acceptance criterion of the release contract is documented as NOT MET",
+    "the frozen manifest declares 7 cells and 7 are present in this checkout; every absent instance stays in the denominator as `absent`",
+    "workers > 1 runs single-threaded children concurrently, so absolute wall times include interference; correctness metrics are unaffected and no sequential-versus-concurrent speed comparison is published",
+    "reference optima exist for only part of the present subset, so reference_agreement covers fewer rows than solved_fraction"
+  ],
+  "solver": {
+    "path": "build/markov-cero-solve",
+    "sha256": "8363c24cab8e359ca3e2b35b9053a6c633901a69a6087e8c3b45949167e373c3"
+  },
+  "hardware_record": "evidence/hardware.md"
+}

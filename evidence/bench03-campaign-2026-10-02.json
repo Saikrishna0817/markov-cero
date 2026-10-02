@@ -1,0 +1,123 @@
+{
+  "schema": "bench01-1",
+  "campaign_id": "bench03-2026-10-02",
+  "preregistration": "evidence/bench03-preregistration-2026-10-02.json",
+  "preregistration_sha256": "fcfc1a9551fa491c2e7fcd7056580e8dd9bd0f762babc3d9885b6bb871a5c604",
+  "host": {
+    "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+    "machine": "x86_64",
+    "processor": "",
+    "python": "3.14.7",
+    "cpu_count": 12,
+    "solver_path": "build/markov-cero-solve",
+    "solver_sha256": "8363c24cab8e359ca3e2b35b9053a6c633901a69a6087e8c3b45949167e373c3"
+  },
+  "raw_csv": "evidence/bench03-campaign-2026-10-02.csv",
+  "raw_csv_sha256": "86846e8b4ccc3c46b5dd57c30c9b1ed2692e223fccb897bf59cea970f92bc475",
+  "complete": true,
+  "known_limitations": [
+    "single host: no second-host timing, so the promotion and second-host acceptance criterion of the release contract is documented as NOT MET",
+    "the frozen manifest declares 7 cells and 7 are present in this checkout; every absent instance stays in the denominator as `absent`",
+    "workers > 1 runs single-threaded children concurrently, so absolute wall times include interference; correctness metrics are unaffected and no sequential-versus-concurrent speed comparison is published",
+    "reference optima exist for only part of the present subset, so reference_agreement covers fewer rows than solved_fraction"
+  ],
+  "summary": {
+    "declared_cells": 7,
+    "rows_emitted": 35,
+    "run_state_counts": {
+      "ok": 35
+    },
+    "status_counts_all_rows": {
+      "NumericalFailure": 25,
+      "Optimal": 5,
+      "IterationLimit": 5
+    },
+    "status_counts_ok_rows": {
+      "NumericalFailure": 25,
+      "Optimal": 5,
+      "IterationLimit": 5
+    },
+    "cold_warm_counts": {
+      "cold": 7,
+      "warm": 28
+    },
+    "solved_fraction": {
+      "numerator": 1,
+      "denominator": 7,
+      "value": 0.14285714285714285,
+      "rule": "a declared cell is solved when every row it emitted with run_state=ok reports status=Optimal and at least one such row exists; cells with no ok row are unsolved, not excluded"
+    },
+    "cells_status_disagreement": {
+      "numerator": 0,
+      "denominator": 7,
+      "value": 0.0
+    },
+    "objective_disagreement": {
+      "tolerance": 1e-06,
+      "disagreements": [],
+      "numerator": 0,
+      "denominator": 7,
+      "value": 0.0
+    },
+    "reference_agreement": {
+      "all": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "denominator_note": "ok rows whose instance holds a reference"
+      }
+    },
+    "independent_primal_failures": {
+      "numerator": 0,
+      "denominator": 15,
+      "value": 0.0,
+      "counts": {
+        "pass": 15,
+        "not_checked": 20
+      },
+      "tolerances": {
+        "row_feasibility": 1e-06,
+        "bound_feasibility": 1e-06,
+        "integrality": 1e-06
+      },
+      "excluded": {
+        "not_checked": 20,
+        "run_states": []
+      }
+    },
+    "timing_scope": "process_wall, parent-observed",
+    "time_distribution": {
+      "LP:cold": {
+        "n": 7,
+        "min": 20.433,
+        "median": 197.384,
+        "max": 3434.021
+      },
+      "LP:warm": {
+        "n": 28,
+        "min": 17.137,
+        "median": 185.1885,
+        "max": 3615.918
+      }
+    },
+    "rss_distribution_kib": {
+      "LP": {
+        "n": 35,
+        "min": 5524.0,
+        "median": 7728.0,
+        "max": 12204.0
+      }
+    },
+    "nodes_and_gaps": {
+      "rows_reporting_nodes": 35,
+      "rows_reporting_relative_gap": 5,
+      "max_nodes_explored": 1.0,
+      "relative_gap_distribution": {
+        "n": 5,
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0
+      }
+    }
+  }
+}
