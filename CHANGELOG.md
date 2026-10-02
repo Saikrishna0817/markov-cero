@@ -2,6 +2,49 @@
 
 ## Unreleased
 
+### 2026-10-02 bench-02 — the NLP/MINLP sibling of the primal-report defect, closed with a written semantics decision
+
+- **The gap** — `evidence/bench02-primal-recheck-defect-2026-10-02.json` left
+  one open item: `engine_nonlinear.cpp` never filled `primal_report`, so
+  every NLP/MINLP result serialized `maximum_primal_violation: 0` with
+  `passed=false` beside `original_verified=true` while
+  `diagnostic.primal_residual` carried the measured value. Closing it
+  needed a semantics decision — which nonlinear residual equals which
+  report field — recorded in
+  [numerical-policy.md §4](docs/contracts/numerical-policy.md) ("NLP/MINLP
+  primal report mapping", contract stays v3: no status, assurance or
+  witness change).
+- **The decision** — `maximum_primal_violation` ← the constraint-row side
+  (`max(0, g_i)` over inequalities, `|h_i|` over equalities) recomputed
+  from the callbacks at the reported iterate; `maximum_variable_violation`
+  ← the bound side in its own accumulator (no longer folded together);
+  `maximum_integrality_violation` ← max integer residual; `passed` = the
+  engine gate verdict for the same iterate at the same tolerance. Filled
+  **iff an iterate is attached** (the linear engines' rule). The report's
+  objective fields stay at their defaults *with the reason recorded*: the
+  linear engines compare in user-facing sense, the nonlinear gates in
+  normalized NLP space — one shared field cannot carry both meanings
+  (recorded, not guessed).
+- **The code** — `NlpFeasibilityReport` gains
+  `maximum_constraint_violation` / `maximum_bound_violation`
+  (`maximum_violation` unchanged as their max; all three +inf on
+  rejection), `publish_primal_report` fills the shared report on all three
+  attach paths (SQP best-feasible attach, SQP KKT accept, MINLP incumbent),
+  and MINLP's integrality gate derives from the same worst-residual
+  measurement (equivalent verdict).
+- **Proof** — before/after CLI JSON on the same fixture, both captured in
+  the [record](evidence/nlp-primal-report-2026-10-02.json) (pre-fix field
+  0 beside `diagnostic.primal_residual` 1.0268474959218565e-08; post-fix
+  the measured value; `LocalStationary` on both sides). New test
+  `nlp_primal_report` pins the split at chosen points (1.5/0, 0.5/1.0,
+  `|h|`=2, rejection +inf), the row field against
+  `max(0, 1.5-(x0+x1))` on the reported iterate,
+  `passed == original_verified` on every attached path, and MINLP's
+  `max(row, var) == diagnostic.primal_residual` exactly. Full suite
+  **122/122**. Reporting-only: no status, tolerance or gate changed, and
+  the campaign harness reads neither field (campaign contract §8), so the
+  BENCH-01/02/03 verdicts stand.
+
 ### 2026-10-02 benchmark — BENCH-03, a preregistered campaign over the LP deferred set
 
 - **Preregistered before any run** — [preregistration](evidence/bench03-preregistration-2026-10-02.json)

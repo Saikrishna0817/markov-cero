@@ -1,6 +1,44 @@
 #include "api_internal.hpp"
 
 namespace markov_cero::api::detail {
+namespace {
+// numerical-policy.md section 4: raw integrality residual of a reported
+// iterate — max |x - round(x)| over declared-integer variables only;
+// continuous variables are never rounded. Measured, never gated here: each
+// engine's own gate decides `passed`.
+double integrality_residual(const model::Model& model, const std::vector<double>& x) {
+    double worst = 0.0;
+    const std::size_t n = std::min(model.variable_type.size(), x.size());
+    for (std::size_t j = 0; j < n; ++j) {
+        if (model.variable_type[j] == model::VariableType::continuous) continue;
+        worst = std::max(worst, std::abs(x[j] - std::round(x[j])));
+    }
+    return worst;
+}
+
+// numerical-policy.md section 4 (NLP/MINLP primal report mapping): publish an
+// attached iterate's independently recomputed violation into the shared
+// report the JSON surface serializes (apps/json_output.hpp reads these three
+// fields). Before this, engine_nonlinear left the report default-constructed,
+// so every NLP/MINLP result advertised "maximum_primal_violation": 0 while
+// diagnostic.primal_residual carried the measured value (evidence/
+// nlp-primal-report-2026-10-02.json). `passed` is the engine gate verdict for
+// the same iterate at the same tolerance, so the flag cannot disagree with
+// original_verified (deterministic callbacks — the contract's precondition).
+// recomputed_objective / objective_difference stay at their defaults: the
+// linear engines compare in user-facing sense, the nonlinear engines' own
+// consistency check runs in normalized NLP space, and one shared field cannot
+// hold both meanings (recorded rather than guessed).
+void publish_primal_report(SolveResult& out, const model::Model& source,
+                           const std::vector<double>& x,
+                           const nlp::NlpFeasibilityReport& feasibility, bool passed) {
+    out.primal_report.passed = passed;
+    out.primal_report.maximum_row_violation = feasibility.maximum_constraint_violation;
+    out.primal_report.maximum_variable_violation = feasibility.maximum_bound_violation;
+    out.primal_report.maximum_integrality_violation = integrality_residual(source, x);
+}
+} // namespace
+
 void run_nonlinear(const model::Model& model, const SolveOptions& options, SolveResult& out,
                    lp::reference::Result& result, core::SolveContext& ctx) {
         io::NlobjBridge bridge{model};
@@ -52,6 +90,8 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
                     out.original_verified = true;
                     out.original_message =
                         "best verified feasible iterate attached; status unchanged";
+                    publish_primal_report(out, model, sol.best_feasible_x, feas,
+                                          out.original_verified);
                 } else {
                     out.original_message = "original primal not applicable";
                 }
@@ -76,6 +116,12 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
                     out.original_verified = true;
                     out.canonical_verified = true;
                     out.original_message = rep.message;
+                    // The KKT gate accepted feasibility at this tolerance, so
+                    // the freshly recomputed report verdict matches
+                    // original_verified; the fields are the measurement.
+                    publish_primal_report(out, model, sol.x,
+                                          nlp::verify_nlp_feasibility(nlp_model, sol.x, 1e-6),
+                                          out.original_verified);
                 } else {
                     result.status = lp::reference::SolveStatus::numerical_failure;
                     result.message = "nlp KKT verification failed: " + rep.message;
@@ -133,15 +179,11 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
             if (sol.integer_feasible && sol.x.size() == nlp_model.n_vars) {
                 const auto feasibility = nlp::verify_nlp_feasibility(
                     nlp_model, sol.x, minlp_opts.feasibility_tolerance);
-                bool integral = true;
-                for (std::size_t j = 0; j < model.variable_type.size(); ++j) {
-                    if (model.variable_type[j] != model::VariableType::continuous &&
-                        std::abs(sol.x[j] - std::round(sol.x[j])) >
-                            minlp_opts.feasibility_tolerance) {
-                        integral = false;
-                        break;
-                    }
-                }
+                // Same verdict as the previous per-variable scan: the gate is
+                // the worst integer residual against feasibility_tolerance.
+                const double worst_integrality = integrality_residual(model, sol.x);
+                const bool integral =
+                    worst_integrality <= minlp_opts.feasibility_tolerance;
                 const double normalized_objective = nlp_model.eval_objective(sol.x);
                 const bool objective_consistent =
                     std::isfinite(normalized_objective) && std::isfinite(sol.objective) &&
@@ -154,6 +196,11 @@ void run_nonlinear(const model::Model& model, const SolveOptions& options, Solve
                 out.original_primal = sol.x;
                 out.original_objective = result.objective;
                 out.original_verified = feasibility.feasible && integral && objective_consistent;
+                // The incumbent is attached unconditionally in this block,
+                // including verification failure — the report then carries the
+                // measured violation with passed=false, instead of the old
+                // default zero beside an attached primal.
+                publish_primal_report(out, model, sol.x, feasibility, out.original_verified);
                 const bool solver_bound_available =
                     sol.status == lp::reference::SolveStatus::optimal &&
                     std::isfinite(sol.best_bound) && std::isfinite(sol.relative_gap) &&

@@ -1,7 +1,7 @@
 {
   "record": "bench02-primal-recheck-defect",
   "date": "2026-10-02",
-  "task": "BENCH-02 slice — analyze and close the 10 independent-primal-recheck failures",
+  "task": "BENCH-02 slice \u2014 analyze and close the 10 independent-primal-recheck failures",
   "question": "BENCH-02 recorded 10 independent primal re-check failures (2 of 63 cells x 5 repeats) while the same rows returned solver status Optimal with VERIFIED certificates. This record analyzes every failed row, explains why the harness and the solver disagreed, fixes the reporting defect the comparison exposed, and states what did not change: no campaign row, status or verdict is rewritten (benchmark-campaign.md sections 7 and 8).",
   "campaign": {
     "record": "evidence/bench02-campaign-2026-10-01.csv",
@@ -16,7 +16,13 @@
     {
       "instance": "data/qp/QPLIB_0010.mps",
       "engine": "QP -> qp (classifier)",
-      "repeats": [0, 1, 2, 3, 4],
+      "repeats": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
       "status": "Optimal",
       "verified": true,
       "harness_first_violation_row": "C00000001",
@@ -25,7 +31,13 @@
     {
       "instance": "data/cases/capitanescu_dc_opf.mps",
       "engine": "QP -> qp (classifier; declared MILP in the corpus)",
-      "repeats": [0, 1, 2, 3, 4],
+      "repeats": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
       "status": "Optimal",
       "verified": true,
       "harness_first_violation_row": "balance_1",
@@ -54,7 +66,7 @@
   "three_tolerance_scales": {
     "campaign_harness": "1e-6 absolute on the row violation the harness recomputes from the solver's primal (benchmark-campaign.md section 7, T5/T6/T7 are harness bars, not solver gates)",
     "solve_gate": "1e-6 absolute + 1e-6 relative x (sum_i |a_ij x_j| + |b_i|) row scale (src/qp/convergence.hpp). For QPLIB_0010 row C00000001: row scale 1.0000012800963956 + side 1 gives an allowance of 3.0000012800963954e-06 > measured 1.2800963955506006e-06, so the row passes the solve gate and fails the flat harness bar",
-    "engine_certificate": "qp::verify_qp_solution(..., 1e-4) — the documented convex-qp.md section 2.4 engine gate, accepted for both instances",
+    "engine_certificate": "qp::verify_qp_solution(..., 1e-4) \u2014 the documented convex-qp.md section 2.4 engine gate, accepted for both instances",
     "why_no_gate_was_loosened": "numerical-policy.md rule 5 / benchmark-campaign.md section 7: a failing row stays failed and the harness bar is unchanged; the fix makes the solver report its own measurement instead of a default zero"
   },
   "fix": {
@@ -88,12 +100,12 @@
   ],
   "verdicts_unchanged": {
     "statement": "The 10 rows remain independent_primal_failure in the BENCH-02 record. The campaign was not re-run, no row was dropped or reclassified, and the harness's 1e-6 bar is untouched (benchmark-campaign.md sections 7 and 8). This record closes the defect the comparison exposed in the solver's reporting, not the campaign's failures.",
-    "reason_both_sides_are_correct": "The rows really do violate the harness's absolute 1e-6 bar (1.28e-06 and 5.12e-05 measured independently), while the solver's own documented gates (scale-aware 1e-6/1e-6 solve gate, 1e-4 certificate) legitimately accept them — convex-qp.md section 2.4 exists precisely because these scales differ."
+    "reason_both_sides_are_correct": "The rows really do violate the harness's absolute 1e-6 bar (1.28e-06 and 5.12e-05 measured independently), while the solver's own documented gates (scale-aware 1e-6/1e-6 solve gate, 1e-4 certificate) legitimately accept them \u2014 convex-qp.md section 2.4 exists precisely because these scales differ."
   },
   "open_gaps": [
     {
       "gap": "The nonlinear engines carry the same class of gap: src/api/engine_nonlinear.cpp never fills primal_report, and src/nlp/nlp_verifier.cpp folds bound violations into inequality_violation, so JSON maximum_primal_violation stays a defaulted 0 for NLP/MINLP results while diagnostics carry residuals under different names.",
-      "status": "documented, not fixed — mapping those residual definitions onto the shared primal_report field would require a semantics decision (which residual equals which row violation) and is not guessed here"
+      "status": "fixed 2026-10-02 in the same reporting shape as the QP path: the NLP/MINLP engines now publish the measured constraint/bound/integrality split through publish_primal_report, with the semantics decision recorded in evidence/nlp-primal-report-2026-10-02.json and numerical-policy.md section 4; before/after CLI JSON in that record (pre-fix maximum_primal_violation 0 beside original_verified true and diagnostic.primal_residual 1.0268474959218565e-08, post-fix the measured value)"
     }
   ],
   "method": {

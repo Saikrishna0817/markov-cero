@@ -183,20 +183,20 @@ target_link_libraries(qp_adaptive_rho_test PRIVATE markov_cero_core)
 # CPU/GPU disclosure (docs/contracts/convex-qp.md).
 add_executable(qp_kkt_attack_test tests/qp_kkt_attack_test.cpp)
 target_link_libraries(qp_kkt_attack_test PRIVATE markov_cero_core)
-# QP reporting: primal_report must carry the measured row violation the JSON
-# "maximum_primal_violation" field publishes (BENCH-02 QPLIB_0010 shape).
+# QP reporting: the JSON maximum_primal_violation field must be measured (BENCH-02 QPLIB_0010 shape).
 add_executable(qp_primal_report_test tests/qp_primal_report_test.cpp)
 target_link_libraries(qp_primal_report_test PRIVATE markov_cero_core)
-# MIQP-01 contract §7.1/§7.2: supporting-bound algebra against an independent
-# rational restatement of docs/contracts/miqp-node-bounds.md §2.2.
+# NLP/MINLP reporting: same field measured (numerical-policy.md section 4; evidence/nlp-primal-report-2026-10-02.json).
+add_executable(nlp_primal_report_test tests/nlp_primal_report_test.cpp)
+target_link_libraries(nlp_primal_report_test PRIVATE markov_cero_core)
+# MIQP-01 contract §7.1/§7.2: supporting-bound algebra against an independent rational restatement of docs/contracts/miqp-node-bounds.md §2.2.
 add_executable(miqp_supporting_bound_test tests/miqp_supporting_bound_test.cpp)
 target_link_libraries(miqp_supporting_bound_test PRIVATE markov_cero_core)
 # MIQP-01 contract §7.3/§7.4: node overlays, infinite-endpoint fail-closed
 # search and the blueprint §13 required MIQP cases.
 add_executable(miqp_node_bound_test tests/miqp_node_bound_test.cpp)
 target_link_libraries(miqp_node_bound_test PRIVATE markov_cero_core)
-# MIQP-01 contract §7.5: incumbent tamper rejection at the engine gate and
-# at proof replay, for minimize and maximize quadratic models.
+# MIQP-01 contract §7.5: incumbent tamper rejection at the engine gate and at proof replay, for minimize and maximize quadratic models.
 add_executable(miqp_incumbent_test tests/miqp_incumbent_test.cpp)
 target_link_libraries(miqp_incumbent_test PRIVATE markov_cero_core)
 # MIQP-01 contract §7.6: proof attacks on quadratic trees — altered primal,

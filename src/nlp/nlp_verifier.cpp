@@ -16,6 +16,8 @@ NlpFeasibilityReport verify_nlp_feasibility(const NlpModel& model,
         report.feasible = false;
         report.message = why;
         report.maximum_violation = std::numeric_limits<double>::infinity();
+        report.maximum_constraint_violation = std::numeric_limits<double>::infinity();
+        report.maximum_bound_violation = std::numeric_limits<double>::infinity();
         return report;
     };
     if (!std::isfinite(tolerance) || tolerance < 0.0) {
@@ -45,28 +47,30 @@ NlpFeasibilityReport verify_nlp_feasibility(const NlpModel& model,
             if (!std::isfinite(values[i])) {
                 return reject("inequality callback returned a non-finite value");
             }
-            report.maximum_violation =
-                std::max(report.maximum_violation, std::max(0.0, values[i]));
+            report.maximum_constraint_violation =
+                std::max(report.maximum_constraint_violation, std::max(0.0, values[i]));
         }
         for (std::size_t i = n_ineq; i < values.size(); ++i) {
             if (!std::isfinite(values[i])) {
                 return reject("equality callback returned a non-finite value");
             }
-            report.maximum_violation =
-                std::max(report.maximum_violation, std::abs(values[i]));
+            report.maximum_constraint_violation =
+                std::max(report.maximum_constraint_violation, std::abs(values[i]));
         }
         for (std::size_t j = 0; j < model.n_vars; ++j) {
             const double lb = model.bound_lower(j);
             const double ub = model.bound_upper(j);
             if (std::isfinite(lb)) {
-                report.maximum_violation =
-                    std::max(report.maximum_violation, std::max(0.0, lb - x[j]));
+                report.maximum_bound_violation =
+                    std::max(report.maximum_bound_violation, std::max(0.0, lb - x[j]));
             }
             if (std::isfinite(ub)) {
-                report.maximum_violation =
-                    std::max(report.maximum_violation, std::max(0.0, x[j] - ub));
+                report.maximum_bound_violation =
+                    std::max(report.maximum_bound_violation, std::max(0.0, x[j] - ub));
             }
         }
+        report.maximum_violation =
+            std::max(report.maximum_constraint_violation, report.maximum_bound_violation);
     } catch (const std::exception& e) {
         return reject(std::string("constraint evaluation failed: ") + e.what());
     } catch (...) {

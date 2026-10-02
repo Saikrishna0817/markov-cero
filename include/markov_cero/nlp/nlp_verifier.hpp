@@ -28,6 +28,15 @@ struct NlpVerificationReport {
 struct NlpFeasibilityReport {
     bool feasible{false};
     double maximum_violation{0.0};
+    // Split of maximum_violation (numerical-policy.md section 4): the
+    // constraint-row side (max(0, g_i) over inequalities, |h_i| over
+    // equalities) and the variable-bound side, measured separately so the
+    // shared primal report can publish them in their own fields.
+    // maximum_violation == max(maximum_constraint_violation,
+    //                          maximum_bound_violation) on every path,
+    // including rejection, where all three are +inf.
+    double maximum_constraint_violation{0.0};
+    double maximum_bound_violation{0.0};
     std::string message;
 };
 

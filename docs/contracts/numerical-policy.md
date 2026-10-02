@@ -120,6 +120,15 @@ Rows with infinite bound on the active side contribute no violation on that side
 
 **NLP first-order KKT:** stationarity with the bound-normal decomposition, inequality multipliers `>= 0`, complementarity, and primal feasibility of `g`, `h`, bounds — all recomputed from the user callbacks at the accepted point.
 
+**NLP/MINLP primal report mapping (new in this file 2026-10-02).** The nonlinear engines publish that same independent recomputation into the shared report every other engine fills (`SolveResult::primal_report`, serialized as `maximum_primal_violation`, `maximum_variable_violation`, `maximum_integrality_violation`):
+
+- `maximum_primal_violation` ← `NlpFeasibilityReport.maximum_constraint_violation`: the constraint-row side, `max(0, g_i(x))` over inequality rows and `|h_i(x)|` over equality rows, recomputed from the user callbacks at the reported iterate. (There is no matrix activity on this path; `g`/`h` are the rows.)
+- `maximum_variable_violation` ← `maximum_bound_violation`: the variable-bound form of §4 above, measured separately instead of being folded into the row side.
+- `maximum_integrality_violation` ← max `|x_j - round(x_j)|` over declared-integer variables at the same iterate (MINLP gates on it against `feasibility_tolerance`; the SQP path reports it without gating, being a continuous engine).
+- `passed` is the engine's own gate verdict for that iterate — SQP: the 1e-6 feasibility verdict; MINLP: feasibility ∧ integrality ∧ objective-consistency, exactly `original_verified`.
+
+The report is filled **iff an iterate is attached to the result**, the same rule as the linear engines; a result with no attached primal keeps the default-constructed report. `recomputed_objective` / `objective_difference` stay at their defaults on these paths: the linear engines compare objectives in user-facing sense while the nonlinear engines' consistency check runs in normalized NLP space, and one shared field cannot carry both meanings (recorded in `evidence/nlp-primal-report-2026-10-02.json`, not guessed). Until 2026-10-02 these engines never filled the report, so the JSON advertised `0` with `passed=false` beside `original_verified=true` and a nonzero `diagnostic.primal_residual`; that defect record carries the before/after.
+
 ---
 
 ## 5. Tolerance inventory

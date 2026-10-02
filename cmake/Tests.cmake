@@ -38,6 +38,10 @@ add_test(NAME qp_kkt_attack COMMAND qp_kkt_attack_test)
 # QPLIB_0010, the BENCH-02 independent-re-check failure (data/qp fixture, so
 # the test needs MARKOV_CERO_SOURCE_DIR).
 add_test(NAME qp_primal_report COMMAND qp_primal_report_test)
+# NLP/MINLP reporting: maximum_primal_violation must be the measured
+# constraint residual on every attached NLP/MINLP iterate
+# (numerical-policy.md section 4 mapping).
+add_test(NAME nlp_primal_report COMMAND nlp_primal_report_test)
 # MIQP-01 contract §7.1/§7.2: supporting-bound algebra, fail-closed cases.
 add_test(NAME miqp_supporting_bound COMMAND miqp_supporting_bound_test)
 # MIQP-01 contract §7.3/§7.4: node overlays and blueprint §13 required cases.
@@ -191,7 +195,7 @@ set_tests_properties(
   gpu_pdhg_step gpu_pdhg_restart gpu_pdhg_adaptive gpu_pdhg_kkt gpu_pdhg_timing
   gpu_admm gpu_fallback gpu_qp
   qp json_records sovereignty_guard
-  ipm_large pdlp_crossover qp_adaptive_rho qp_kkt_attack qp_primal_report miqp_supporting_bound
+  ipm_large pdlp_crossover qp_adaptive_rho qp_kkt_attack qp_primal_report nlp_primal_report miqp_supporting_bound
   miqp_node_bound miqp_incumbent miqp_proof_attack miqp_bruteforce
   numerical_diagnostic
   e2e_tier1_m1_features e2e_tier2_m1_boundaries e2e_tier3_m1_combinations e2e_tier4_m1_scenarios e2e_runner_harness hosted_os_limits

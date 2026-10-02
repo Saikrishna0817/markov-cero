@@ -1,0 +1,112 @@
+{
+  "record": "nlp-primal-report",
+  "date": "2026-10-02",
+  "task": "bench-02 sibling gap",
+  "question": "Can the NLP/MINLP engines publish a measured maximum_primal_violation into the shared result fields without guessing at residual semantics?",
+  "gap": {
+    "source": "evidence/bench02-primal-recheck-defect-2026-10-02.json open_gaps[0]",
+    "verbatim": "The nonlinear engines carry the same class of gap: src/api/engine_nonlinear.cpp never fills primal_report, and src/nlp/nlp_verifier.cpp folds bound violations into inequality_violation, so JSON maximum_primal_violation stays a defaulted 0 for NLP/MINLP results while diagnostics carry residuals under different names.",
+    "prior_status": "documented, not fixed - mapping those residual definitions onto the shared primal_report field would require a semantics decision (which residual equals which row violation)"
+  },
+  "decision": {
+    "contract": "docs/contracts/numerical-policy.md section 4, paragraph 'NLP/MINLP primal report mapping' (added in this change; no status, assurance or witness change, so the contract stays v3)",
+    "mapping": {
+      "maximum_primal_violation": "NlpFeasibilityReport.maximum_constraint_violation: max(0, g_i(x)) over inequality rows and |h_i(x)| over equality rows, recomputed from the user callbacks at the reported iterate (g/h are the rows on this path; there is no matrix activity)",
+      "maximum_variable_violation": "NlpFeasibilityReport.maximum_bound_violation: the variable-bound form, measured in its own accumulator instead of being folded into the row side",
+      "maximum_integrality_violation": "max |x_j - round(x_j)| over declared-integer variables at the same iterate; MINLP gates it against feasibility_tolerance, the SQP path reports it without gating (continuous engine)",
+      "passed": "the engine gate verdict for that iterate: SQP = the 1e-6 feasibility verdict, MINLP = feasibility and integrality and objective-consistency, exactly original_verified"
+    },
+    "attachment_rule": "filled iff an iterate is attached to the result, the same rule as the linear engines; a result with no attached primal keeps the default-constructed report",
+    "deliberately_not_filled": "recomputed_objective / objective_difference stay at their defaults: the linear engines compare objectives in user-facing sense while the nonlinear engines' consistency check runs in normalized NLP space, and one shared field cannot carry both meanings (recorded, not guessed)",
+    "unchanged": "diagnostic nlp_inequality_violation keeps its historical definition (including the bound folding inside verify_nlp_solution); gates, tolerances and statuses are untouched"
+  },
+  "changes": [
+    "include/markov_cero/nlp/nlp_verifier.hpp: NlpFeasibilityReport gains maximum_constraint_violation and maximum_bound_violation; maximum_violation = max of the two on every path, all three +inf on rejection",
+    "src/nlp/nlp_verifier.cpp: two accumulators replace the single folded one (identical maximum_violation value, max is order-independent)",
+    "src/api/engine_nonlinear.cpp: publish_primal_report on the three attach paths (SQP best-feasible attach, SQP KKT accept, MINLP incumbent); MINLP's integrality gate now derives from the same worst-residual measurement (equivalent verdict)",
+    "tests/nlp_primal_report_test.cpp with cmake registration (ctest nlp_primal_report)",
+    "docs/contracts/numerical-policy.md section 4 mapping paragraph"
+  ],
+  "probe": {
+    "method": "same CLI and model file before and after: git stash of the fix, rebuild, run, restore, rebuild, run. The model is the free-MPS NLOBJ fixture embedded below; the fields shown are exactly what apps/json_output.hpp serializes (maximum_primal_violation is a direct read of primal_report.maximum_row_violation)",
+    "cli_model": "NAME NLPREPORT\nROWS\n N COST\n G DEMAND\nCOLUMNS\n    X1  COST  0.0  DEMAND  1.0\n    X2  COST  0.0  DEMAND  1.0\nRHS\n    RHS1  DEMAND  1.5\nBOUNDS\n LO BND  X1  0.0\n LO BND  X2  0.0\n UP BND  X1  3.0\n UP BND  X2  3.0\nNLOBJ\n  1.0  X1  X1\n  1.0  X2  X2\nENDATA\n",
+    "pre_fix_binary": "HEAD build before this change (fix stashed)",
+    "pre_fix_cli_output": {
+      "status": "LocalStationary",
+      "verified": false,
+      "original_verified": true,
+      "canonical_verified": true,
+      "certificate_type": "local_kkt",
+      "assurance": "local_kkt_checked",
+      "maximum_primal_violation": 0,
+      "maximum_variable_violation": 0,
+      "maximum_integrality_violation": 0,
+      "primal": [
+        0.7499999948657625,
+        0.7499999948657625
+      ],
+      "objective": 1.1249999845972876,
+      "diagnostic": {
+        "primal_residual": 1.0268474959218565e-08,
+        "nlp_inequality_violation": 1.0268474959218565e-08,
+        "nlp_equality_violation": 0,
+        "nlp_stationarity_residual": 1.812883176910418e-11,
+        "nlp_complementarity_residual": 1.5402712333200113e-08,
+        "failure_site": "sqp_solve"
+      }
+    },
+    "post_fix_binary_sha256": "1ec858c50ef93bdb457940d10966a66d3b17f087c0737e4a8a8780a3bfe15bec",
+    "post_fix_cli_output": {
+      "status": "LocalStationary",
+      "verified": false,
+      "original_verified": true,
+      "canonical_verified": true,
+      "certificate_type": "local_kkt",
+      "assurance": "local_kkt_checked",
+      "maximum_primal_violation": 1.0268474959218565e-08,
+      "maximum_variable_violation": 0,
+      "maximum_integrality_violation": 0,
+      "primal": [
+        0.7499999948657625,
+        0.7499999948657625
+      ],
+      "objective": 1.1249999845972876,
+      "diagnostic": {
+        "primal_residual": 1.0268474959218565e-08,
+        "nlp_inequality_violation": 1.0268474959218565e-08,
+        "nlp_equality_violation": 0,
+        "nlp_stationarity_residual": 1.812883176910418e-11,
+        "nlp_complementarity_residual": 1.5402712333200113e-08,
+        "failure_site": "sqp_solve"
+      }
+    }
+  },
+  "invariants": [
+    "passed == original_verified on every path that attaches a primal (asserted for SQP inequality, SQP equality and MINLP in nlp_primal_report)",
+    "MINLP: max(maximum_primal_violation, maximum_variable_violation) == diagnostic.primal_residual exactly, both from the same feasibility report",
+    "SQP: |diagnostic.primal_residual - maximum_primal_violation| <= 1e-15 on the inequality case (two computations of the same quantity at the same point)",
+    "split semantics pinned at chosen points: infeasible (0,0) -> constraint 1.5 / bound 0; (-1,2) -> constraint 0.5 / bound 1.0; equality at origin -> |h| = 2; dimension-mismatch rejection -> +inf on all three fields",
+    "row field equals max(0, 1.5 - (x0 + x1)) computed independently in the test on the reported iterate"
+  ],
+  "test": {
+    "name": "nlp_primal_report",
+    "file": "tests/nlp_primal_report_test.cpp",
+    "cases": [
+      "split semantics at chosen points",
+      "engine NLP inequality measurement",
+      "engine NLP equality verdict",
+      "engine MINLP measurement"
+    ]
+  },
+  "verification": {
+    "ctest": "122/122 on the rebuilt tree (121 prior + nlp_primal_report)",
+    "cli": "pre/post JSON captured above; statuses LocalStationary on both sides, verdicts unchanged"
+  },
+  "coverage_and_limits": [
+    "attach paths exercised through api::solve_model: SQP KKT-accept (inequality and equality models) and MINLP incumbent success",
+    "the SQP best-feasible attach path (non-KKT exit with a feasibility-tolerated iterate) shares publish_primal_report but has no directed test: no public option forces that exit deterministically",
+    "the MINLP verification-failure attach (attached primal with passed=false) is reachable only when the incumbent fails its own gate; the engine constructs MinlpOptions internally, so api::solve_model cannot tighten the tolerance to force it - covered by code inspection, not by a test",
+    "recomputed_objective / objective_difference remain defaults on these paths (decision above)",
+    "no status, tolerance or gate changed: this is a reporting-only fix, so BENCH-01/02/03 verdicts are unaffected (the campaign harness reads neither field, benchmark-campaign.md section 8)"
+  ]
+}
