@@ -25,7 +25,7 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.001ms!important;transition-duration:.001ms!important}.scroll-mark:after{animation:none}}
 
 /* The active node and its label share one fixed point while the connected mesh travels. */
-.network-journey{position:fixed;inset:0;z-index:1;display:block;pointer-events:none}
+.network-journey{position:fixed;inset:0;z-index:1;display:block;width:100vw;height:100vh;pointer-events:none}
 .network-state{position:fixed;z-index:12;left:calc(max(7vw,90px) - 15px);top:139px;display:flex;align-items:center;gap:16px;min-height:36px;pointer-events:none;animation:state-appear .3s ease both}
 .network-state-ring{display:block;flex:none;width:30px;height:30px;border:1px solid #f4811680;border-radius:50%;background:#fff8ed7d;box-shadow:0 0 0 8px #fffaf3ad}
 .network-state>div{display:grid;gap:3px;padding:3px 30px 3px 2px;background:linear-gradient(90deg,#f8fafbed 0%,#f8fafbbd 65%,transparent 100%)}
@@ -107,11 +107,9 @@ main{position:relative;z-index:2}
 @media(max-width:800px){.page-header{min-height:70px}.page-header nav{gap:11px}.page-header nav a{font-size:11px}.page-container{padding-top:50px}.milestone-grid,.page-directory>div{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.page-header{display:block}.page-header nav{margin-top:12px}.page-container{width:calc(100% - 36px)}.page-section{padding:38px 0}.page-card-grid,.split-panel,.metric-row,.milestone-grid,.page-directory>div{grid-template-columns:1fr}.callout{padding:23px}.demo{grid-template-columns:1fr}.demo svg{max-width:240px}}
 
-.spatial-journey{position:fixed;inset:0;z-index:1;display:block;width:100vw;height:100vh;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 85% 58%,#d9ebf7 0%,#edf5fa 42%,transparent 72%);transition:opacity .4s}
-.spatial-journey.ready{opacity:1}
 html{scroll-behavior:auto}
 .gpu-section{background:linear-gradient(90deg,#f7fafce9 0%,#f7fafcc8 58%,#f7fafc35 100%)}
 .gpu-section .split-panel{max-width:850px}
-@media(max-width:800px){.spatial-journey{display:none}.gpu-section{background:linear-gradient(90deg,#f7fafce5,#f7fafcaa)}}
+@media(max-width:800px){.gpu-section{background:linear-gradient(90deg,#f7fafce5,#f7fafcaa)}}
 @media(min-width:801px) and (max-width:1080px){.primary-nav a[href^="?page="]{display:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}

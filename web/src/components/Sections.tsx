@@ -29,7 +29,7 @@ export function Hero({ onAuth }: { onAuth: () => void }) {
       <div className="hero-actions"><a className="button button-primary" href="#problem">Explore the network <span>↘</span></a><button className="button button-secondary" onClick={onAuth}>Enter workspace <span>↗</span></button></div>
       <div className="hero-scroll"><span className="scroll-mark" /> SCROLL TO EXPLORE <span>01 / 10</span></div>
     </div>
-    <div className="hero-graph-label"><span className="signal-dot" /> FEASIBLE REGION <span>VERTEX WALK 00 → 10</span></div>
+    <div className="hero-graph-label"><span className="signal-dot" /> DECISION NETWORK <span>SCROLL PATH 00 → 10</span></div>
   </Stage>
 }
 
@@ -115,7 +115,7 @@ const questions = [
 ] as const
 
 export function GpuResearch() {
-  return <Stage at={8} className="gpu-section"><div className="content-column wide"><SectionLead at={8}>PDLP uses sparse matrix-vector products that can run in parallel. A grid of active cells shows that compute pattern; it does not imply a speedup.</SectionLead>
+  return <Stage at={8} className="gpu-section"><div className="content-column wide"><SectionLead at={8}>PDLP uses sparse matrix-vector products that can run in parallel. The network continues through this research stage; the visual does not imply a speedup.</SectionLead>
     <div className="split-panel"><div><strong>GPU hypothesis</strong><p>Keep sparse operators on device and measure the whole solve, including transfer and verification.</p></div><div><strong>Measured result</strong><p>On the recorded RTX 2050 cases, GPU PDLP was 2.3–8.3× slower end to end than CPU. The QP x-update remains on CPU.</p></div></div>
     <a className="text-link" href="?page=gpu">Read GPU evidence and research limits ↗</a>
   </div></Stage>

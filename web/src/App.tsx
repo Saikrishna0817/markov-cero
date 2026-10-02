@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Header from './components/Header'
 import ProgressRail from './components/ProgressRail'
 import NetworkJourney from './components/NetworkJourney'
@@ -8,20 +8,6 @@ import { Hero, Problem, Idea, Solver, Algorithms, Flow, Applications, Principles
 import { stages } from './data'
 import { getSession, restoreSession, signOut, type AuthSession } from './lib/auth'
 import Pages from './components/Pages'
-
-const SpatialJourney = lazy(() => import('./components/SpatialJourney'))
-const sceneQuery = '(min-width: 801px) and (prefers-reduced-motion: no-preference)'
-
-function useDesktopScene() {
-  const [enabled, setEnabled] = useState(() => window.matchMedia(sceneQuery).matches)
-  useEffect(() => {
-    const media = window.matchMedia(sceneQuery)
-    const update = () => setEnabled(media.matches)
-    media.addEventListener('change', update)
-    return () => media.removeEventListener('change', update)
-  }, [])
-  return enabled
-}
 
 function useJourney() {
   const [progress, setProgress] = useState(0)
@@ -49,7 +35,6 @@ function useJourney() {
 
 function JourneyApp() {
   const progress = useJourney()
-  const desktopScene = useDesktopScene()
   const active = Math.max(0, Math.min(stages.length - 1, Math.floor(progress + 0.12)))
   const [authOpen, setAuthOpen] = useState(false)
   const [workspaceOpen, setWorkspaceOpen] = useState(false)
@@ -73,7 +58,7 @@ function JourneyApp() {
   return <>
     <a className="skip-link" href="#problem">Skip to content</a>
     <div className="background-grid" aria-hidden="true" />
-    {desktopScene ? <Suspense fallback={<NetworkJourney progress={progress} />}><SpatialJourney progress={progress} /></Suspense> : <NetworkJourney progress={progress} />}
+    <NetworkJourney progress={progress} />
     <Header active={active} session={session} onAuth={onAuth} onSignOut={onSignOut} />
     <ProgressRail active={active} progress={progress} />
     <main>

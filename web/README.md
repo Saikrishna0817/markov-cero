@@ -2,7 +2,7 @@
 
 `web/` contains the markov-cero presentation site and a small Python HTTP adapter for the native CLI. The React/Vite site explains the project through an interactive solver journey, capability pages, benchmark context, refinery case study and links to source records. The existing [logo](public/assets/markov-logo.jpeg) is shared with the repository README. The pages are a dated presentation of the [status register](../docs/project/STATUS.md) and [evidence index](../evidence/INDEX.md), not live benchmark telemetry.
 
-The visual journey uses Three.js, GSAP and Lenis, with a fallback for mobile, reduced motion and unavailable WebGL. The workspace can inspect a sample model without an API; a live solve requires the adapter and its authentication configuration. Building the site alone does not deploy a solver.
+The visual journey uses one scroll-driven canvas network across desktop and mobile, with a quieter version on reference pages. The site theme follows the paper, ink, orange, and blue tokens in `MARKOV_FRONTEND_PLAN_V2.md`. Reduced-motion preferences keep the network tied to scroll position without easing. The workspace can inspect a sample model without an API; a live solve requires the adapter and its authentication configuration. Building the site alone does not deploy a solver.
 
 ## Run the site locally
 

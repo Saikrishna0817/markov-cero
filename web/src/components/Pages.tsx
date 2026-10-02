@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import NetworkJourney from './NetworkJourney'
+import PageMenu from './PageMenu'
 
 const repo = 'https://github.com/Saikrishna0817/markov-zip1'
 const source = (path: string) => repo + '/blob/main/' + path
@@ -40,7 +42,21 @@ function Source({ path, children }: { path: string; children?: string }) {
 
 function PageShell({ title, eyebrow, lead, children }: { title: string; eyebrow: string; lead: string; children: React.ReactNode }) {
   useEffect(()=>{document.title=`${title} — markov-cero`},[title])
-  return <><header className="page-header"><a className="page-brand" href="/"><span className="brand-icon" aria-hidden="true" />markov<span>-cero</span></a><nav aria-label="Page navigation"><a href="/">Explore</a><a href="?page=status">Status</a><a href="?page=verification">Verification</a><a href="?page=refinery">Case study</a><a href="?page=docs">Docs</a></nav></header>
+  const [backgroundProgress, setBackgroundProgress] = useState(0)
+  useEffect(() => {
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight)
+      setBackgroundProgress(window.scrollY / max * 10)
+    }
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update) }
+    update()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    return () => { window.removeEventListener('scroll', schedule); window.removeEventListener('resize', schedule); cancelAnimationFrame(frame) }
+  }, [])
+  return <><NetworkJourney progress={backgroundProgress} variant="quiet" /><header className="page-header"><a className="page-brand" href="/"><span className="brand-icon" aria-hidden="true" />markov<span>-cero</span></a><nav aria-label="Page navigation"><a href="/">Explore</a><a href="/#solver">Solver</a><a href="?page=verification">Evidence</a><a href="?page=gpu">Research</a><PageMenu /></nav></header>
     <main className="page-main"><div className="page-container"><div className="page-intro"><span className="page-eyebrow">{eyebrow}</span><h1>{title}</h1><p>{lead}</p></div>{children}
       <nav className="page-directory" aria-label="More pages"><h2>Continue exploring</h2><div>{pageLinks.map(([id, name]) => <a key={id} href={`?page=${id}`}>{name}<span>↗</span></a>)}</div></nav>
     </div></main><footer className="page-footer"><span>markov-cero · v0.5.2 research prototype</span><a href="/">Return to the journey ↑</a><a href="/privacy.html">Data & privacy</a></footer></>

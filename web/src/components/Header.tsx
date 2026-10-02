@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { stages } from '../data'
 import type { AuthSession } from '../lib/auth'
+import PageMenu from './PageMenu'
 
 type Props = { active: number; session: AuthSession | null; onAuth: () => void; onSignOut: () => void }
 
 const links = [
-  ['Explore', 'problem'], ['Solver', 'solver'], ['Algorithms', 'algorithms'],
-  ['Applications', 'applications'], ['FAQ', 'faq'],
+  ['Explore', 'problem'], ['Solver', 'solver'], ['Research', 'gpu'],
 ] as const
 
 export default function Header({ active, session, onAuth, onSignOut }: Props) {
@@ -22,8 +22,8 @@ export default function Header({ active, session, onAuth, onSignOut }: Props) {
     </a>
     <nav className={`primary-nav ${open ? 'open' : ''}`} aria-label="Main navigation">
       {links.map(([label, id]) => <button key={id} className={stages[active]?.id === id ? 'nav-current' : ''} onClick={() => go(id)}>{label}</button>)}
-      <a href="?page=status">Status & roadmap ↗</a>
-      <a href="?page=docs">Documentation ↗</a>
+      <a href="?page=verification">Evidence</a>
+      <PageMenu />
       <div className="mobile-action"><button className="button button-primary" onClick={() => { setOpen(false); onAuth() }}>{session ? 'Workspace' : 'Launch console'} →</button></div>
     </nav>
     <div className="header-actions">
