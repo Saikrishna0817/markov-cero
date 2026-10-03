@@ -191,8 +191,10 @@ Executed 2026-09-30:
   `check_source_limits` 0 violations (the oversized files were split
   in the same change: `engine_lp_ipm.cpp`, `ipm_crossover.cpp`,
   `revised_simplex_pivot.cpp`). A recorded BENCH-03 row is never
-  rewritten; BENCH-04 re-measures the same seven-cell manifest as its
-  own campaign.
+  rewritten; BENCH-04 re-measured the same seven-cell
+  manifest as its own campaign — 7/7 `Optimal` × 5 repeats, 35/35
+  independent checks pass
+  ([record](../../evidence/bench04-campaign-2026-10-03.json)).
 - Benchmark: [`evidence/lp-sparse-rss-20260930.json`](../../evidence/lp-sparse-rss-20260930.json)
   — retired dense dispatch shape vs sparse-first, forked VmHWM per
   (instance, path). Dense peak ≥ sparse peak on all 18 records; the

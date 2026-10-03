@@ -2,6 +2,32 @@
 
 ## Unreleased
 
+### 2026-10-03 bench-04 — the deferred set re-measured after the fix: 7/7 solved
+
+- **Preregistered before any run** — [preregistration](evidence/bench04-preregistration-2026-10-03.json)
+  (sha written first), same seven-cell manifest as BENCH-03
+  (`60e34f57…`), pinned binary sha `8867a84c…` (the deferred-fix
+  build, Release + `-Werror`), one thread, 5 repeats per cell (repeat 0
+  cold), 4 workers with the interference caveat, LP cap 60 s, the
+  tolerance table locked by the campaign contract.
+- **Measured** — [summary](evidence/bench04-campaign-2026-10-03.json),
+  [raw rows](evidence/bench04-campaign-2026-10-03.csv),
+  [log](evidence/bench04-campaign-2026-10-03.log): **35 rows, 0
+  harness exceptions, 0 parent timeouts, 0 `hash_mismatch`, 35 `ok`**.
+  Solved fraction **7/7 = 1.0** against BENCH-03's 1/7 — every row
+  `Optimal` with `verified=true` and `optimality_witness_checked`,
+  every cell one objective across all five repeats (0/7 status and 0/7
+  objective disagreement at 1e-6), independent primal re-check **35
+  pass / 0 fail** at the locked bars, exit code 0 on every row.
+  Reference agreement 0/0 — preregistered `with_reference: 0` exactly
+  as BENCH-03 did, because no frozen reference objective exists for
+  these seven.
+- **No row was rewritten** — BENCH-03's 1/7 record stands as measured
+  on 2026-10-02; the difference between campaigns is the fix commit
+  `3662cac`, attributed in the
+  [fix record](evidence/lp-deferred-fix-2026-10-03.json).
+  One host, worker interference, no speed claim.
+
 ### 2026-10-03 LP deferred set — the frozen-set simplex failures (and GAP-01 `etamacro`) closed in the reference primal path
 
 - **The gap** — BENCH-03 measured the seven deferred/failing LP cells
