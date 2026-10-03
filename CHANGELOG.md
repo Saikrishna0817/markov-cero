@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.3 — 2026-10-03
 
 ### 2026-10-03 res — solve-scoped device memory budget (RES-01 device allocations)
 

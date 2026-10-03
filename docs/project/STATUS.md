@@ -1,4 +1,4 @@
-# Capability and release status — v0.5.2
+# Capability and release status — v0.5.3
 
 **As of 2026-10-03.** This is the current entry point for implementation claims. The project is a research prototype for Smart India Hackathon problem statement SIH26119. A feature marked *implemented* has code and named checks; it is not a claim of general solver competitiveness or refinery operational readiness. Dated test counts and benchmark results in [evidence](../../evidence/INDEX.md) are tied to their recorded source and binary, not automatically to this checkout.
 

@@ -179,7 +179,7 @@ def write_json_report(
     report = {
         "metadata": {
             "suite": "markov-cero-e2e",
-            "version": "0.5.2",
+            "version": "0.5.3",
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         },
         "summary": summary,

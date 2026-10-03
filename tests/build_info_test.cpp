@@ -1,6 +1,6 @@
 #include "markov_cero/foundation/build_info.hpp"
 int main() {
-    if (markov_cero::foundation::version() != "0.5.2")
+    if (markov_cero::foundation::version() != "0.5.3")
         return 1;
     if (markov_cero::foundation::milestone() != "M5")
         return 2;

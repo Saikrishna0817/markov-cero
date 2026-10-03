@@ -4,7 +4,7 @@
 
 # markov-cero
 
-**Optimization for a higher yield** · **Team: markov-cero team** · **Smart India Hackathon 2026, problem statement SIH26119 (MRPL)** · **Version 0.5.2**
+**Optimization for a higher yield** · **Team: markov-cero team** · **Smart India Hackathon 2026, problem statement SIH26119 (MRPL)** · **Version 0.5.3**
 
 markov-cero is a C++20 mathematical optimization solver research project built around a practical question: how can a team model a refinery decision, solve it, and show enough evidence to trust the reported answer? The repository contains the solver core, command-line tools, Python bindings, a visual web experience, refinery examples, benchmark runners, independent result checks, and dated qualification records.
 

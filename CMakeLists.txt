@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(markov-cero VERSION 0.5.2 LANGUAGES CXX)
+project(markov-cero VERSION 0.5.3 LANGUAGES CXX)
 option(MARKOV_CERO_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
 option(MARKOV_CERO_ENABLE_ASAN_UBSAN "Enable address/undefined sanitizers" OFF)
 option(MARKOV_CERO_ENABLE_TSAN "Enable thread sanitizer" OFF)
