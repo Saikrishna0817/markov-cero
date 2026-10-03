@@ -40,6 +40,7 @@ enum class StopReason : std::uint8_t {
     input_limit,
     work_limit,
     allocation_failure,
+    device_memory_budget_exhausted,
 };
 
 [[nodiscard]] constexpr const char* to_string(StopReason reason) noexcept {
@@ -53,6 +54,7 @@ enum class StopReason : std::uint8_t {
         case StopReason::input_limit: return "input_limit";
         case StopReason::work_limit: return "work_limit";
         case StopReason::allocation_failure: return "allocation_failure";
+        case StopReason::device_memory_budget_exhausted: return "device_memory_budget_exhausted";
     }
     return "unknown";
 }

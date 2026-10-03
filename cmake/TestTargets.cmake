@@ -200,8 +200,7 @@ target_link_libraries(miqp_node_bound_test PRIVATE markov_cero_core)
 add_executable(miqp_incumbent_test tests/miqp_incumbent_test.cpp)
 target_link_libraries(miqp_incumbent_test PRIVATE markov_cero_core)
 # MIQP-01 contract §7.6: proof attacks on quadratic trees — altered primal,
-# multiplier, objective, Farkas certificate, status labels, splits and
-# incumbents must all be rejected.
+# multiplier, objective, Farkas certificate, labels, splits must be rejected.
 add_executable(miqp_proof_attack_test tests/miqp_proof_attack_test.cpp)
 target_link_libraries(miqp_proof_attack_test PRIVATE markov_cero_core)
 # MIQP-01 contract §7.7: seeded random small integer boxes with quadratic
@@ -259,16 +258,17 @@ add_executable(worker_context_test tests/worker_context_test.cpp)
 target_link_libraries(worker_context_test PRIVATE markov_cero_core)
 add_executable(resource_failure_test tests/resource_failure_test.cpp)
 target_link_libraries(resource_failure_test PRIVATE markov_cero_core)
-# Contract v1 (docs/contracts/numerical-policy.md): tolerance boundaries and
-# the SolveResult::assurance label derivation.
+# Contract v1 (numerical-policy.md): tolerance boundaries and assurance labels.
 add_executable(numerical_policy_boundary_test tests/numerical_policy_boundary_test.cpp)
 target_link_libraries(numerical_policy_boundary_test PRIVATE markov_cero_core)
 add_executable(assurance_label_test tests/assurance_label_test.cpp)
 target_link_libraries(assurance_label_test PRIVATE markov_cero_core)
-# Resource contract (docs/contracts/resource-limits.md): boundary stop-reason
-# attribution and the resource_limit completeness invariant.
+# Resource contract (docs/contracts/resource-limits.md): stop-reason attribution.
 add_executable(stop_reason_test tests/stop_reason_test.cpp)
 target_link_libraries(stop_reason_test PRIVATE markov_cero_core)
+# RES-01 (resource-limits.md §1/§2/§4): solve-scoped device buffer metering.
+add_executable(device_budget_test tests/device_budget_test.cpp)
+target_link_libraries(device_budget_test PRIVATE markov_cero_core)
 # These two tests include tests/support/failing_new.hpp, which REPLACES the
 # global operator new/delete. Clang's static TSan runtime force-loads its own
 # copies (libclang_rt.tsan_cxx.a via --whole-archive, ahead of the test

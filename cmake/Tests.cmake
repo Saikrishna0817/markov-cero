@@ -107,6 +107,7 @@ add_test(NAME gpu_pdhg_timing COMMAND gpu_pdhg_timing_test)
 add_test(NAME gpu_admm COMMAND gpu_admm_test)
 add_test(NAME gpu_fallback COMMAND gpu_fallback_test)
 add_test(NAME gpu_qp COMMAND gpu_qp_test)
+add_test(NAME device_budget COMMAND device_budget_test)
 add_test(NAME qp COMMAND qp_test)
 add_test(NAME json_records COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/scripts/check_json.py)
 add_test(NAME sovereignty_guard
@@ -204,7 +205,7 @@ set_tests_properties(
   cli_case_crude_oil cli_case_multiperiod cli_case_supply_chain
   api_demo
   api_test
-  numerical_policy_boundaries assurance_labels stop_reason_boundary
+  numerical_policy_boundaries assurance_labels stop_reason_boundary device_budget
   PROPERTIES
     TIMEOUT 60
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}

@@ -38,6 +38,7 @@ struct CliOptions {
     std::size_t mip_proof_max_witness_values{4000000};
     std::optional<std::size_t> maximum_input_bytes;
     std::optional<std::size_t> memory_limit_bytes;
+    std::optional<std::size_t> device_memory_limit_bytes;
     lp::reference::Options options;
     milp::Options milp_options;
 

@@ -112,6 +112,7 @@ add_library(markov_cero_core STATIC
   src/refinery/pooling_slp.cpp
   src/analysis/iis_analyzer.cpp
   gpu/src/buffer.cpp
+  gpu/src/budget.cpp
   gpu/src/csr.cpp
   gpu/src/device.cpp
   gpu/src/admm_matvec.cpp

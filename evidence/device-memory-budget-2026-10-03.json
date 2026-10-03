@@ -1,0 +1,78 @@
+{
+ "record": "device-memory-budget",
+ "date": "2026-10-03",
+ "task": "RES-01 device allocations — solve-scoped device memory budget, contract-first (docs/contracts/resource-limits.md §1, §2, §3 R3, §4, §5)",
+ "question": "Can a backend=gpu solve refuse device-buffer charges beyond a caller budget with an exact stop reason and a published peak, while an unset budget and every non-gpu solve stay behaviorally unchanged?",
+ "design": {
+  "option": "SolveOptions.device_memory_limit_bytes (unset = account but never refuse, mirroring memory_limit_bytes; 0 rejected at the boundary as invalid_options)",
+  "cli": "--device-memory-limit-bytes N (positive integer, else exit 8) with JSON field device_memory_charged_peak_bytes",
+  "python": "SolveOptions.device_memory_limit_bytes attribute, device_memory_limit_bytes kwarg, device_memory_charged_peak_bytes result key",
+  "scope": "gpu::DeviceBudget installed by api::detail::run_engine on the solving thread for backend == \"gpu\"; thread_local current(); nesting restores the enclosing scope; the destructor publishes the admitted high-water mark on normal return and unwinding",
+  "choke_point": "gpu::DeviceBuffer through gpu::detail::allocate_device_memory — the sole device allocator the gpu layer uses (audit: zero callers outside gpu/src/buffer.cpp and gpu/include/markov_cero/gpu/buffer.hpp); charge before the allocator, uncharge in DeviceBuffer::release, rollback if the allocator itself fails",
+  "accounting": "live-outstanding bytes on the solving thread; refused charges never land; sticky exhaustion for the rest of the scope",
+  "mapping": {
+   "budget_refusal": "StopReason::device_memory_budget_exhausted (appended to the enum) -> resource_limit, failure_site device_memory_budget, suggested_recovery raise_device_memory_limit_bytes_or_reduce_the_model",
+   "hard_allocator_failure": "gpu::DeviceAllocationFailure (a std::bad_alloc) -> allocation_failure with failure_site device_allocation_failure — the shared allocation reason, device-specific diagnostics (contract §4)"
+  },
+  "contract_change": "additive: §1 device paragraph, §2 row appended, R3 extended, §4 metering-scope limitation, §5 three boundary-test rows"
+ },
+ "validation": {
+  "gcc_release": {
+   "build": "build (gcc Release, CUDA OFF)",
+   "ctest": "123/123 passed (39.06 s)",
+   "new_tests": [
+    "device_budget",
+    "stop_reason_boundary extended"
+   ]
+  },
+  "python": {
+   "wheel": "markov_cero-0.5.2-cp314-linux_x86_64 built locally with pip wheel . --no-deps",
+   "pytest": "python/tests 28/28 passed"
+  },
+  "cuda_device_run": {
+   "build": "build-cuda2 rebuilt in container markov-cuda-dev (nvcc 12.6.3, CMAKE_CUDA_ARCHITECTURES=75, driver-free compile) and run on the host",
+   "device": "NVIDIA GeForce RTX 2050, 4096 MiB, compute capability 8.6, driver 610.57.04",
+   "ctest": "123/123 passed, 0 skipped (40.01 s), device_budget executed its device branch",
+   "limited_cli": {
+    "command": "./build-cuda2/markov-cero-solve examples/blend.mps --backend gpu --engine pdlp --device-memory-limit-bytes 1",
+    "status": "ResourceLimit",
+    "stop_reason": "device_memory_budget_exhausted",
+    "failure_site": "device_memory_budget",
+    "suggested_recovery": "raise_device_memory_limit_bytes_or_reduce_the_model",
+    "device_memory_charged_peak_bytes": 0,
+    "verified": false,
+    "exit_code": 5
+   },
+   "control_cli": {
+    "command": "./build-cuda2/markov-cero-solve examples/blend.mps --backend gpu --engine pdlp (limit unset)",
+    "status": "Feasible",
+    "stop_reason": "",
+    "backend_actually_used": "cuda",
+    "device_memory_charged_peak_bytes": 400,
+    "gpu_ms": {
+     "h2d": 80.76,
+     "kernel": 1.39,
+     "d2h": 0.08,
+     "total": 84.0
+    }
+   }
+  },
+  "cli_cpu_only": {
+   "limit_zero": "exit 8 with 'device memory limit bytes must be positive'",
+   "default_solve_json": "device_memory_charged_peak_bytes 0 on a cpu-backend solve; memory_charged_peak_bytes 4248 for the same run"
+  },
+  "meter_tests": "tests/device_budget_test.cpp covers admission/release/stickiness/peak sink/nesting, refusal before the allocator through DeviceBuffer, 100-iteration alloc/free churn staying inside a 1 MiB budget, and the solve branches; tests/stop_reason_test.cpp covers the boundary mapping"
+ },
+ "honest_limits": [
+  "cooperative in-process refusal — not an OS or device hard ceiling; no cudaMemGetInfo consultation, so it can refuse before the device is physically full",
+  "meters the gpu buffer layer only — not CUDA contexts, streams, module images or another process's device memory",
+  "CPU-only builds meter the same layer over host-backed buffers, so a set limit still refuses there",
+  "a refusal before the first admitted charge reports peak 0 (nothing was admitted)",
+  "backend_actually_used stays at its default \"cpu\" when the refusal precedes any engine-published path",
+  "host RSS, sparse-factor fill, cut pools and proof ledgers remain outside this meter; IR-21 stays open"
+ ],
+ "follow_ups": [
+  "IR-21 stays open: this is the device slice only",
+  "independent review of the published resource envelope (STATUS release decision)"
+ ]
+}

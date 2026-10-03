@@ -2,6 +2,7 @@
 #include "markov_cero/api/solve.hpp"
 #include "markov_cero/core/instrumentation.hpp"
 #include "markov_cero/core/solve_context.hpp"
+#include "markov_cero/gpu/budget.hpp"
 #include "markov_cero/verify/linear_certificate.hpp"
 
 #include "markov_cero/io/lp_parser.hpp"
@@ -135,6 +136,8 @@ inline const char* resource_option_error(const SolveOptions& options) {
     }
     if (options.memory_limit_bytes && *options.memory_limit_bytes == 0)
         return "memory_limit_bytes must be greater than 0";
+    if (options.device_memory_limit_bytes && *options.device_memory_limit_bytes == 0)
+        return "device_memory_limit_bytes must be greater than 0";
     return nullptr;
 }
 
@@ -171,6 +174,38 @@ inline void fail_allocation(SolveResult& out, lp::reference::Result& result,
     out.error = result.message;
     out.diagnostic.failure_site = "allocation_failure";
     out.diagnostic.suggested_recovery = "reduce_model_size_or_raise_the_host_memory_limit";
+}
+
+/// Device budget refusal at the API boundary (RES-01, contract section 3 R3):
+/// the solve-scoped DeviceBudget refused a gpu buffer charge. Recorded as its
+/// own stop reason with device-specific diagnostics; the solve fails closed
+/// before the device allocator ever ran the refused charge.
+inline void fail_device_budget(SolveResult& out, lp::reference::Result& result,
+                               core::SolveContext& ctx) {
+    (void)ctx.note_stop(core::StopReason::device_memory_budget_exhausted);
+    result.status = lp::reference::SolveStatus::resource_limit;
+    result.message = "device memory budget exhausted while allocating device buffers";
+    out.status = result.status;
+    out.message = result.message;
+    out.error = result.message;
+    out.diagnostic.failure_site = "device_memory_budget";
+    out.diagnostic.suggested_recovery = "raise_device_memory_limit_bytes_or_reduce_the_model";
+}
+
+/// Hard device allocator failure (RES-01, contract section 4):
+/// gpu::DeviceAllocationFailure is a std::bad_alloc, so the shared
+/// allocation_failure reason applies — the boundary does not distinguish host
+/// from device there — with device-specific diagnostics.
+inline void fail_device_allocation(SolveResult& out, lp::reference::Result& result,
+                                   core::SolveContext& ctx) {
+    (void)ctx.note_stop(core::StopReason::allocation_failure);
+    result.status = lp::reference::SolveStatus::resource_limit;
+    result.message = "device allocation failed while preparing or running the solve";
+    out.status = result.status;
+    out.message = result.message;
+    out.error = result.message;
+    out.diagnostic.failure_site = "device_allocation_failure";
+    out.diagnostic.suggested_recovery = "reduce_model_size_or_check_device_free_memory";
 }
 
 /// Solve-wide byte charge with failure semantics attached (W02, IR-21). A

@@ -100,6 +100,15 @@ void guarded(SolveResult& out, lp::reference::Result& result, core::SolveContext
         out.error = e.what();
         out.diagnostic.failure_site = "memory_or_factor_limit";
         out.diagnostic.suggested_recovery = "increase_maximum_factor_nonzeros";
+    } catch (const gpu::DeviceBudgetExhausted&) {
+        // RES-01 (contract section 2/3 R3): the solve-scoped device budget
+        // refused a gpu buffer charge; must precede the std::bad_alloc
+        // mapping below, which it derives from.
+        fail_device_budget(out, result, ctx);
+    } catch (const gpu::DeviceAllocationFailure&) {
+        // RES-01: hard device allocator failure after the budget admitted the
+        // charge; shared allocation_failure reason with device diagnostics.
+        fail_device_allocation(out, result, ctx);
     } catch (const std::bad_alloc&) {
         // Host allocation failure is a resource outcome, not a numerical one.
         fail_allocation(out, result, ctx);
@@ -127,7 +136,7 @@ SolveResult solve_file(const std::string& path, const SolveOptions& options) {
         out.message = error;
         out.error = error;
         out.diagnostic.failure_site = "invalid_resource_options";
-        out.diagnostic.suggested_recovery = "correct_total_time_limit_and_memory_limit_options";
+        out.diagnostic.suggested_recovery = "correct_time_limit_memory_or_device_limit_options";
         out.runtime_ms = elapsed_ms(started);
         return out;
     }
@@ -206,7 +215,7 @@ SolveResult solve_model(const model::Model& model, const SolveOptions& options) 
         out.message = error;
         out.error = error;
         out.diagnostic.failure_site = "invalid_resource_options";
-        out.diagnostic.suggested_recovery = "correct_total_time_limit_and_memory_limit_options";
+        out.diagnostic.suggested_recovery = "correct_time_limit_memory_or_device_limit_options";
         out.runtime_ms = elapsed_ms(started);
         return out;
     }

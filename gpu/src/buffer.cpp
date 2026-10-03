@@ -1,5 +1,7 @@
 #include "markov_cero/gpu/buffer.hpp"
 
+#include "markov_cero/gpu/budget.hpp"
+
 #include <cstdlib>
 #include <cstring>
 #include <new>
@@ -18,16 +20,26 @@ void* allocate_device_memory(std::size_t bytes) {
     if (bytes == 0) {
         return nullptr;
     }
+    DeviceBudget* budget = DeviceBudget::current();
+    if (budget != nullptr && !budget->try_charge(bytes)) {
+        throw DeviceBudgetExhausted{};
+    }
 #ifdef MARKOV_CERO_HAS_CUDA
     void* dev_ptr = nullptr;
     cudaError_t err = cudaMalloc(&dev_ptr, bytes);
     if (err != cudaSuccess || dev_ptr == nullptr) {
-        throw std::bad_alloc();
+        if (budget != nullptr) {
+            budget->release(bytes);
+        }
+        throw DeviceAllocationFailure{};
     }
     return dev_ptr;
 #else
     void* ptr = std::malloc(bytes);
     if (ptr == nullptr) {
+        if (budget != nullptr) {
+            budget->release(bytes);
+        }
         throw std::bad_alloc();
     }
     return ptr;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "markov_cero/gpu/budget.hpp"
+
 #include <cstddef>
 #include <cstring>
 #include <stdexcept>
@@ -74,6 +76,9 @@ class DeviceBuffer final {
 
     void release() noexcept {
         if (data_ != nullptr) {
+            if (DeviceBudget* budget = DeviceBudget::current()) {
+                budget->release(size_ * sizeof(T));
+            }
             detail::free_device_memory(data_);
             data_ = nullptr;
         }

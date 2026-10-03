@@ -34,6 +34,7 @@ PYBIND11_MODULE(_core, m) {
         .def_readwrite("backend", &api::SolveOptions::backend)
         .def_readwrite("maximum_input_bytes", &api::SolveOptions::maximum_input_bytes)
         .def_readwrite("memory_limit_bytes", &api::SolveOptions::memory_limit_bytes)
+        .def_readwrite("device_memory_limit_bytes", &api::SolveOptions::device_memory_limit_bytes)
         .def_readwrite("total_time_limit_seconds", &api::SolveOptions::total_time_limit_seconds)
         .def_property("max_queued_nodes",
             [](const api::SolveOptions& o) { return o.milp_options.max_queued_nodes; },

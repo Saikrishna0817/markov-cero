@@ -16,6 +16,8 @@ inline void cli_usage(std::ostream& out) {
             << "  --max-queued-nodes N     Maximum queued B&B nodes (default: 50000)\n"
             << "  --max-input-bytes N      Override the MPS/LP input byte cap (max: 1 GiB)\n"
             << "  --memory-limit-bytes N   Budget instrumented solver allocations\n"
+            << "  --device-memory-limit-bytes N  Budget gpu device-buffer allocations "
+               "(backend=gpu)\n"
             << "  --node-selection best-bound|depth-first|dive  Node selection policy "
                "(default: best-bound)\n"
             << "  --time-limit SEC         Maximum solve wall-clock time in seconds (default: 60.0)\n"

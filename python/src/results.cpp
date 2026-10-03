@@ -15,6 +15,7 @@ py::dict to_python(api::SolveResult res) {
     out["classification_reason"] = res.classification_reason;
     out["stop_reason"] = res.stop_reason;
     out["memory_charged_peak_bytes"] = res.memory_charged_peak_bytes;
+    out["device_memory_charged_peak_bytes"] = res.device_memory_charged_peak_bytes;
     // QP-01 contract §5: request vs executed path (cpu / cuda / cpu_fallback).
     out["backend_actually_used"] = res.backend_actually_used;
     // W01/D16: stable identity of the validated model that produced this
@@ -91,7 +92,8 @@ api::SolveOptions options_from_kwargs(const py::kwargs& kwargs) {
             key != "presolve" && key != "scale" && key != "proof_time_limit" &&
             key != "proof_max_nodes" && key != "proof_max_witness_values" &&
             key != "max_queued_nodes" && key != "max_input_bytes" &&
-            key != "time_limit" && key != "memory_limit_bytes")
+            key != "time_limit" && key != "memory_limit_bytes" &&
+            key != "device_memory_limit_bytes")
             throw std::invalid_argument("unknown solve option: " + key);
     }
     if (kwargs.contains("engine")) {
@@ -132,6 +134,8 @@ api::SolveOptions options_from_kwargs(const py::kwargs& kwargs) {
         options.total_time_limit_seconds = py::cast<double>(kwargs["time_limit"]);
     if (kwargs.contains("memory_limit_bytes"))
         options.memory_limit_bytes = py::cast<std::size_t>(kwargs["memory_limit_bytes"]);
+    if (kwargs.contains("device_memory_limit_bytes"))
+        options.device_memory_limit_bytes = py::cast<std::size_t>(kwargs["device_memory_limit_bytes"]);
     return options;
 }
 

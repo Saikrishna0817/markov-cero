@@ -24,6 +24,7 @@ markov_cero::api::SolveOptions to_solve_options(const markov_cero::apps::CliOpti
     options.backend = cli.backend_name;
     options.maximum_input_bytes = cli.maximum_input_bytes;
     options.memory_limit_bytes = cli.memory_limit_bytes;
+    options.device_memory_limit_bytes = cli.device_memory_limit_bytes;
     options.total_time_limit_seconds = cli.time_limit_seconds;
     options.mip_proof_time_limit_seconds = cli.mip_proof_time_limit_seconds;
     options.mip_proof_max_nodes = cli.mip_proof_max_nodes;
@@ -70,6 +71,7 @@ markov_cero::apps::JsonOutputData to_json_data(const markov_cero::api::SolveResu
     data.resolved_engine = res.resolved_engine;
     data.stop_reason = res.stop_reason;
     data.memory_charged_peak_bytes = res.memory_charged_peak_bytes;
+    data.device_memory_charged_peak_bytes = res.device_memory_charged_peak_bytes;
     data.result.status = res.status;
     data.result.message = res.message;
     data.result.primal = res.primal;

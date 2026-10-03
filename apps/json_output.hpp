@@ -110,7 +110,8 @@ inline bool emit_json_output(const JsonOutputData& data) {
          << "\"engine\":\"" << json_escape(data.resolved_engine) << "\","
          << "\"problem_class\":\"" << json_escape(data.problem_class) << "\","
          << "\"status\":\"" << markov_cero::lp::reference::to_string(data.result.status) << "\","
-         << "\"stop_reason\":\"" << json_escape(data.stop_reason) << "\",\"memory_charged_peak_bytes\":" << data.memory_charged_peak_bytes << ","
+         << "\"stop_reason\":\"" << json_escape(data.stop_reason) << "\",\"memory_charged_peak_bytes\":" << data.memory_charged_peak_bytes
+         << ",\"device_memory_charged_peak_bytes\":" << data.device_memory_charged_peak_bytes << ","
          << "\"rows\":" << data.model_rows << ","
          << "\"cols\":" << data.model_cols << ","
          << "\"nonzeros\":" << data.model_nnz << ","

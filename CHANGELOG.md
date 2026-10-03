@@ -2,6 +2,35 @@
 
 ## Unreleased
 
+### 2026-10-03 res — solve-scoped device memory budget (RES-01 device allocations)
+
+- **Gap** — `memory_limit_bytes` bounded host-side instrumented charges,
+  but nothing metered the gpu buffer layer; the contract (§4), STATUS and
+  IR-21 all carried "device allocations remain / device memory unmetered".
+- **Change** — new `SolveOptions::device_memory_limit_bytes`
+  (CLI `--device-memory-limit-bytes`, Python keyword/attribute) and
+  `SolveResult::device_memory_charged_peak_bytes` (CLI JSON, Python).
+  `run_engine` installs a thread-local `gpu::DeviceBudget` for
+  `backend == "gpu"` solves; `DeviceBuffer` charges on allocation and
+  releases on free (live-outstanding), refusing **before** the device
+  allocator runs when a set limit would be crossed — sticky for the scope,
+  peak published on destruction (normal return and unwinding). The API
+  boundary maps a refusal to `resource_limit` +
+  `device_memory_budget_exhausted` (new appended `StopReason`) +
+  `device_memory_budget`, and a hard device allocator failure to
+  `allocation_failure` + `device_allocation_failure`. Contract-first:
+  resource-limits.md §1/§2/§3 R3/§4/§5 updated in the same change;
+  unset keeps the accounting and never refuses (mirrors `memory_limit_bytes`).
+  [record](evidence/device-memory-budget-2026-10-03.json)
+- **Validation** — gcc Release 123/123 CTest (new `device_budget` test +
+  extended `stop_reason_boundary`); CUDA build 123/123 on the RTX 2050 host
+  (container nvcc 12.6.3); Python 28/28. On the device: 1-byte limit →
+  `ResourceLimit`/`device_memory_budget_exhausted`, peak 0, exit 5; the
+  unlimited control ran `cuda` at peak 400 bytes.
+- **Limits** — cooperative in-process refusal only: no `cudaMemGetInfo`,
+  no CUDA contexts/streams/other-process memory, not RSS; CPU-only builds
+  meter the same layer over host-backed buffers. IR-21 stays open.
+
 ### 2026-10-03 tests — refinery fixture proof budget 300 → 600 s (CI Debug exhaustion)
 
 - **Symptom** — CI run `37103783489` (head `b83ce4b`) left only

@@ -21,6 +21,17 @@ void run_engine(const model::Model& model, const SolveOptions& input_options, So
         result.status = lp::reference::SolveStatus::invalid_options;
         result.message = "invalid engine, backend, worker count, tolerance or resource budget"; return;
     }
+    // RES-01: meter gpu buffer layer bytes for this solve (contract section 1).
+    // The scope refuses charges beyond device_memory_limit_bytes inside the
+    // engines below and publishes the admitted high-water mark into the result
+    // when it is destroyed — normal return and unwinding alike. Installed only
+    // for a gpu request, so non-gpu solves keep device_memory_charged_peak_bytes
+    // at 0; the meter lives on this (the solving) thread, which is where the
+    // gpu engines allocate.
+    std::optional<gpu::DeviceBudget> device_budget;
+    if (options.backend == "gpu")
+        device_budget.emplace(options.device_memory_limit_bytes,
+                              &out.device_memory_charged_peak_bytes);
     const bool integer = std::any_of(model.variable_type.begin(), model.variable_type.end(),
         [](auto type) { return type != model::VariableType::continuous; });
     if (integer && std::isfinite(options.milp_options.time_limit_seconds) &&

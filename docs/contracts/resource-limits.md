@@ -17,6 +17,8 @@ Related contracts and evidence:
 - `evidence/resource-overrun-rss-20260930.json` — measured wall-overrun and
   RSS distributions plus the empirical polling bound (2.3 ms worst case on
   the recorded inputs).
+- `evidence/device-memory-budget-2026-10-03.json` — device-buffer metering:
+  budget semantics, boundary mapping and host/device solve behavior.
 
 ## 1. The cooperative stop model
 
@@ -25,6 +27,15 @@ One `core::SolveContext` is created per solve at the API boundary
 memory budget, thread/device quota, cancellation and the **first recorded stop
 reason**. Reasons are sticky: the first observed reason wins so a later reason
 can never overwrite the explanation of why work stopped.
+
+Device (GPU) buffers are metered beside that context: when `backend == "gpu"`,
+`run_engine` installs a solve-scoped `gpu::DeviceBudget` on the solving thread
+for the engine phase. It accounts every byte admitted through the gpu buffer
+layer (live-outstanding — charged on allocation, released on free) and refuses
+charges beyond `device_memory_limit_bytes`. A refusal propagates to the API
+boundary, which records `device_memory_budget_exhausted` exactly like any other
+boundary stop; unset keeps the accounting and disables the refusal, mirroring
+`memory_limit_bytes`.
 
 Invariants on every path (W02/D06):
 
@@ -47,6 +58,7 @@ Invariants on every path (W02/D06):
 | `input_limit` | `input_limit` | API boundary | A configured parser byte/structural cap rejected the input before the solve started. |
 | `work_limit` | `work_limit` | API boundary | A dimension/factor/fill limit (`std::length_error` escaping an engine) stopped the work. |
 | `allocation_failure` | `allocation_failure` | API boundary | Host allocation failure (`std::bad_alloc`) mapped to a resource outcome, never a numerical one. |
+| `device_memory_budget_exhausted` | `device_memory_budget_exhausted` | API boundary (device budget refusal) | A device-buffer charge exceeded `device_memory_limit_bytes`; the gpu layer refused the charge before the device allocator ran. |
 
 Additive: new reasons append to the enum; existing reported strings and their
 meaning do not change.
@@ -61,7 +73,10 @@ meaning do not change.
   `std::length_error` → `work_limit`, `std::bad_alloc` → `allocation_failure`,
   expired deadline → `deadline_exceeded` (including the serial MILP engine
   time limit), node quota → `quota_exhausted`, charge refusal →
-  `memory_budget_exhausted`.
+  `memory_budget_exhausted`, device-buffer charge refusal →
+  `device_memory_budget_exhausted`, device allocator failure
+  (`gpu::DeviceAllocationFailure`, a `std::bad_alloc`) → `allocation_failure`
+  with the device-specific diagnostic fields.
 - **R4 — honest fallback.** When a `resource_limit` result reaches the boundary
   with no recorded reason (an engine-internal stop the boundary cannot see,
   such as a serial queued-node capacity stop), `stop_reason` is set to
@@ -102,6 +117,18 @@ meaning do not change.
   instrumented charges only. Factor fill is bounded by its fill cap — an
   over-full factorization throws `std::length_error` before any partial
   factor exists and surfaces as `work_limit` — not by `memory_limit_bytes`.
+- **`device_memory_limit_bytes` meters the gpu buffer layer, not all device
+  memory.** It bounds bytes admitted through `gpu::DeviceBuffer` while the
+  solve-scoped budget is installed (the engine phase of a `backend == "gpu"`
+  solve), accounted on the solving thread; it does not meter CUDA contexts,
+  streams, module images or another process's device memory, and it never
+  consults `cudaMemGetInfo`, so it can refuse before the device is physically
+  full. `device_memory_charged_peak_bytes` is the high-water mark of admitted
+  device-buffer bytes for the solve; it is 0 when no device budget was
+  installed. A hard device allocator failure is reported as `allocation_failure`
+  (the shared allocation reason; the boundary does not distinguish host from
+  device there) with `failure_site = "device_allocation_failure"` and a
+  device-oriented suggested recovery.
 - **Native limits stay cooperative** unless a complete allocator contract is
   proven; OS-level hard limits are the hosted service's contract
   ([hosted-limits.md](hosted-limits.md)), not the library's.
@@ -121,6 +148,9 @@ meaning do not change.
 | `tests/sparse_fill_limit_test.cpp` — factor fill cap | over-full factor throws `length_error` before any partial factor (→ `work_limit` at the boundary) |
 | `tests/stop_reason_test.cpp` — serial queue charge | refused node charge → `resource_limit` + `memory_budget_exhausted`; honest incumbent/bound only |
 | `tests/stop_reason_test.cpp` — peak bounds | normal solves report a non-zero `memory_charged_peak_bytes`; admitted charges never exceed the budget |
+| `tests/device_budget_test.cpp` — device budget meter | over-limit charge refuses before the allocator runs; live release keeps per-iteration churn inside the limit; refusal stays sticky for the solve |
+| `tests/stop_reason_test.cpp` — device budget mapping | refusal maps to `resource_limit` + `device_memory_budget_exhausted` + `device_memory_budget` |
+| `tests/device_budget_test.cpp` — solve behavior | GPU host with a 1-byte device limit → `resource_limit` naming the device budget; host without a device → honest CPU fallback with an empty `stop_reason` |
 | `tests/api_test.cpp` | normal solves keep an empty `stop_reason`; deadline/memory paths keep their reason |
 
 ## 6. Change procedure

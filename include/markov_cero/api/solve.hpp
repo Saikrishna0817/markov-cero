@@ -59,6 +59,11 @@ struct SolveOptions {
     // instrumented charge points. Must be > 0 when set; unset disables the
     // budget (charges are still accounted but never refused).
     std::optional<std::size_t> memory_limit_bytes;
+    // RES-01: solve-scoped budget for bytes admitted through the gpu buffer
+    // layer during a `backend == "gpu"` solve. Must be > 0 when set; unset
+    // keeps the accounting and disables the refusal, mirroring
+    // `memory_limit_bytes` (contract docs/contracts/resource-limits.md §4).
+    std::optional<std::size_t> device_memory_limit_bytes;
 };
 
 struct NumericalDiagnostic {
@@ -116,6 +121,12 @@ struct SolveResult {
     // charge ran. Instrumented charges only — never an RSS measurement
     // (contract section 4).
     std::size_t memory_charged_peak_bytes = 0;
+
+    // RES-01 peak diagnostic (resource contract section 4): high-water mark
+    // of device-buffer bytes admitted by the solve-scoped DeviceBudget; 0
+    // when no device budget was installed (every non-gpu solve). The gpu
+    // buffer layer only — never a cudaMemGetInfo reading.
+    std::size_t device_memory_charged_peak_bytes = 0;
 
     // D-16: how often the ADMM penalty rho changed (each change triggers one
     // KKT re-factorization). 0 for every non-QP engine.
