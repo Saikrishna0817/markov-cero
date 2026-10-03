@@ -37,6 +37,7 @@ struct JsonOutputData {
     std::string resolved_engine;
     std::string stop_reason; std::size_t memory_charged_peak_bytes = 0;
     std::size_t device_memory_charged_peak_bytes = 0;
+    std::size_t peak_rss_bytes = 0;
     markov_cero::lp::reference::Result result;
     std::size_t model_rows = 0;
     std::size_t model_cols = 0;

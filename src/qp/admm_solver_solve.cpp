@@ -77,6 +77,12 @@ QpSolution AdmmQpSolver::solve(const QuadraticModel& model) {
         if (kkt.fill_limit_reached()) sol.message = "sparse QP KKT factor exceeds fill limit";
         return sol;
     }
+    KktCharge kkt_charge{options_};
+    if (!kkt_charge.admit(kkt.factor_bytes())) {
+        sol.status = QpStatus::unsupported;
+        sol.message = kKktBudgetMessage;
+        return sol;
+    }
 
     // W3/D-08 GPU residual path. LOCKED activation contract: explicit backend
     // request AND NNZ(P) > 100,000 AND a CUDA device. Anything else is a
@@ -234,6 +240,11 @@ QpSolution AdmmQpSolver::solve(const QuadraticModel& model) {
                 if (changed) {
                     if (kkt.update_numeric(model.P, model.A, options_.sigma, rho, deadline)) {
                         ++sol.refactorization_count;
+                        if (!kkt_charge.admit(kkt.factor_bytes())) {
+                            sol.status = QpStatus::unsupported;
+                            sol.message = kKktBudgetMessage;
+                            break;
+                        }
                     } else {
                         sol.status = kkt.deadline_reached() ? QpStatus::time_limit
                                                             : QpStatus::numerical_error;

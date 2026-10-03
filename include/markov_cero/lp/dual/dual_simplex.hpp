@@ -36,6 +36,12 @@ struct Options {
     bool allow_cold_fallback{true};
     PricingPolicy pricing{PricingPolicy::steepest_edge};
     std::optional<std::chrono::steady_clock::time_point> deadline;
+    // IR-21 (contract resource-limits.md §4): solve-wide allocation budget
+    // hooks for basis-factor fill — the memory counterpart of `deadline`, as
+    // in reference::Options. Set both together or leave both null.
+    bool (*charge_bytes)(void* user, std::size_t bytes) noexcept = nullptr;
+    void (*release_bytes)(void* user, std::size_t bytes) noexcept = nullptr;
+    void* charge_user = nullptr;
 };
 
 struct IterationRecord {

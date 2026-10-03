@@ -85,6 +85,9 @@ linalg::SparseBasisOptions sparse_options(const Options& o) {
     so.maximum_factor_nonzeros = maximum_dense_elements;
     so.maximum_updates = 16;
     so.eta_density_trigger = 0.9;
+    so.charge_bytes = o.charge_bytes;
+    so.release_bytes = o.release_bytes;
+    so.charge_user = o.charge_user;
     return so;
 }
 }
@@ -167,6 +170,11 @@ Result cold(const transform::SparseCanonicalModel& m, const Options& o, const st
     ro.dual_tolerance = o.dual_tolerance;
     ro.pivot_tolerance = o.pivot_tolerance;
     ro.deadline = o.deadline;
+    // IR-21: the cold fallback is the same solve-wide budget — carry the
+    // factor-fill hooks across so a fallback factor is charged too.
+    ro.charge_bytes = o.charge_bytes;
+    ro.release_bytes = o.release_bytes;
+    ro.charge_user = o.charge_user;
     auto r = reference::solve(m, ro);
     out.solution = std::move(r);
     out.used_cold_fallback = true;
@@ -251,6 +259,12 @@ std::size_t select_leaving_row(const transform::SparseCanonicalModel& m,
 // a cold solve.
 Result Session::resolve(const transform::SparseCanonicalModel& m, const Options& o) {
     ++resolve_count_;
+    // IR-21: the cached factor may have been charged against an earlier
+    // solve's context; rebind to this solve's budget (or drop the cache when
+    // the new budget refuses the live factor bytes) before it is reused.
+    if (cache_.valid && !cache_.factor.rebind_charge(o.charge_bytes, o.release_bytes,
+                                                    o.charge_user))
+        cache_.valid = false;
     auto out = solve_verified(m, o, basis_, &cache_);
     last_verified_ = out.verified;
     if (out.verified) {

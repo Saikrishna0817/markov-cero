@@ -35,6 +35,15 @@ struct Options {
     // Absolute wall-clock deadline shared by the API's sequential fallbacks.
     // Empty means no deadline (library callers retain the historical behavior).
     std::optional<std::chrono::steady_clock::time_point> deadline;
+    // IR-21 (contract resource-limits.md §4): solve-wide allocation budget
+    // hooks for basis-factor fill, the memory counterpart of `deadline` —
+    // plain function pointers so this layer stays free of core includes.
+    // `charge_bytes(user, n)` returns false when the budget refuses n bytes
+    // (the owner records the stop); `release_bytes(user, n)` hands them back.
+    // Set both together or leave both null.
+    bool (*charge_bytes)(void* user, std::size_t bytes) noexcept = nullptr;
+    void (*release_bytes)(void* user, std::size_t bytes) noexcept = nullptr;
+    void* charge_user = nullptr;
 };
 struct IterationRecord {
     std::size_t iteration{};

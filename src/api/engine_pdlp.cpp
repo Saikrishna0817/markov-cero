@@ -3,6 +3,15 @@
 namespace markov_cero::api::detail {
 void run_pdlp(const model::Model& model, const SolveOptions& options, SolveResult& out,
               lp::reference::Result& result, core::SolveContext& ctx) {
+        // IR-21: this path resolves outside run_lp, so it admits its own
+        // working-model estimate into the solve-wide budget (contract §4).
+        const std::size_t model_bytes =
+            4096U + (model.matrix.value.size() + model.objective.size()) * sizeof(double) +
+            (model.matrix.row_index.size() + model.matrix.column_start.size()) *
+                sizeof(std::size_t) +
+            (model.row_lower.size() + model.row_upper.size() + model.variable_lower.size() +
+             model.variable_upper.size()) * sizeof(model::Bound);
+        if (!charge_or_fail(ctx, model_bytes, "pdlp_working_model", out, result)) return;
         lp::first_order::PdlpOptions pdlp_opts;
         pdlp_opts.backend = (options.backend == "gpu") ? lp::first_order::Backend::gpu
                                                        : lp::first_order::Backend::cpu;

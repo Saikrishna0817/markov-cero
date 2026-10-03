@@ -110,8 +110,14 @@ inline bool stop_after_deadline(core::SolveContext& ctx, const SolveOptions& opt
     const auto reason = ctx.poll();
     if (reason == core::StopReason::none) return false;
     result.status = lp::reference::SolveStatus::resource_limit;
-    result.message = std::string("solve stopped after ") + phase + ": " +
-                     core::to_string(reason);
+    // IR-21: when the engine's own message already names the memory budget
+    // (a refused factor/KKT/working-model charge), keep it — the phase
+    // sentence below would erase where the budget ran out.
+    if (!(reason == core::StopReason::memory_budget_exhausted &&
+          result.message.find("memory budget") != std::string::npos)) {
+        result.message = std::string("solve stopped after ") + phase + ": " +
+                         core::to_string(reason);
+    }
     out.diagnostic.failure_site = reason == core::StopReason::memory_budget_exhausted
                                       ? "memory_budget"
                                   : reason == core::StopReason::deadline_exceeded

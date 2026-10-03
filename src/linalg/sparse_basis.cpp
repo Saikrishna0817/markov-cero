@@ -1,6 +1,61 @@
 #include "sparse_basis_internal.hpp"
 namespace markov_cero::linalg {
 using namespace detail_sparse_basis;
+SparseBasisFactorization& SparseBasisFactorization::operator=(
+    SparseBasisFactorization&& other) noexcept {
+    if (this == &other) return *this;
+    release_charge();
+    options_ = other.options_;
+    current_basis_ = std::move(other.current_basis_);
+    base_ = std::move(other.base_);
+    updates_ = std::move(other.updates_);
+    statistics_ = other.statistics_;
+    charged_factor_bytes_ = other.charged_factor_bytes_;
+    other.charged_factor_bytes_ = 0;
+    return *this;
+}
+std::size_t SparseBasisFactorization::factor_bytes(const SparseLu& factor) noexcept {
+    const std::size_t n = factor.dimension();
+    const auto& d = factor.diagnostics();
+    // The lower/upper entries live twice — as row structures and as their
+    // column mirrors — in (index, value) pairs, plus four (n+1) offset arrays
+    // and the row/column orderings. An explicit estimate (contract §4): it
+    // excludes allocator capacity slack and small-object overhead.
+    return 2U * d.factor_nonzeros * sizeof(std::pair<std::size_t, double>) +
+           4U * (n + 1U) * sizeof(std::size_t) + 2U * n * sizeof(std::size_t);
+}
+bool SparseBasisFactorization::charge_base() noexcept {
+    if (!options_.charge_bytes) return true;
+    const std::size_t bytes = factor_bytes(base_);
+    if (!options_.charge_bytes(options_.charge_user, bytes)) return false;
+    charged_factor_bytes_ = bytes;
+    return true;
+}
+void SparseBasisFactorization::release_charge() noexcept {
+    if (charged_factor_bytes_ != 0 && options_.release_bytes)
+        options_.release_bytes(options_.charge_user, charged_factor_bytes_);
+    charged_factor_bytes_ = 0;
+}
+bool SparseBasisFactorization::rebind_charge(bool (*charge)(void*, std::size_t) noexcept,
+                                             void (*release)(void*, std::size_t) noexcept,
+                                             void* user) noexcept {
+    if (charged_factor_bytes_ != 0 && options_.charge_user == user &&
+        options_.charge_bytes != nullptr) {
+        // Same owner (repeated resolves inside one solve): hand the bytes back
+        // through the live hooks and re-admit, so the ledger stays exact
+        // instead of double-counting.
+        release_charge();
+    }
+    // Different owner: the previous baseline belongs to an earlier solve's
+    // budget (a session outlives its context) — reset without releasing into
+    // the new hooks, then re-admit the full live factor into the new budget.
+    charged_factor_bytes_ = 0;
+    options_.charge_bytes = charge;
+    options_.release_bytes = release;
+    options_.charge_user = user;
+    if (!charge) return true;
+    return charge_base();
+}
 SparseBasisFactorization SparseBasisFactorization::factorize(const SparseCsc& basis,
                                                              const SparseBasisOptions& options) {
     validate_options(options);
@@ -14,6 +69,8 @@ SparseBasisFactorization SparseBasisFactorization::factorize(const SparseCsc& ba
                                     options.maximum_factor_nonzeros,
                                     options.fill_reducing_ordering, options.deadline);
     out.statistics_.refactorizations = 1;
+    if (!out.charge_base())
+        throw std::length_error("sparse basis factor exceeds the solve memory budget");
     return out;
 }
 void SparseBasisFactorization::apply_updates(std::vector<double>& x) const {
@@ -177,9 +234,18 @@ void SparseBasisFactorization::refactorize() {
     // ordering decides whether a pivot falls under singular_tolerance), which
     // let a basis refactorize successfully at pivot time and then fail
     // make_factor() one step later.
-    base_ = SparseLu::factorize(current_basis_, options_.singular_tolerance,
-                                options_.maximum_factor_nonzeros,
-                                options_.fill_reducing_ordering, options_.deadline);
+    auto next = SparseLu::factorize(current_basis_, options_.singular_tolerance,
+                                    options_.maximum_factor_nonzeros,
+                                    options_.fill_reducing_ordering, options_.deadline);
+    // IR-21 live-outstanding metering: hand the old factor's bytes back first
+    // so the budget tracks one factor at a time (peak, not accumulation), then
+    // admit the replacement. A refused charge leaves the budget exhausted and
+    // sticky; the freshly built factor is already live, so the solve stops
+    // closed at the next stop rather than continuing uncharged.
+    release_charge();
+    base_ = std::move(next);
+    if (!charge_base())
+        throw std::length_error("sparse basis factor exceeds the solve memory budget");
     updates_.clear();
     ++statistics_.refactorizations;
     statistics_.current_update_chain = 0;

@@ -51,6 +51,18 @@ public:
     [[nodiscard]] bool fill_limit_reached() const noexcept { return fill_limit_reached_; }
     [[nodiscard]] std::size_t nonzeros_L() const noexcept;
 
+    /// IR-21 (contract §4): estimated live footprint of this solver's KKT
+    /// matrix, LDL^T factor and index workspaces — the bytes admitted to the
+    /// solve-wide allocation budget while the factor is in use. An explicit
+    /// estimate over the stored vectors, not allocator telemetry.
+    [[nodiscard]] std::size_t factor_bytes() const noexcept {
+        return (kkt_col_ptr_.size() + kkt_row_ind_.size()) * sizeof(std::size_t) +
+               kkt_val_.size() * sizeof(double) +
+               (L_col_ptr_.size() + L_row_ind_.size() + parent_.size()) * sizeof(std::size_t) +
+               L_val_.size() * sizeof(double) + D_.size() * sizeof(double) +
+               (perm_.size() + pinv_.size()) * sizeof(std::size_t);
+    }
+
     /// Pivot-ratio condition proxy max|D_i| / min|D_i| of the LDL^T diagonal.
     /// Returns 0.0 when no factorization is available. This is a screening
     /// signal, not a true kappa(A).

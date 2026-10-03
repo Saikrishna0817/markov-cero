@@ -8,6 +8,19 @@ void run_qp(const model::Model& model, const SolveOptions& options, SolveResult&
             return qp::make_quadratic_model(model);
         }();
         if (stop_after_deadline(ctx, options, out, result, "QP model construction")) return;
+        // IR-21: admit the QP working model into the same solve-wide budget the
+        // LP path charges (contract §4), beside the KKT factor charges below.
+        const std::size_t qp_model_bytes = [&] {
+            const auto& P = qp_model.P;
+            const auto& A = qp_model.A;
+            return 4096U +
+                   (P.values.size() + qp_model.q.size() + A.values.size() +
+                    qp_model.l.size() + qp_model.u.size()) * sizeof(double) +
+                   (P.row_indices.size() + P.column_offsets.size() + A.row_indices.size() +
+                    A.column_offsets.size()) * sizeof(std::size_t) +
+                   qp_model.variable_types.size() * sizeof(model::VariableType);
+        }();
+        if (!charge_or_fail(ctx, qp_model_bytes, "qp_working_model", out, result)) return;
         qp::QpOptions qopts;
         qopts.absolute_tolerance = 1e-6;
         qopts.relative_tolerance = 1e-6;
@@ -16,6 +29,11 @@ void run_qp(const model::Model& model, const SolveOptions& options, SolveResult&
                                    : 10000;
         qopts.deadline = options.lp_options.deadline;
         qopts.time_limit_seconds = options.lp_options.time_limit_seconds;
+        // IR-21: admit the KKT factor workspace into the solve-wide budget
+        // (contract §4), beside the engine's other charges.
+        qopts.charge_bytes = &core::SolveContext::charge_hook;
+        qopts.release_bytes = &core::SolveContext::release_hook;
+        qopts.charge_user = &ctx;
         // W3/D-08: GPU ADMM path requires explicit --backend gpu; the threshold
         // and device checks are enforced inside the solver (silent CPU fallback).
         const bool gpu_requested = options.backend == "gpu";
@@ -35,6 +53,19 @@ void run_qp(const model::Model& model, const SolveOptions& options, SolveResult&
         // when the solver's own gate (request + NNZ(P) + device) activated.
         out.backend_actually_used = qpres.gpu_path_active ? "cuda"
                                       : gpu_requested ? "cpu_fallback" : "cpu";
+        if (qpres.status == qp::QpStatus::unsupported &&
+            qpres.message == qp::kKktBudgetMessage) {
+            // IR-21: the KKT factor charge refused — report the budget stop
+            // directly so the boundary sees the site-named message instead of
+            // a generic unsupported verdict with a convexity diagnosis.
+            result.status = lp::reference::SolveStatus::resource_limit;
+            result.message = qpres.message;
+            out.message = qpres.message;
+            out.error = qpres.message;
+            out.original_message = qpres.message;
+            out.diagnostic.failure_site = "memory_budget";
+            out.diagnostic.suggested_recovery = "raise_memory_limit_bytes_or_reduce_the_model";
+        }
         if (stop_after_deadline(ctx, options, out, result, "QP solve")) return;
         core::StageScope verify_stage(ctx, "verify");
         out.lp_iterations = qpres.iterations;

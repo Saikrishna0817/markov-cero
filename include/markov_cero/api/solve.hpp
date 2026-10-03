@@ -123,10 +123,20 @@ struct SolveResult {
     std::size_t memory_charged_peak_bytes = 0;
 
     // RES-01 peak diagnostic (resource contract section 4): high-water mark
-    // of device-buffer bytes admitted by the solve-scoped DeviceBudget; 0
-    // when no device budget was installed (every non-gpu solve). The gpu
-    // buffer layer only — never a cudaMemGetInfo reading.
+    // of device-buffer bytes admitted by the solve-scoped DeviceBudget; 0 when
+    // no device budget was installed (every non-gpu solve). The gpu buffer
+    // layer only — never a cudaMemGetInfo reading.
     std::size_t device_memory_charged_peak_bytes = 0;
+
+    // IR-21 (resource contract section 4): process resident-set high-water
+    // sampled once at result finalization — VmHWM from /proc/self/status on
+    // Linux, getrusage(RUSAGE_SELF).ru_maxrss elsewhere (0 when unavailable).
+    // It covers the whole process (parse, solve, and everything the host did
+    // before this call), so a fresh CLI process reports ≈ this solve's peak
+    // while a long-running host sees its process peak. A measurement, never
+    // an enforced ceiling; see also `memory_charged_peak_bytes` for the
+    // instrumented solve-owned estimate.
+    std::size_t peak_rss_bytes = 0;
 
     // D-16: how often the ADMM penalty rho changed (each change triggers one
     // KKT re-factorization). 0 for every non-QP engine.

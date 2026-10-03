@@ -1,4 +1,5 @@
 #include "markov_cero/milp/node_lp.hpp"
+#include "markov_cero/core/solve_context.hpp"
 #include "markov_cero/qp/admm_solver.hpp"
 #include "markov_cero/qp/verifier.hpp"
 #include <algorithm>
@@ -32,6 +33,13 @@ NodeLpResult solve_node_qp(const model::Model& model, const Options& options,
         qo.absolute_tolerance = std::min(options.feasibility_tolerance, 1e-8);
         qo.relative_tolerance = qo.absolute_tolerance;
         qo.deadline = options.deadline;
+        if (options.context) {
+            // IR-21: node-QP KKT factor bytes enter the solve-wide budget
+            // (contract §4), live-outstanding for the solve scope.
+            qo.charge_bytes = &core::SolveContext::charge_hook;
+            qo.release_bytes = &core::SolveContext::release_hook;
+            qo.charge_user = options.context;
+        }
         const auto sol = qp::solve_qp(q, qo);
         result.iterations = sol.iterations;
         result.condition_estimate = sol.condition_estimate;

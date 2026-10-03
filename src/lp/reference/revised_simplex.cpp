@@ -206,7 +206,11 @@ Result solve(const transform::SparseCanonicalModel& m, const Options& o,
     retry_options.bland_anti_cycling = true;
     Result retry = solve_attempt(m, retry_options, warm_basis);
     if (retry.status != SolveStatus::numerical_failure) {
-        retry.message += " [recovered via Bland pivot rule]";
+        // IR-21: only a completed retry recovered — a resource stop (a
+        // refused factor charge) must not wear a recovery label.
+        if (retry.status != SolveStatus::resource_limit) {
+            retry.message += " [recovered via Bland pivot rule]";
+        }
         return retry;
     }
     return attempt;

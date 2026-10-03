@@ -16,6 +16,7 @@ py::dict to_python(api::SolveResult res) {
     out["stop_reason"] = res.stop_reason;
     out["memory_charged_peak_bytes"] = res.memory_charged_peak_bytes;
     out["device_memory_charged_peak_bytes"] = res.device_memory_charged_peak_bytes;
+    out["peak_rss_bytes"] = res.peak_rss_bytes;
     // QP-01 contract §5: request vs executed path (cpu / cuda / cpu_fallback).
     out["backend_actually_used"] = res.backend_actually_used;
     // W01/D16: stable identity of the validated model that produced this

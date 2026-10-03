@@ -41,6 +41,9 @@ linalg::SparseBasisOptions sparse_options(const Options& o) {
     so.maximum_updates = 16;
     so.eta_density_trigger = 0.9;
     so.deadline = o.deadline;
+    so.charge_bytes = o.charge_bytes;
+    so.release_bytes = o.release_bytes;
+    so.charge_user = o.charge_user;
     return so;
 }
 }

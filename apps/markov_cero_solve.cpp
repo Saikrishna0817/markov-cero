@@ -72,6 +72,7 @@ markov_cero::apps::JsonOutputData to_json_data(const markov_cero::api::SolveResu
     data.stop_reason = res.stop_reason;
     data.memory_charged_peak_bytes = res.memory_charged_peak_bytes;
     data.device_memory_charged_peak_bytes = res.device_memory_charged_peak_bytes;
+    data.peak_rss_bytes = res.peak_rss_bytes;
     data.result.status = res.status;
     data.result.message = res.message;
     data.result.primal = res.primal;

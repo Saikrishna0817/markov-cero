@@ -1,8 +1,9 @@
 // RES-01 (docs/contracts/resource-limits.md section 4): factor fill is bounded
-// by its fill cap, not by memory_limit_bytes. An over-full factorization must
-// throw std::length_error before any partial factor can be returned, so the
-// API boundary maps it to a work_limit resource stop and never to a numerical
-// result.
+// by its fill cap — an over-full factorization must throw std::length_error
+// before any partial factor can be returned, so the API boundary maps it to a
+// work_limit resource stop and never to a numerical result. The same fill is
+// also charged live-outstanding to memory_limit_bytes; a refused charge stops
+// with memory_budget_exhausted (IR-21, readiness_edge_cases_test.cpp).
 #include "markov_cero/linalg/sparse_basis.hpp"
 
 #include <stdexcept>

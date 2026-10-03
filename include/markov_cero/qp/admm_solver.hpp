@@ -43,6 +43,15 @@ struct QpOptions {
     // false restores a full symbolic factorization on every solve and is the
     // A/B control for "cache miss == current behavior".
     bool reuse_kkt_symbolic{true};
+    // IR-21 (contract resource-limits.md §4): solve-wide allocation budget
+    // hooks for the KKT factor workspace — the memory counterpart of
+    // `deadline`, plain function pointers so this layer stays free of core
+    // includes. `charge_bytes(user, n)` returns false when the budget refuses
+    // n bytes (the owner records the stop); `release_bytes(user, n)` hands
+    // them back. Set both together or leave both null.
+    bool (*charge_bytes)(void* user, std::size_t bytes) noexcept = nullptr;
+    void (*release_bytes)(void* user, std::size_t bytes) noexcept = nullptr;
+    void* charge_user = nullptr;
 };
 
 struct QpSolution {
@@ -103,6 +112,12 @@ private:
     bool gpu_requested_{false};
     KktSolver kkt_;
 };
+
+/// Reported when the sparse KKT factor charge exceeds the solve-wide memory
+/// budget (contract resource-limits.md §4): a public output string naming
+/// which workspace refused.
+inline constexpr const char* kKktBudgetMessage =
+    "sparse QP KKT factor exceeds the solve memory budget";
 
 /// High-level function to solve a QuadraticModel using ADMM.
 [[nodiscard]] QpSolution solve_qp(const QuadraticModel& model, const QpOptions& options = {});

@@ -89,6 +89,16 @@ struct SparseBasisOptions {
     bool fill_reducing_ordering{false};
     /// IR-20: cooperative factorization deadline (nullopt = unlimited).
     std::optional<std::chrono::steady_clock::time_point> deadline;
+    /// IR-21 (contract resource-limits.md §4): solve-wide allocation budget
+    /// hooks, the memory counterpart of `deadline` — plain function pointers
+    /// so linalg stays free of core includes. `charge_bytes(user, n)` returns
+    /// false when the budget refuses n bytes (the owner records the stop);
+    /// `release_bytes(user, n)` hands them back. Live-outstanding metering:
+    /// every admitted factor charge is released when the factorization is
+    /// destroyed, rebound or rebuilt. Both null = uncharged.
+    bool (*charge_bytes)(void* user, std::size_t bytes) noexcept = nullptr;
+    void (*release_bytes)(void* user, std::size_t bytes) noexcept = nullptr;
+    void* charge_user = nullptr;
 };
 struct SparseBasisStatistics {
     std::size_t refactorizations{};
@@ -104,8 +114,36 @@ struct SparseBasisStatistics {
 };
 class SparseBasisFactorization final {
   public:
+    SparseBasisFactorization() = default;
+    SparseBasisFactorization(const SparseBasisFactorization&) = delete;
+    SparseBasisFactorization& operator=(const SparseBasisFactorization&) = delete;
+    /// Move-only: the live factor charge transfers with the object, so the
+    /// moved-from factorization holds no bytes for the destructor to release.
+    SparseBasisFactorization(SparseBasisFactorization&& other) noexcept
+        : options_(other.options_),
+          current_basis_(std::move(other.current_basis_)),
+          base_(std::move(other.base_)),
+          updates_(std::move(other.updates_)),
+          statistics_(other.statistics_),
+          charged_factor_bytes_(other.charged_factor_bytes_) {
+        other.charged_factor_bytes_ = 0;
+    }
+    SparseBasisFactorization& operator=(SparseBasisFactorization&& other) noexcept;
+    ~SparseBasisFactorization() { release_charge(); }
+
     static SparseBasisFactorization factorize(const SparseCsc& basis,
                                               const SparseBasisOptions& options = {});
+
+    /// IR-21: rebind the budget hooks on a cached factorization — a repeated
+    /// solve session outlives the context that admitted the original charge,
+    /// so the stale user pointer must never be called. Resets the live-charge
+    /// baseline and re-admits the current factor bytes into the NEW solve's
+    /// budget; returns false when that charge is refused (the budget records
+    /// its stop, and the caller should drop the cache instead of using an
+    /// uncharged factor).
+    [[nodiscard]] bool rebind_charge(bool (*charge)(void*, std::size_t) noexcept,
+                                     void (*release)(void*, std::size_t) noexcept,
+                                     void* user) noexcept;
     [[nodiscard]] std::vector<double> solve(const std::vector<double>& rhs);
     [[nodiscard]] std::vector<double> solve_transpose(const std::vector<double>& rhs);
     void replace_column(std::size_t position, const std::vector<double>& column);
@@ -145,6 +183,17 @@ class SparseBasisFactorization final {
     SparseLu base_;
     std::vector<Eta> updates_;
     SparseBasisStatistics statistics_;
+    /// IR-21: bytes of the current base factor admitted through the hooks
+    /// (0 when uncharged or after a refusal). Live-outstanding: released on
+    /// rebuild, rebind, destruction and move-out.
+    std::size_t charged_factor_bytes_{0};
+
+    /// Estimated live footprint of `factor` (entries, offsets, order vectors;
+    /// an explicit estimate, not allocator telemetry — contract §4).
+    [[nodiscard]] static std::size_t factor_bytes(const SparseLu& factor) noexcept;
+    /// Charges the growth of the current base factor; false = refused.
+    [[nodiscard]] bool charge_base() noexcept;
+    void release_charge() noexcept;
 };
 [[nodiscard]] double sparse_infinity_residual(const SparseCsc& matrix, const std::vector<double>& x,
                                               const std::vector<double>& rhs,

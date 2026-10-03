@@ -104,6 +104,10 @@ void test_api_resource_options() {
     const auto solved = markov_cero::api::solve_file("examples/blend.mps", options);
     assert(solved.status == SolveStatus::optimal && solved.verified);
     assert(solved.stop_reason.empty());
+#if defined(__linux__) || defined(__APPLE__)
+    // IR-21: publish the process RSS high-water (resource-limits.md §4); 0 elsewhere.
+    assert(solved.peak_rss_bytes > 0);
+#endif
     options.memory_limit_bytes = 0;
     assert(markov_cero::api::solve_file("examples/blend.mps", options).status ==
            SolveStatus::invalid_options);

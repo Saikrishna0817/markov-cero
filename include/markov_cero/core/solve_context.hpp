@@ -156,6 +156,20 @@ class SolveContext final {
         return false;
     }
 
+    /// IR-21 hook pair for option structs that take plain function pointers
+    /// (`lp::reference::Options`, `lp::dual::Options`, `qp::QpOptions`,
+    /// `linalg::SparseBasisOptions`), so those layers admit factor-fill bytes
+    /// into the same solve-wide budget without including core headers —
+    /// exactly how they already take a bare deadline. Pass
+    /// `&SolveContext::charge_hook` / `&SolveContext::release_hook` with the
+    /// owning context as `user`.
+    static bool charge_hook(void* user, std::size_t bytes) noexcept {
+        return static_cast<SolveContext*>(user)->charge_or_stop(bytes);
+    }
+    static void release_hook(void* user, std::size_t bytes) noexcept {
+        static_cast<SolveContext*>(user)->memory().release(bytes);
+    }
+
     /// Borrowed sink; must outlive this context. Pass nullptr to disable.
     void set_trace_sink(TraceSink* sink) noexcept { sink_ = sink; }
     [[nodiscard]] TraceSink* trace_sink() const noexcept { return sink_; }

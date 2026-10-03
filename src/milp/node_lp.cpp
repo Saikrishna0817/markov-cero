@@ -1,5 +1,6 @@
 #include "markov_cero/milp/node_lp.hpp"
 
+#include "markov_cero/core/solve_context.hpp"
 #include "markov_cero/qp/admm_solver.hpp"
 #include "markov_cero/lp/first_order/pdlp.hpp"
 
@@ -21,6 +22,18 @@ constexpr std::size_t kNodeLpIterationCap = 50000;
 constexpr std::size_t kRevisedNodeLpMaxRows = 4096;
 constexpr std::size_t kRevisedNodeLpMaxColumns = 16384;
 constexpr std::size_t kSparseNodeLpIterationCap = 10000;
+
+/// IR-21: admit node-relaxation basis-factor fill into the solve-wide
+/// allocation budget (contract resource-limits.md §4) when the search
+/// carries a shared context. The charge is live-outstanding: the node LP's
+/// factor bytes return to the budget when the solve scope ends.
+template <class O>
+void attach_budget_hooks(core::SolveContext* context, O& opts) {
+    if (!context) return;
+    opts.charge_bytes = &core::SolveContext::charge_hook;
+    opts.release_bytes = &core::SolveContext::release_hook;
+    opts.charge_user = context;
+}
 
 void certify_result(const transform::SparseCanonicalModel& model,
                     lp::reference::Result& result, double tolerance) {
@@ -163,6 +176,7 @@ NodeLpResult solve_node_relaxation(
             dopts.feasibility_tolerance = options.feasibility_tolerance;
             dopts.allow_cold_fallback = true;
             dopts.deadline = options.deadline;
+            attach_budget_hooks(options.context, dopts);
             auto dres = lp::dual::solve(dense, dopts, warm_start);
             certify_result(canon, dres.solution, primal_tol);
             res.status = dres.solution.status;
@@ -185,6 +199,7 @@ NodeLpResult solve_node_relaxation(
                 ropts.feasibility_tolerance = options.feasibility_tolerance;
                 ropts.bland_anti_cycling = false;
                 ropts.deadline = options.deadline;
+                attach_budget_hooks(options.context, ropts);
                 auto rres = lp::reference::solve(canon, ropts);
                 certify_result(canon, rres, primal_tol);
                 res.iterations += rres.phase_one_iterations + rres.phase_two_iterations;
@@ -219,6 +234,7 @@ NodeLpResult solve_node_relaxation(
             ropts.feasibility_tolerance = options.feasibility_tolerance;
             ropts.bland_anti_cycling = false;
             ropts.deadline = options.deadline;
+            attach_budget_hooks(options.context, ropts);
             auto rres = lp::reference::solve(canon, ropts);
                 certify_result(canon, rres, primal_tol);
             res.status = rres.status;

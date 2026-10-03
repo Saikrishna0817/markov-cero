@@ -20,6 +20,30 @@
   `evidence/defect-closure-register.csv` with the envelope-scoped residual
   (one host, not a formal worst case; callback bodies caller-owned) documented.
 
+### 2026-10-03 ir — solve-wide factor-fill budget and published peak RSS (IR-21 closure)
+
+- **Gap** — factor fill and engine working models were bounded by fill and
+  dimension caps plus partial charge points, not by one solve-wide budget;
+  peak RSS was never published and there was no adversarial peak-memory
+  evidence, so IR-21 stayed open on "no uniform solve-wide allocation budget
+  or large adversarial peak-memory evidence".
+- **Change** — sparse basis-factor fill (reference and dual simplex,
+  node-relaxation LPs, cross-solve session-cache rebinds) and the QP KKT
+  factor workspace now admit bytes live-outstanding to `memory_limit_bytes`
+  with fail-closed refusals (`resource_limit` + `memory_budget_exhausted` +
+  site-named messages); QP and PDLP working-model charges close the remaining
+  engine gaps; retained result vectors are admitted best-effort at
+  finalization; every result publishes `peak_rss_bytes` (Linux `VmHWM` /
+  macOS `getrusage`, sampled once — a measurement, never a ceiling);
+  `scripts/peak_memory_envelope.py` measures the budget ladder, a
+  dense-vs-banded adversarial fill contrast and the IR-19 transient-RSS
+  follow-up.
+- **Evidence** — `evidence/peak-memory-envelope-2026-10-03.json` (0 failures);
+  IR-21 closed in `evidence/defect-closure-register.csv` with the honest
+  residual (cooperative in-process admission, uncharged crossover /
+  strong-branching / NLP classes stay fill- and dimension-capped, contract
+  §4; peak RSS is a publication, not a ceiling — contract §4c).
+
 ## 0.5.3 — 2026-10-03
 
 ### 2026-10-03 res — solve-scoped device memory budget (RES-01 device allocations)

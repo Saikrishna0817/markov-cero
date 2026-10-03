@@ -70,7 +70,11 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                 } else if (out.resolved_engine == "dual") {
                     lp::dual::Options dual_opts;
                     dual_opts.iteration_limit = options.lp_options.iteration_limit;
+                    dual_opts.feasibility_tolerance = options.lp_options.feasibility_tolerance;
                     dual_opts.deadline = options.lp_options.deadline;
+                    dual_opts.charge_bytes = &core::SolveContext::charge_hook;
+                    dual_opts.release_bytes = &core::SolveContext::release_hook;
+                    dual_opts.charge_user = &ctx;
                     std::optional<lp::dual::BasisState> warm_basis;
                     if (!options.warm_start_path.empty()) {
                         std::ifstream bfile(options.warm_start_path);
@@ -89,7 +93,13 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                     out.used_warm_start = dual_res.used_warm_start;
                     out.used_cold_fallback = dual_res.used_cold_fallback;
                 } else {
-                    result = lp::reference::solve(working_model, options.lp_options);
+                    // IR-21: admit basis-factor fill into the solve-wide
+                    // budget (contract §4) alongside the working-model charge.
+                    auto lp_opts = options.lp_options;
+                    lp_opts.charge_bytes = &core::SolveContext::charge_hook;
+                    lp_opts.release_bytes = &core::SolveContext::release_hook;
+                    lp_opts.charge_user = &ctx;
+                    result = lp::reference::solve(working_model, lp_opts);
                     if (result.status == lp::reference::SolveStatus::optimal &&
                         result.basis.size() == working_model.matrix.rows) {
                         // Same degenerate-basis guard as the ipm-fallback path:

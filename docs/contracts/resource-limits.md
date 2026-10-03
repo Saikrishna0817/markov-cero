@@ -19,6 +19,8 @@ Related contracts and evidence:
   the recorded inputs).
 - `evidence/device-memory-budget-2026-10-03.json` — device-buffer metering:
   budget semantics, boundary mapping and host/device solve behavior.
+- `evidence/peak-memory-envelope-2026-10-03.json` — measured solve budget
+  ladder, adversarial factor-fill contrast and published peak RSS (IR-21).
 
 ## 1. The cooperative stop model
 
@@ -112,11 +114,30 @@ meaning do not change.
 - **Charges are explicit estimates, not allocator telemetry.** Instrumented
   charge points include the canonical working model, proof
   build, NodeView materialization, and frontier nodes — `sizeof(BranchNode)`
-  per pushed node, the same estimate on the serial and parallel searches.
+  per pushed node, the same estimate on the serial and parallel searches —
+  plus the factor workspaces charged live-outstanding (admitted when the
+  factor is built, released when it dies through rebuild, scope end, move or
+  session cache reset): sparse basis-factor fill in the reference simplex, the
+  dual session (including across-solve cache rebinds), node-relaxation LPs,
+  and the sparse QP KKT factor workspace in both the root QP and node QPs,
+  and the retained result vectors at finalization (best-effort: a refused
+  retained charge never rewrites an already-completed result).
   `memory_charged_peak_bytes` reports the high-water mark of admitted
-  instrumented charges only. Factor fill is bounded by its fill cap — an
+  instrumented charges. Factor fill is still bounded by its fill cap — an
   over-full factorization throws `std::length_error` before any partial
-  factor exists and surfaces as `work_limit` — not by `memory_limit_bytes`.
+  factor exists and surfaces as `work_limit` — and is additionally charged to
+  `memory_limit_bytes`; a refused charge stops the factorization with
+  `memory_budget_exhausted` instead of admitting nothing and running. Three
+  classes stay outside the charge and are bounded by their own caps instead:
+  interior-point and PDLP crossover/normal-equation factors (one-shot, fill-
+  capped), strong-branching and heuristic LP solves (no solve context reaches
+  them), and NLP solver workspaces (dimension-capped).
+- **`peak_rss_bytes` is a measurement, not a ceiling.** Every result
+  publishes the process resident-set high-water mark sampled once at
+  finalization (`/proc/self/status` `VmHWM` on Linux, `getrusage` on macOS,
+  0 elsewhere). It covers the whole process — parse, canonicalization and
+  solve — never refuses work, and says nothing about memory held outside the
+  process.
 - **`device_memory_limit_bytes` meters the gpu buffer layer, not all device
   memory.** It bounds bytes admitted through `gpu::DeviceBuffer` while the
   solve-scoped budget is installed (the engine phase of a `backend == "gpu"`
@@ -154,6 +175,40 @@ sections named in §4 remain non-preemptible and are bounded by their
 input, iteration, pass and fill caps, and user callback bodies run to
 completion by design.
 
+## 4c. Measured peak-memory envelope (IR-21, 2026-10-03)
+
+Budget behavior is measured through the production CLI by
+`scripts/peak_memory_envelope.py` and recorded in
+`evidence/peak-memory-envelope-2026-10-03.json` (0 failures, 66 s, three
+sections).
+
+- **Budget ladder** — per instance a `--memory-limit-bytes` ladder from 1 byte
+  to 2× the unlimited charged peak: `e226` (LP, peak 157,280 B), `QPLIB_0010`
+  (QP, 6,840 B) and `stein15` (MILP, 97,000 B). Every 1-byte run refused the
+  first charge with `ResourceLimit` + `memory_budget_exhausted`, a
+  memory-naming message and `failure_site = "memory_budget"`; admitted bytes
+  never exceeded the configured limit; the charged peak was monotone in the
+  limit; a mid-ladder limit admitted the first charge and then refused a
+  later one naming a factor workspace (`sparse basis factor exceeds the solve
+  memory budget`, `sparse QP KKT factor exceeds the solve memory budget`,
+  root-relaxation factor refusal for the MILP); every 2×-peak run solved
+  optimally with a published positive `peak_rss_bytes`.
+- **Adversarial factor fill** — a deterministic dense 150×150 LP charged
+  885,176 B (RSS 11,456,512 B) against 43,160 B (RSS 5,677,056 B) for its
+  banded control; one shared budget of 619,623 B refused the dense instance
+  at its sparse basis factor while the banded control solved `Optimal` under
+  the same limit.
+- **IR-19 transient-RSS follow-up** — 16 bounded re-measure runs of
+  pk1/sp150x300d/gen-ip002 (the historical ~990 MiB instances) published
+  `peak_rss_bytes` on every run with none at or above 500 MiB (max
+  20,475,904 B); the transient was not reproduced. This section is
+  report-only: it is not proof of absence.
+
+These are measured bounds for the tested envelope on one host. Admission is
+cooperative and in-process, `peak_rss_bytes` is a publication and never a
+ceiling, and the uncharged classes named in §4 stay bounded by their own
+fill/dimension caps.
+
 ## 5. Boundary tests
 
 | Test | Property |
@@ -166,13 +221,14 @@ completion by design.
 | `tests/stop_reason_test.cpp` — serial MILP time limit | engine-local time limit → `deadline_exceeded` |
 | `tests/stop_reason_test.cpp` — serial queue capacity | unattributable engine-internal stop → non-empty (`unspecified_resource_limit`) |
 | `tests/stop_reason_test.cpp` — shared cancellation | serial search polls the shared context → `resource_limit` naming `cancelled`, never a proven search |
-| `tests/sparse_fill_limit_test.cpp` — factor fill cap | over-full factor throws `length_error` before any partial factor (→ `work_limit` at the boundary) |
+| `tests/sparse_fill_limit_test.cpp` — factor fill cap | over-full factor throws `length_error` before any partial factor (→ `work_limit` at the boundary); the fill cap remains the pre-allocation preflight |
+| `tests/readiness_edge_cases_test.cpp` — factor charge lifecycle | basis-factor fill admits while the factor lives and releases with it; a refused charge throws `length_error` naming the budget and admits nothing; session-cached rebind moves bytes without double-charging; the QP KKT charge releases at solve end and a refusal returns `unsupported` with the budget message |
 | `tests/stop_reason_test.cpp` — serial queue charge | refused node charge → `resource_limit` + `memory_budget_exhausted`; honest incumbent/bound only |
 | `tests/stop_reason_test.cpp` — peak bounds | normal solves report a non-zero `memory_charged_peak_bytes`; admitted charges never exceed the budget |
 | `tests/device_budget_test.cpp` — device budget meter | over-limit charge refuses before the allocator runs; live release keeps per-iteration churn inside the limit; refusal stays sticky for the solve |
 | `tests/stop_reason_test.cpp` — device budget mapping | refusal maps to `resource_limit` + `device_memory_budget_exhausted` + `device_memory_budget` |
 | `tests/device_budget_test.cpp` — solve behavior | GPU host with a 1-byte device limit → `resource_limit` naming the device budget; host without a device → honest CPU fallback with an empty `stop_reason` |
-| `tests/api_test.cpp` | normal solves keep an empty `stop_reason`; deadline/memory paths keep their reason |
+| `tests/api_test.cpp` | normal solves keep an empty `stop_reason`; deadline/memory paths keep their reason; results publish a positive `peak_rss_bytes` on Linux/macOS |
 | `tests/readiness_edge_cases_test.cpp` — expired deadline across engines | already-expired solve-wide deadline → `resource_limit` + `deadline_exceeded` + unverified for primal/dual/ipm/pdlp/milp/parallel/qp; undeadlined control stays off the resource path; expired SQP deadline stops with `resource_limit` |
 
 ## 6. Change procedure
