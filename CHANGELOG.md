@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+### 2026-10-03 tests — refinery fixture proof budget 300 → 600 s (CI Debug exhaustion)
+
+- **Symptom** — CI run `37103783489` (head `b83ce4b`) left only
+  gcc/Debug and clang/Debug red: `refinery_domain_and_iis` exited 1 at
+  441 s / 429 s (under the 1200 s ctest cap) with
+  `[-] Error in refinery tests: …/data/cases/production_planning_large.mps`
+  after every earlier sub-test passed.
+- **Cause** — the `gap_satisfied` fixture's independent MIP proof build
+  (161–173 s on local `-O0`, ≈2.2× on the CI Debug runner ⇒ ~355–380 s)
+  crossed the test's 300 s `mip_proof_time_limit_seconds`;
+  `engine_milp.cpp` then honestly demotes `gap_satisfied` → `feasible`
+  without a canonical proof, and the fixture require fails. Reproduced
+  byte-identically locally by lowering the budget to 150 s (and one
+  fixture earlier at 1 s).
+- **Change** — budget 300 → 600 s (ctest TIMEOUT 1200 unchanged,
+  estimated CI Debug suite ~785 s) plus a per-fixture `[t]` stderr line
+  (elapsed, status, verified, proof fields) so CI records the numbers.
+  The proof build itself grew **+39%** vs `8a2a94b` (116 s → 161 s
+  solo) with the pivot-path changes — recorded as a follow-up in the
+  record, not fixed here.
+  [record](evidence/lp-refactorize-perf-2026-10-03.json)
+
 ### 2026-10-03 lp — restore trigger-only refactorize at pivot time (post-campaign CI regression)
 
 - **Regression** — CI run `37096027191` (head `692967b`) failed five

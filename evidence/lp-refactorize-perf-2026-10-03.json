@@ -44,11 +44,11 @@
         "failing": "10.93 (gcc), 15.43 Failed on clang/Debug (wall limit)"
       },
       "domain_production_planning_large": {
-        "previous": 62.90,
+        "previous": 62.9,
         "failing": "122.33 (passed, 1.94x slower)"
       },
       "lp_sparse_differential": {
-        "previous": 62.10,
+        "previous": 62.1,
         "failing": "115.32 (passed, 1.86x slower)"
       },
       "median_test_ratio": 0.83,
@@ -108,6 +108,30 @@
     "superseded_binary": "sha 8867a84cd95166837fc3c4a6090110f2f613c69f2e7a183fb0bc712590a238ba (692967b), pinned by evidence/bench04-preregistration-2026-10-03.json and referenced by evidence/lp-deferred-fix-2026-10-03.json",
     "records_stand": "BENCH-04 rows and the deferred-fix record are a true measurement of that binary and are never rewritten; this fix supersedes the binary after the campaign",
     "revalidation": "the post-fix binary re-passed every deferred-set gate locally: 122/122 suite, LP-01 17/30, CLI 7/7 Optimal + verified; BENCH-04 was not re-run, which would require a new preregistration under the campaign rules"
+  },
+  "ci_followup": {
+    "symptom": "CI run 37103783489 (head b83ce4b) kept only gcc/Debug and clang/Debug red: refinery_domain_and_iis exited 1 at 441.38 s / 428.69 s (under the 1200 s ctest cap) with '[-] Error in refinery tests: .../data/cases/production_planning_large.mps' after every earlier sub-test printed passed.",
+    "diagnosis": "The fixture require (status == gap_satisfied && original_verified) fails because the independent MIP proof build for the gap_satisfied fixture exceeds the test's 300 s mip_proof_time_limit_seconds on CI's -O0 Debug runners: an exhausted proof leaves canonical_verified false and engine_milp.cpp demotes gap_satisfied to feasible ('independent proof exhausted; optimality not certified'). Local -O0 proof build for that fixture costs 161.4-165.7 s; the green CI Debug run at 8a2a94b executed the suite at about 2.2x the local solo time (600.82 s vs 276 s), putting the CI build near 350-365 s, over the 300 s cap. ASan-UBSan and TSan compile RelWithDebInfo -O2 (fast proof builds) and Release is trivially fast, so only Debug went red.",
+    "local_reproduction": "Lowering the budget to 150 s makes fixture4 return proof=exhausted, budget_exhausted=1, status demoted GapSatisfied -> Feasible, with the byte-identical '[-] Error in refinery tests: .../production_planning_large.mps' and exit 1. A 1 s budget fails one fixture earlier at process_network_large (its proof build is 6.6 s local) with the same signature, so the message shape is diagnostic of exhaustion, not of that path alone.",
+    "measurements": {
+      "fixture4_proof_build_ms_8a2a94b_solo": 116052,
+      "fixture4_proof_build_ms_head_solo": [
+        161371,
+        165719,
+        172523
+      ],
+      "proof_build_growth": "+39% versus 8a2a94b on the same host and flags; attributed only as far as the node-LP pivot-path changes altering the tree/replay cost, not explained further",
+      "local_suite_solo_8a2a94b_s": 276,
+      "ci_debug_suite_8a2a94b_s": 600.82,
+      "ci_to_local_ratio": "2.2 (suite-level, 8a2a94b); fixture4 CI build with the 600 s budget estimated 355-380 s, headroom ~1.6x",
+      "other_head_proof_builds_solo_s": "supply_chain_large 59.1, refinery_scheduling_large 14.4, process_network_large 6.6 - all far below the cap even at 2.2x"
+    },
+    "fix": "tests/refinery_test.cpp: mip_proof_time_limit_seconds 300 -> 600 (estimated CI Debug suite about 785 s, ctest TIMEOUT 1200 unchanged) plus a one-line per-fixture [t] stderr diagnostic (elapsed_ms, status, verified, objective, proof status, exhaustion, proof_build_ms) so CI records the numbers on the next run. No solver semantics changed; the honest-demotion behavior at engine_milp.cpp:99-106 is untouched.",
+    "not_claimed": [
+      "the +39% proof-build growth is recorded as a follow-up, not fixed here",
+      "CI per-fixture timings are inferred from suite ratios; the [t] lines land with the fix's CI run",
+      "no budget, timeout or check loosened anywhere else"
+    ]
   },
   "not_claimed": [
     "no speed claim",

@@ -9,6 +9,7 @@
 #include "markov_cero/refinery/refinery_units.hpp"
 
 #include <cassert>
+#include <chrono>
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -256,30 +257,29 @@ void test_generated_case_fixtures() {
     struct Case { const char* name; Status status; double objective; };
     const Case cases[] = {
         {"crude_blending_large.qps", Status::optimal, 38572.99796295821}, {"process_network_large.mps", Status::optimal, 6420.866666666667},
-        {"refinery_scheduling_large.mps", Status::optimal, -65416.9},
-        {"production_planning_large.mps", Status::gap_satisfied, 93931.950045}, {"supply_chain_large.mps", Status::optimal, 926342.1266},
-        {"power_dispatch_dc_opf.qps", Status::optimal, 144.77105258043972},
+        {"refinery_scheduling_large.mps", Status::optimal, -65416.9}, {"production_planning_large.mps", Status::gap_satisfied, 93931.950045},
+        {"supply_chain_large.mps", Status::optimal, 926342.1266}, {"power_dispatch_dc_opf.qps", Status::optimal, 144.77105258043972},
         {"neiro_refinery_scheduling.mps", Status::optimal, -275030.0}, {"li_crude_blending.mps", Status::optimal, 5760.0},
-        {"capitanescu_dc_opf.mps", Status::optimal, 0.0},
-        {"shapiro_network_flow.mps", Status::optimal, 1176.0}, {"pochet_lot_sizing.mps", Status::optimal, 1050.0},
+        {"capitanescu_dc_opf.mps", Status::optimal, 0.0}, {"shapiro_network_flow.mps", Status::optimal, 1176.0}, {"pochet_lot_sizing.mps", Status::optimal, 1050.0},
     };
     for (const auto& fixture : cases) {
         const std::string path = std::string(MARKOV_CERO_SOURCE_DIR) + "/data/cases/" + fixture.name;
         std::ifstream first_stream(path), second_stream(path);
         require(first_stream.good() && second_stream.good(), path.c_str());
         const auto first = markov_cero::io::parse_mps(first_stream), second = markov_cero::io::parse_mps(second_stream);
-        require(markov_cero::model::hash_model(first).fingerprint() ==
-                markov_cero::model::hash_model(second).fingerprint(), path.c_str());
+        require(markov_cero::model::hash_model(first).fingerprint() == markov_cero::model::hash_model(second).fingerprint(), path.c_str());
         markov_cero::api::SolveOptions options;
         options.milp_options.time_limit_seconds = 3600.0; // default 60s would truncate the proof audit
-        options.mip_proof_time_limit_seconds = 300.0;     // generous audit cap: exhaustion must demote honestly
-        if (fixture.status == Status::gap_satisfied)
-            options.milp_options.relative_gap_tolerance = 0.05;
+        options.mip_proof_time_limit_seconds = 600.0;     // 300s was exhausted by CI Debug -O0 proof builds
+        if (fixture.status == Status::gap_satisfied) options.milp_options.relative_gap_tolerance = 0.05;
+        const auto t0 = std::chrono::steady_clock::now();
         const auto result = markov_cero::api::solve_model(first, options);
+        const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - t0).count();
+        std::cerr << "[t] " << fixture.name << " ms=" << ms << " status=" << markov_cero::lp::reference::to_string(result.status)
+                  << " verified=" << result.original_verified << " obj=" << result.objective << " proof=" << result.proof_status << " exhausted=" << result.proof_budget_exhausted << " build_ms=" << result.mip_proof_build_ms << "\n";
         require(result.status == fixture.status && result.original_verified, path.c_str());
         require(std::fabs(result.objective - fixture.objective) <= 1e-3 + 1e-6 * std::fabs(fixture.objective), path.c_str());
     }
-    std::cout << "[+] 11 generated fixtures: statuses, objectives and second-parse fingerprints passed\n";
 }
 
 int main() {

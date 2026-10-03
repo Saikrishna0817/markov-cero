@@ -204,7 +204,13 @@ Executed 2026-09-30:
    `needs_refactorization()` trigger again with the
    `basis_solves_cleanly` pivot gates retained; 122/122, LP-01 17/30
    and the seven CLI cells re-verified. BENCH-04's pinned binary is
-   superseded by this fix; its rows stand as measured.
+   superseded by this fix; its rows stand as measured. A second
+   Debug-only red the same day (CI `37103783489`) traced to the
+   refinery fixture's proof build growing 39% (116 s → 161–173 s solo
+   `-O0`) across the test's 300 s proof budget on the CI runner, so
+   the honest `gap_satisfied` → `feasible` demotion tripped the
+   fixture require; budget is 600 s now and the proof-build growth
+   is an open follow-up in that record.
  - Benchmark: [`evidence/lp-sparse-rss-20260930.json`](../../evidence/lp-sparse-rss-20260930.json)
   — retired dense dispatch shape vs sparse-first, forked VmHWM per
   (instance, path). Dense peak ≥ sparse peak on all 18 records; the
