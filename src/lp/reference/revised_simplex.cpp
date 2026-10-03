@@ -35,7 +35,8 @@ bool options_invalid(const Options& o) {
 }
 }
 
-Result solve_attempt(const transform::SparseCanonicalModel& m, const Options& o) {
+Result solve_attempt(const transform::SparseCanonicalModel& m, const Options& o,
+                     const std::vector<std::size_t>& warm_basis) {
     Result result;
     try {
         m.validate();
@@ -61,7 +62,32 @@ Result solve_attempt(const transform::SparseCanonicalModel& m, const Options& o)
         std::copy(m.objective.begin(), m.objective.end(), phase_two_cost.begin());
         std::size_t remaining = o.iteration_limit;
         const auto s_opts = sparse_options(o);
-        const bool crashed = crash_basis(w, o.pivot_tolerance, s_opts);
+        // Warm start (crossover handoff): accept the supplied basis only when
+        // it factorizes and its basic solution is primal feasible; anything
+        // else discards it and falls through to crash_basis() exactly as the
+        // two-argument solve() would.
+        bool warm_accepted = false;
+        if (!warm_basis.empty()) {
+            try {
+                if (warm_basis.size() != w.rows)
+                    throw std::invalid_argument("warm basis dimension mismatch");
+                std::vector<char> seen(w.total_columns, 0);
+                for (std::size_t j : warm_basis) {
+                    if (j >= w.total_columns || seen[j])
+                        throw std::invalid_argument("warm basis column invalid or duplicated");
+                    seen[j] = 1;
+                }
+                w.basis.assign(warm_basis.begin(), warm_basis.end());
+                auto warm_factor = make_factor(w, s_opts);
+                auto warm_x = warm_factor.solve(w.b);
+                snap_basic_solution(warm_x, o.feasibility_tolerance);
+                warm_accepted = true;
+            } catch (const std::exception&) {
+                warm_accepted = false;
+            }
+        }
+        const bool crashed =
+            warm_accepted || crash_basis(w, o.pivot_tolerance, s_opts);
 
         if (!crashed) {
             w.basis.resize(w.rows);
@@ -86,7 +112,8 @@ Result solve_attempt(const transform::SparseCanonicalModel& m, const Options& o)
             }
             if (one.status != SolveStatus::optimal) {
                 result.status = SolveStatus::numerical_failure;
-                result.message = std::string("phase I failed: ") + to_string(one.status);
+                result.message = std::string("phase I failed: ") +
+                                 (one.message.empty() ? to_string(one.status) : one.message);
                 return result;
             }
             auto one_x = full_solution(w, one.xb);
@@ -129,7 +156,8 @@ Result solve_attempt(const transform::SparseCanonicalModel& m, const Options& o)
                            std::max(o.feasibility_tolerance, o.dual_tolerance));
         }
         if (two.status != SolveStatus::optimal) {
-            result.message = "phase II numerical failure";
+            result.message = std::string("phase II numerical failure") +
+                             (two.message.empty() ? "" : ": " + two.message);
             return result;
         }
         auto x = full_solution(w, two.xb);
@@ -156,7 +184,8 @@ Result solve_attempt(const transform::SparseCanonicalModel& m, const Options& o)
         return result;
     }
 }
-Result solve(const transform::SparseCanonicalModel& m, const Options& o) {
+Result solve(const transform::SparseCanonicalModel& m, const Options& o,
+             const std::vector<std::size_t>& warm_basis) {
     Options timed = o;
     if (!timed.deadline && std::isfinite(timed.time_limit_seconds) &&
         timed.time_limit_seconds > 0.0) {
@@ -164,7 +193,7 @@ Result solve(const transform::SparseCanonicalModel& m, const Options& o) {
                          std::chrono::duration_cast<std::chrono::steady_clock::duration>(
                              std::chrono::duration<double>(timed.time_limit_seconds));
     }
-    Result attempt = solve_attempt(m, timed);
+    Result attempt = solve_attempt(m, timed, warm_basis);
     if (attempt.status != SolveStatus::numerical_failure) {
         return attempt;
     }
@@ -175,12 +204,15 @@ Result solve(const transform::SparseCanonicalModel& m, const Options& o) {
     // retry also fails, the original attempt's message is the honest answer.
     Options retry_options = timed;
     retry_options.bland_anti_cycling = true;
-    Result retry = solve_attempt(m, retry_options);
+    Result retry = solve_attempt(m, retry_options, warm_basis);
     if (retry.status != SolveStatus::numerical_failure) {
         retry.message += " [recovered via Bland pivot rule]";
         return retry;
     }
     return attempt;
+}
+Result solve(const transform::SparseCanonicalModel& m, const Options& o) {
+    return solve(m, o, std::vector<std::size_t>{});
 }
 Result solve(const transform::CanonicalModel& model, const Options& options) {
     // Dense adapter (contract docs/contracts/sparse-lp-path.md §1): one shared

@@ -7,12 +7,13 @@ IterationOutcome iterate(Work& w, const std::vector<double>& cost, std::size_t e
                          std::vector<IterationRecord>& log, bool& telemetry_truncated) {
     IterationOutcome out;
     std::vector<char> rejected_column(w.total_columns, 0);
+    std::vector<unsigned char> reject_revivals(w.total_columns, 0);
     bool artificial_reset_used = false;
     const auto s_opts = sparse_options(o);
     auto factor = make_factor(w, s_opts);
-    std::deque<std::pair<std::size_t, std::size_t>> recent_pivots;
     std::size_t degenerate_steps = 0;
     double last_obj = std::numeric_limits<double>::quiet_NaN();
+    const double b_scale = inf_norm(w.b);
     for (std::size_t step = 0; step <= budget; ++step) {
         if (o.deadline && std::chrono::steady_clock::now() >= *o.deadline) {
             out.status = SolveStatus::resource_limit;
@@ -26,219 +27,198 @@ IterationOutcome iterate(Work& w, const std::vector<double>& cost, std::size_t e
             record_condition(factor, out);
             return out;
         }
-        auto xb = factor.solve(w.b);
-        bool has_neg = false;
-        for (double v : xb) {
-            if (v < -1e-5) {
-                has_neg = true;
-                break;
-            }
-        }
-        if (has_neg) {
-
-            try {
-                factor = make_factor(w, s_opts);
-                xb = factor.solve(w.b);
-            } catch (const std::exception& e) {
-                // The accumulated basis itself no longer factorizes: the update
-                // chain drifted into numerical singularity. Phase I carries a
-                // always-feasible identity fallback (original_columns + i), so
-                // reset to it and re-enter phase I from the artificial basis;
-                // in phase II report numerical failure honestly.
-                if (phase != 1 || artificial_reset_used) {
-                    // One reset per phase-I: a second singularity means the
-                    // drift is structural, and re-entering from the artificial
-                    // basis would only burn the iteration budget in a loop.
-                    out.status = SolveStatus::numerical_failure;
-                    out.iterations = step;
-                    record_condition(factor, out);
-                    return out;
-                }
-                artificial_reset_used = true;
-                for (std::size_t i = 0; i < w.rows; ++i) {
-                    w.basis[i] = w.original_columns + i;
-                }
-                factor = make_factor(w, s_opts);
-                xb = factor.solve(w.b);
-                (void)e;
-            }
-        }
-        try {
-            snap_basic_solution(xb, o.feasibility_tolerance);
-        } catch (const std::exception& e) {
-
-            throw;
-        }
-        for (double value : xb) {
-            if (!std::isfinite(value) || std::abs(value) > 1e30) {
-                out.status = SolveStatus::numerical_failure;
-                out.iterations = step;
-                record_condition(factor, out);
-                return out;
-            }
-        }
-        std::vector<double> cb(w.rows);
-        std::vector<bool> basic(w.total_columns);
-        for (std::size_t i = 0; i < w.rows; ++i) {
-            cb[i] = cost[w.basis[i]];
-            basic[w.basis[i]] = true;
-        }
-        auto y = factor.solve_transpose(cb);
-        for (int refinement = 0; refinement < 2; ++refinement) {
-            std::vector<double> residual(w.rows);
-            for (std::size_t j = 0; j < w.rows; ++j) {
-                long double value = cb[j];
-                for (const auto& [i, coefficient] : w.a[w.basis[j]])
-                    value -= static_cast<long double>(coefficient) * y[i];
-                residual[j] = static_cast<double>(value);
-            }
-            const auto correction = factor.solve_transpose(residual);
-            for (std::size_t i = 0; i < w.rows; ++i) y[i] += correction[i];
-        }
-
-        const double current_obj = dot(cb, xb);
-        if (std::isnan(last_obj) || std::abs(current_obj - last_obj) > 1e-9) {
-            degenerate_steps = 0;
-            recent_pivots.clear();
-        } else {
-            ++degenerate_steps;
-        }
-        last_obj = current_obj;
-
-        const bool use_bland = o.bland_anti_cycling || (degenerate_steps >= 20);
-
-        std::size_t entering = enter_limit;
-        std::size_t leaving_row = w.rows;
-        std::vector<double> d;
-        double theta = 0;
-        double minimum_rc = 0;
-
-        std::vector<bool> candidate_tried(enter_limit, false);
-        for (std::size_t j = 0; j < enter_limit; ++j) {
-            candidate_tried[j] = rejected_column[j] != 0;
-        }
+        bool restart = false;
+        // Unified numerical recovery: in phase I a corrupt basis restarts once
+        // from the always-factorable artificial basis (identity columns, so the
+        // restart itself cannot reproduce the corruption); any later failure —
+        // or any failure in phase II, which has no feasible fallback basis —
+        // is reported honestly as NumericalFailure with the site's reason.
+        auto recover = [&](const std::string& why) -> bool {
+            return recover_step(w, factor, s_opts, phase, artificial_reset_used, out, step,
+                                restart, why);
+        };
         while (true) {
-            entering = enter_limit;
-            minimum_rc = 0;
-            for (std::size_t j = 0; j < enter_limit; ++j) {
-                if (basic[j] || candidate_tried[j]) {
-                    continue;
+            auto xb = factor.solve(w.b);
+            const auto xb_gate_ok = [&] {
+                try {
+                    return linalg::sparse_infinity_residual(factor.current_basis(), xb, w.b) <=
+                           drift_gate(b_scale);
+                } catch (const std::exception&) {
+                    return false;
                 }
-                const double rc = cost[j] - column_dot(w, j, y);
-                if (!significant_negative_reduced_cost(w, j, cost, y, rc, o.dual_tolerance)) {
-                    continue;
+            };
+            if (!xb_gate_ok()) {
+                // Chain stale or basis corrupt: rebuild the LU of the same
+                // basis and re-solve before touching the pivot sequence.
+                try {
+                    factor.refactorize();
+                    xb = factor.solve(w.b);
+                } catch (const std::exception&) {
+                    // fall through to the gate check below
                 }
-                if (use_bland) {
-                    entering = j;
-                    minimum_rc = rc;
+                if (!xb_gate_ok()) {
+                    if (!recover("primal basis solve residual exceeded drift gate"))
+                        return out;
                     break;
                 }
-                if (entering == enter_limit || rc < minimum_rc) {
-                    entering = j;
-                    minimum_rc = rc;
+            }
+            bool has_neg = false;
+            for (double v : xb) {
+                if (v < -1e-5) {
+                    has_neg = true;
+                    break;
                 }
             }
-            if (entering == enter_limit) {
-                out.status = SolveStatus::optimal;
-                out.xb = std::move(xb);
-                out.y = std::move(y);
-                out.iterations = step;
-                record_condition(factor, out);
-                return out;
+            if (has_neg) {
+                // The eta chain still factorizes but its solution no longer
+                // respects primal feasibility: rebuild from scratch. If the
+                // basis itself no longer factorizes, recover.
+                try {
+                    factor = make_factor(w, s_opts);
+                    xb = factor.solve(w.b);
+                } catch (const std::exception& e) {
+                    if (!recover(std::string("basis factorization failed: ") + e.what()))
+                        return out;
+                    break;
+                }
             }
-            d = factor.solve(column(w, entering));
-            leaving_row = select_leaving(w, xb, d, o, theta);
-            if (leaving_row < w.rows) {
-                const auto candidate_leaving = w.basis[leaving_row];
-                bool is_cycling = false;
-                for (const auto& p : recent_pivots) {
-                    if ((p.first == candidate_leaving && p.second == entering) ||
-                        (p.first == entering && p.second == candidate_leaving)) {
-                        is_cycling = true;
-                        break;
-                    }
-                }
-                if (is_cycling && !use_bland && degenerate_steps >= 20) {
-                    candidate_tried[entering] = true;
-                    continue;
-                }
+            try {
+                snap_basic_solution(xb, o.feasibility_tolerance);
+            } catch (const std::exception& e) {
+                if (!recover(std::string(e.what()) + " (basic solution below feasibility)")
+                        )
+                    return out;
                 break;
             }
-            if (phase == 1) {
-                candidate_tried[entering] = true;
-                continue;
-            }
-            for (double value : d) {
-                if (value > 0) {
-                    out.status = SolveStatus::numerical_failure;
-                    out.iterations = step;
-                    record_condition(factor, out);
-                    return out;
+            for (double value : xb) {
+                if (!std::isfinite(value) || std::abs(value) > 1e30) {
+                    if (!recover("non-finite or divergent basic solution")) return out;
+                    break;
                 }
             }
-            out.status = SolveStatus::unbounded;
-            out.xb = std::move(xb);
-            out.y = std::move(y);
-            out.ray.assign(w.total_columns, 0);
-            out.ray[entering] = 1;
+            if (restart) break;
+            std::vector<double> cb(w.rows);
+            std::vector<bool> basic(w.total_columns);
             for (std::size_t i = 0; i < w.rows; ++i) {
-                out.ray[w.basis[i]] = -d[i];
+                cb[i] = cost[w.basis[i]];
+                basic[w.basis[i]] = true;
             }
-            out.iterations = step;
-            record_condition(factor, out);
-            return out;
-        }
-        const auto leaving = w.basis[leaving_row];
-        recent_pivots.push_back({entering, leaving});
-        if (recent_pivots.size() > 16) {
-            recent_pivots.pop_front();
-        }
-        if (log.size() < o.telemetry_limit) {
-            log.push_back({log.size(), phase, dot(cb, xb), minimum_rc, entering, leaving,
-                           theta <= o.feasibility_tolerance});
-        } else {
-            telemetry_truncated = true;
-        }
-        // Pivot with commit/rollback (numerical hygiene, cf. scsd1/scsd6):
-        // the basis swap is only committed once the updated factorization is
-        // known to be usable. A pivot whose new basis is numerically singular
-        // must never survive: with the swap committed, both the in-place update
-        // and the from-scratch rebuild fail identically and the exception
-        // escaped the solver as NumericalFailure even though the previous basis
-        // was perfectly good. On rejection the basis is restored and the
-        // offending column is excluded from entering for the rest of this
-        // phase, so the loop makes monotone progress instead of retrying the
-        // same pivot forever.
-        w.basis[leaving_row] = entering;
-        bool pivot_committed = false;
-        try {
-            factor.replace_column(leaving_row, column(w, entering));
-            if (factor.needs_refactorization())
-                factor.refactorize();
-            pivot_committed = true;
-        } catch (const std::exception&) {
-            try {
-                factor = make_factor(w, s_opts);
-                (void)factor.solve(w.b);
-                pivot_committed = true;
-            } catch (const std::exception&) {
-                // New basis is singular: roll back.
+            const double cb_scale = inf_norm(cb);
+            const auto solve_y = [&]() {
+                const auto residual_of = [&](const std::vector<double>& cand,
+                                             std::vector<double>& out_res) {
+                    double worst = 0;
+                    for (std::size_t j = 0; j < w.rows; ++j) {
+                        long double value = cb[j];
+                        for (const auto& [i, coefficient] : w.a[w.basis[j]])
+                            value -= static_cast<long double>(coefficient) * cand[i];
+                        out_res[j] = static_cast<double>(value);
+                        worst = std::max(worst, std::abs(out_res[j]));
+                    }
+                    return worst;
+                };
+                auto yy = factor.solve_transpose(cb);
+                std::vector<double> residual(w.rows);
+                double worst = residual_of(yy, residual);
+                for (int refinement = 0; refinement < 2 && worst > 0.0; ++refinement) {
+                    const auto correction = factor.solve_transpose(residual);
+                    std::vector<double> candidate = yy;
+                    for (std::size_t i = 0; i < w.rows; ++i) candidate[i] += correction[i];
+                    std::vector<double> candidate_residual(w.rows);
+                    const double candidate_worst = residual_of(candidate, candidate_residual);
+                    if (candidate_worst >= worst) {
+                        // Noise floor: on ill-conditioned bases (bore3d carried
+                        // |y| ~ 1e11) a further correction only amplifies the
+                        // roundoff it is meant to remove; keep the better y.
+                        break;
+                    }
+                    yy = std::move(candidate);
+                    residual = std::move(candidate_residual);
+                    worst = candidate_worst;
+                }
+                return yy;
+            };
+            const auto y_gate_ok = [&](const std::vector<double>& yy) {
+                try {
+                    return linalg::sparse_infinity_residual(factor.current_basis(), yy, cb,
+                                                            /*transpose=*/true) <=
+                           drift_gate(cb_scale);
+                } catch (const std::exception&) {
+                    return false;
+                }
+            };
+            auto y = solve_y();
+            if (!y_gate_ok(y)) {
+                // A fresh factorization of the same basis is all an in-place
+                // heal can offer; if that does not restore the dual residual,
+                // route through recovery (restart in phase I, honest failure
+                // in phase II).
+                try {
+                    factor.refactorize();
+                    xb = factor.solve(w.b);
+                    y = solve_y();
+                } catch (const std::exception&) {
+                    // fall through to the gate check below
+                }
+                if (!y_gate_ok(y)) {
+                    if (!recover("dual basis solve residual exceeded drift gate")) return out;
+                    break;
+                }
             }
-        }
-        if (!pivot_committed) {
-            w.basis[leaving_row] = leaving;
-            rejected_column[entering] = 1;
-            candidate_tried[entering] = true;
-            // Rejecting an entering column can change the dual/basis state;
-            // refactorize from the restored basis to be safe.
-            try {
-                factor = make_factor(w, s_opts);
-            } catch (const std::exception&) {
-                out.status = SolveStatus::numerical_failure;
-                out.iterations = step;
-                record_condition(factor, out);
-                return out;
+
+            const double current_obj = dot(cb, xb);
+            if (std::isnan(last_obj) || std::abs(current_obj - last_obj) > 1e-9) {
+                degenerate_steps = 0;
+            } else {
+                ++degenerate_steps;
             }
+            last_obj = current_obj;
+
+            // Bland pricing guarantees finite termination, but at a crawl on
+            // long frozen faces: under the old 20-step trigger netlib scsd1's
+            // phase II switched to Bland after its first degenerate stretch
+            // and wandered 230085 pivots where pure Dantzig finishes in 1023
+            // (longest consecutive frozen run 783; every other netlib model
+            // stays under 124). 5000 sits far above the measured runs yet
+            // below the default iteration budget, so a genuine cycle still
+            // reaches Bland repair inside a single solve.
+            constexpr std::size_t kAntiCyclingDegenerateSteps = 5000;
+            const bool use_bland =
+                o.bland_anti_cycling || degenerate_steps >= kAntiCyclingDegenerateSteps;
+
+            std::size_t entering = enter_limit;
+            std::size_t ejected = w.rows;
+            double theta = 0;
+            double minimum_rc = 0;
+
+            std::vector<bool> candidate_tried(enter_limit, false);
+            for (std::size_t j = 0; j < enter_limit; ++j) {
+                candidate_tried[j] = rejected_column[j] != 0;
+            }
+            const auto action = price_and_trial(w, cost, y, xb, basic, o, phase, step,
+                                                use_bland, enter_limit, factor, s_opts,
+                                                b_scale, rejected_column, reject_revivals,
+                                                candidate_tried, out, artificial_reset_used,
+                                                restart);
+            if (action.kind == PivotAction::finished) return out;
+            entering = action.entering;
+            ejected = action.ejected;
+            theta = action.theta;
+            minimum_rc = action.minimum_rc;
+            if (restart) break;
+            if (log.size() < o.telemetry_limit) {
+                log.push_back({log.size(), phase, dot(cb, xb), minimum_rc, entering, ejected,
+                               theta <= o.feasibility_tolerance});
+            } else {
+                telemetry_truncated = true;
+            }
+            break;
+        }
+        if (restart) {
+            // Recovery restarted the step from the artificial basis; the
+            // restart itself is not a pivot and must not consume budget.
+            --step;
+            continue;
         }
     }
     record_condition(factor, out);

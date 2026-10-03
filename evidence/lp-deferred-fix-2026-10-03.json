@@ -1,0 +1,141 @@
+{
+  "record": "lp-deferred-fix",
+  "date": "2026-10-03",
+  "scope": "Closure of the LP-01 deferred defect (bore3d, scsd1, scsd6, blend) and the GAP-01 etamacro question, measured after the reference-primal fix. BENCH-03 rows are historical and never rewritten; BENCH-04 re-measures the same seven-cell manifest as its own campaign.",
+  "provenance": {
+    "git_head_at_capture": "8a2a94b046a3e108051f11e0e27303c8a07c8adc",
+    "working_tree": "uncommitted fix on top of 8a2a94b046a3e108051f11e0e27303c8a07c8adc (committed with this record)",
+    "binary": "build/markov-cero-solve",
+    "binary_sha256": "8867a84cd95166837fc3c4a6090110f2f613c69f2e7a183fb0bc712590a238ba",
+    "host": "single host, CPU, CLI defaults"
+  },
+  "before": {
+    "source": "BENCH-03 (evidence/bench03-campaign-2026-10-02.json)",
+    "solved": "1/7 (blend only)",
+    "detail": "five cells NumericalFailure x5 each, grow7 IterationLimit x5, etamacro NumericalFailure (cok_fail ook_fail at -755.714309); all failing rows verified=false",
+    "lp01_differential": "all 17 fixtures agreed on failure statuses for blend/scsd1/scsd6; LP-01 triage recorded bore3d/scsd1/scsd6/blend NumericalFailure end-to-end"
+  },
+  "after": {
+    "cli_cells": {
+      "bore3d": {
+        "status": "Optimal",
+        "verified": true,
+        "objective": 1373.0803942084926,
+        "engine": "primal",
+        "message": "reference primal revised simplex optimum",
+        "assurance": "optimality_witness_checked",
+        "exit_code": 0,
+        "lp_iterations": 301,
+        "maximum_primal_violation": 1.5849543899548735e-12,
+        "maximum_canonical_dual_violation": 3.2542707677912786e-14
+      },
+      "scsd1": {
+        "status": "Optimal",
+        "verified": true,
+        "objective": 8.666666674333364,
+        "engine": "primal",
+        "message": "reference primal revised simplex optimum",
+        "assurance": "optimality_witness_checked",
+        "exit_code": 0,
+        "lp_iterations": 974,
+        "maximum_primal_violation": 2.4210234511601314e-16,
+        "maximum_canonical_dual_violation": 6.661338147750939e-16
+      },
+      "scsd6": {
+        "status": "Optimal",
+        "verified": true,
+        "objective": 50.50000007714434,
+        "engine": "primal",
+        "message": "reference primal revised simplex optimum",
+        "assurance": "optimality_witness_checked",
+        "exit_code": 0,
+        "lp_iterations": 1095,
+        "maximum_primal_violation": 2.220446049250313e-16,
+        "maximum_canonical_dual_violation": 2.6832815080979344e-08
+      },
+      "blend": {
+        "status": "Optimal",
+        "verified": true,
+        "objective": -30.812149845828234,
+        "engine": "primal",
+        "message": "reference primal revised simplex optimum",
+        "assurance": "optimality_witness_checked",
+        "exit_code": 0,
+        "lp_iterations": 143,
+        "maximum_primal_violation": 1.9109713811360507e-14,
+        "maximum_canonical_dual_violation": 1.797173521111972e-15
+      },
+      "etamacro": {
+        "status": "Optimal",
+        "verified": true,
+        "objective": -755.7152333749134,
+        "engine": "primal",
+        "message": "reference primal revised simplex optimum",
+        "assurance": "optimality_witness_checked",
+        "exit_code": 0,
+        "lp_iterations": 1767,
+        "maximum_primal_violation": 2.2737367544323206e-13,
+        "maximum_canonical_dual_violation": 5.684341886080802e-14
+      },
+      "e226": {
+        "status": "Optimal",
+        "verified": true,
+        "objective": -25.864929066370514,
+        "engine": "primal",
+        "message": "reference primal revised simplex optimum",
+        "assurance": "optimality_witness_checked",
+        "exit_code": 0,
+        "lp_iterations": 705,
+        "maximum_primal_violation": 3.6415315207705135e-14,
+        "maximum_canonical_dual_violation": 1.4116312285761268e-15
+      },
+      "grow7": {
+        "status": "Optimal",
+        "verified": true,
+        "objective": -47787811.8147115,
+        "engine": "primal",
+        "message": "reference primal revised simplex optimum",
+        "assurance": "optimality_witness_checked",
+        "exit_code": 0,
+        "lp_iterations": 806,
+        "maximum_primal_violation": 1.1311840353300795e-10,
+        "maximum_canonical_dual_violation": 8.204835465555615e-16
+      }
+    },
+    "solved": "7/7 Optimal with verified=true",
+    "message_uniform": "reference primal revised simplex optimum (direct reference solve, no IPM fallback)",
+    "bore3d_cross_check": "dual engine reports the same objective 1373.080394208 with both witnesses verified",
+    "lp01_differential": "all 17 frozen instances PASS with full interchange (30 checks), wall ~9.6 s; includes row-permuted reference must-be-optimal and permuted scsd1 which previously hit dok_fail",
+    "ctest": "122/122",
+    "source_limits": "0 violations (545 files, limit 300)",
+    "checks": "check_docs.py 0 broken links; check_json.py clean; link_backlinks.py --check 0 unresolved"
+  },
+  "root_causes": [
+    {
+      "site": "src/lp/reference/revised_simplex_iteration.cpp",
+      "defect": "adaptive Bland trigger at degenerate_steps >= 20 sent scsd1 phase II into threshold-Bland wandering: 230085 pivots vs 1023 pure-Dantzig (measured longest consecutive frozen run 783, all other models <= 124)",
+      "fix": "kAntiCyclingDegenerateSteps = 5000 (above every measured run, below the default 10000 budget so genuine cycles still reach Bland repair)"
+    },
+    {
+      "site": "include/markov_cero/lp/reference/revised_simplex.hpp",
+      "defect": "bland_anti_cycling defaulted true; the dual engine's cold fallback does not copy the flag, so the reference default governed both entries and forced the same wandering path",
+      "fix": "default flipped to false; the deterministic Bland retry-on-NF path still sets it explicitly"
+    },
+    {
+      "site": "src/lp/reference/revised_simplex_iteration.cpp",
+      "defect": "is-cycling pair-reversal guard parked columns via candidate_tried without rejected_column; the revival scan skipped them, so row-permuted scsd1 reported a false optimum (certify dok_fail, rc -0.199 on the parked column) and the Bland retry then exhausted the 500000-pivot budget",
+      "fix": "guard deleted (cycles are degenerate and bounded by the 5000-step threshold); revival scan extended to revive step-local parks: (!rejected_column[j] && !candidate_tried[j]) || basic[j]"
+    }
+  ],
+  "concurrent_splits": [
+    "src/api/engine_lp.cpp: run_lp_ipm_engine extracted to src/api/engine_lp_ipm.cpp (472->247)",
+    "src/lp/interior/ipm_solve.cpp: run_crossover extracted to src/lp/interior/ipm_crossover.cpp (308->201)",
+    "src/lp/reference/revised_simplex_iteration.cpp: price_and_trial/recover_step/inf_norm/drift_gate extracted to src/lp/reference/revised_simplex_pivot.cpp (472->230)"
+  ],
+  "not_claimed": [
+    "no speed claim",
+    "one host",
+    "BENCH-03 rows unchanged",
+    "no second-solver comparison"
+  ]
+}

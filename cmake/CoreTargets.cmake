@@ -18,7 +18,7 @@ add_library(markov_cero_core STATIC
   src/api/engine_pdlp.cpp
   src/api/engine_qp.cpp
   src/api/engine_milp.cpp
-  src/api/engine_lp.cpp
+  src/api/engine_lp.cpp src/api/engine_lp_ipm.cpp
   src/foundation/build_info.cpp
   src/model/model.cpp
   src/model/classifier.cpp
@@ -62,12 +62,13 @@ add_library(markov_cero_core STATIC
   src/scale/ruiz_scaling.cpp
   src/lp/reference/revised_simplex_pricing.cpp
   src/lp/reference/revised_simplex_iteration.cpp
+  src/lp/reference/revised_simplex_pivot.cpp
   src/lp/reference/revised_simplex_workspace.cpp
   src/lp/reference/revised_simplex.cpp
   src/verify/reference_lp_verifier.cpp
   src/verify/sparse_lp_verifier.cpp
   src/lp/dual/dual_simplex.cpp src/lp/dual/dual_simplex_select_entering_column.cpp src/lp/dual/dual_simplex_solve.cpp
-  src/lp/interior/ipm.cpp src/lp/interior/ipm_crossover_basis_sparse.cpp src/lp/interior/ipm_solve.cpp src/lp/interior/ipm_solve_overload.cpp
+  src/lp/interior/ipm.cpp src/lp/interior/ipm_crossover_basis_sparse.cpp src/lp/interior/ipm_solve.cpp src/lp/interior/ipm_solve_overload.cpp src/lp/interior/ipm_crossover.cpp
   src/lp/first_order/pdlp.cpp src/lp/first_order/pdlp_degenerate.cpp src/lp/first_order/pdlp_try_dual_simplex_crossover.cpp src/lp/first_order/pdlp_iterate_pdlp.cpp src/lp/first_order/pdlp_solve_pdlp.cpp
   src/milp/branch_selector.cpp
   src/milp/branch_selector_features.cpp

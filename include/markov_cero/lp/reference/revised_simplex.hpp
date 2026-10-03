@@ -30,7 +30,7 @@ struct Options {
     double feasibility_tolerance{1e-9};
     double dual_tolerance{1e-9};
     double pivot_tolerance{1e-12};
-    bool bland_anti_cycling{true};
+    bool bland_anti_cycling{false};
     double time_limit_seconds{std::numeric_limits<double>::infinity()};
     // Absolute wall-clock deadline shared by the API's sequential fallbacks.
     // Empty means no deadline (library callers retain the historical behavior).
@@ -66,5 +66,13 @@ struct Result {
 };
 [[nodiscard]] Result solve(const transform::CanonicalModel& model, const Options& options = {});
 [[nodiscard]] Result solve(const transform::SparseCanonicalModel& model, const Options& options = {});
+// Warm-start polish: when `warm_basis` supplies a primal-feasible basis
+// (crossover handoff from the interior engine), phase I is skipped and the
+// solver pivots straight to dual feasibility. An invalid or infeasible warm
+// basis falls back to the normal crash + phase-I path, so the overload can
+// never do worse than the two-argument form.
+[[nodiscard]] Result solve(const transform::SparseCanonicalModel& model,
+                           const Options& options,
+                           const std::vector<std::size_t>& warm_basis);
 [[nodiscard]] const char* to_string(SolveStatus status) noexcept;
 } // namespace markov_cero::lp::reference

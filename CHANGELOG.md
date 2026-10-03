@@ -2,6 +2,48 @@
 
 ## Unreleased
 
+### 2026-10-03 LP deferred set — the frozen-set simplex failures (and GAP-01 `etamacro`) closed in the reference primal path
+
+- **The gap** — BENCH-03 measured the seven deferred/failing LP cells
+  at 1/7 solved (`blend` alone) and LP-01's triage recorded `bore3d`,
+  `scsd1`, `scsd6` and `blend` failing end-to-end, with GAP-01 adding
+  `etamacro` as pre-existing on both revisions. All were agreement
+  records, not fixes: the deferred set stayed honestly failing.
+- **Root causes** — three, fixed in the reference primal path:
+  (a) the adaptive Bland trigger fired after 20 consecutive degenerate
+  steps, sending `scsd1` phase II into threshold-Bland wandering —
+  230 085 pivots where pure Dantzig finishes in 1023 (longest measured
+  consecutive frozen run 783; every other frozen-set model ≤ 124); the
+  threshold is now `kAntiCyclingDegenerateSteps = 5000`, above every
+  measured run and below the default 10 000-pivot budget so a genuine
+  cycle still reaches Bland repair inside one solve. (b)
+  `Options::bland_anti_cycling` defaulted to `true`, and the dual
+  engine's cold fallback does not copy the flag, so the reference
+  default governed both entries — it now defaults to `false`, with the
+  deterministic Bland retry-on-numerical-failure path still setting it
+  explicitly. (c) an is-cycling pair-reversal guard parked columns via
+  `candidate_tried` without `rejected_column`, which the revival scan
+  then skipped — row-permuted `scsd1` reported a false optimum
+  (`dok_fail`, rc −0.199) and the honest Bland retry exhausted its
+  budget; the guard is deleted (cycles are degenerate, bounded by the
+  threshold) and the revival scan also revives step-local parks.
+- **The code** — same change split the three oversized sources the
+  source-limit check refused: `run_lp_ipm_engine` →
+  `src/api/engine_lp_ipm.cpp` (472 → 247), `run_crossover` →
+  `src/lp/interior/ipm_crossover.cpp` (308 → 201), and
+  `price_and_trial`/`recover_step`/`inf_norm`/`drift_gate` →
+  `src/lp/reference/revised_simplex_pivot.cpp` (472 → 230);
+  `check_source_limits.py` reports 0 violations over 545 files.
+- **Proof** — [record](evidence/lp-deferred-fix-2026-10-03.json): all
+  17 LP-01 differential fixtures pass with full interchange (30 checks,
+  ≈9.6 s), the seven CLI cells report `Optimal` + `verified` with the
+  message `reference primal revised simplex optimum` (direct reference
+  solve, no IPM fallback) with `bore3d`'s 1373.080394208 cross-confirmed
+  by the dual engine, ctest **122/122**, `check_source_limits` 0,
+  docs/json/backlinks checks green. BENCH-03 rows are never rewritten;
+  BENCH-04 re-measures the same seven-cell manifest as its own campaign.
+  No speed claim, one host.
+
 ### 2026-10-02 bench-02 — the NLP/MINLP sibling of the primal-report defect, closed with a written semantics decision
 
 - **The gap** — `evidence/bench02-primal-recheck-defect-2026-10-02.json` left

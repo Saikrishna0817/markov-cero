@@ -172,9 +172,14 @@ bool SparseBasisFactorization::needs_refactorization() const noexcept {
     return statistics_.update_limit_triggered || statistics_.density_triggered;
 }
 void SparseBasisFactorization::refactorize() {
+    // Must use the SAME ordering policy as factorize(): a hard-coded reduce_fill
+    // here made refactorize() and factorize() disagree on the same matrix (the
+    // ordering decides whether a pivot falls under singular_tolerance), which
+    // let a basis refactorize successfully at pivot time and then fail
+    // make_factor() one step later.
     base_ = SparseLu::factorize(current_basis_, options_.singular_tolerance,
-                                options_.maximum_factor_nonzeros, true,
-                                options_.deadline);
+                                options_.maximum_factor_nonzeros,
+                                options_.fill_reducing_ordering, options_.deadline);
     updates_.clear();
     ++statistics_.refactorizations;
     statistics_.current_update_chain = 0;

@@ -155,6 +155,44 @@ Executed 2026-09-30:
   no fix and no objective claim is made. No dense/sparse differential
   was run for this model, and adding one would mean extending
   `data/compare/netlib.txt`, which is frozen after results exist.
+  Follow-up 2026-10-03: `etamacro` now solves `Optimal` + verified
+  (objective −755.715233375, message
+  `reference primal revised simplex optimum`) after the deferred-defect
+  closure recorded below; the 2026-10-01 record above stands as measured
+  on that date.
+- Executed 2026-10-03 — deferred defect **closed**
+  ([record](../../evidence/lp-deferred-fix-2026-10-03.json)). The four
+  triage models and `etamacro` now solve end-to-end through the CLI, and
+  all 17 frozen instances pass the differential with full interchange
+  (30 checks, ≈9.6 s). Three root causes in the reference primal path,
+  in measured order of impact: (a) the adaptive Bland trigger fired at
+  20 consecutive degenerate steps, so `scsd1` phase II wandered 230 085
+  threshold-Bland pivots where pure Dantzig finishes in 1023 (longest
+  consecutive frozen run 783; every other frozen-set model stays under
+  124) — the threshold is now `kAntiCyclingDegenerateSteps = 5000`,
+  above every measured run and below the default 10 000-pivot budget,
+  so a genuine cycle still reaches Bland repair inside a single solve;
+  (b) `Options::bland_anti_cycling` defaulted to `true`, which the dual
+  engine's cold fallback inherits from the reference default (it does
+  not copy the flag) — it now defaults to `false`, with the
+  deterministic Bland retry-on-numerical-failure path still setting it
+  explicitly; (c) an is-cycling pair-reversal guard parked columns via
+  `candidate_tried` without `rejected_column`, so the revival scan
+  skipped them and row-permuted `scsd1` reported a false optimum
+  (`dok_fail`, rc −0.199 on the parked column) — the guard is deleted
+  (a cycle is degenerate and bounded by the 5000-step threshold) and
+  the revival scan now also revives step-local parks
+  (`(!rejected_column[j] && !candidate_tried[j]) || basic[j]`). The
+  seven CLI cells (`bore3d`, `scsd1`, `scsd6`, `blend`, `etamacro`,
+  `e226`, `grow7`) report `Optimal` + `verified` with the message
+  `reference primal revised simplex optimum` — a direct reference
+  solve, no IPM fallback; `bore3d`'s 1373.080394208 is cross-confirmed
+  by the dual engine with both witnesses verified. Suite 122/122,
+  `check_source_limits` 0 violations (the oversized files were split
+  in the same change: `engine_lp_ipm.cpp`, `ipm_crossover.cpp`,
+  `revised_simplex_pivot.cpp`). A recorded BENCH-03 row is never
+  rewritten; BENCH-04 re-measures the same seven-cell manifest as its
+  own campaign.
 - Benchmark: [`evidence/lp-sparse-rss-20260930.json`](../../evidence/lp-sparse-rss-20260930.json)
   — retired dense dispatch shape vs sparse-first, forked VmHWM per
   (instance, path). Dense peak ≥ sparse peak on all 18 records; the

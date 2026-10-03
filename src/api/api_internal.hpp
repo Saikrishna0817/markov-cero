@@ -58,6 +58,10 @@ void run_milp(const model::Model& model, const SolveOptions& options, SolveResul
               lp::reference::Result& result, core::SolveContext& ctx);
 void run_lp(const model::Model& model, const SolveOptions& options, SolveResult& out,
             lp::reference::Result& result, core::SolveContext& ctx);
+void run_lp_ipm_engine(const transform::SparseCanonicalModel& working_model,
+                       const SolveOptions& options, SolveResult& out,
+                       lp::reference::Result& result,
+                       std::optional<lp::dual::BasisState>& basis_to_save);
 std::string format_violation(const verify::PrimalVerificationReport& report);
 void fill_complementarity_gap(NumericalDiagnostic&, const std::vector<double>&,
                               const std::vector<double>&, const std::vector<double>&,

@@ -28,7 +28,12 @@ double column_dot(const Work& w, std::size_t j, const std::vector<double>& y) {
 namespace detail_revised_simplex {
 linalg::SparseBasisOptions sparse_options(const Options& o) {
     linalg::SparseBasisOptions so;
-    so.singular_tolerance = o.pivot_tolerance;
+    // Basis acceptance floor: a fresh LU pivot at or below this is treated as
+    // singular (the trial basis is rejected). Kept well above the raw
+    // pivot_tolerance so bases whose solves only carry ~1e-10 relative accuracy
+    // (accepted at 1e-12 but producing dual residuals of order 1, cf. scsd1's
+    // warm-start phase II) never enter the pivot sequence in the first place.
+    so.singular_tolerance = std::max(o.pivot_tolerance, 1e-10);
     so.update_pivot_tolerance = o.pivot_tolerance;
     so.maximum_dimension = maximum_rows;
     so.maximum_nonzeros = maximum_expanded_elements;

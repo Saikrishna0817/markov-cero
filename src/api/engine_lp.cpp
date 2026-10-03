@@ -66,68 +66,7 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                 }
                 core::StageScope solve_stage(ctx, "solve");
                 if (out.resolved_engine == "ipm") {
-                    lp::interior::Options ipm_opts;
-                    ipm_opts.iteration_limit = 100;
-                    ipm_opts.deadline = options.lp_options.deadline;
-                    if (options.lp_options.iteration_limit > 0 &&
-                        options.lp_options.iteration_limit != 10000) {
-                        ipm_opts.iteration_limit =
-                            std::min<std::size_t>(options.lp_options.iteration_limit, 500);
-                    }
-                    bool ipm_certified = false;
-                    std::string ipm_failure;
-                    lp::interior::Result ipm_res;
-                    try {
-                        ipm_res = lp::interior::solve(working_model, ipm_opts);
-                        ipm_certified =
-                            ipm_res.status == lp::reference::SolveStatus::optimal;
-                    } catch (const std::bad_alloc&) {
-                        throw;
-                    } catch (const std::length_error&) {
-                        throw;
-                    } catch (const std::exception& e) {
-                        ipm_failure = e.what();
-                    }
-                    if (ipm_certified) {
-                        result.status = lp::reference::SolveStatus::optimal;
-                        result.primal = ipm_res.primal;
-                        result.dual = ipm_res.dual;
-                        result.objective = ipm_res.objective;
-                        result.message = ipm_res.message;
-                        result.condition_estimate = ipm_res.condition_estimate;
-                        out.lp_iterations = ipm_res.iterations;
-                        if (ipm_res.basis_state.has_value()) {
-                            basis_to_save = *ipm_res.basis_state;
-                        }
-                    } else {
-                        result = lp::reference::solve(working_model, options.lp_options);
-                        if (result.status == lp::reference::SolveStatus::optimal &&
-                            result.basis.size() == working_model.matrix.rows) {
-                            // Degenerate optimal bases (duplicate indices after
-                            // the primal engine fixes variables at bounds) cannot
-                            // seed a warm start; the dual engine's own contract is
-                            // "keep the solve result, drop the warm start", so the
-                            // API path mirrors it instead of discarding a verified
-                            // optimum behind a thrown exception.
-                            try {
-                                basis_to_save =
-                                    lp::dual::make_basis_state(working_model, result.basis);
-                            } catch (const std::bad_alloc&) {
-                                throw;
-                            } catch (const std::length_error&) {
-                                throw;
-                            } catch (const std::exception&) {
-                                basis_to_save.reset();
-                            }
-                        }
-                        result.message =
-                            (ipm_failure.empty()
-                                 ? "ipm did not certify (" + ipm_res.message +
-                                       "); reference primal revised simplex fallback"
-                                 : "ipm numerical failure (" + ipm_failure +
-                                       "); reference primal revised simplex fallback");
-                        out.used_cold_fallback = true;
-                    }
+                    run_lp_ipm_engine(working_model, options, out, result, basis_to_save);
                 } else if (out.resolved_engine == "dual") {
                     lp::dual::Options dual_opts;
                     dual_opts.iteration_limit = options.lp_options.iteration_limit;
@@ -166,15 +105,26 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                             basis_to_save.reset();
                         }
                     }
-                    if (result.status == lp::reference::SolveStatus::numerical_failure) {
+                    if (result.status == lp::reference::SolveStatus::numerical_failure ||
+                        result.status == lp::reference::SolveStatus::iteration_limit) {
                         // Engine fallback policy (same contract as the ipm path
                         // above, in reverse): a primal simplex that cannot certify
-                        // its answer falls back to the interior-point engine on
-                        // the same canonical model. IPM's normal-equation path is
-                        // immune to the pivot-drift that defeats the simplex on
-                        // degenerate scaled models (scsd1/scsd6). The witness check
-                        // below still gates the final answer, so this cannot turn
-                        // an uncertified result into a "verified" one.
+                        // its answer — numerical breakdown or an exhausted
+                        // iteration budget alike — falls back to the
+                        // interior-point engine on the same canonical model.
+                        // IPM's normal-equation path is immune to the pivot-drift
+                        // that defeats the simplex on degenerate scaled models
+                        // (scsd1/scsd6), and grow7's phase II stalls past the
+                        // 10000-pivot cap that IPM clears in 100 iterations. The
+                        // witness check below still gates the final answer, so
+                        // this cannot turn an uncertified result into a
+                        // "verified" one; if IPM does not certify, the simplex's
+                        // own status and message stand unchanged.
+                        const bool simplex_broke =
+                            result.status == lp::reference::SolveStatus::numerical_failure;
+                        const std::string simplex_failure =
+                            simplex_broke ? std::string("simplex numerical failure")
+                                          : result.message;
                         lp::interior::Options ipm_retry;
                         ipm_retry.iteration_limit = 100;
                         ipm_retry.deadline = options.lp_options.deadline;
@@ -186,8 +136,7 @@ void run_lp(const model::Model& model, const SolveOptions& options, SolveResult&
                                 result.dual = ipm_r.dual;
                                 result.objective = ipm_r.objective;
                                 result.condition_estimate = ipm_r.condition_estimate;
-                                result.message =
-                                    "simplex numerical failure; ipm fallback optimum";
+                                result.message = simplex_failure + "; ipm fallback optimum";
                                 if (ipm_r.basis_state.has_value()) {
                                     basis_to_save = *ipm_r.basis_state;
                                 } else {

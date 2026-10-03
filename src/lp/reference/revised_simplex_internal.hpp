@@ -54,6 +54,9 @@ struct IterationOutcome {
     std::vector<double> ray;
     std::size_t iterations{};
     double condition_estimate{0.0};
+    // Honest per-failure-site reason, surfaced by solve_attempt() when the
+    // phase ends in NumericalFailure. Empty for ordinary outcomes.
+    std::string message;
 };
 }
 namespace detail_revised_simplex { std::size_t checked_add(std::size_t a, std::size_t b); }
@@ -74,6 +77,33 @@ namespace detail_revised_simplex { std::size_t select_entering(const Work& w, co
                                     std::size_t enter_limit, const Options& o, double& minimum_rc); }
 namespace detail_revised_simplex { std::size_t select_leaving(const Work& w, const std::vector<double>& xb,
                            const std::vector<double>& d, const Options& o, double& theta); }
+namespace detail_revised_simplex { double inf_norm(const std::vector<double>& v); }
+namespace detail_revised_simplex { double drift_gate(double rhs_scale); }
+namespace detail_revised_simplex { struct PivotAction {
+    enum Kind { pivot, restart, finished };
+    Kind kind{pivot};
+    std::size_t entering{};
+    std::size_t ejected{};
+    double theta{0.0};
+    double minimum_rc{0.0};
+    static PivotAction of(Kind k) { return PivotAction{k, 0, 0, 0.0, 0.0}; }
+}; }
+namespace detail_revised_simplex { bool recover_step(Work& w, linalg::SparseBasisFactorization& factor,
+                             const linalg::SparseBasisOptions& s_opts, int phase,
+                             bool& artificial_reset_used, IterationOutcome& out,
+                             std::size_t step, bool& restart, const std::string& why); }
+namespace detail_revised_simplex { PivotAction price_and_trial(Work& w, const std::vector<double>& cost,
+                                 const std::vector<double>& y, std::vector<double>& xb,
+                                 const std::vector<bool>& basic, const Options& o,
+                                 int phase, std::size_t step, bool use_bland,
+                                 std::size_t enter_limit,
+                                 linalg::SparseBasisFactorization& factor,
+                                 const linalg::SparseBasisOptions& s_opts, double b_scale,
+                                 std::vector<char>& rejected_column,
+                                 std::vector<unsigned char>& reject_revivals,
+                                 std::vector<bool>& candidate_tried,
+                                 IterationOutcome& out, bool& artificial_reset_used,
+                                 bool& restart); }
 namespace detail_revised_simplex { IterationOutcome iterate(Work& w, const std::vector<double>& cost, std::size_t enter_limit,
                          const Options& o, int phase, std::size_t budget,
                          std::vector<IterationRecord>& log, bool& telemetry_truncated); }

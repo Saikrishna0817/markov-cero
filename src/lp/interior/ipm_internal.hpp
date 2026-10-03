@@ -14,6 +14,15 @@
 #include <stdexcept>
 
 namespace markov_cero::lp::interior {
+// Crossover phase of solve(): candidate acceptance, dual certification and
+// reference warm polish. Split out of ipm_solve.cpp for the 300-line limit.
+Result run_crossover(const transform::SparseCanonicalModel& model,
+                     const transform::SparseCanonicalModel& sparse_working,
+                     const std::vector<double>& x_scaled,
+                     const scale::RuizScalers& scalers, const Options& options, Result out);
+}
+
+namespace markov_cero::lp::interior {
 namespace detail_ipm {}
 namespace detail_ipm {
 using linalg::SparseCsc;
