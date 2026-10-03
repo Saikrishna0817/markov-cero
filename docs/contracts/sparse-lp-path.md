@@ -207,7 +207,7 @@ Executed 2026-09-30:
    superseded by this fix; its rows stand as measured. A second
    Debug-only red the same day (CI `37103783489`) traced to the
    refinery fixture's proof build growing 39% (116 s → 161–173 s solo
-   `-O0`) across the test's 300 s proof budget on the CI runner, so
+   `-O0`) across the test's 300 s proof budget on that CI run, so
    the honest `gap_satisfied` → `feasible` demotion tripped the
    fixture require; budget is 600 s now and the proof-build growth
    is an open follow-up in that record.

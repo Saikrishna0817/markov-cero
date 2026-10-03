@@ -10,12 +10,15 @@
   `[-] Error in refinery tests: …/data/cases/production_planning_large.mps`
   after every earlier sub-test passed.
 - **Cause** — the `gap_satisfied` fixture's independent MIP proof build
-  (161–173 s on local `-O0`, ≈2.2× on the CI Debug runner ⇒ ~355–380 s)
-  crossed the test's 300 s `mip_proof_time_limit_seconds`;
-  `engine_milp.cpp` then honestly demotes `gap_satisfied` → `feasible`
-  without a canonical proof, and the fixture require fails. Reproduced
-  byte-identically locally by lowering the budget to 150 s (and one
-  fixture earlier at 1 s).
+  (161–173 s locally at `-O0`) crossed the test's 300 s
+  `mip_proof_time_limit_seconds` on that run; `engine_milp.cpp` then
+  honestly demotes `gap_satisfied` → `feasible` without a canonical
+  proof, and the fixture require fails. Reproduced byte-identically
+  locally by lowering the budget to 150 s (and one fixture earlier at
+  1 s), and closed by the budget-only A/B on CI (red → green, solver
+  unchanged). The old run's per-fixture split was not retained; the
+  post-fix suite now runs 345 s (gcc/Debug) / 593 s (clang/Debug), so
+  600 s keeps ≥2× headroom over the slowest observed run.
 - **Change** — budget 300 → 600 s (ctest TIMEOUT 1200 unchanged,
   estimated CI Debug suite ~785 s) plus a per-fixture `[t]` stderr line
   (elapsed, status, verified, proof fields) so CI records the numbers.
