@@ -5,8 +5,11 @@
 #include "markov_cero/qp/admm_solver.hpp"
 #include "markov_cero/analysis/iis_analyzer.hpp"
 #include "markov_cero/api/solve.hpp"
+#include "markov_cero/nlp/nlp_model.hpp"
+#include "markov_cero/nlp/sqp_solver.hpp"
 #include <stdexcept>
 #include <cmath>
+#include <chrono>
 using namespace markov_cero;
 void require(bool value, const char* message) { if (!value) throw std::runtime_error(message); }
 int main() {
@@ -65,4 +68,43 @@ int main() {
     pdlp.deadline = std::chrono::steady_clock::now();
     require(gpu::solve_pdlp_gpu(max_lp, pdlp).status == lp::first_order::PdlpStatus::resource_limit,
             "GPU/fallback observes an expired deadline");
+
+    // IR-20 measured deadline gate (unit layer): an already-expired solve-wide
+    // deadline must stop every file-independent engine at the first stage poll,
+    // before any engine can claim a result, and the undeadlined control still
+    // solves. End-to-end overrun through parse and finalization is measured by
+    // scripts/deadline_envelope.py (evidence/deadline-envelope-*.json).
+    for (const char* engine : {"primal", "dual", "ipm", "pdlp", "milp", "parallel", "qp"}) {
+        api::SolveOptions expired;
+        expired.engine = engine;
+        expired.total_time_limit_seconds = 1e-12;
+        const auto stopped = api::solve_model(box, expired);
+        require(stopped.status == lp::reference::SolveStatus::resource_limit,
+                "expired solve-wide deadline stops with resource_limit");
+        require(stopped.stop_reason == "deadline_exceeded",
+                "expired solve-wide deadline is attributed to the wall clock");
+        require(!stopped.verified, "an expired deadline never verifies a result");
+    }
+    api::SolveOptions control;
+    control.engine = "primal";
+    const auto solved = api::solve_model(box, control);
+    require(solved.stop_reason.empty() && solved.status != lp::reference::SolveStatus::resource_limit,
+            "undeadlined control takes a non-resource path (no deadline stop)");
+
+    // Standalone SQP polls its own absolute deadline at iteration start.
+    nlp::NlpModel ball;
+    ball.name = "deadline_box";
+    ball.n_vars = 2;
+    ball.objective = [](const std::vector<double>& x) { return x[0] * x[0] + x[1] * x[1]; };
+    ball.gradient = [](const std::vector<double>& x) {
+        return std::vector<double>{2.0 * x[0], 2.0 * x[1]};
+    };
+    ball.lower_bounds = {-1.0, -1.0};
+    ball.upper_bounds = {1.0, 1.0};
+    ball.validate();
+    nlp::SqpOptions sqp;
+    sqp.deadline = std::chrono::steady_clock::now() - std::chrono::seconds(1);
+    require(nlp::solve_sqp(ball, {0.5, 0.5}, sqp).status ==
+                    lp::reference::SolveStatus::resource_limit,
+            "expired SQP deadline stops with resource_limit");
 }

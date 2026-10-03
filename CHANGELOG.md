@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased
+
+### 2026-10-03 ir — measured deadline overrun envelope (IR-20 closure)
+
+- **Gap** — cooperative deadline checks existed at documented stage boundaries,
+  but end-to-end overrun past an expired deadline was unmeasured; IR-20 stayed
+  open on "hard end-to-end bounds unproven" and no test swept engines.
+- **Change** — `scripts/deadline_envelope.py` measures whole-process wall time
+  against the requested `--time-limit` across 8 engines (already-expired, tiny
+  and short profiles plus an expiry-landing sweep of 11 fine-grained limits,
+  41 runs total); `tests/readiness_edge_cases_test.cpp` adds in-process
+  already-expired stops for primal/dual/ipm/pdlp/milp/parallel/qp plus the
+  standalone SQP absolute deadline; contract `resource-limits.md` §4b records
+  the service envelope — every expiry reported `resource_limit` +
+  `deadline_exceeded`, no terminal status past its deadline, whole-process
+  overrun ≤ 9.1 ms.
+- **Evidence** — `evidence/deadline-envelope-2026-10-03.json`; IR-20 closed in
+  `evidence/defect-closure-register.csv` with the envelope-scoped residual
+  (one host, not a formal worst case; callback bodies caller-owned) documented.
+
 ## 0.5.3 — 2026-10-03
 
 ### 2026-10-03 res — solve-scoped device memory budget (RES-01 device allocations)

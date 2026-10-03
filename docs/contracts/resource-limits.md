@@ -133,6 +133,27 @@ meaning do not change.
   proven; OS-level hard limits are the hosted service's contract
   ([hosted-limits.md](hosted-limits.md)), not the library's.
 
+## 4b. Measured deadline overrun envelope (IR-20, 2026-10-03)
+
+End-to-end deadline behavior is measured through the production CLI by
+`scripts/deadline_envelope.py` and recorded in
+`evidence/deadline-envelope-2026-10-03.json`: **41 runs** — 8 engines
+(primal, dual, ipm, pdlp, qp, miqp, milp, parallel) under already-expired
+(1e-6 s), tiny and short limits on five checked-in models, plus an
+expiry-landing sweep of 11 fine-grained limits that scatter the expiry
+across parse, canonicalization, presolve, root/cut/factorization and early
+search units. Every expired run reported `ResourceLimit` +
+`deadline_exceeded`, no terminal status was claimed past its deadline, and
+whole-process wall-clock overrun (process start, parse, cooperative stop,
+result finalization) stayed at or below **9.1 ms**. The unit-layer
+companion in `tests/readiness_edge_cases_test.cpp` proves the same
+already-expired stop for seven engines in-process and for the standalone
+SQP path's own absolute deadline. This is a measured bound for the tested
+envelope on one host, not a formal worst case for every input; the
+sections named in §4 remain non-preemptible and are bounded by their
+input, iteration, pass and fill caps, and user callback bodies run to
+completion by design.
+
 ## 5. Boundary tests
 
 | Test | Property |
@@ -152,6 +173,7 @@ meaning do not change.
 | `tests/stop_reason_test.cpp` — device budget mapping | refusal maps to `resource_limit` + `device_memory_budget_exhausted` + `device_memory_budget` |
 | `tests/device_budget_test.cpp` — solve behavior | GPU host with a 1-byte device limit → `resource_limit` naming the device budget; host without a device → honest CPU fallback with an empty `stop_reason` |
 | `tests/api_test.cpp` | normal solves keep an empty `stop_reason`; deadline/memory paths keep their reason |
+| `tests/readiness_edge_cases_test.cpp` — expired deadline across engines | already-expired solve-wide deadline → `resource_limit` + `deadline_exceeded` + unverified for primal/dual/ipm/pdlp/milp/parallel/qp; undeadlined control stays off the resource path; expired SQP deadline stops with `resource_limit` |
 
 ## 6. Change procedure
 
