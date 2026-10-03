@@ -2,6 +2,31 @@
 
 ## Unreleased
 
+### 2026-10-03 lp — restore trigger-only refactorize at pivot time (post-campaign CI regression)
+
+- **Regression** — CI run `37096027191` (head `692967b`) failed five
+  jobs (gcc/clang Debug, gcc ASan-UBSan, gcc/clang TSan) on LP-heavy
+  budget timeouts while Release stayed green. The deferred-fix commit
+  `3662cac` had made `price_and_trial` call a from-scratch
+  `factor.refactorize()` after **every** accepted pivot, so each simplex
+  step paid a full sparse LU (scale_200 per-iteration cost 0.94 ms →
+  5.28 ms despite 41% fewer pivots; local `process_network_large`
+  Debug 9.93 s → 37.61 s, CI 17.18 s → 60 s timeout). The singular
+  floor, the 5000-step Bland threshold, the refactorize ordering change
+  and the `bland_anti_cycling` default flip were each reverted and
+  measured out.
+- **Fix** — refactorize is behind the `needs_refactorization()` trigger
+  again; the `basis_solves_cleanly` pivot gates stay, so a committed
+  basis must still solve within the drift gate. After the fix: local
+  Debug scale_200 1225 ms, `process_network_large` 11.75 s,
+  `supply_chain_large` 73.26 s, `refinery_domain_and_iis` 350.25 s;
+  ctest 122/122, LP-01 17/30 PASSED, CLI 7/7 `Optimal` + `verified`
+  (`e226` moved 4.3e-14, inside the witness bars), source limits 0
+  violations (298/300). BENCH-04's pinned sha `8867a84c…` is
+  superseded by this binary; its rows and the deferred-fix record stand
+  as measured for the binary they ran —
+  [record](evidence/lp-refactorize-perf-2026-10-03.json).
+
 ### 2026-10-03 bench-04 — the deferred set re-measured after the fix: 7/7 solved
 
 - **Preregistered before any run** — [preregistration](evidence/bench04-preregistration-2026-10-03.json)
@@ -26,6 +51,10 @@
   on 2026-10-02; the difference between campaigns is the fix commit
   `3662cac`, attributed in the
   [fix record](evidence/lp-deferred-fix-2026-10-03.json).
+  The pinned sha `8867a84c…` was superseded the same day by the
+  pivot-time refactorize-perf fix above; the campaign rows are the
+  measurement of that binary and stay as recorded
+  ([record](evidence/lp-refactorize-perf-2026-10-03.json)).
   One host, worker interference, no speed claim.
 
 ### 2026-10-03 LP deferred set — the frozen-set simplex failures (and GAP-01 `etamacro`) closed in the reference primal path

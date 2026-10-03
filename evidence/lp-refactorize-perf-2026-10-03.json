@@ -1,0 +1,118 @@
+{
+  "record": "lp-refactorize-perf",
+  "date": "2026-10-03",
+  "scope": "CI regression diagnosis and fix for the reference-primal path after the deferred-set closure: commit 3662cac made an unconditional fresh LU refactorize run after every accepted pivot, which regressed LP-heavy tests 3x in Debug/TSan/ASan builds until they exceeded their CI budgets. The fix restores trigger-only refactorization while keeping the pivot-time solve gates.",
+  "provenance": {
+    "failing_ci_run": "37096027191 (head 692967b, main pushed through 692967b)",
+    "failing_jobs": [
+      "gcc / Debug",
+      "clang / Debug",
+      "gcc / ASan-UBSan",
+      "gcc / TSan",
+      "clang / TSan"
+    ],
+    "passing_jobs": [
+      "gcc / Release",
+      "clang / Release",
+      "clang / ASan-UBSan",
+      "Python wheel and binding tests",
+      "Documentation paths and web build",
+      "CUDA compilation and CPU fallback",
+      "Optional ML compilation and fallback contract"
+    ],
+    "previous_ci_run": "36979076457 (head 8a2a94b), all jobs green",
+    "host": "single host for local measurements, gcc 22.1.8 / clang 22.1.8, 12 cores"
+  },
+  "symptoms": {
+    "detail": "all five failed jobs timed out on the same LP/MILP-heavy tests; Release jobs stayed green, so this was a per-pivot cost regression, not a solver-path pathology",
+    "gcc_debug_timings_seconds": {
+      "domain_process_network_large": {
+        "previous": 17.18,
+        "failing": "60.01 (Failed, budget 60)",
+        "failure_output": "ResourceLimit deadline_exceeded, nodes_explored 1, lp_iterations 0"
+      },
+      "domain_supply_chain_large": {
+        "previous": 120.79,
+        "failing": "360.00 (Failed, budget 360)"
+      },
+      "refinery_domain_and_iis": {
+        "previous": 600.82,
+        "failing": "897.01 (Failed, budget 900)"
+      },
+      "regression_simplex_scale200_pricing": {
+        "previous": 3.37,
+        "failing": "10.93 (gcc), 15.43 Failed on clang/Debug (wall limit)"
+      },
+      "domain_production_planning_large": {
+        "previous": 62.90,
+        "failing": "122.33 (passed, 1.94x slower)"
+      },
+      "lp_sparse_differential": {
+        "previous": 62.10,
+        "failing": "115.32 (passed, 1.86x slower)"
+      },
+      "median_test_ratio": 0.83,
+      "median_note": "the run was not uniformly slower (median test got faster); only LP-heavy tests regressed 1.9-3.2x"
+    },
+    "tsan_timings_seconds": {
+      "refinery_domain_and_iis": {
+        "gcc_previous": 360.18,
+        "gcc_failing": "489.63 (Failed)",
+        "clang_previous": 196.52,
+        "clang_failing": "509.76 (Failed)"
+      }
+    },
+    "asan_timings_seconds": {
+      "domain_refinery_scheduling_large": "60.16 Failed",
+      "domain_process_network_large": "60.17 Failed",
+      "domain_supply_chain_large": "360.15 Failed",
+      "refinery_domain_and_iis": "775.12 Failed"
+    }
+  },
+  "root_cause": {
+    "site": "src/lp/reference/revised_simplex_pivot.cpp (price_and_trial, accepted-pivot commit path)",
+    "defect": "the tie-trial pivot commit called factor.refactorize() unconditionally after every accepted pivot (a from-scratch sparse LU per pivot), where 8a2a94b only refactored when factor.needs_refactorization() fired (update/density triggers). Introduced in 3662cac together with the deferred-set fixes, so it shipped in the same commit BENCH-04 pinned.",
+    "evidence": "local Debug on tests/fixtures/scale_200.mps: 8a2a94b = 1466.04 ms / 1567 iterations (0.94 ms per iteration), 692967b = 4927.6 ms / 933 iterations (5.28 ms per iteration) despite 41% fewer pivots; process_network_large local Debug 9.93 s -> 37.61 s (CI 17.18 s -> 60.01 s budget timeout)",
+    "ruled_out": [
+      "singular floor 1e-10 (reverted: 40.62 s vs 37.61 s baseline, no change)",
+      "kAntiCyclingDegenerateSteps 5000 -> 20 (reverted: 38.36 s, no change)",
+      "refactorize fill-reducing ordering true/false (reverted: 50.14 s, no change; ordering consistency fix itself kept)",
+      "bland_anti_cycling default flip (reverted: 8584 ms vs 4927 ms on scale_200, i.e. slower, and irrelevant to node_lp which sets the flag explicitly)"
+    ]
+  },
+  "fix": {
+    "change": "factor.refactorize() restored behind the needs_refactorization() trigger at the accepted-pivot commit; the basis_solves_cleanly gates (transpose solve + primal solve residual checks against the drift gate, plus the snap-tolerance feasibility probe) remain per committed pivot, so a committed basis must still solve cleanly and the eta-chain singularities the fresh LU was meant to catch are still rejected by the residual gates.",
+    "line_limit": "revised_simplex_pivot.cpp 298 lines (limit 300), check_source_limits 0 violations over 545 files"
+  },
+  "verification": {
+    "local_debug_after_fix": {
+      "regression_simplex_scale200_pricing": "1224.97 ms / 918 iterations (8a2a94b baseline 1466.04 ms / 1567)",
+      "domain_process_network_large": "11.75 s (8a2a94b baseline 9.93 s)",
+      "domain_supply_chain_large": "73.26 s passed",
+      "refinery_domain_and_iis": "350.25 s passed"
+    },
+    "release_suite": "ctest 122/122 (41 s)",
+    "lp01_differential": "All LP sparse-differential fixtures PASSED (17 instances, 30 with full interchange), exit 0",
+    "cli_cells": {
+      "bore3d": "Optimal 1373.0803942084926 verified",
+      "scsd1": "Optimal 8.666666674333364 verified",
+      "scsd6": "Optimal 50.50000007714434 verified",
+      "blend": "Optimal -30.812149845828234 verified",
+      "etamacro": "Optimal -755.7152333749134 verified",
+      "e226": "Optimal -25.864929066370557 verified (recorded -25.864929066370514 at sha 8867a84c, delta 4.3e-14, inside the witness bars)",
+      "grow7": "Optimal -47787811.8147115 verified"
+    },
+    "checks": "check_source_limits 0 violations; check_docs.py and check_json.py and link_backlinks.py --check clean"
+  },
+  "binary_provenance": {
+    "superseded_binary": "sha 8867a84cd95166837fc3c4a6090110f2f613c69f2e7a183fb0bc712590a238ba (692967b), pinned by evidence/bench04-preregistration-2026-10-03.json and referenced by evidence/lp-deferred-fix-2026-10-03.json",
+    "records_stand": "BENCH-04 rows and the deferred-fix record are a true measurement of that binary and are never rewritten; this fix supersedes the binary after the campaign",
+    "revalidation": "the post-fix binary re-passed every deferred-set gate locally: 122/122 suite, LP-01 17/30, CLI 7/7 Optimal + verified; BENCH-04 was not re-run, which would require a new preregistration under the campaign rules"
+  },
+  "not_claimed": [
+    "no speed claim",
+    "one host for local measurements",
+    "BENCH-03 and BENCH-04 rows unchanged",
+    "no second-solver comparison"
+  ]
+}

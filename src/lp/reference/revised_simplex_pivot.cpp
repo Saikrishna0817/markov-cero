@@ -211,14 +211,15 @@ PivotAction price_and_trial(Work& w, const std::vector<double>& cost,
                     bool committed = false;
                     try {
                         factor.replace_column(row, column(w, entering));
-                        // Fresh-factorize after EVERY accepted pivot, not only
-                        // at the update/density triggers: the eta chain passes
-                        // singular bases unchecked (bore3d's basis was accepted
-                        // for 318 pivots before a fresh LU rejected it, leaving
-                        // dual vectors with a 0.7 residual), so a committed
-                        // basis must be one a from-scratch factorization
-                        // confirms.
-                        factor.refactorize();
+                        // Validate the committed basis through the solve gates
+                        // below (fresh LU only at the update/density triggers):
+                        // an unconditional refactorize here cost a full sparse
+                        // LU per pivot and regressed LP-heavy Debug/TSan runs
+                        // 3x over the trigger-only baseline, while the
+                        // basis_solves_cleanly residual checks still reject the
+                        // eta-chain singularities (bore3d col 40) that a fresh
+                        // LU would have caught.
+                        if (factor.needs_refactorization()) factor.refactorize();
                         committed = true;
                     } catch (const std::exception&) {
                         try {

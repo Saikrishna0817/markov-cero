@@ -192,10 +192,20 @@ Executed 2026-09-30:
   in the same change: `engine_lp_ipm.cpp`, `ipm_crossover.cpp`,
   `revised_simplex_pivot.cpp`). A recorded BENCH-03 row is never
   rewritten; BENCH-04 re-measured the same seven-cell
-  manifest as its own campaign — 7/7 `Optimal` × 5 repeats, 35/35
-  independent checks pass
-  ([record](../../evidence/bench04-campaign-2026-10-03.json)).
-- Benchmark: [`evidence/lp-sparse-rss-20260930.json`](../../evidence/lp-sparse-rss-20260930.json)
+   manifest as its own campaign — 7/7 `Optimal` × 5 repeats, 35/35
+   independent checks pass
+   ([record](../../evidence/bench04-campaign-2026-10-03.json)).
+- Follow-up 2026-10-03 — post-campaign CI regression caught and fixed
+   ([record](../../evidence/lp-refactorize-perf-2026-10-03.json)).
+   Commit `3662cac` refactored the basis from scratch after **every**
+   accepted pivot, tripling LP-heavy Debug/TSan/ASan test costs until
+   five CI jobs exceeded their budgets (Release stayed green, proving
+   per-pivot cost rather than a path change). Refactorize is behind the
+   `needs_refactorization()` trigger again with the
+   `basis_solves_cleanly` pivot gates retained; 122/122, LP-01 17/30
+   and the seven CLI cells re-verified. BENCH-04's pinned binary is
+   superseded by this fix; its rows stand as measured.
+ - Benchmark: [`evidence/lp-sparse-rss-20260930.json`](../../evidence/lp-sparse-rss-20260930.json)
   — retired dense dispatch shape vs sparse-first, forked VmHWM per
   (instance, path). Dense peak ≥ sparse peak on all 18 records; the
   synthetic 4096×12096 case measured 398,492 KB vs 8,192 KB
