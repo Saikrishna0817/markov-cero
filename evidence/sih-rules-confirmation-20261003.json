@@ -1,0 +1,43 @@
+{
+  "record": "sih-rules-confirmation",
+  "date": "2026-10-03",
+  "decision": "D22 - confirmed SIH rules and submission format",
+  "status": "partially confirmed from the live official portal; evaluation rubric, later-phase dates and SPOC-mediated items remain external",
+  "checks": [
+    {
+      "what": "official portal reachable",
+      "how": "GET https://www.sih.gov.in/faqs and GET https://www.sih.gov.in/ on 2026-10-03",
+      "result": "HTTP 200; the HTTP 403 recorded on 2026-09-29 no longer occurs, so the portal was re-read from source today"
+    },
+    {
+      "what": "problem statement text",
+      "how": "repository copy docs/sih26119_problem_statement.md (verbatim portal retrieval 2026-09-25, byte-identical to its pre-deletion version in commit 3381283, restored 2026-10-03) corroborated against three independent mirrors: https://sih2026.vuce.in/ps/SIH26119, the blinknbuild SIH 2026 master catalogue PDF, and the NoBugNinja SIH 2026 catalogue",
+      "result": "problem statement ID, title, sponsoring organization (MRPL), description and expected-solution text match across the repository copy and all three mirrors"
+    },
+    {
+      "what": "team and process rules",
+      "how": "official FAQ (https://www.sih.gov.in/faqs) and official process flow (https://www.sih.gov.in/) read 2026-10-03",
+      "result": "6-member teams including the leader, same college, at least one female member; software-edition teams need a majority with strong programming skills; HEI/SPOC nominates after a mandatory internal hackathon (best 30 + 5 waitlisted); each team may submit only two ideas; idea screening is online and the grand finale is offline; prize INR 1.5 lakh in each category; up to 2 mentors with 5+ years experience; institutional guideline PDF referenced at https://www.sih.gov.in/letters/Guidelines-College-SPOC.pdf"
+    },
+    {
+      "what": "submission artifacts (Software edition)",
+      "how": "SIH 2026 guidelines mirror (scribd copy of 'Guidelines of SIH2026'); the official PDF exceeds the 5 MiB fetch limit and was not machine-read",
+      "result": "presentation strictly in the official SIH 2026 PPT format, a non-AI-generated demo video narrated by team members, and a GitHub repository whose README states objective, features, tech stack, setup and status",
+      "official_confirmed": false
+    }
+  ],
+  "deadlines": {
+    "team_registration": "2026-08-01 (passed; guidelines mirror)",
+    "idea_submission": "2026-09-30 (passed on 2026-10-03; portal record retrieved 2026-09-25)",
+    "later_phases": "not published on the portal pages read on 2026-10-03; confirm with the college SPOC"
+  },
+  "still_unconfirmed": [
+    "Full official guidelines PDF (https://www.sih.gov.in/letters/Guidelines-College-SPOC.pdf exceeds the 5 MiB fetch limit - not machine-read)",
+    "Evaluation rubric or weightage for idea screening and the finale",
+    "Dates for pre-screening, result publication and finale rounds (SPOC-mediated)",
+    "Whether this team's idea was submitted before the 2026-09-30 deadline (external, verifiable only by the team or SPOC)",
+    "The official SIH 2026 presentation template file (portal menu item; exact URL not captured)"
+  ],
+  "restoration_note": "docs/sih26119_problem_statement.md was deleted by commit fe86609 ('cleaning phase 2') and restored byte-identical on 2026-10-03 from commit fe86609^ (= 3381283). It is cited by ten docs/research/engineering-decisions/ED-* requirement-trace tables, so its absence had silently broken those traces.",
+  "gate_impact": "G0 missing item 1 moves from unverified to partially confirmed; D22 stays external-confirmation-pending for the rubric, later-phase dates and SPOC-mediated facts"
+}

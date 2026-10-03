@@ -49,4 +49,4 @@ A local cache or pinned Git revision supplies the file when available; `--downlo
 
 ## Release checks and known packaging boundary
 
-Run `bash scripts/verify-release.sh` for the dual-compiler local release check. It writes an ignored local report; [verification](VERIFY.md) explains what that report establishes. Packaging and support gates remain open in the [gate register](../../evidence/gate-status-20260929.json). The checked-in `LICENSE` is Apache 2.0, while `pyproject.toml` currently labels the package Proprietary; resolve that metadata discrepancy before publishing a wheel.
+Run `bash scripts/verify-release.sh` for the dual-compiler local release check. It writes an ignored local report; [verification](VERIFY.md) explains what that report establishes. Packaging and support gates remain open in the [gate register](../../evidence/gate-status-20261003.json). The checked-in `LICENSE`, `pyproject.toml` metadata (`Apache-2.0`, enforced by a CI coherence check) and package licence agree; the dataset-rights decision under D18 is still pending before publishing a wheel.

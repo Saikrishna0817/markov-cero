@@ -1,0 +1,566 @@
+{
+  "date": "2026-10-03",
+  "supersedes": "evidence/gate-status-20260929.json",
+  "source_document": "docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md",
+  "generated_by": "agent documentation-only re-baseline over roadmap sections 4, 8 and 13; the 2026-09-29 record is left untouched as a dated snapshot",
+  "gates": {
+    "G0": {
+      "status": "partial",
+      "evidence": [
+        "docs/sih26119_problem_statement.md",
+        "evidence/sih-rules-confirmation-20261003.json",
+        "PROVENANCE.md",
+        "evidence/baseline-freeze-20260928.json",
+        "evidence/readiness-checkpoint.json"
+      ],
+      "missing": [
+        "Evaluation rubric and post-idea-submission phase deadlines are not confirmed: the portal FAQ and process flow were re-read 2026-10-03 and team/process rules now check out, but rubric, later-phase dates, the official guidelines PDF (fetch exceeds 5 MiB) and this team's SPOC-mediated submission status remain external (evidence/sih-rules-confirmation-20261003.json)",
+        "Independent history/diff and algorithm-similarity provenance review (D04 external confirmation pending; W00 independent-review gate open)",
+        "A readiness checkpoint recorded against a committed revision: evidence/readiness-checkpoint.json records an uncommitted worktree; head 2e94a31 is committed and CI-green (run 37115924289) but no refreshed checkpoint or tagged release candidate exists yet"
+      ]
+    },
+    "G1": {
+      "status": "partial",
+      "evidence": [
+        "evidence/ir19-w01-memory-20260928.json",
+        "evidence/contracts-slice-20260928.json",
+        "evidence/resource-envelope-20260928.json",
+        "evidence/node-frontier-memory-20260928.json",
+        "evidence/device-memory-budget-2026-10-03.json"
+      ],
+      "missing": [
+        "IR-20 closure: preemptibility bounds for indivisible work (factorization, root relaxation, callbacks) and end-to-end deadline evidence",
+        "IR-21 closure: uniform solve-wide allocation/fill budget plus peak RSS accounting (the device-memory slice closed 2026-10-03; host peak RSS and fill budgets remain)",
+        "Independent review agreeing the advertised envelope closes IR-20 and IR-21 (roadmap W02 acceptance)"
+      ]
+    },
+    "G2": {
+      "status": "partial",
+      "evidence": [
+        "evidence/proof-guarantee-20260928.json",
+        "evidence/milp-strengthening-20260928.json",
+        "src/verify"
+      ],
+      "missing": [
+        "A fresh independent reviewer deriving the M1-M4/M12 inequalities (W03 acceptance criterion)",
+        "A recorded adversarial campaign demonstrating zero accepted false certificates",
+        "W03 package acceptance sign-off"
+      ]
+    },
+    "G3": {
+      "status": "partial",
+      "evidence": [
+        "STATUS.md",
+        "evidence/packaging-qualification-20260928.json",
+        "evidence/packaging-qualification-20261001.json",
+        "evidence/hosted-ci-36938268360-2026-10-02.json",
+        "evidence/gpu-device-run-2026-10-02.json",
+        "evidence/readiness-checkpoint.json"
+      ],
+      "missing": [
+        "A published supported-version matrix validated on a second host (current wheel is a single-host linux_x86_64 tag, not manylinux; CI covers one provider's runners only)",
+        "Optional CUDA and optional ML paths explicitly qualified or disabled in the shipped configuration: the host wheel ships without CUDA, the CI CUDA job is compile-only and the device run is local-only (evidence/gpu-device-run-2026-10-02.json); no hosted CUDA runtime evidence"
+      ],
+      "newly_closed_since_20260929": [
+        "Continuous hosted CI evidence: green runs 36938268360 (12/12 jobs, 2026-10-02) and 37115924289 (13/13 jobs on head 2e94a31, 2026-10-03), each with gcc/clang Debug/Release/ASan/TSan, wheel/binding, docs, CUDA-compile and optional-ML jobs"
+      ]
+    },
+    "G4": {
+      "status": "not met",
+      "evidence": [
+        "evidence/frozen-comparators-20260928.json",
+        "evidence/frozen-instances-20260928.json",
+        "evidence/baseline-freeze-20260928.json",
+        "docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md"
+      ],
+      "missing": [
+        "Matched held-out campaign over the declared niche gate (>=50 instances, >=10 families) with a complete denominator",
+        "Measured held-out improvement: paired geometric runtime ratio with upper 95% bound below 0.80 against the named baseline",
+        "Independent reproduction of the claimed conclusion from the pinned manifest",
+        "IR-35 remains open (broad performance/scaling claims unproven)"
+      ]
+    },
+    "G5": {
+      "status": "not met",
+      "evidence": [
+        "evidence/frozen-comparators-20260928.json",
+        "evidence/frozen-instances-20260928.json",
+        "evidence/readiness-validation/matched-smoke.csv"
+      ],
+      "missing": [
+        "Full preregistered supported suites reported separately by LP/MILP/QP with complete coverage accounting",
+        "Held-out improvement against the best relevant baseline per class",
+        "Independent reproduction; IR-35 remains open"
+      ]
+    },
+    "G6": {
+      "status": "not met",
+      "evidence": [
+        "evidence/gpu_hardware.json",
+        "evidence/gpu_hardware_kernel_run.json",
+        "evidence/gpu-device-run-2026-10-02.json",
+        "STATUS.md"
+      ],
+      "missing": [
+        "Device-resident PDLP loop and convex-QP x-update with numerical acceptance evidence (IR-28 open)",
+        "At least 20% matched end-to-end benefit under the Section 9 confidence/holdout protocol on a named workload and device",
+        "GPU-09 promotion artifacts (device capability record, paired raw runs, transfer/memory trace, build hashes) and independent reproduction"
+      ]
+    },
+    "G7": {
+      "status": "OPEN",
+      "evidence": [
+        "docs/governance/support-rollback.md",
+        "evidence/packaging-qualification-20260928.json",
+        "evidence/packaging-qualification-20261001.json",
+        "evidence/packaging-rollback-drill-20260928.txt",
+        "evidence/release-sbom-20261001.json",
+        "evidence/release-source-manifest-20261001.csv",
+        "evidence/vulnerability-scan-20261001.json",
+        "evidence/reproducible-build-20261001.json",
+        "requirements/qualification.txt"
+      ],
+      "missing": [
+        "Signed release/source manifests and signed artifacts",
+        "Rights/dataset-licence review and non-Python dependency scans (the Python environment was scanned 2026-10-01; dataset redistribution D18 remains pending)",
+        "Funded support ownership (support contact, security contact and two named maintainers are UNASSIGNED)",
+        "Hosted CUDA runtime evidence (hosted sanitizer evidence now exists: ASan/TSan jobs green in runs 36938268360 and 37115924289)",
+        "Independent release review (IR-33 remains open)"
+      ],
+      "newly_closed_since_20260929": [
+        "SBOM (evidence/release-sbom-20261001.json) and source manifest (evidence/release-source-manifest-20261001.csv)",
+        "Vulnerability review of the Python dependency set (evidence/vulnerability-scan-20261001.json) and dependency pinning (requirements/qualification.txt)",
+        "Two-tree reproducible-build evidence (evidence/reproducible-build-20261001.json)",
+        "REL-01 qualification at commit 980687c including install and rollback drills (evidence/packaging-qualification-20261001.json)"
+      ]
+    },
+    "G8": {
+      "status": "OPEN",
+      "evidence": [
+        "evidence/refinery-units-schema-20260928.json",
+        "evidence/defect-closure-register.csv",
+        "docs/governance/support-rollback.md"
+      ],
+      "missing": [
+        "Named model owner and qualified refinery engineer approval of balances, units and formulation (IR-34 open)",
+        "Operator-approved plant data",
+        "Supervised shadow pilot over at least 30 representative planning cycles/scenarios",
+        "Human authorisation and documented rollback authority"
+      ]
+    }
+  },
+  "delta_since_20260929": [
+    "docs/sih26119_problem_statement.md restored byte-identical from history (deleted by fe86609) and SIH rules re-confirmed from the live portal (evidence/sih-rules-confirmation-20261003.json)",
+    "Green hosted CI runs 36938268360 (12/12) and 37115924289 (13/13 on head 2e94a31)",
+    "CUDA build executed on real hardware: 121/121 CTest on the RTX 2050 host (evidence/gpu-device-run-2026-10-02.json)",
+    "G7 partial closure: SBOM, source manifest, Python vulnerability scan, dependency pinning, two-tree reproducible build, REL-01 qualification with install/rollback drills",
+    "RES-01 device-memory budget delivered and evidenced (evidence/device-memory-budget-2026-10-03.json) - the device slice of IR-21",
+    "LP deferred-set fix and refactorize performance fix landed with BENCH-04 re-measurement (7/7 Optimal, evidence/lp-deferred-fix-2026-10-03.json)",
+    "Python package licence metadata conflict resolved by owner decision D18 on 2026-09-29 (Apache-2.0), after the previous record was written"
+  ],
+  "milestones": {
+    "A": {
+      "status": "partial (exit gate G0 not met)",
+      "blockers": [
+        "evidence/baseline-freeze-20260928.json",
+        "evidence/readiness-checkpoint.json",
+        "G0 missing evidence: SIH rubric/later-phase confirmation, independent provenance review, committed-revision readiness checkpoint",
+        "No independent contract review record for ModelSnapshot/NodeView/SolveContext"
+      ]
+    },
+    "B": {
+      "status": "partial (exit gates G1/G2 not met)",
+      "blockers": [
+        "evidence/ir19-w01-memory-20260928.json",
+        "evidence/resource-envelope-20260928.json",
+        "evidence/proof-guarantee-20260928.json",
+        "W01 done (IR-19 closed); the device-memory slice of IR-21 closed 2026-10-03; W02 and W03 remain partial",
+        "IR-20 and the remainder of IR-21 open",
+        "G2 independent derivation review absent"
+      ]
+    },
+    "C": {
+      "status": "partial (exit gate G3 not met)",
+      "blockers": [
+        "evidence/repeated-solve-20260928.json",
+        "evidence/milp-strengthening-20260928.json",
+        "evidence/refinery-units-schema-20260928.json",
+        "evidence/packaging-qualification-20260928.json",
+        "W04, W05, W06 and W09 acceptance evidence not produced",
+        "G3 now has hosted CI evidence but still lacks a second-host supported-configuration matrix and a qualified-or-disabled CUDA/ML shipped configuration"
+      ]
+    },
+    "D": {
+      "status": "partial (exit gates G4/G5 not met)",
+      "blockers": [
+        "evidence/baseline-freeze-20260928.json",
+        "W10 held-out improvement campaign not run (the preregistered BENCH-01..04 campaigns over frozen public suites ran 2026-10-01..03 but do not establish held-out improvement against a named baseline)",
+        "No independent reproduction",
+        "IR-35 open"
+      ]
+    },
+    "E": {
+      "status": "partial (exit gate G6 not met)",
+      "blockers": [
+        "evidence/gpu_hardware.json",
+        "src/milp/ml_branching",
+        "W11 and W12 have pre-existing components only; the roadmap programmes were not executed as specified",
+        "W13 and W14 not started",
+        "IR-28 open",
+        "D03 dependency-policy clarification pending (blocks exact/arithmetic and vendor-library options)"
+      ]
+    },
+    "F": {
+      "status": "blocked (G7 OPEN)",
+      "blockers": [
+        "docs/governance/support-rollback.md",
+        "evidence/packaging-qualification-20261001.json",
+        "IR-33 open: signing, rights review, support ownership, hosted CUDA runtime evidence, independent release audit (SBOM, vulnerability scan, pinning and reproducible build now exist)"
+      ]
+    },
+    "G": {
+      "status": "blocked (G8 OPEN)",
+      "blockers": [
+        "evidence/refinery-units-schema-20260928.json",
+        "IR-34 open: no engineer approval and no shadow pilot",
+        "Pilot acceptance criteria external decision unresolved"
+      ]
+    }
+  },
+  "decisions": {
+    "D01": {
+      "status": "adopted (default)",
+      "owner_roles": "P + N",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D02": {
+      "status": "adopted (default), external confirmation pending",
+      "owner_roles": "P + D",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": true
+    },
+    "D03": {
+      "status": "adopted (default), external confirmation pending",
+      "owner_roles": "P + S",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": true
+    },
+    "D04": {
+      "status": "adopted (default), external confirmation pending",
+      "owner_roles": "Q + P",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": true
+    },
+    "D05": {
+      "status": "adopted (default)",
+      "owner_roles": "S + M",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D06": {
+      "status": "adopted (default)",
+      "owner_roles": "S",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D07": {
+      "status": "adopted (default)",
+      "owner_roles": "N + Q",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D08": {
+      "status": "adopted (default)",
+      "owner_roles": "N",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D09": {
+      "status": "adopted (default)",
+      "owner_roles": "N",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D10": {
+      "status": "adopted (default)",
+      "owner_roles": "N + Q",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D11": {
+      "status": "adopted (default)",
+      "owner_roles": "M",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D12": {
+      "status": "adopted (default)",
+      "owner_roles": "M + S",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D13": {
+      "status": "adopted (default)",
+      "owner_roles": "N + S",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D14": {
+      "status": "adopted (default)",
+      "owner_roles": "M + Q",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D15": {
+      "status": "adopted (default), external confirmation pending",
+      "owner_roles": "D + engineer",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": true
+    },
+    "D16": {
+      "status": "adopted (default)",
+      "owner_roles": "S + P",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D17": {
+      "status": "adopted (default)",
+      "owner_roles": "S + Q",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D18": {
+      "status": "adopted 2026-09-29 for package licence metadata (Apache-2.0); dataset redistribution decision still external",
+      "owner_roles": "P",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": true
+    },
+    "D19": {
+      "status": "adopted (default)",
+      "owner_roles": "Q",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D20": {
+      "status": "adopted (default)",
+      "owner_roles": "S + Q",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D21": {
+      "status": "adopted (default)",
+      "owner_roles": "Q + independent reviewer",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D22": {
+      "status": "partially confirmed 2026-10-03 from the live portal (evidence/sih-rules-confirmation-20261003.json); rubric, later-phase dates and SPOC-mediated facts still external",
+      "owner_roles": "P",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": true
+    },
+    "D23": {
+      "status": "adopted (default)",
+      "owner_roles": "N/M/Q",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D24": {
+      "status": "adopted (default)",
+      "owner_roles": "S/N",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D25": {
+      "status": "adopted (default)",
+      "owner_roles": "S/P",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D26": {
+      "status": "adopted (default)",
+      "owner_roles": "S/Q",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D27": {
+      "status": "adopted (default)",
+      "owner_roles": "D/N",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    },
+    "D28": {
+      "status": "adopted (default)",
+      "owner_roles": "P/S/Q",
+      "owner_note": "role letters only; assignment pending a named human owner",
+      "external_confirmation_pending": false
+    }
+  },
+  "external_decisions_remaining": [
+    {
+      "decision": "confirmed SIH rules and submission format",
+      "status": "PARTIALLY RESOLVED 2026-10-03; still open on rubric, later-phase dates and SPOC facts",
+      "evidence_checked": [
+        "docs/sih26119_problem_statement.md",
+        "evidence/sih-rules-confirmation-20261003.json",
+        "https://www.sih.gov.in/faqs",
+        "https://www.sih.gov.in/"
+      ],
+      "resolved_by": "evaluation rubric, pre-screening/finale dates, the official guidelines PDF, and confirmation from the college SPOC that this team's idea was submitted before the 2026-09-30 deadline"
+    },
+    {
+      "decision": "accountable decision owners",
+      "status": "UNRESOLVED",
+      "evidence_checked": [
+        "docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md"
+      ],
+      "resolved_by": "dated roster naming humans for roles N/M/S/Q/D/P plus the external engineer and independent reviewer"
+    },
+    {
+      "decision": "dependency-policy clarification",
+      "status": "UNRESOLVED",
+      "evidence_checked": [
+        "docs/decisions",
+        "docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md"
+      ],
+      "resolved_by": "written sponsor decision on numerical utilities, GPU vendor libraries and exact arithmetic libraries (D03)"
+    },
+    {
+      "decision": "permitted dataset redistribution",
+      "status": "UNRESOLVED",
+      "evidence_checked": [
+        "PROVENANCE.md",
+        "evidence/packaging-qualification-20260928.json",
+        "data/optional-datasets.json"
+      ],
+      "resolved_by": "reviewed licence and dataset-rights decision (D18)"
+    },
+    {
+      "decision": "target hardware/compute budget",
+      "status": "UNRESOLVED",
+      "evidence_checked": [
+        "docs/audit/INDUSTRY-GRADE-COMPETITIVE-ROADMAP.md"
+      ],
+      "resolved_by": "approved machine list, memory envelopes and core-hour allocation for the held-out campaign"
+    },
+    {
+      "decision": "model owner and engineer",
+      "status": "UNRESOLVED",
+      "evidence_checked": [
+        "evidence/defect-closure-register.csv",
+        "docs/governance/support-rollback.md"
+      ],
+      "resolved_by": "named model owner and qualified refinery engineer approving W08 (IR-34)"
+    },
+    {
+      "decision": "support/licensing authority",
+      "status": "UNRESOLVED",
+      "evidence_checked": [
+        "docs/governance/support-rollback.md",
+        "evidence/packaging-qualification-20261001.json"
+      ],
+      "resolved_by": "named maintainers and security contact plus an explicit reviewed licence decision (D18)"
+    },
+    {
+      "decision": "pilot acceptance criteria",
+      "status": "UNRESOLVED",
+      "evidence_checked": [
+        "evidence/refinery-units-schema-20260928.json",
+        "evidence/defect-closure-register.csv"
+      ],
+      "resolved_by": "signed pilot charter naming the reference planning process, thresholds and rollback authority"
+    }
+  ],
+  "defect_register_summary": {
+    "source": "evidence/defect-closure-register.csv",
+    "read_at": "2026-10-03",
+    "total_rows": 36,
+    "by_kind": {
+      "capability_gate": 4,
+      "defect": 32
+    },
+    "by_status": {
+      "closed": 30,
+      "open": 6
+    },
+    "by_kind_and_status": {
+      "capability_gate:open": 4,
+      "defect:closed": 30,
+      "defect:open": 2
+    },
+    "open_count": 6,
+    "open_ids": [
+      "IR-20",
+      "IR-21",
+      "IR-28",
+      "IR-33",
+      "IR-34",
+      "IR-35"
+    ],
+    "open_detail": [
+      {
+        "id": "IR-20",
+        "kind": "defect",
+        "severity": "high",
+        "finding": "Deadline gaps in indivisible preprocessing/callback work"
+      },
+      {
+        "id": "IR-21",
+        "kind": "defect",
+        "severity": "high",
+        "finding": "Incomplete solve-wide memory/fill budgets (device-memory slice closed 2026-10-03; host peak RSS and fill budgets remain)"
+      },
+      {
+        "id": "IR-28",
+        "kind": "capability_gate",
+        "severity": "medium",
+        "finding": "GPU QP x-update absent"
+      },
+      {
+        "id": "IR-33",
+        "kind": "capability_gate",
+        "severity": "high",
+        "finding": "Release supply-chain, support and versioning acceptance"
+      },
+      {
+        "id": "IR-34",
+        "kind": "capability_gate",
+        "severity": "critical",
+        "finding": "No refinery engineer approval or shadow pilot"
+      },
+      {
+        "id": "IR-35",
+        "kind": "capability_gate",
+        "severity": "medium",
+        "finding": "Broad cut/parallel/commercial performance claims unproven"
+      }
+    ],
+    "note": "Local register tally against the triaged baseline. Not an independent external closure audit and not a percentage of all possible defects."
+  },
+  "package_status_basis": {
+    "done": [
+      "W01"
+    ],
+    "partial": [
+      "W00",
+      "W02",
+      "W03",
+      "W04",
+      "W05",
+      "W06",
+      "W07",
+      "W08",
+      "W09",
+      "W10",
+      "W11",
+      "W12"
+    ],
+    "not_started": [
+      "W13",
+      "W14"
+    ],
+    "note": "W11 and W12 have pre-existing components only; the roadmap programmes were not executed as specified. W10 moved to partial after the preregistered BENCH-01..04 campaigns ran 2026-10-01..03; they report frozen public suites honestly but do not establish held-out improvement, so G4/G5 stay not met."
+  },
+  "note": "No independent external audit or independent release/mathematical review has been performed. Every status here is derived from local repository evidence plus the portal reads recorded in evidence/sih-rules-confirmation-20261003.json. No gate is marked passed or closed; gates requiring external humans (IR-33/G7 independent review, IR-34/G8 engineer approval, sponsor dependency policy D03, dataset licensing D18, the SIH rubric/later-phase confirmation D22, and named decision owners) remain OPEN or UNRESOLVED. Decision records are adopted internal defaults recorded by this project, not human-signed approvals."
+}
